@@ -5,76 +5,97 @@
 バッチ起動時に Cloud Run Jobs 内で実行され、Fetch、正規表現パース、および2つのエージェント間対話ループをプログラム的に仲介する中核ロジックの**擬似コード**。
 
 ```ts
-import { spawn } from 'child_process';
-import { runAegisWriter, runAegisReviewer } from './agents';
-import { fetchAndExtractDiff } from './crawler';
+import { spawn } from "child_process";
+import { runAegisWriter, runAegisReviewer } from "./agents";
+import { fetchAndExtractDiff } from "./crawler";
 
 interface ExecutionState {
-  prNumber: number | null;
-  loopCount: number;
-  maxLoops: number;
-  status: 'PENDING' | 'PROPOSED' | 'APPROVED' | 'REJECTED' | 'ERROR';
+	prNumber: number | null;
+	loopCount: number;
+	maxLoops: number;
+	status: "PENDING" | "PROPOSED" | "APPROVED" | "REJECTED" | "ERROR";
 }
 
 export async function main() {
-  console.log('--- Aegis Orchestrator Started ---');
-  
-  // 1. クローラーによる前回の状態取得、ビルトインFetchおよび正規表現置換による機械的テキスト抽出
-  const diffData = await fetchAndExtractDiff();
-  if (diffData.length === 0) {
-    console.log('No new updates detected in SSoT. Execution stopped (Idempotent).');
-    process.exit(0);
-  }
+	console.log("--- Aegis Orchestrator Started ---");
 
-  // 2. インプロセスでのGitHub MCP子プロセスの起動 (Stdio接続)
-  const mcpProcess = spawn('node', ['node_modules/@modelcontextprotocol/server-github/dist/index.js'], {
-    env: { ...process.env, GITHUB_PERSONAL_ACCESS_TOKEN: await getGitHubAppToken() }
-  });
+	// 1. クローラーによる前回の状態取得、ビルトインFetchおよび正規表現置換による機械的テキスト抽出
+	const diffData = await fetchAndExtractDiff();
+	if (diffData.length === 0) {
+		console.log(
+			"No new updates detected in SSoT. Execution stopped (Idempotent).",
+		);
+		process.exit(0);
+	}
 
-  const state: ExecutionState = {
-    prNumber: null,
-    loopCount: 0,
-    maxLoops: 3,
-    status: 'PENDING'
-  };
+	// 2. インプロセスでのGitHub MCP子プロセスの起動 (Stdio接続)
+	const mcpProcess = spawn(
+		"node",
+		["node_modules/@modelcontextprotocol/server-github/dist/index.js"],
+		{
+			env: {
+				...process.env,
+				GITHUB_PERSONAL_ACCESS_TOKEN: await getGitHubAppToken(),
+			},
+		},
+	);
 
-  // 3. マルチエージェント対話ループの制御
-  while (state.loopCount < state.maxLoops && state.status !== 'APPROVED') {
-    state.loopCount++;
-    console.log(`\n--- Starting Agent Loop: ${state.loopCount}/${state.maxLoops} ---`);
+	const state: ExecutionState = {
+		prNumber: null,
+		loopCount: 0,
+		maxLoops: 3,
+		status: "PENDING",
+	};
 
-    if (state.status === 'PENDING' || state.status === 'REJECTED') {
-      // 提案エージェント (Aegis-Writer) の実行。
-      // 新規トピック作成、既存インクリメンタルアップデート、孤立リンク補正、レポートMarkdownを自動コミットしてPR起票。
-      state.prNumber = await runAegisWriter(mcpProcess, diffData, state.prNumber);
-      state.status = 'PROPOSED';
-    }
+	// 3. マルチエージェント対話ループの制御
+	while (state.loopCount < state.maxLoops && state.status !== "APPROVED") {
+		state.loopCount++;
+		console.log(
+			`\n--- Starting Agent Loop: ${state.loopCount}/${state.maxLoops} ---`,
+		);
 
-    if (state.status === 'PROPOSED') {
-      // 査読エージェント (Aegis-Reviewer) の実行。
-      // 起票されたPRのDiffとGitHub Actionsの検証結果を評価。
-      const reviewResult = await runAegisReviewer(mcpProcess, state.prNumber!);
-      
-      if (reviewResult.isApproved) {
-        state.status = 'APPROVED';
-        console.log(`PR #${state.prNumber} successfully APPROVED and Self-Merged by Aegis-Reviewer.`);
-      } else {
-        state.status = 'REJECTED';
-        console.log(`PR #${state.prNumber} REJECTED with comments: ${reviewResult.feedback}`);
-      }
-    }
-  }
+		if (state.status === "PENDING" || state.status === "REJECTED") {
+			// 提案エージェント (Aegis-Writer) の実行。
+			// 新規トピック作成、既存インクリメンタルアップデート、孤立リンク補正、レポートMarkdownを自動コミットしてPR起票。
+			state.prNumber = await runAegisWriter(
+				mcpProcess,
+				diffData,
+				state.prNumber,
+			);
+			state.status = "PROPOSED";
+		}
 
-  // 4. 最大ループ回数に達しても合意形成されなかった場合は、自律的に管理者に差し戻し
-  if (state.status !== 'APPROVED') {
-    console.error('Cooperative agent loop exceeded max limit without reaching consensus.');
-    await raiseFailureIssue(mcpProcess, state.prNumber);
-    process.exit(1);
-  }
+		if (state.status === "PROPOSED") {
+			// 査読エージェント (Aegis-Reviewer) の実行。
+			// 起票されたPRのDiffとGitHub Actionsの検証結果を評価。
+			const reviewResult = await runAegisReviewer(mcpProcess, state.prNumber!);
 
-  // 5. 子プロセスのクリーンアップと終了
-  mcpProcess.kill('SIGTERM');
-  console.log('--- Aegis Orchestrator Finished Successfully ---');
+			if (reviewResult.isApproved) {
+				state.status = "APPROVED";
+				console.log(
+					`PR #${state.prNumber} successfully APPROVED and Self-Merged by Aegis-Reviewer.`,
+				);
+			} else {
+				state.status = "REJECTED";
+				console.log(
+					`PR #${state.prNumber} REJECTED with comments: ${reviewResult.feedback}`,
+				);
+			}
+		}
+	}
+
+	// 4. 最大ループ回数に達しても合意形成されなかった場合は、自律的に管理者に差し戻し
+	if (state.status !== "APPROVED") {
+		console.error(
+			"Cooperative agent loop exceeded max limit without reaching consensus.",
+		);
+		await raiseFailureIssue(mcpProcess, state.prNumber);
+		process.exit(1);
+	}
+
+	// 5. 子プロセスのクリーンアップと終了
+	mcpProcess.kill("SIGTERM");
+	console.log("--- Aegis Orchestrator Finished Successfully ---");
 }
 ```
 
@@ -85,31 +106,43 @@ export async function main() {
 
 ```ts
 interface TopicIndex {
-  fileName: string;
-  title: string;
-  aliases: string[];
-  inboundLinks: number;
+	fileName: string;
+	title: string;
+	aliases: string[];
+	inboundLinks: number;
 }
 
-export async function resolveOrphanNotes(mcp: any, newlyCreatedFile: string, newlyCreatedTitle: string) {
-  // 1. Vault内の全トピックファイルおよびインデックス（ファイル名、エイリアス、被リンク数）を走査
-  const allTopics: TopicIndex[] = await fetchVaultTopicIndexes(mcp);
+export async function resolveOrphanNotes(
+	mcp: any,
+	newlyCreatedFile: string,
+	newlyCreatedTitle: string,
+) {
+	// 1. Vault内の全トピックファイルおよびインデックス（ファイル名、エイリアス、被リンク数）を走査
+	const allTopics: TopicIndex[] = await fetchVaultTopicIndexes(mcp);
 
-  // 2. 被リンク数がゼロ（inboundLinks === 0）の孤立ノート（Orphan Note）を特定
-  const orphanNotes = allTopics.filter(t => t.inboundLinks === 0 && t.fileName !== newlyCreatedFile);
-  if (orphanNotes.length === 0) return;
+	// 2. 被リンク数がゼロ（inboundLinks === 0）の孤立ノート（Orphan Note）を特定
+	const orphanNotes = allTopics.filter(
+		(t) => t.inboundLinks === 0 && t.fileName !== newlyCreatedFile,
+	);
+	if (orphanNotes.length === 0) return;
 
-  // 3. 提案エージェントは、新しく追加・更新されたファイル（newlyCreatedTitle）と孤立ノートの意味的関連性を推論
-  for (const orphan of orphanNotes) {
-    const isRelated = await evaluateSemanticRelationship(newlyCreatedTitle, orphan.title, orphan.aliases);
-    
-    if (isRelated) {
-      // 4. 関連性が極めて高いと判断された場合、新しく作成されたファイルに
-      // 孤立トピックへの内部リンク [[孤立ノートタイトル]] を自然な文脈で動的に追記
-      console.log(`Connecting orphan note [[${orphan.title}]] from newly created [[${newlyCreatedTitle}]]`);
-      await injectInternalLink(mcp, newlyCreatedFile, orphan.title);
-    }
-  }
+	// 3. 提案エージェントは、新しく追加・更新されたファイル（newlyCreatedTitle）と孤立ノートの意味的関連性を推論
+	for (const orphan of orphanNotes) {
+		const isRelated = await evaluateSemanticRelationship(
+			newlyCreatedTitle,
+			orphan.title,
+			orphan.aliases,
+		);
+
+		if (isRelated) {
+			// 4. 関連性が極めて高いと判断された場合、新しく作成されたファイルに
+			// 孤立トピックへの内部リンク [[孤立ノートタイトル]] を自然な文脈で動的に追記
+			console.log(
+				`Connecting orphan note [[${orphan.title}]] from newly created [[${newlyCreatedTitle}]]`,
+			);
+			await injectInternalLink(mcp, newlyCreatedFile, orphan.title);
+		}
+	}
 }
 ```
 

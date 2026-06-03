@@ -54,48 +54,38 @@ properties:
 
 ```json
 {
-  "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
-  "title": "CrawlerState",
-  "type": "object",
-  "required": [
-    "last_execution",
-    "sources"
-  ],
-  "properties": {
-    "last_execution": {
-      "type": "string",
-      "format": "date-time",
-      "description": "最後にクローラーが正常完了したJST時間"
-    },
-    "sources": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "required": [
-          "last_checked",
-          "content_hash",
-          "last_modified_header"
-        ],
-        "properties": {
-          "last_checked": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "content_hash": {
-            "type": "string",
-            "description": "ビルトインFetchで取得した本文テキストのSHA-256ハッシュ値"
-          },
-          "last_modified_header": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "HTTPレスポンスのLast-Modifiedヘッダー値（条件付きGET要求用）"
-          }
-        }
-      }
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "CrawlerState",
+	"type": "object",
+	"required": ["last_execution", "sources"],
+	"properties": {
+		"last_execution": {
+			"type": "string",
+			"format": "date-time",
+			"description": "最後にクローラーが正常完了したJST時間"
+		},
+		"sources": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"required": ["last_checked", "content_hash", "last_modified_header"],
+				"properties": {
+					"last_checked": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"content_hash": {
+						"type": "string",
+						"description": "ビルトインFetchで取得した本文テキストのSHA-256ハッシュ値"
+					},
+					"last_modified_header": {
+						"type": ["string", "null"],
+						"description": "HTTPレスポンスのLast-Modifiedヘッダー値（条件付きGET要求用）"
+					}
+				}
+			}
+		}
+	}
 }
 ```
 
@@ -139,7 +129,7 @@ tags:
 category: "gov-agencies" # 中間ディレクトリ分類名と厳密に1対1対応
 status: "active"
 sources:
-  - "[https://www.cyber.go.jp/](https://www.cyber.go.jp/)"
+  - "https://www.cyber.go.jp/"
 ---
 # トピック正式名称
 
