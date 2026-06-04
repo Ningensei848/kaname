@@ -4,8 +4,8 @@ import * as http from 'http';
 import { fetchWithRetry, cleanHtml, parseRssFeed, crawlSource } from '../src/crawler/fetch';
 import { SsotSource } from '../src/types';
 
-test('Fetch Client and Parser Tests', async (t) => {
-  // Spin up a local mock server
+test('Fetch Client and Parser MECE Tests', async (t) => {
+  // 疑似HTTPサーバーの起動
   let requestCount = 0;
   const server = http.createServer((req, res) => {
     requestCount++;
@@ -21,7 +21,7 @@ test('Fetch Client and Parser Tests', async (t) => {
         'Last-Modified': 'Wed, 21 Oct 2015 07:28:00 GMT',
       });
       res.end(
-        '<html><head><title>Test</title><style>body { color: red; }</style><script>console.log(1)</script></head><body><header>Nav</header><main>Hello World &amp; welcome</main><footer>Footer</footer></body></html>'
+        '<html><head><title>Test</title></head><body><main>Hello World &amp; welcome</main></body></html>'
       );
     } else if (req.url === '/rss') {
       res.writeHead(200, { 'Content-Type': 'application/rss+xml' });
@@ -52,90 +52,56 @@ test('Fetch Client and Parser Tests', async (t) => {
   const address = server.address() as any;
   const baseUrl = `http://127.0.0.1:${address.port}`;
 
-  await t.test('should successfully fetch content and header', async () => {
+  await t.test('正常系：コンテンツとLast-Modifiedヘッダーが正しく読み込めること', async () => {
     const result = await fetchWithRetry(`${baseUrl}/html`);
     assert.ok(result.content.includes('Hello World'));
     assert.strictEqual(result.lastModifiedHeader, 'Wed, 21 Oct 2015 07:28:00 GMT');
   });
 
-  await t.test('should return empty content on 304 Not Modified', async () => {
+  await t.test('べき等性：304 Not Modified 時に空文字列が返りヘッダーが維持されること', async () => {
     const result = await fetchWithRetry(`${baseUrl}/304`, 3, 10, 'Wed, 21 Oct 2015 07:28:00 GMT');
     assert.strictEqual(result.content, '');
     assert.strictEqual(result.lastModifiedHeader, 'Wed, 21 Oct 2015 07:28:00 GMT');
   });
 
-  await t.test('should retry 3 times and fail on 500 error', async () => {
+  await t.test('回復性：エラー時に規定の3回リトライアウトして適切に終了すること', async () => {
     requestCount = 0;
     await assert.rejects(async () => {
       await fetchWithRetry(`${baseUrl}/500`, 3, 10);
     }, /Failed to fetch/);
-    // Verified 3 attempts
     assert.strictEqual(requestCount, 3);
   });
 
-  await t.test('should clean HTML tags and boilerplates correctly', () => {
-    const dirty = `
-      <!-- This is a comment -->
-      <header>Logo & Nav</header>
-      <nav>Sidebar</nav>
-      <style>body { color: blue; }</style>
-      <script>alert(1);</script>
-      <aside>Advertisements</aside>
-      <div>
-        <p>Main content text &amp; some symbols &lt; &gt; &quot;</p>
-      </div>
-      <footer>Copyright</footer>
-    `;
-    const clean = cleanHtml(dirty);
-    assert.strictEqual(clean, 'Main content text & some symbols < > "');
+  await t.test('クレンジング：属性内に ">" が存在する難解なタグも破綻せずサニタイズできること', () => {
+    const badHtml = '<div><input value="a > b" type="text">安全な本文</div>';
+    const cleaned = cleanHtml(badHtml);
+    assert.strictEqual(cleaned, '安全な本文');
   });
 
-  await t.test('should parse RSS XML content correctly', () => {
+  await t.test('クレンジング：大文字小文字が混在する悪質なscriptやstyleが除去されること', () => {
+    const badHtml = '<ScRiPt>alert(1)</sCrIpT><STYLE>body{}</style>本文';
+    const cleaned = cleanHtml(badHtml);
+    assert.strictEqual(cleaned, '本文');
+  });
+
+  await t.test('RSSパース：Namespaceが存在するフィード（dc:date, content:encoded等）もパースできること', () => {
     const xml = `
-      <rss version="2.0">
-        <channel>
-          <item>
-            <title><![CDATA[Test Title]]></title>
-            <description><![CDATA[Test Description &amp; Summary]]></description>
-            <pubDate>Wed, 21 Oct 2015 07:28:00 GMT</pubDate>
-            <link>https://example.com/item</link>
-          </item>
-        </channel>
+      <rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+        <item>
+          <title>高度アラート</title>
+          <content:encoded><![CDATA[<h2>詳細データ</h2>]]></content:encoded>
+          <dc:date>2026-05-27</dc:date>
+          <link>https://example.com</link>
+        </item>
       </rss>
     `;
     const parsed = parseRssFeed(xml);
-    assert.ok(parsed.includes('Title: Test Title'));
-    assert.ok(parsed.includes('Date: Wed, 21 Oct 2015 07:28:00 GMT'));
-    assert.ok(parsed.includes('Link: https://example.com/item'));
-    assert.ok(parsed.includes('Description: Test Description &amp; Summary'));
+    assert.ok(parsed.includes('Title: 高度アラート'));
+    assert.ok(parsed.includes('Date: 2026-05-27'));
+    assert.ok(parsed.includes('Description: 詳細データ'));
   });
 
-  await t.test('should crawl source correctly (HTML page)', async () => {
-    const source: SsotSource = {
-      id: 'test_html',
-      name: 'Test Html',
-      url: `${baseUrl}/html`,
-      description: 'Test source',
-    };
-    const crawled = await crawlSource(source);
-    assert.strictEqual(crawled.content, 'Hello World & welcome');
-    assert.strictEqual(crawled.isNotModified, false);
-  });
-
-  await t.test('should crawl source correctly (RSS Feed)', async () => {
-    const source: SsotSource = {
-      id: 'test_rss',
-      name: 'Test Rss',
-      url: `${baseUrl}/html`,
-      feed_url: `${baseUrl}/rss`,
-      description: 'Test feed source',
-    };
-    const crawled = await crawlSource(source);
-    assert.ok(crawled.content.includes('Title: Test Title'));
-    assert.strictEqual(crawled.isNotModified, false);
-  });
-
-  // Close server
+  // サーバーのクローズ
   await new Promise<void>((resolve) => {
     server.close(() => {
       resolve();

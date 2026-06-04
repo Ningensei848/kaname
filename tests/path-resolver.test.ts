@@ -2,49 +2,71 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import * as fs from 'fs';
 import * as path from 'path';
-import { resolveTopicPath } from '../src/crawler/path-resolver';
+import { resolveTopicPath, sanitizeName } from '../src/crawler/path-resolver';
 
-const tempDir = path.join(__dirname, 'temp_resolver');
+const tempDir = path.join(__dirname, 'temp_resolver_MECE');
 
-test('Path Resolver Tests', async (t) => {
+test('Path Resolver MECE Tests', async (t) => {
   if (fs.existsSync(tempDir)) {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
   fs.mkdirSync(tempDir, { recursive: true });
 
-  await t.test('should resolve topic path and create category folder when count is below limit', () => {
-    const category = 'gov-agencies';
-    const filename = 'NCO';
-    
-    const resolvedPath = resolveTopicPath(tempDir, category, filename, 100, 95);
-    
-    // Should resolve to tempDir/topics/gov-agencies/NCO.md
+  await t.test('正常系：安全なフォルダ解決とMarkdownパス決定ができること', () => {
+    const resolved = resolveTopicPath(tempDir, 'gov-agencies', 'NCO', 100, 95);
     const expected = path.join(tempDir, 'topics', 'gov-agencies', 'NCO.md');
-    assert.strictEqual(resolvedPath, expected);
-    assert.ok(fs.existsSync(path.dirname(resolvedPath)));
+    assert.strictEqual(resolved, expected);
+    assert.ok(fs.existsSync(path.dirname(resolved)));
   });
 
-  await t.test('should fallback to misc directory when category folders are equal/above threshold', () => {
-    // Populate tempDir/topics with 95 dummy folders
+  await t.test('サニタイズ：パストラバーサルや危険文字の連続が安全に置換されること', () => {
+    // '../' などのトラバーサル攻撃をサニタイズして、同一フラット階層に安全に抑制する
+    const badFileName = '../../etc/passwd';
+    const sanitized = sanitizeName(badFileName);
+    assert.strictEqual(sanitized.includes('..'), false);
+    assert.strictEqual(sanitized.includes('/'), false);
+    assert.ok(sanitized.includes('_etc_passwd'));
+  });
+
+  await t.test('サニタイズ：Windowsの予約ファイル名が確実に防御・エスケープされること', () => {
+    const reserved = 'CON.md';
+    const sanitized = sanitizeName(reserved);
+    // CON_safe のように安全に退避されること
+    assert.ok(sanitized.toLowerCase().includes('con_safe'));
+  });
+
+  await t.test('サニタイズ：ヌルバイトや制御文字が完全に除去されること', () => {
+    const dirty = 'My\x00Topic\x1fTitle';
+    const sanitized = sanitizeName(dirty);
+    assert.strictEqual(sanitized, 'MyTopicTitle');
+  });
+
+  await t.test('サニタイズ：極端な空文字や不整合入力がデフォルト値にフォールバックすること', () => {
+    assert.strictEqual(sanitizeName(''), 'unnamed');
+    assert.strictEqual(sanitizeName('...'), 'unnamed');
+  });
+
+  await t.test('フォールバック制限：サブディレクトリ総数が95件以上の時にmiscにアサインされること', () => {
     const topicsDir = path.join(tempDir, 'topics');
-    for (let i = 0; i < 95; i++) {
-      fs.mkdirSync(path.join(topicsDir, `dummy_folder_${i}`), { recursive: true });
+    if (!fs.existsSync(topicsDir)) {
+      fs.mkdirSync(topicsDir, { recursive: true });
     }
 
-    const category = 'new-agencies';
-    const filename = 'New_Agency';
-    
-    // This new category should be directed to misc because 95 >= threshold (95)
-    const resolvedPath = resolveTopicPath(tempDir, category, filename, 100, 95);
-    
-    const expected = path.join(tempDir, 'topics', 'misc', 'New_Agency.md');
-    assert.strictEqual(resolvedPath, expected);
-    assert.ok(fs.existsSync(path.dirname(resolvedPath)));
-    // Ensure the new category was NOT created
-    assert.strictEqual(fs.existsSync(path.join(topicsDir, category)), false);
+    // 95個のダミーフォルダを作成
+    for (let i = 0; i < 95; i++) {
+      fs.mkdirSync(path.join(topicsDir, `dummy_agency_${i}`), { recursive: true });
+    }
+
+    // 閾値オーバーの新規カテゴリは強制的に 'misc' フォルダへアサイン
+    const resolved = resolveTopicPath(tempDir, 'brand-new-agency', 'IntelligenceReport', 100, 95);
+    const expected = path.join(tempDir, 'topics', 'misc', 'IntelligenceReport.md');
+    assert.strictEqual(resolved, expected);
+
+    // 新規の危険ディレクトリが自律作成されていないこと
+    assert.strictEqual(fs.existsSync(path.join(topicsDir, 'brand-new-agency')), false);
   });
 
-  // Clean up
+  // クリーンアップ
   if (fs.existsSync(tempDir)) {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
