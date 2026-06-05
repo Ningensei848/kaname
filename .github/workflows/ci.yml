@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'osint/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-cache: pnpm
+
+      - name: Setup Takumi Guard
+        uses: flatt-security/setup-takumi-guard-npm@v1
+        continue-on-error: true # Ensure fallback if service credentials are not configured
+
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
+
+      - name: Biome Format & Lint Check
+        run: |
+          pnpm run lint
+          pnpm run format
+
+      - name: Run Tests
+        run: pnpm run test

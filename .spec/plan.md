@@ -45,9 +45,9 @@ graph TB
 | **ビルド・実行環境** | esbuild / tsx | TypeScriptの爆速トランスパイル・実行を実現するGo製ランタイム。Cloud Run Jobsのコールドスタートをミリ秒単位に極小化する。 |
 | **起動・スケジュール** | GCP Cloud Scheduler | クラウド上の完全マネージドな時間駆動トリガー。待機コストが完全ゼロであり、実行周期の変更が容易。 |
 | **バッチ実行基盤** | GCP Cloud Run Jobs | 常時起動インスタンスを持たないイベント駆動コンテナ。ミリ秒単位の実行課金のみで動きタイムアウト（最大24時間）にも余裕があるが、エージェントのバグや通信ハングによるコスト高騰を防ぐため、ジョブ設定上の最大実行時間を30~60分（想定最大処理時間の安全マージン込み）に制限する。 |
-| **セキュリティ・依存スキャン** | Takumi Guard | サードパーティライブラリを最小限許容したうえで、Flatt Security社の脆弱性検知エンジンをCIに組み込みサプライチェーン汚染を防ぐ。 |
+| **セキュリティ・依存スキャン** | Takumi Guard + baseline CI gates | Takumi Guard は保護対象 PR の必須 gate とし、通信不通・サーバ側障害・indeterminate status では fail-closed とする。typecheck、test、secret scanning、deterministic content guards と合成して自律マージ可否を判断する。 |
 | **HTTPクライアント** | Native Fetch API | Node.js標準のビルトインAPI。サードパーティ製クライアント（Axios等）を排除し、外部モジュールのゼロデイ脆弱性リスクを遮断する。 |
-| **HTML/XMLパース** | ビルトイン String & Regex | パース処理の脆弱性を突く悪意あるコード挿入を防ぐため、Cheerio等の重量パースツリーを排し、正規表現で安全かつ高速にタグ除去・テキスト抽出する。 |
+| **HTML/XMLパース** | Native String / Regex を初期値、必要時に ADR 承認 parser | 依存最小化は SHOULD とするが Regex only は MUST ではない。実サイトの揺れで正確性・保守性が落ちる場合は ADR と security gate を通して parser 依存を導入できる。 |
 | **LLM抽象レイヤー** | 抽象インターフェース (Aegis-Client) | 特定モデルのSDKに直接依存せず、主要AIベンダーが提供するその時点で最新かつ最適なモデルへ動的にスイッチ可能なラッパー層を自作する。 |
 | **GitHub自律操作** | GitHub MCP Server (Node.js) | GitHub公式のプロトコル。単一コンテナ内で標準入出力（stdio）を介した安全なJSON-RPCインプロセス通信を行い、コミット・PR・Issue起票を制御する。 |
 | **静的ビルド・配信** | Quartz v5 × Cloudflare Pages | ビルド処理をCloudflare側へ完全移譲。Graph Viewを完全無効化（disabled）し、エッジネットワーク上でQuartzビルドとホスティングを自動連携。 |
@@ -60,8 +60,8 @@ graph TB
 
 ### Phase 1: サーバーレスバッチ ＆ クローリング基礎 (基礎の確立)
 
-- **マイルストーン:** Cloud Run Jobs上でpnpm & esbuildを用いてコンテナがビルドされ、SSoT（YAML）からビルトインFetchと正規表現置換のみでデータ抽出し、ハッシュ値ベースで差分検知できること。
-- **検証ゲート:** テスト環境において、未更新のソースに対してべき等性が働き、不要なLLM接続やコミットが発生しないこと。また、Takumi GuardによるセキュリティチェックがCI上で正常稼働すること。
+- **マイルストーン:** Cloud Run Jobs上でpnpm & esbuildを用いてコンテナがビルドされ、SSoT（YAML）からデータ抽出し、Cloud Storage に保存された state とハッシュ値ベースで差分検知できること。
+- **検証ゲート:** テスト環境において、未更新のソースに対してべき等性が働き、不要なLLM接続やコミットが発生しないこと。Cloud Storage generation precondition による state 競合制御が検証されていること。また、Takumi Guard を含む security gate が CI 上で fail-closed に動作すること。
 
 ### Phase 2: マルチエージェント協調 ＆ GitHub MCP自律操作 (知能の確立)
 
