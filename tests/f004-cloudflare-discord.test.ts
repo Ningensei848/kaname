@@ -38,6 +38,19 @@ interface NotificationState {
 	notifiedCommitHashes: string[];
 }
 
+interface NotificationStateSnapshot {
+	state: NotificationState;
+	generation: number;
+}
+
+interface NotificationStateBackend {
+	load(): Promise<NotificationStateSnapshot>;
+	save(
+		nextState: NotificationState,
+		options: { ifGenerationMatch: number },
+	): Promise<void>;
+}
+
 interface NotificationConfig {
 	publicBaseUrl: string;
 	latestReportUrl: string;
@@ -47,6 +60,10 @@ interface NotificationDecision {
 	shouldNotify: boolean;
 	reason: string;
 	reportUrlChecked: boolean;
+}
+
+interface PersistedNotificationDecision extends NotificationDecision {
+	stateSaved: boolean;
 }
 
 interface DiscordPayloadInput {
@@ -226,8 +243,16 @@ function isRecord(value: unknown): value is JsonObject {
 
 function isValidUrl(value: string): boolean {
 	try {
-		const parsed = new URL(value);
-		return parsed.protocol === "https:";
+		new URL(value);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function isHttpsUrl(value: string): boolean {
+	try {
+		return new URL(value).protocol === "https:";
 	} catch {
 		return false;
 	}
@@ -258,6 +283,20 @@ async function shouldNotifyDiscord(
 		return {
 			shouldNotify: false,
 			reason: "deployment branch is not main",
+			reportUrlChecked: false,
+		};
+	}
+	if (!isHttpsUrl(deployment.url) || !isHttpsUrl(config.publicBaseUrl)) {
+		return {
+			shouldNotify: false,
+			reason: "deployment and public base URLs must be HTTPS",
+			reportUrlChecked: false,
+		};
+	}
+	if (!isHttpsUrl(config.latestReportUrl)) {
+		return {
+			shouldNotify: false,
+			reason: "latest report URL must be HTTPS",
 			reportUrlChecked: false,
 		};
 	}
@@ -317,6 +356,41 @@ function recordNotifiedDeployment(
 			event.deployment.meta.commit_hash,
 		]),
 	};
+}
+
+async function evaluateAndPersistNotification(
+	event: CloudflareDeploymentEvent,
+	backend: NotificationStateBackend,
+	config: NotificationConfig,
+	probeReportUrl: UrlProbe,
+): Promise<PersistedNotificationDecision> {
+	const snapshot = await backend.load();
+	const decision = await shouldNotifyDiscord(
+		event,
+		snapshot.state,
+		config,
+		probeReportUrl,
+	);
+	if (!decision.shouldNotify) {
+		return { ...decision, stateSaved: false };
+	}
+
+	try {
+		await backend.save(recordNotifiedDeployment(snapshot.state, event), {
+			ifGenerationMatch: snapshot.generation,
+		});
+		return { ...decision, stateSaved: true };
+	} catch (error) {
+		if (error instanceof GenerationMismatchError) {
+			return {
+				shouldNotify: false,
+				reason: "notification state generation precondition failed",
+				reportUrlChecked: decision.reportUrlChecked,
+				stateSaved: false,
+			};
+		}
+		throw error;
+	}
 }
 
 function buildDiscordPayload(input: DiscordPayloadInput): JsonObject {
@@ -407,6 +481,66 @@ function assertQuartzGraphDisabledArtifact(relativePaths: string[]): string[] {
 	return violations;
 }
 
+function listHtmlFiles(rootDir: string): string[] {
+	const entries = fs.readdirSync(rootDir, { withFileTypes: true });
+	return entries.flatMap((entry) => {
+		const absolutePath = path.join(rootDir, entry.name);
+		if (entry.isDirectory()) return listHtmlFiles(absolutePath);
+		return entry.isFile() && entry.name.endsWith(".html") ? [absolutePath] : [];
+	});
+}
+
+class GenerationMismatchError extends Error {
+	constructor() {
+		super("notification state generation mismatch");
+	}
+}
+
+class FakeExternalNotificationStateBackend implements NotificationStateBackend {
+	loadCalls = 0;
+	saveCalls = 0;
+	saveGenerations: number[] = [];
+	onBeforeSave?: () => void;
+
+	constructor(
+		private state: NotificationState,
+		private generation: number,
+	) {}
+
+	async load(): Promise<NotificationStateSnapshot> {
+		this.loadCalls += 1;
+		return { state: cloneState(this.state), generation: this.generation };
+	}
+
+	async save(
+		nextState: NotificationState,
+		options: { ifGenerationMatch: number },
+	): Promise<void> {
+		this.saveCalls += 1;
+		this.saveGenerations.push(options.ifGenerationMatch);
+		this.onBeforeSave?.();
+		if (options.ifGenerationMatch !== this.generation) {
+			throw new GenerationMismatchError();
+		}
+		this.state = cloneState(nextState);
+		this.generation += 1;
+	}
+
+	simulateConcurrentWrite(
+		mutator: (state: NotificationState) => NotificationState,
+	) {
+		this.state = cloneState(mutator(this.state));
+		this.generation += 1;
+	}
+}
+
+function cloneState(state: NotificationState): NotificationState {
+	return {
+		notifiedDeploymentIds: [...state.notifiedDeploymentIds],
+		notifiedCommitHashes: [...state.notifiedCommitHashes],
+	};
+}
+
 async function sendDiscordWithBoundedRetry(
 	sendWebhook: () => Promise<{ ok: boolean; status: number }>,
 	sleep: (ms: number) => Promise<void>,
@@ -469,6 +603,43 @@ test("F004 Cloudflare deployment fixtures match the webhook schema", async (t) =
 			},
 		);
 	}
+});
+
+test("F004 schema URI format remains generic while business gate requires HTTPS", async () => {
+	const event = readFixture<CloudflareDeploymentEvent>(
+		"cloudflare",
+		"production-success.json",
+	);
+	const httpEvent: CloudflareDeploymentEvent = {
+		...event,
+		deployment: {
+			...event.deployment,
+			url: "http://osint-kaname.pages.dev",
+		},
+	};
+	assert.deepStrictEqual(
+		validateWithSchema(
+			".spec/schemas/cloudflare-pages-deployment.schema.json",
+			httpEvent,
+		),
+		[],
+	);
+
+	const decision = await shouldNotifyDiscord(
+		httpEvent,
+		readFixture<NotificationState>("state", "notification-state.empty.json"),
+		{
+			publicBaseUrl: "http://osint-kaname.pages.dev",
+			latestReportUrl:
+				"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+		},
+		liveReportProbe(new Set([latestReportUrl]), []),
+	);
+	assert.deepStrictEqual(decision, {
+		shouldNotify: false,
+		reason: "deployment and public base URLs must be HTTPS",
+		reportUrlChecked: false,
+	});
 });
 
 test("F004 Discord notification gate is impossible before production success", async (t) => {
@@ -656,6 +827,70 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 			assert.deepStrictEqual(checkedUrls, []);
 		},
 	);
+
+	await t.test(
+		"external notification state backend is loaded and saved with generation precondition",
+		async () => {
+			const backend = new FakeExternalNotificationStateBackend(
+				readFixture<NotificationState>(
+					"state",
+					"notification-state.empty.json",
+				),
+				41,
+			);
+			const checkedUrls: string[] = [];
+			const decision = await evaluateAndPersistNotification(
+				event,
+				backend,
+				config,
+				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: true,
+				reason: "production deployment and report are live",
+				reportUrlChecked: true,
+				stateSaved: true,
+			});
+			assert.strictEqual(backend.loadCalls, 1);
+			assert.strictEqual(backend.saveCalls, 1);
+			assert.deepStrictEqual(backend.saveGenerations, [41]);
+			assert.deepStrictEqual(checkedUrls, [latestReportUrl]);
+		},
+	);
+
+	await t.test(
+		"generation mismatch fails closed before a duplicate Discord send can be committed",
+		async () => {
+			const backend = new FakeExternalNotificationStateBackend(
+				readFixture<NotificationState>(
+					"state",
+					"notification-state.empty.json",
+				),
+				7,
+			);
+			backend.onBeforeSave = () =>
+				backend.simulateConcurrentWrite((current) =>
+					recordNotifiedDeployment(current, event),
+				);
+			const decision = await evaluateAndPersistNotification(
+				event,
+				backend,
+				config,
+				liveReportProbe(new Set([latestReportUrl]), []),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: false,
+				reason: "notification state generation precondition failed",
+				reportUrlChecked: true,
+				stateSaved: false,
+			});
+			assert.strictEqual(backend.loadCalls, 1);
+			assert.strictEqual(backend.saveCalls, 1);
+			assert.deepStrictEqual(backend.saveGenerations, [7]);
+		},
+	);
 });
 
 test("F004 Discord payload schema fixture is executable", async (t) => {
@@ -716,6 +951,28 @@ test("F004 Quartz Graph disabled artifact contract", async (t) => {
 					"tests/fixtures/f004/quartz-artifacts/graph-enabled.html",
 				]).join("\n"),
 				/Graph View|global-graph|graph\.inline\.js|data-component=\["'\]Graph/,
+			);
+		},
+	);
+
+	await t.test(
+		"actual production build artifacts comply when a Quartz output directory exists",
+		() => {
+			const actualArtifactsDir = path.join(repoRoot, "public");
+			if (!fs.existsSync(actualArtifactsDir)) {
+				assert.ok(
+					true,
+					"public/ does not exist until the Quartz build step is wired",
+				);
+				return;
+			}
+
+			const htmlArtifacts = listHtmlFiles(actualArtifactsDir).map(
+				(absolutePath) => path.relative(repoRoot, absolutePath),
+			);
+			assert.deepStrictEqual(
+				assertQuartzGraphDisabledArtifact(htmlArtifacts),
+				[],
 			);
 		},
 	);
