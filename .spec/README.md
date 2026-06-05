@@ -1,4 +1,4 @@
-# 🛡️ kaname 
+# 🛡️ kaname
 
 > [!IMPORTANT]
 > **自律型サイバーセキュリティナレッジオーケストレーター**
@@ -8,7 +8,7 @@
 > [!TIP]
 > Inspired by [karpathy/llm-wiki.md](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 
-仕様駆動開発（SDD: Spec Driven Development）に基づき、システム全体のアーキテクチャ、自律エージェントの思考境界、セキュリティ監査、物理データモデル、および検証可能なタスクリストが1対1で整合するよう厳密に設計されています。
+仕様駆動開発（SDD: Spec-Driven Development）に基づき、グローバルな原則と feature 単位の実装仕様を分離して管理します。`constitution.md` は絶対不変の憲法ではなく、MUST / SHOULD / MAY の制約レイヤーとして扱い、技術選定や運用判断は `decisions/` の ADR で継続的に更新します。
 
 
 ## 🧭 コアワークフロー
@@ -21,20 +21,20 @@ graph TD
     B --> C[直近の更新レポート & 既存トピック読込]
     C --> D[SSoT YAMLパース & クローリング]
     D --> E[前回の情報ソースハッシュ比較による差分検知]
-    
+
     E -- 差分あり --> F[提案エージェント: 新規トピック作成/既存トピック更新/孤立ノートのリンク接続/差分レポート執筆]
     E -- 差分なし --> K[処理正常終了]
-    
+
     F --> G[提案エージェント: GitHub MCPでPR作成 osint/*]
     G --> H[GitHub Actions CI: PR向け妥当性自動検証]
     H --> I[査読エージェント: PR内容 & CI結果を自動レビュー]
-    
+
     I -- 基準クリア --> J[査読エージェント: Approve & 自律マージ実行]
     I -- 基準未達 --> R[提案エージェントに修正フィードバック or 却下]
-    
+
     J --> L[Cloudflare Pages: mainマージを検知しビルド&デプロイを自動開始]
     L -- デプロイ成功フック --> M[Discordへ最新サマリー & 公開リンクを通知]
-    
+
     D -- クローリング致命的エラー --> P[GitHub MCP経由でGitHub Issueを起票]
     P --> Q[GitHubプラットフォームによる電子メール自動通知]
 ```
@@ -45,25 +45,36 @@ graph TD
 本パッケージは、関心の分離（SoC）の原則に従い、上流の行動規律から物理的なインターフェース契約にいたるまで、ドキュメントの責任範囲が以下のようにドリルダウン化されています。
 
 ```text
-├── constitution.md          # 開発綱領（開発規律、セキュリティ、TDD、マージ方針）
-├── spec.md                  # 機能仕様書（ストーリー、BDDシナリオ、エラー時挙動）
+├── constitution.md          # MUST / SHOULD / MAY で表現する横断原則
+├── spec.md                  # プロダクト全体の機能仕様書（legacy/global view）
 ├── ui-spec.md               # UI仕様書（Quartz表示制約、Graph View無効化）
-├── business-rules.md        # 業務ルール（中間ディレクトリ自動分類、べき等性、更新、通知契機）
-├── plan.md                  # 技術設計計画書（アーキテクチャ、技術スタック選定、マイルストーン）
-├── data-model.md            # データモデル（SSoTスキーマ、べき等ハッシュ、中間ディレクトリMermaid）
-├── checklist.md             # 品質検証チェックリスト（TDD対応、適合性・サプライチェーン監査）
-├── tasks.md                 # 実装タスクリスト（pnpm、esbuild、Takumi Guard、カテゴリ制限）
+├── business-rules.md        # 業務ルール（スケジューリング、分類、更新、通知契機）
+├── plan.md                  # 技術設計計画書（アーキテクチャ、フェーズゲート）
+├── data-model.md            # データモデル（SSoT、Cloud Storage state、OFM frontmatter）
+├── checklist.md             # 品質検証チェックリスト
+├── tasks.md                 # 横断タスクリスト（feature tasks への索引として維持）
+├── traceability.md          # 仕様・コード・テスト・未実装ギャップの対応表
+├── features/                # 実装単位の feature-oriented specs
+│   ├── 001-crawler-idempotency/
+│   ├── 002-wiki-incremental-update/
+│   ├── 003-orchestrator-mcp-review-loop/
+│   └── 004-cloudflare-discord-notification/
+├── decisions/               # ADR（設計判断と constitution 例外/改訂履歴）
+├── policies/                # セキュリティ・自律性・コンテンツ整合性ポリシー
+├── schemas/                 # CI が直接読む実行可能 schema の配置先
 ├── contracts/
-│   ├── mcp-contracts.md     # MCPインターフェース契約（Stdio JSON-RPCスキーマ定義）
-│   └── webhook-contracts.md # 外部通知契約（Cloudflare Webhook、Discord Rich Embeds）
-├── research.md              # 技術リサーチ（pnpm、esbuild/tsx、Takumi Guardセキュリティ監査）
+│   ├── mcp-contracts.md
+│   └── webhook-contracts.md
+├── research.md
 └── implementation-details/
-    ├── agent-logic.md       # アルゴリズム・プロンプト詳細（Orchestrator、リンク補正、上書き禁止）
-    └── directory-structure-analysis.md # ディレクトリ構造分析・妥当性評価報告書
+    ├── agent-logic.md
+    └── directory-structure-analysis.md
 ```
 
 ### 各ドキュメントの詳細
 
+- **[Feature-oriented specs (features/)](./features/README.md)**: 実装・PR単位で参照する feature spec、plan、tasks、acceptance を管理します。
+- **[Traceability matrix (traceability.md)](./traceability.md)**: 要件、feature、コード、テスト、未実装ギャップを追跡します。
 - **[開発綱領 (constitution.md)](https://www.google.com/search?q=./constitution.md)**: 単一言語（TypeScript）の徹底、待機コストを完全ゼロにするサーバーレスバッチ設計、AIモデルの抽象化、およびObsidian Flavored Markdown (OFM) 規格への準拠規律を定めています。
 - **[機能仕様書 (spec.md)](https://www.google.com/search?q=./spec.md)**: サイバーセキュリティアナリストおよび運用者のユーザーストーリー、例外を含む全体論理ワークフロー、および要約の最小化や既存拡充を検証するためのBDDシナリオを定義しています。
 - **[業務ルール定義書 (business-rules.md)](https://www.google.com/search?q=./business-rules.md)**: フォルダ乱立を100未満に抑える自律分類ロジック、上書きを禁止するインクリメンタル追記ルール、孤立ノートの解決ロジック、およびDiscord通知の厳格なトリガー制御を規定しています。

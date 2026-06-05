@@ -65,3 +65,16 @@
 	]
 }
 ```
+
+## 3. Discord notification gate
+
+Discord notification is allowed only when all conditions are true:
+
+- `deployment.status` is `success`.
+- `deployment.environment` is `production`.
+- `deployment.meta.branch` is `main`.
+- `deployment.url` matches the configured public base URL.
+- the latest report URL is live and returns a successful response.
+- the deployment commit hash has not already been notified.
+
+Duplicate deployment events for the same commit hash must be ignored. Notification idempotency state should use the same external state backend family as crawler state unless a later ADR chooses a separate backend.

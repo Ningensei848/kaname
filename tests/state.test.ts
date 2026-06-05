@@ -15,8 +15,8 @@
 
 import { test } from "node:test";
 import * as assert from "node:assert";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import {
 	calculateHash,
 	loadCrawlerState,
@@ -31,12 +31,14 @@ const tempDir = path.join(__dirname, "temp_state");
 // ---------------------------------------------------------------------------
 
 function setup() {
-	if (fs.existsSync(tempDir)) fs.rmSync(tempDir, { recursive: true, force: true });
+	if (fs.existsSync(tempDir))
+		fs.rmSync(tempDir, { recursive: true, force: true });
 	fs.mkdirSync(tempDir, { recursive: true });
 }
 
 function teardown() {
-	if (fs.existsSync(tempDir)) fs.rmSync(tempDir, { recursive: true, force: true });
+	if (fs.existsSync(tempDir))
+		fs.rmSync(tempDir, { recursive: true, force: true });
 }
 
 // ---------------------------------------------------------------------------
@@ -54,11 +56,14 @@ test("calculateHash", async (t) => {
 		assert.strictEqual(calculateHash(content), calculateHash(content));
 	});
 
-	await t.test("produces different hashes for different content (change-detection gate)", () => {
-		const hash1 = calculateHash("version A");
-		const hash2 = calculateHash("version B");
-		assert.notStrictEqual(hash1, hash2);
-	});
+	await t.test(
+		"produces different hashes for different content (change-detection gate)",
+		() => {
+			const hash1 = calculateHash("version A");
+			const hash2 = calculateHash("version B");
+			assert.notStrictEqual(hash1, hash2);
+		},
+	);
 
 	await t.test("treats a one-character difference as a change", () => {
 		// constitution.md §3: even a 1-character diff must trigger the update path
@@ -77,13 +82,16 @@ test("calculateHash", async (t) => {
 test("loadCrawlerState", async (t) => {
 	setup();
 
-	await t.test("returns a default empty state when the file does not exist", () => {
-		const missing = path.join(tempDir, "no-such-file.json");
-		const state = loadCrawlerState(missing);
-		assert.deepStrictEqual(state.sources, {});
-		// last_execution should be the epoch (never executed)
-		assert.strictEqual(state.last_execution, new Date(0).toISOString());
-	});
+	await t.test(
+		"returns a default empty state when the file does not exist",
+		() => {
+			const missing = path.join(tempDir, "no-such-file.json");
+			const state = loadCrawlerState(missing);
+			assert.deepStrictEqual(state.sources, {});
+			// last_execution should be the epoch (never executed)
+			assert.strictEqual(state.last_execution, new Date(0).toISOString());
+		},
+	);
 
 	await t.test("parses a well-formed crawler-state.json correctly", () => {
 		const filePath = path.join(tempDir, "valid-state.json");
@@ -104,14 +112,17 @@ test("loadCrawlerState", async (t) => {
 		assert.strictEqual(state.sources.jpcert.content_hash, "abc123");
 	});
 
-	await t.test("falls back to an empty default state on corrupt JSON (resilience)", () => {
-		// constitution.md §3: crawling failure of one source must not crash the system
-		const filePath = path.join(tempDir, "corrupt-state.json");
-		fs.writeFileSync(filePath, "{ this is not json ]]]", "utf8");
+	await t.test(
+		"falls back to an empty default state on corrupt JSON (resilience)",
+		() => {
+			// constitution.md §3: crawling failure of one source must not crash the system
+			const filePath = path.join(tempDir, "corrupt-state.json");
+			fs.writeFileSync(filePath, "{ this is not json ]]]", "utf8");
 
-		const state = loadCrawlerState(filePath);
-		assert.deepStrictEqual(state.sources, {});
-	});
+			const state = loadCrawlerState(filePath);
+			assert.deepStrictEqual(state.sources, {});
+		},
+	);
 
 	teardown();
 });
@@ -172,20 +183,39 @@ test("updateSourceState", async (t) => {
 		assert.strictEqual(JSON.stringify(baseState), before);
 	});
 
-	await t.test("adds a new source entry while preserving existing entries", () => {
-		const updated = updateSourceState(baseState, "jpcert", "newhash", "Thu, 28 May 2026 00:00:00 GMT");
-		assert.ok("jpcert" in updated.sources, "new source should appear");
-		assert.ok("existing_source" in updated.sources, "existing source must be preserved");
-		assert.strictEqual(updated.sources.jpcert.content_hash, "newhash");
-		assert.strictEqual(
-			updated.sources.jpcert.last_modified_header,
-			"Thu, 28 May 2026 00:00:00 GMT",
-		);
-	});
+	await t.test(
+		"adds a new source entry while preserving existing entries",
+		() => {
+			const updated = updateSourceState(
+				baseState,
+				"jpcert",
+				"newhash",
+				"Thu, 28 May 2026 00:00:00 GMT",
+			);
+			assert.ok("jpcert" in updated.sources, "new source should appear");
+			assert.ok(
+				"existing_source" in updated.sources,
+				"existing source must be preserved",
+			);
+			assert.strictEqual(updated.sources.jpcert.content_hash, "newhash");
+			assert.strictEqual(
+				updated.sources.jpcert.last_modified_header,
+				"Thu, 28 May 2026 00:00:00 GMT",
+			);
+		},
+	);
 
 	await t.test("overwrites the hash for an already-tracked source", () => {
-		const updated = updateSourceState(baseState, "existing_source", "refreshedhash", null);
-		assert.strictEqual(updated.sources.existing_source.content_hash, "refreshedhash");
+		const updated = updateSourceState(
+			baseState,
+			"existing_source",
+			"refreshedhash",
+			null,
+		);
+		assert.strictEqual(
+			updated.sources.existing_source.content_hash,
+			"refreshedhash",
+		);
 	});
 
 	await t.test("updates last_execution to a newer timestamp", () => {
@@ -197,7 +227,12 @@ test("updateSourceState", async (t) => {
 	});
 
 	await t.test("accepts null as a valid last_modified_header", () => {
-		const updated = updateSourceState(baseState, "nco", calculateHash("page"), null);
+		const updated = updateSourceState(
+			baseState,
+			"nco",
+			calculateHash("page"),
+			null,
+		);
 		assert.strictEqual(updated.sources.nco.last_modified_header, null);
 	});
 });
@@ -209,18 +244,24 @@ test("Idempotency gate (spec.md §4.1, constitution.md §3, checklist.md §3)", 
 	 *   This test verifies the hash-comparison logic that guards that gate.
 	 */
 
-	await t.test("identical content → hashes match → no-op path should be taken", () => {
-		const content = "JPCERT/CC advisory contents (unchanged)";
-		const storedHash = calculateHash(content);
-		const freshHash = calculateHash(content);
-		assert.strictEqual(storedHash, freshHash); // guard: hashes equal → early return
-	});
+	await t.test(
+		"identical content → hashes match → no-op path should be taken",
+		() => {
+			const content = "JPCERT/CC advisory contents (unchanged)";
+			const storedHash = calculateHash(content);
+			const freshHash = calculateHash(content);
+			assert.strictEqual(storedHash, freshHash); // guard: hashes equal → early return
+		},
+	);
 
-	await t.test("updated content → hashes differ → update path should be taken", () => {
-		const previousContent = "JPCERT/CC advisory contents v1";
-		const currentContent = "JPCERT/CC advisory contents v2 (new alert added)";
-		const storedHash = calculateHash(previousContent);
-		const freshHash = calculateHash(currentContent);
-		assert.notStrictEqual(storedHash, freshHash); // guard: hashes differ → proceed
-	});
+	await t.test(
+		"updated content → hashes differ → update path should be taken",
+		() => {
+			const previousContent = "JPCERT/CC advisory contents v1";
+			const currentContent = "JPCERT/CC advisory contents v2 (new alert added)";
+			const storedHash = calculateHash(previousContent);
+			const freshHash = calculateHash(currentContent);
+			assert.notStrictEqual(storedHash, freshHash); // guard: hashes differ → proceed
+		},
+	);
 });
