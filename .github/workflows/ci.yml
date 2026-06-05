@@ -20,7 +20,8 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          version: 11.5.1
+          standalone: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -33,12 +34,15 @@ jobs:
         continue-on-error: true # Ensure fallback if service credentials are not configured
 
       - name: Install dependencies
-        run: pnpm install --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Biome Format & Lint Check
         run: |
           pnpm run lint
           pnpm run format
+
+      - name: Typecheck
+        run: pnpm run typecheck
 
       - name: Run Tests
         run: pnpm run test

@@ -6,7 +6,7 @@
 	"type": "commonjs",
 	"scripts": {
 		"dev": "tsx src/orchestrator.ts",
-		"build": "esbuild src/orchestrator.ts --bundle --platform=node --target=node20 --outfile=dist/orchestrator.js",
+		"build": "tsx -e \"import { buildSync } from 'esbuild'; buildSync({ entryPoints: ['src/orchestrator.ts'], bundle: true, platform: 'node', target: 'node20', outfile: 'dist/orchestrator.js' })\"",
 		"format": "biome format --write package.json tsconfig.json src tests",
 		"lint": "biome lint package.json tsconfig.json src tests",
 		"test": "node --import tsx --test tests/**/*.test.ts",
@@ -23,9 +23,5 @@
 		"tsx": "^4.11.0",
 		"typescript": "^5.4.5"
 	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
-	}
+	"packageManager": "pnpm@11.5.1"
 }
