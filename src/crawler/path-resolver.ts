@@ -1,60 +1,99 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "node:fs";
+import * as path from "node:path";
+
+const WINDOWS_RESERVED_NAMES = new Set([
+	"con",
+	"prn",
+	"aux",
+	"nul",
+	"com1",
+	"com2",
+	"com3",
+	"com4",
+	"com5",
+	"com6",
+	"com7",
+	"com8",
+	"com9",
+	"lpt1",
+	"lpt2",
+	"lpt3",
+	"lpt4",
+	"lpt5",
+	"lpt6",
+	"lpt7",
+	"lpt8",
+	"lpt9",
+]);
 
 export function resolveTopicPath(
-  baseDir: string,
-  category: string,
-  fileName: string,
-  maxDirs = 100,
-  fallbackLimit = 95
+	baseDir: string,
+	category: string,
+	fileName: string,
+	maxDirs = 100,
+	fallbackLimit = 95,
 ): string {
-  // Ensure the base directory exists
-  const topicsDir = path.join(baseDir, 'topics');
-  if (!fs.existsSync(topicsDir)) {
-    fs.mkdirSync(topicsDir, { recursive: true });
-  }
+	void maxDirs;
+	const topicsDir = path.join(baseDir, "topics");
+	if (!fs.existsSync(topicsDir)) {
+		fs.mkdirSync(topicsDir, { recursive: true });
+	}
 
-  // Clean category and filename
-  const cleanCategory = sanitizeName(category || 'misc');
-  const cleanFileName = sanitizeName(fileName);
-  const targetDir = path.join(topicsDir, cleanCategory);
+	const cleanCategory = sanitizeName(category || "misc");
+	const cleanFileName = sanitizeName(fileName);
+	const targetDir = path.join(topicsDir, cleanCategory);
 
-  // If the target directory already exists, we can use it immediately.
-  if (fs.existsSync(targetDir)) {
-    return path.join(targetDir, `${cleanFileName}.md`);
-  }
+	if (fs.existsSync(targetDir)) {
+		return path.join(targetDir, `${cleanFileName}.md`);
+	}
 
-  // Target directory doesn't exist, check subdirectory count.
-  const currentSubdirs = getSubdirectories(topicsDir);
+	const currentSubdirs = getSubdirectories(topicsDir);
 
-  if (currentSubdirs.length >= fallbackLimit) {
-    console.warn(
-      `Directory limit reached (${currentSubdirs.length} >= ${fallbackLimit}). Falling back to 'topics/misc/' folder to protect against folder sprawl.`
-    );
-    const fallbackDir = path.join(topicsDir, 'misc');
-    if (!fs.existsSync(fallbackDir)) {
-      fs.mkdirSync(fallbackDir, { recursive: true });
-    }
-    return path.join(fallbackDir, `${cleanFileName}.md`);
-  }
+	if (currentSubdirs.length >= fallbackLimit) {
+		console.warn(
+			`Directory limit reached (${currentSubdirs.length} >= ${fallbackLimit}). Falling back to 'topics/misc/' folder to protect against folder sprawl.`,
+		);
+		const fallbackDir = path.join(topicsDir, "misc");
+		if (!fs.existsSync(fallbackDir)) {
+			fs.mkdirSync(fallbackDir, { recursive: true });
+		}
+		return path.join(fallbackDir, `${cleanFileName}.md`);
+	}
 
-  // Below threshold, safe to create the new category directory
-  fs.mkdirSync(targetDir, { recursive: true });
-  return path.join(targetDir, `${cleanFileName}.md`);
+	fs.mkdirSync(targetDir, { recursive: true });
+	return path.join(targetDir, `${cleanFileName}.md`);
 }
 
 function getSubdirectories(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+	if (!fs.existsSync(dir)) return [];
+	return fs
+		.readdirSync(dir, { withFileTypes: true })
+		.filter((dirent) => dirent.isDirectory())
+		.map((dirent) => dirent.name);
 }
 
-function sanitizeName(name: string): string {
-  // Replace invalid filesystem characters and whitespace
-  return name
-    .replace(/[\\/:*?"<>|]/g, '_')
-    .replace(/\s+/g, '_')
-    .trim();
+export function sanitizeName(name: string): string {
+	let sanitized = Array.from(name)
+		.filter((character) => {
+			const codePoint = character.codePointAt(0) ?? 0;
+			return codePoint > 0x1f && codePoint !== 0x7f;
+		})
+		.join("")
+		.replace(/[\\/:*?"<>|]/g, "_")
+		.replace(/\s+/g, "_")
+		.replace(/\.+/g, ".")
+		.replace(/^\.+|\.+$/g, "")
+		.trim();
+
+	if (sanitized === "") {
+		return "unnamed";
+	}
+
+	const extension = path.extname(sanitized);
+	const stem = extension ? sanitized.slice(0, -extension.length) : sanitized;
+	if (WINDOWS_RESERVED_NAMES.has(stem.toLowerCase())) {
+		sanitized = `${stem}_safe${extension}`;
+	}
+
+	return sanitized || "unnamed";
 }

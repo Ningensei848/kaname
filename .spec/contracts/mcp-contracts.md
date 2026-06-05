@@ -88,3 +88,35 @@ GCP Cloud Run Jobs内のオーケストレーター（stdio通信）を介して
 	"id": 104
 }
 ```
+
+## 2. Tool policy and merge preconditions
+
+### 2.1 Branch policy
+
+- Aegis-Writer may write only to `osint/*` branches.
+- Aegis-Reviewer may merge only `osint/*` into `main`.
+- Direct writes to `main` are prohibited.
+- Force push is prohibited.
+
+### 2.2 Allowed write paths
+
+Aegis-Writer may write only approved content paths:
+
+- `topics/**`
+- `reports/YYYY-MM-DD_Report.md`
+- generated indexes explicitly listed in the feature plan
+
+`crawler-state.json` is not an approved Git write path because runtime state is stored in Cloud Storage.
+
+### 2.3 Merge preconditions
+
+`merge_pull_request` may be called only when all conditions are true:
+
+- CI passed.
+- Takumi Guard passed.
+- deterministic content guards passed.
+- branch policy passed.
+- immutable files were not modified.
+- internal links are valid.
+
+If any gate is failed, unavailable, or indeterminate, Aegis-Reviewer must not merge.

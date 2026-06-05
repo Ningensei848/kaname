@@ -70,7 +70,7 @@ kaname/
 ### 議論 2: べき等ハッシュや状態JSONの「永続化ストレージ」の扱い
 
 現在 `data-model.md`（第2項）で定義されている状態管理ファイル `crawler-state.json` は、バッチがコンテナ（GCP Cloud Run Jobs）上でステートレスに動くため、実行ごとにリセットされる。
-これを回避するために、このファイルは「Quartz（Wiki）リポジトリに自律コミットして履歴保存する」方針とする。これにより、状態管理自体がGitの変更履歴（SSoTの一部）としてリポジトリ内で完結して自動同期され、余分な外部データベース（Cloud Storage等）のAPIコストを100%ゼロに抑えることができる。この方針で妥当か。
+この状態は Git repository へ commit せず、Cloud Storage の object として保存する方針を採用する。これにより、state-only commit、main 履歴のノイズ、並行 job の merge conflict、immutable content と mutable runtime metadata の混在を避ける。競合制御には Cloud Storage generation precondition を用いる。
 
 ### 議論 3: スキーマ物理ファイルの独立
 
@@ -81,5 +81,4 @@ SDDの原則に従うならば、「ドキュメント（specs）側をスキー
 
 ## 4. 結論
 
-現状提示された `.specs/` のディレクトリ構造は、「これ以上削るもののない、完璧に自己完結した最小にして堅牢な仕様パッケージ」として、技術的に100%妥当であると結論付ける。
-上記の議論ポイント2（状態管理のGitリポジトリへの相乗り永続化）および議論ポイント3（スペック原本の優位性）の判断基準をシステムに組み込むことで、TDD開発は極めて迅速かつ安全に開始可能となる。
+現状の `.spec/` は global documents と feature-oriented specs を併用する構造へ移行する。状態管理は Cloud Storage、schema は `.spec/schemas/` を原本候補、PR 単位の実装追跡は `.spec/traceability.md` で管理する。

@@ -50,7 +50,15 @@ properties:
 
 ## 2. 状態管理（べき等性検証用メタデータ）スキーマ
 
-不要なLLMの呼び出し、コミット、PRの作成を機械的に100%防止するため、前回の処理結果を記録する軽量な変更検知ステート（crawler-state.json）のデータ構造。
+不要なLLMの呼び出し、コミット、PRの作成を機械的に防止するため、前回の処理結果を記録する軽量な変更検知ステート（crawler-state.json）のデータ構造。`crawler-state.json` は Git repository に commit せず、Cloud Storage の object として保存する。
+
+Cloud Storage 推奨配置:
+
+```text
+gs://<KANAME_STATE_BUCKET>/<environment>/crawler-state.json
+```
+
+state 書き込みは generation precondition を用い、並行 Cloud Run Jobs による last-write-wins を防止する。
 
 ```json
 {
@@ -62,7 +70,7 @@ properties:
 		"last_execution": {
 			"type": "string",
 			"format": "date-time",
-			"description": "最後にクローラーが正常完了したJST時間"
+			"description": "最後にクローラーが正常完了したUTC ISO-8601時刻"
 		},
 		"sources": {
 			"type": "object",
@@ -97,17 +105,17 @@ properties:
 ```mermaid
 flowchart TD
     Start([トピック解説データ抽出完了]) --> Parse[Frontmatter プロパティ解析<br/>tags / SSoT ID]
-    
+
     Parse --> ResolveCategory{カテゴリ解決}
     ResolveCategory -- "例: SSoT ID: 'digital_agency'" --> GovAgencies[カテゴリ: 'gov-agencies']
     ResolveCategory -- "例: Tag: 'incident'" --> Incidents[カテゴリ: 'incidents']
-    
+
     GovAgencies --> CheckLimit{既存中間フォルダ総数チェック}
     Incidents --> CheckLimit
-    
+
     CheckLimit -- "既存フォルダ総数 < 95件" --> CreateDir[新しいカテゴリ名でフォルダを自律新規作成<br/>例: topics/gov-agencies/]
     CheckLimit -- "既存フォルダ総数 ≥ 95件<br/>(上限保護発動)" --> ForceFallback[新規フォルダ作成を強制遮断<br/>代替共通フォルダ topics/misc/ または<br/>最も意味親和性の高い既存フォルダへ自動退避・集約]
-    
+
     CreateDir --> Path[論理決定パスのマッピング<br/>例: topics/gov-agencies/Digital_Agency.md]
     ForceFallback --> Path
     Path --> End([パス決定完了])

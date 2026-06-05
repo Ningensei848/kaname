@@ -34,6 +34,7 @@
 
 - GitHub ActionsのPR自動テストラインに Flatt Security社提供の Takumi Guard が正しく組み込まれていること。
 - 脆弱性やライセンス違反が検出されたPRのビルドおよび Aegis-Reviewer によるApproveプロセスが機械的に100%遮断・防御されること。
+- Takumi Guard が通信不通、Takumiサーバ側障害、または indeterminate status の場合も fail-closed とし、自律マージを禁止して Issue escalation すること。
 
 ### [ ] ゼロ・シークレットポリシーの検証
 
@@ -56,6 +57,11 @@
 
 - `ssot.yml` および過去の日付スタンプ付き「定時レポートMarkdown」が完全不変（Immutable）として保護されていること。
 - トピック/概念/組織の解説Markdownが最新ファクトのマージ・名寄せ・アップデートを許容する可変（Mutable）として保護されていること。
+
+### [ ] Cloud Storage state backend の検証
+
+- `crawler-state.json` が Git repository に commit されず、Cloud Storage state backend から読み書きされること。
+- generation precondition によって並行 job の state 競合が検出されること。
 
 ### [ ] 上書き禁止（インクリメンタルアップデート）の遵守
 

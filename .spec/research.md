@@ -65,17 +65,17 @@ sequenceDiagram
     activate Orch
     Orch->>MCP: 子プロセスとしてNode.jsでMCPを起動 (Stdio接続)
     activate MCP
-    
+
     Orch->>LLM: SSoT差分テキスト + ツールスキーマ(MCPから自動インポート)を送信
     activate LLM
     LLM-->>Orch: Tool Call要求（例: write_file）
     deactivate LLM
-    
+
     Orch->>MCP: Stdio経由で JSON-RPC リクエスト転送
     MCP->>Git: GitHub APIで対象ファイルを書き込み
     Git-->>MCP: 書き込み完了レスポンス
     MCP-->>Orch: Stdio経由で JSON-RPC レスポンス転送
-    
+
     Orch->>LLM: SSoT dynamic context feedback
     activate LLM
     LLM-->>Orch: 完了ステータス
@@ -127,3 +127,17 @@ sequenceDiagram
 - GitHub. "GitHub MCP Server." GitHub, 2026, github.com/github/github-mcp-server.
 - Google Cloud. "Cloud Run Jobs Overview." Google Cloud, 2026, cloud.google.com/run/docs/create-jobs.
 - Flatt Security. "Takumi Guard." Flatt Security Inc., 2026, flatt.tech/takumi/features/guard.
+
+## 4. Updated research decisions
+
+### 4.1 Runtime state backend
+
+`crawler-state.json` should be stored in Cloud Storage rather than Git. This keeps runtime metadata separate from content history and enables generation-precondition concurrency control for overlapping Cloud Run Jobs.
+
+### 4.2 Parser dependency posture
+
+Regex-only parsing is retained as a low-dependency starting point, but it is no longer an absolute rule. A parser dependency may be introduced through ADR when fixtures demonstrate that real-world HTML/RSS/Atom correctness is worse with ad-hoc regex handling.
+
+### 4.3 Takumi Guard posture
+
+Takumi Guard remains required for protected autonomous merges. Communication failures, Takumi-side service incidents, and indeterminate results are treated as fail-closed conditions rather than reasons to bypass the gate.
