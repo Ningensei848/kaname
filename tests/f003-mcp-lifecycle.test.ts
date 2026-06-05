@@ -144,3 +144,6 @@ test("F003 MCP lifecycle cleanup contract", async (t) => {
 test.todo(
 	"F003 AegisOrchestrator wires real MCP child cleanup to DONE/MERGED/ESCALATED/FAILED/SIGTERM/TIMEOUT",
 );
+test.todo(
+	"F003 integration test spawns a real dummy child process and verifies process.on('SIGTERM') cleanup over actual OS signals and stdio resources",
+);

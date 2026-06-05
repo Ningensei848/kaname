@@ -13,6 +13,7 @@ import * as path from "node:path";
 import { test } from "node:test";
 
 type JsonObject = Record<string, unknown>;
+type JsonSchema = Record<string, unknown>;
 type GateStatus = "passed" | "failed" | "unavailable" | "indeterminate";
 
 interface ValidationError {
@@ -68,50 +69,108 @@ function listJsonFixtures(...segments: string[]): string[] {
 }
 
 function validateEnvelopeShape(call: McpToolCall): ValidationError[] {
+	const schema = readJson(
+		".spec/schemas/mcp-tool-call.schema.json",
+	) as JsonSchema;
+	return validateJsonSchema(schema, call);
+}
+
+function validateJsonSchema(
+	schema: JsonSchema,
+	value: unknown,
+	currentPath = "$",
+): ValidationError[] {
 	const errors: ValidationError[] = [];
-	if (call.jsonrpc !== "2.0")
-		errors.push({ path: "$.jsonrpc", message: "must be 2.0" });
-	if (call.method !== "tools/call")
-		errors.push({ path: "$.method", message: "must be tools/call" });
-	if (!Number.isInteger(call.id))
-		errors.push({ path: "$.id", message: "must be integer" });
-	if (!call.params || typeof call.params !== "object") {
-		errors.push({ path: "$.params", message: "must be object" });
-		return errors;
+
+	if (schema.type !== undefined && !matchesSchemaType(schema.type, value)) {
+		return [
+			{
+				path: currentPath,
+				message: `expected type ${JSON.stringify(schema.type)}`,
+			},
+		];
 	}
-	if (
-		!new Set([
-			"create_or_update_file",
-			"create_pull_request",
-			"merge_pull_request",
-			"create_issue",
-		]).has(call.params.name)
-	) {
-		errors.push({ path: "$.params.name", message: "unknown tool name" });
-	}
-	if (!call.params.arguments || typeof call.params.arguments !== "object") {
-		errors.push({ path: "$.params.arguments", message: "must be object" });
-		return errors;
-	}
-	if (
-		typeof call.params.arguments.owner !== "string" ||
-		call.params.arguments.owner.length === 0
-	) {
+
+	if (schema.const !== undefined && value !== schema.const) {
 		errors.push({
-			path: "$.params.arguments.owner",
-			message: "owner is required",
+			path: currentPath,
+			message: `expected const ${schema.const}`,
 		});
 	}
+
+	if (Array.isArray(schema.enum) && !schema.enum.includes(value)) {
+		errors.push({ path: currentPath, message: "expected enum value" });
+	}
+
+	if (schema.type === "object" && isRecord(value)) {
+		const properties = isRecord(schema.properties) ? schema.properties : {};
+		const required = Array.isArray(schema.required) ? schema.required : [];
+
+		for (const requiredKey of required) {
+			if (typeof requiredKey === "string" && !(requiredKey in value)) {
+				errors.push({
+					path: currentPath,
+					message: `missing required property ${requiredKey}`,
+				});
+			}
+		}
+
+		if (schema.additionalProperties === false) {
+			for (const key of Object.keys(value)) {
+				if (!(key in properties)) {
+					errors.push({
+						path: `${currentPath}.${key}`,
+						message: "additional property is not allowed",
+					});
+				}
+			}
+		}
+
+		for (const [key, propertySchema] of Object.entries(properties)) {
+			if (key in value && isRecord(propertySchema)) {
+				errors.push(
+					...validateJsonSchema(
+						propertySchema,
+						value[key],
+						`${currentPath}.${key}`,
+					),
+				);
+			}
+		}
+	}
+
 	if (
-		typeof call.params.arguments.repo !== "string" ||
-		call.params.arguments.repo.length === 0
+		typeof value === "string" &&
+		typeof schema.minLength === "number" &&
+		value.length < schema.minLength
 	) {
 		errors.push({
-			path: "$.params.arguments.repo",
-			message: "repo is required",
+			path: currentPath,
+			message: `expected minimum length ${schema.minLength}`,
 		});
 	}
+
 	return errors;
+}
+
+function matchesSchemaType(typeRule: unknown, value: unknown): boolean {
+	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
+	return allowedTypes.some((type) => {
+		switch (type) {
+			case "object":
+				return isRecord(value);
+			case "string":
+				return typeof value === "string";
+			case "integer":
+				return Number.isInteger(value);
+			default:
+				return false;
+		}
+	});
+}
+
+function isRecord(value: unknown): value is JsonObject {
+	return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function canMerge(gates: MergePreconditions): boolean {

@@ -47,6 +47,9 @@ function transition(
 	if (event === "fatal_error") {
 		return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
 	}
+	if (context.loopCount >= context.maxLoops && state === "REJECTED") {
+		return { next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] };
+	}
 
 	if (state === "INIT" && event === "diff_empty") {
 		return { next: "DONE", actions: ["exit_0"] };
@@ -172,6 +175,19 @@ test("F003 explicit orchestrator state transition table", async (t) => {
 			{ next: "FAILED", actions: ["create_issue", "cleanup_mcp"] },
 		);
 	});
+
+	await t.test(
+		"loop counter invariant escalates even if loop_remaining is emitted after maxLoops",
+		() => {
+			assert.deepStrictEqual(
+				transition("REJECTED", "loop_remaining", {
+					...baseContext,
+					loopCount: 4,
+				}),
+				{ next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] },
+			);
+		},
+	);
 });
 
 test.todo(
