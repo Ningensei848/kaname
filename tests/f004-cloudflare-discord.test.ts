@@ -1,0 +1,779 @@
+import assert from "node:assert/strict";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { test } from "node:test";
+
+const repoRoot = process.cwd();
+const publicBaseUrl = "https://osint-kaname.pages.dev";
+const latestReportUrl = `${publicBaseUrl}/reports/2026-05-27_Report`;
+const avatarUrl =
+	"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp";
+
+type JsonObject = Record<string, unknown>;
+type JsonSchema = Record<string, unknown>;
+type ProbeResult = { ok: boolean; status: number };
+type UrlProbe = (url: string) => Promise<ProbeResult>;
+type DiscordSendResult = "sent" | "escalate_issue";
+
+interface CloudflareDeploymentEvent {
+	id: string;
+	project_name: string;
+	deployment: {
+		id: string;
+		url: string;
+		environment: "production" | "preview";
+		status: "success" | "failure" | "pending" | "skipped" | "canceled";
+		created_on: string;
+		modified_on: string;
+		meta: {
+			branch: string;
+			commit_hash: string;
+			commit_message: string;
+		};
+	};
+}
+
+interface NotificationState {
+	notifiedDeploymentIds: string[];
+	notifiedCommitHashes: string[];
+}
+
+interface NotificationConfig {
+	publicBaseUrl: string;
+	latestReportUrl: string;
+}
+
+interface NotificationDecision {
+	shouldNotify: boolean;
+	reason: string;
+	reportUrlChecked: boolean;
+}
+
+interface DiscordPayloadInput {
+	deployment: CloudflareDeploymentEvent["deployment"];
+	publicBaseUrl: string;
+	latestReportUrl: string;
+	relatedTopics: Array<{ title: string; url: string }>;
+}
+
+interface RetryPolicy {
+	maxAttempts: number;
+	backoffMs: number[];
+}
+
+function readJson(relativePath: string): unknown {
+	return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), "utf8"));
+}
+
+function readFixture<T>(...segments: string[]): T {
+	return readJson(path.join("tests", "fixtures", "f004", ...segments)) as T;
+}
+
+function validateWithSchema(schemaPath: string, value: unknown): string[] {
+	const schema = readJson(schemaPath) as JsonSchema;
+	return validateJsonSchema(schema, value).map(
+		(error) => `${error.path}: ${error.message}`,
+	);
+}
+
+function validateJsonSchema(
+	schema: JsonSchema,
+	value: unknown,
+	currentPath = "$",
+): Array<{ path: string; message: string }> {
+	const errors: Array<{ path: string; message: string }> = [];
+
+	if (schema.type !== undefined && !matchesSchemaType(schema.type, value)) {
+		return [
+			{
+				path: currentPath,
+				message: `expected type ${JSON.stringify(schema.type)}`,
+			},
+		];
+	}
+
+	if (schema.const !== undefined && value !== schema.const) {
+		errors.push({
+			path: currentPath,
+			message: `expected const ${schema.const}`,
+		});
+	}
+
+	if (Array.isArray(schema.enum) && !schema.enum.includes(value)) {
+		errors.push({ path: currentPath, message: "expected enum value" });
+	}
+
+	if (typeof value === "string") {
+		if (
+			typeof schema.minLength === "number" &&
+			value.length < schema.minLength
+		) {
+			errors.push({
+				path: currentPath,
+				message: `expected minimum length ${schema.minLength}`,
+			});
+		}
+		if (
+			typeof schema.pattern === "string" &&
+			!new RegExp(schema.pattern).test(value)
+		) {
+			errors.push({ path: currentPath, message: "expected pattern match" });
+		}
+		if (schema.format === "uri" && !isValidUrl(value)) {
+			errors.push({ path: currentPath, message: "expected uri" });
+		}
+		if (schema.format === "date-time" && Number.isNaN(Date.parse(value))) {
+			errors.push({ path: currentPath, message: "expected date-time" });
+		}
+	}
+
+	if (typeof value === "number" && typeof schema.minimum === "number") {
+		if (value < schema.minimum) {
+			errors.push({
+				path: currentPath,
+				message: `expected minimum ${schema.minimum}`,
+			});
+		}
+	}
+
+	if (schema.type === "array" && Array.isArray(value)) {
+		if (typeof schema.minItems === "number" && value.length < schema.minItems) {
+			errors.push({
+				path: currentPath,
+				message: `expected at least ${schema.minItems} items`,
+			});
+		}
+		if (typeof schema.maxItems === "number" && value.length > schema.maxItems) {
+			errors.push({
+				path: currentPath,
+				message: `expected at most ${schema.maxItems} items`,
+			});
+		}
+		if (isRecord(schema.items)) {
+			for (const [index, item] of value.entries()) {
+				errors.push(
+					...validateJsonSchema(schema.items, item, `${currentPath}[${index}]`),
+				);
+			}
+		}
+	}
+
+	if (schema.type === "object" && isRecord(value)) {
+		const properties = isRecord(schema.properties) ? schema.properties : {};
+		const required = Array.isArray(schema.required) ? schema.required : [];
+
+		for (const requiredKey of required) {
+			if (typeof requiredKey === "string" && !(requiredKey in value)) {
+				errors.push({
+					path: currentPath,
+					message: `missing required property ${requiredKey}`,
+				});
+			}
+		}
+
+		if (schema.additionalProperties === false) {
+			for (const key of Object.keys(value)) {
+				if (!(key in properties)) {
+					errors.push({
+						path: `${currentPath}.${key}`,
+						message: "additional property is not allowed",
+					});
+				}
+			}
+		}
+
+		for (const [key, propertySchema] of Object.entries(properties)) {
+			if (key in value && isRecord(propertySchema)) {
+				errors.push(
+					...validateJsonSchema(
+						propertySchema,
+						value[key],
+						`${currentPath}.${key}`,
+					),
+				);
+			}
+		}
+	}
+
+	return errors;
+}
+
+function matchesSchemaType(typeRule: unknown, value: unknown): boolean {
+	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
+	return allowedTypes.some((type) => {
+		switch (type) {
+			case "array":
+				return Array.isArray(value);
+			case "boolean":
+				return typeof value === "boolean";
+			case "integer":
+				return Number.isInteger(value);
+			case "number":
+				return typeof value === "number";
+			case "object":
+				return isRecord(value);
+			case "string":
+				return typeof value === "string";
+			default:
+				return false;
+		}
+	});
+}
+
+function isRecord(value: unknown): value is JsonObject {
+	return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isValidUrl(value: string): boolean {
+	try {
+		const parsed = new URL(value);
+		return parsed.protocol === "https:";
+	} catch {
+		return false;
+	}
+}
+
+async function shouldNotifyDiscord(
+	event: CloudflareDeploymentEvent,
+	state: NotificationState,
+	config: NotificationConfig,
+	probeReportUrl: UrlProbe,
+): Promise<NotificationDecision> {
+	const deployment = event.deployment;
+	if (deployment.status !== "success") {
+		return {
+			shouldNotify: false,
+			reason: "deployment status is not success",
+			reportUrlChecked: false,
+		};
+	}
+	if (deployment.environment !== "production") {
+		return {
+			shouldNotify: false,
+			reason: "deployment is not production",
+			reportUrlChecked: false,
+		};
+	}
+	if (deployment.meta.branch !== "main") {
+		return {
+			shouldNotify: false,
+			reason: "deployment branch is not main",
+			reportUrlChecked: false,
+		};
+	}
+	if (normalizeUrl(deployment.url) !== normalizeUrl(config.publicBaseUrl)) {
+		return {
+			shouldNotify: false,
+			reason: "deployment URL does not match public base URL",
+			reportUrlChecked: false,
+		};
+	}
+	if (state.notifiedDeploymentIds.includes(deployment.id)) {
+		return {
+			shouldNotify: false,
+			reason: "deployment id was already notified",
+			reportUrlChecked: false,
+		};
+	}
+	if (state.notifiedCommitHashes.includes(deployment.meta.commit_hash)) {
+		return {
+			shouldNotify: false,
+			reason: "commit hash was already notified",
+			reportUrlChecked: false,
+		};
+	}
+
+	const reportProbe = await probeReportUrl(config.latestReportUrl);
+	if (
+		!reportProbe.ok ||
+		reportProbe.status < 200 ||
+		reportProbe.status >= 300
+	) {
+		return {
+			shouldNotify: false,
+			reason: "latest report URL is not live",
+			reportUrlChecked: true,
+		};
+	}
+
+	return {
+		shouldNotify: true,
+		reason: "production deployment and report are live",
+		reportUrlChecked: true,
+	};
+}
+
+function recordNotifiedDeployment(
+	state: NotificationState,
+	event: CloudflareDeploymentEvent,
+): NotificationState {
+	return {
+		notifiedDeploymentIds: unique([
+			...state.notifiedDeploymentIds,
+			event.deployment.id,
+		]),
+		notifiedCommitHashes: unique([
+			...state.notifiedCommitHashes,
+			event.deployment.meta.commit_hash,
+		]),
+	};
+}
+
+function buildDiscordPayload(input: DiscordPayloadInput): JsonObject {
+	const reportTitle = path.basename(input.latestReportUrl);
+	return {
+		username: "Aegis-Intelligence",
+		avatar_url: avatarUrl,
+		embeds: [
+			{
+				title: "🛡️ インテリジェンス更新 ＆ 本番デプロイ成功報告",
+				description:
+					"提案・査読エージェントによる検証をすべてパスし、最新のサイバーセキュリティインテリジェンスが本番環境へ安全にホスティングされました。",
+				url: input.publicBaseUrl,
+				color: 3066993,
+				fields: [
+					{
+						name: "📑 更新要約レポート (最新)",
+						value: `[${reportTitle}](${input.latestReportUrl})`,
+						inline: true,
+					},
+					{
+						name: "🔗 関連トピック解説",
+						value: input.relatedTopics
+							.map((topic) => `- [[${topic.title}]](${topic.url})`)
+							.join("\n"),
+						inline: false,
+					},
+					{
+						name: "⚙️ 実行履歴",
+						value: `マージコミット: \`${input.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
+						inline: false,
+					},
+				],
+				footer: {
+					text: "`kaname` • サーバーレス自律監視システム",
+					icon_url: avatarUrl,
+				},
+				timestamp: new Date(input.deployment.modified_on).toISOString(),
+			},
+		],
+	};
+}
+
+function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
+	const errors = validateWithSchema(
+		".spec/schemas/discord-webhook-payload.schema.json",
+		payload,
+	);
+	const embed = Array.isArray(payload.embeds)
+		? (payload.embeds[0] as JsonObject)
+		: undefined;
+	if (!embed) return [...errors, "embed is required"];
+	const fields = Array.isArray(embed.fields)
+		? (embed.fields as JsonObject[])
+		: [];
+	const reportField = fields.find((field) =>
+		String(field.name).includes("更新要約レポート"),
+	);
+	if (!reportField || !String(reportField.value).includes("/reports/")) {
+		errors.push("latest report field must link to the published report URL");
+	}
+	if (String(embed.url) !== publicBaseUrl) {
+		errors.push("embed URL must be the public production base URL");
+	}
+	if (!fields.some((field) => String(field.name).includes("実行履歴"))) {
+		errors.push("execution history field is required");
+	}
+	return errors;
+}
+
+function assertQuartzGraphDisabledArtifact(relativePaths: string[]): string[] {
+	const forbiddenPatterns = [
+		/\bGraph View\b/i,
+		/\bglobal-graph\b/i,
+		/\blocal-graph\b/i,
+		/\bgraph\.inline\.js\b/i,
+		/data-component=["']Graph["']/i,
+	];
+	const violations: string[] = [];
+	for (const relativePath of relativePaths) {
+		const content = fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
+		for (const pattern of forbiddenPatterns) {
+			if (pattern.test(content)) {
+				violations.push(`${relativePath} contains ${pattern}`);
+			}
+		}
+	}
+	return violations;
+}
+
+async function sendDiscordWithBoundedRetry(
+	sendWebhook: () => Promise<{ ok: boolean; status: number }>,
+	sleep: (ms: number) => Promise<void>,
+	policy: RetryPolicy,
+): Promise<DiscordSendResult> {
+	for (let attempt = 0; attempt < policy.maxAttempts; attempt += 1) {
+		const result = await sendWebhook();
+		if (result.ok && result.status >= 200 && result.status < 300) {
+			return "sent";
+		}
+		if (attempt < policy.maxAttempts - 1) {
+			await sleep(policy.backoffMs[attempt] ?? policy.backoffMs.at(-1) ?? 0);
+		}
+	}
+	return "escalate_issue";
+}
+
+function normalizeUrl(value: string): string {
+	return value.replace(/\/+$/, "");
+}
+
+function unique(values: string[]): string[] {
+	return Array.from(new Set(values));
+}
+
+function liveReportProbe(
+	liveUrls: Set<string>,
+	checkedUrls: string[],
+): UrlProbe {
+	return async (url) => {
+		checkedUrls.push(url);
+		return liveUrls.has(url)
+			? { ok: true, status: 200 }
+			: { ok: false, status: 404 };
+	};
+}
+
+test("F004 Cloudflare deployment fixtures match the webhook schema", async (t) => {
+	for (const fixtureName of [
+		"production-success.json",
+		"preview-success.json",
+		"production-failure.json",
+		"production-pending.json",
+		"production-wrong-branch.json",
+	]) {
+		await t.test(
+			`${fixtureName} is structurally valid Cloudflare event JSON`,
+			() => {
+				const event = readFixture<CloudflareDeploymentEvent>(
+					"cloudflare",
+					fixtureName,
+				);
+				assert.deepStrictEqual(
+					validateWithSchema(
+						".spec/schemas/cloudflare-pages-deployment.schema.json",
+						event,
+					),
+					[],
+				);
+			},
+		);
+	}
+});
+
+test("F004 Discord notification gate is impossible before production success", async (t) => {
+	const emptyState = readFixture<NotificationState>(
+		"state",
+		"notification-state.empty.json",
+	);
+	const config = { publicBaseUrl, latestReportUrl };
+	const cases: Array<[string, string]> = [
+		["preview-success.json", "deployment is not production"],
+		["production-failure.json", "deployment status is not success"],
+		["production-pending.json", "deployment status is not success"],
+		["production-wrong-branch.json", "deployment branch is not main"],
+	];
+
+	for (const [fixtureName, reason] of cases) {
+		await t.test(
+			`${fixtureName} does not notify and does not probe report URL`,
+			async () => {
+				const checkedUrls: string[] = [];
+				const decision = await shouldNotifyDiscord(
+					readFixture<CloudflareDeploymentEvent>("cloudflare", fixtureName),
+					emptyState,
+					config,
+					liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+				);
+
+				assert.deepStrictEqual(decision, {
+					shouldNotify: false,
+					reason,
+					reportUrlChecked: false,
+				});
+				assert.deepStrictEqual(checkedUrls, []);
+			},
+		);
+	}
+
+	await t.test(
+		"wrong deployment URL blocks notification before report probing",
+		async () => {
+			const checkedUrls: string[] = [];
+			const event = readFixture<CloudflareDeploymentEvent>(
+				"cloudflare",
+				"production-success.json",
+			);
+			const decision = await shouldNotifyDiscord(
+				{
+					...event,
+					deployment: {
+						...event.deployment,
+						url: "https://evil.example.invalid",
+					},
+				},
+				emptyState,
+				config,
+				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: false,
+				reason: "deployment URL does not match public base URL",
+				reportUrlChecked: false,
+			});
+			assert.deepStrictEqual(checkedUrls, []);
+		},
+	);
+});
+
+test("F004 live report URL check is mocked and required before Discord send", async (t) => {
+	const event = readFixture<CloudflareDeploymentEvent>(
+		"cloudflare",
+		"production-success.json",
+	);
+	const emptyState = readFixture<NotificationState>(
+		"state",
+		"notification-state.empty.json",
+	);
+	const config = { publicBaseUrl, latestReportUrl };
+
+	await t.test(
+		"production success is still blocked when the latest report URL is not live",
+		async () => {
+			const checkedUrls: string[] = [];
+			const decision = await shouldNotifyDiscord(
+				event,
+				emptyState,
+				config,
+				liveReportProbe(new Set(), checkedUrls),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: false,
+				reason: "latest report URL is not live",
+				reportUrlChecked: true,
+			});
+			assert.deepStrictEqual(checkedUrls, [latestReportUrl]);
+		},
+	);
+
+	await t.test(
+		"production success with a live latest report URL can notify",
+		async () => {
+			const checkedUrls: string[] = [];
+			const decision = await shouldNotifyDiscord(
+				event,
+				emptyState,
+				config,
+				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: true,
+				reason: "production deployment and report are live",
+				reportUrlChecked: true,
+			});
+			assert.deepStrictEqual(checkedUrls, [latestReportUrl]);
+		},
+	);
+});
+
+test("F004 duplicate deployment idempotency state blocks repeated events", async (t) => {
+	const event = readFixture<CloudflareDeploymentEvent>(
+		"cloudflare",
+		"production-success.json",
+	);
+	const config = { publicBaseUrl, latestReportUrl };
+
+	await t.test("recording notification state is append-only and unique", () => {
+		const emptyState = readFixture<NotificationState>(
+			"state",
+			"notification-state.empty.json",
+		);
+		assert.deepStrictEqual(recordNotifiedDeployment(emptyState, event), {
+			notifiedDeploymentIds: [event.deployment.id],
+			notifiedCommitHashes: [event.deployment.meta.commit_hash],
+		});
+	});
+
+	await t.test("duplicate deployment id does not notify twice", async () => {
+		const duplicateState = readFixture<NotificationState>(
+			"state",
+			"notification-state.duplicate.json",
+		);
+		const checkedUrls: string[] = [];
+		const decision = await shouldNotifyDiscord(
+			event,
+			duplicateState,
+			config,
+			liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+		);
+
+		assert.deepStrictEqual(decision, {
+			shouldNotify: false,
+			reason: "deployment id was already notified",
+			reportUrlChecked: false,
+		});
+		assert.deepStrictEqual(checkedUrls, []);
+	});
+
+	await t.test(
+		"duplicate commit hash remains idempotent across deployment ids",
+		async () => {
+			const state: NotificationState = {
+				notifiedDeploymentIds: [],
+				notifiedCommitHashes: [event.deployment.meta.commit_hash],
+			};
+			const checkedUrls: string[] = [];
+			const replayWithNewDeploymentId: CloudflareDeploymentEvent = {
+				...event,
+				deployment: { ...event.deployment, id: "deploy_replayed_different_id" },
+			};
+
+			const decision = await shouldNotifyDiscord(
+				replayWithNewDeploymentId,
+				state,
+				config,
+				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: false,
+				reason: "commit hash was already notified",
+				reportUrlChecked: false,
+			});
+			assert.deepStrictEqual(checkedUrls, []);
+		},
+	);
+});
+
+test("F004 Discord payload schema fixture is executable", async (t) => {
+	await t.test("canonical fixture satisfies schema and policy checks", () => {
+		const payload = readFixture<JsonObject>(
+			"discord",
+			"valid-deployment-payload.json",
+		);
+		assert.deepStrictEqual(assertDiscordPayloadPolicy(payload), []);
+	});
+
+	await t.test(
+		"payload builder emits the same contract shape after the gate is green",
+		() => {
+			const event = readFixture<CloudflareDeploymentEvent>(
+				"cloudflare",
+				"production-success.json",
+			);
+			const payload = buildDiscordPayload({
+				deployment: event.deployment,
+				publicBaseUrl,
+				latestReportUrl,
+				relatedTopics: [
+					{
+						title: "能動的サイバー防御",
+						url: `${publicBaseUrl}/topics/gov-agencies/NCO`,
+					},
+					{
+						title: "サイバー演習CYDER",
+						url: `${publicBaseUrl}/topics/cyber-exercises/CYDER`,
+					},
+				],
+			});
+
+			assert.deepStrictEqual(assertDiscordPayloadPolicy(payload), []);
+		},
+	);
+});
+
+test("F004 Quartz Graph disabled artifact contract", async (t) => {
+	await t.test(
+		"published artifact fixture contains no graph view UI or scripts",
+		() => {
+			assert.deepStrictEqual(
+				assertQuartzGraphDisabledArtifact([
+					"tests/fixtures/f004/quartz-artifacts/graph-disabled.html",
+				]),
+				[],
+			);
+		},
+	);
+
+	await t.test(
+		"graph-enabled artifact fixture is rejected deterministically",
+		() => {
+			assert.match(
+				assertQuartzGraphDisabledArtifact([
+					"tests/fixtures/f004/quartz-artifacts/graph-enabled.html",
+				]).join("\n"),
+				/Graph View|global-graph|graph\.inline\.js|data-component=\["'\]Graph/,
+			);
+		},
+	);
+});
+
+test("F004 Discord webhook retry contract is bounded and escalates safely", async (t) => {
+	const retryPolicy: RetryPolicy = { maxAttempts: 3, backoffMs: [100, 500] };
+
+	await t.test(
+		"transient webhook failure retries without exceeding the bounded policy",
+		async () => {
+			let attempts = 0;
+			const sleeps: number[] = [];
+			const result = await sendDiscordWithBoundedRetry(
+				async () => {
+					attempts += 1;
+					return attempts === 2
+						? { ok: true, status: 204 }
+						: { ok: false, status: 502 };
+				},
+				async (ms) => {
+					sleeps.push(ms);
+				},
+				retryPolicy,
+			);
+
+			assert.strictEqual(result, "sent");
+			assert.strictEqual(attempts, 2);
+			assert.deepStrictEqual(sleeps, [100]);
+		},
+	);
+
+	await t.test(
+		"repeated webhook failure escalates to GitHub Issue without unbounded retry",
+		async () => {
+			let attempts = 0;
+			const sleeps: number[] = [];
+			const result = await sendDiscordWithBoundedRetry(
+				async () => {
+					attempts += 1;
+					return { ok: false, status: 500 };
+				},
+				async (ms) => {
+					sleeps.push(ms);
+				},
+				retryPolicy,
+			);
+
+			assert.strictEqual(result, "escalate_issue");
+			assert.strictEqual(attempts, 3);
+			assert.deepStrictEqual(sleeps, [100, 500]);
+		},
+	);
+});
+
+test.todo(
+	"F004 production notification module uses external state backend family, not Git, for duplicate deployment notification state",
+);
+test.todo(
+	"F004 integration tests live under tests/integration/ and may use real Cloudflare/Discord only behind explicit credentials",
+);
