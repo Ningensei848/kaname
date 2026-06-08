@@ -8,85 +8,13 @@
 import * as assert from "node:assert";
 import { test } from "node:test";
 
-type State =
-	| "INIT"
-	| "MCP_READY"
-	| "PROPOSED"
-	| "REJECTED"
-	| "MERGED"
-	| "ESCALATED"
-	| "FAILED"
-	| "DONE";
-type Event =
-	| "diff_empty"
-	| "diff_found"
-	| "writer_success"
-	| "deterministic_guard_failed"
-	| "reviewer_approved"
-	| "loop_remaining"
-	| "loop_exhausted"
-	| "fatal_error";
-
-interface TransitionContext {
-	loopCount: number;
-	maxLoops: number;
-	allGatesPassed: boolean;
-	prExists: boolean;
-}
-
-interface TransitionResult {
-	next: State;
-	actions: string[];
-}
-
-function transition(
-	state: State,
-	event: Event,
-	context: TransitionContext,
-): TransitionResult {
-	if (event === "fatal_error") {
-		return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-	if (context.loopCount >= context.maxLoops && state === "REJECTED") {
-		return { next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-
-	if (state === "INIT" && event === "diff_empty") {
-		return { next: "DONE", actions: ["exit_0"] };
-	}
-	if (state === "INIT" && event === "diff_found") {
-		return { next: "MCP_READY", actions: ["start_mcp"] };
-	}
-	if (state === "MCP_READY" && event === "writer_success" && context.prExists) {
-		return { next: "PROPOSED", actions: ["wait_ci"] };
-	}
-	if (state === "PROPOSED" && event === "deterministic_guard_failed") {
-		return { next: "REJECTED", actions: ["comment_reject"] };
-	}
-	if (
-		state === "PROPOSED" &&
-		event === "reviewer_approved" &&
-		context.allGatesPassed
-	) {
-		return { next: "MERGED", actions: ["squash_merge", "cleanup_mcp"] };
-	}
-	if (
-		state === "REJECTED" &&
-		event === "loop_remaining" &&
-		context.loopCount < context.maxLoops
-	) {
-		return { next: "PROPOSED", actions: ["writer_revise"] };
-	}
-	if (
-		state === "REJECTED" &&
-		event === "loop_exhausted" &&
-		context.loopCount >= context.maxLoops
-	) {
-		return { next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-
-	return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
-}
+import {
+	type OrchestratorEvent,
+	type OrchestratorState,
+	type TransitionContext,
+	type TransitionResult,
+	transition,
+} from "../src/orchestrator/state-machine";
 
 test("F003 explicit orchestrator state transition table", async (t) => {
 	const baseContext: TransitionContext = {
@@ -96,7 +24,9 @@ test("F003 explicit orchestrator state transition table", async (t) => {
 		prExists: true,
 	};
 
-	const cases: Array<[State, Event, TransitionContext, TransitionResult]> = [
+	const cases: Array<
+		[OrchestratorState, OrchestratorEvent, TransitionContext, TransitionResult]
+	> = [
 		["INIT", "diff_empty", baseContext, { next: "DONE", actions: ["exit_0"] }],
 		[
 			"INIT",
@@ -189,10 +119,3 @@ test("F003 explicit orchestrator state transition table", async (t) => {
 		},
 	);
 });
-
-test.todo(
-	"F003 production orchestrator exposes this explicit transition table rather than only implicit while-loop control flow",
-);
-test.todo(
-	"F003 legacy orchestrator.test.ts scenarios are consolidated into the explicit transition-table oracle once production code exposes it",
-);

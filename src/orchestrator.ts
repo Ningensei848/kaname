@@ -102,9 +102,11 @@ export class AegisOrchestrator {
 	public loopCount = 0;
 	public readonly maxLoops: number;
 	public prState: PRState | null = null;
+	public state: OrchestratorState = "INIT";
 	public executionStatus: ExecutionStatus = "PENDING";
 	public raisedIssue: { title: string; body: string } | null = null;
 	public launchedMcp = false;
+	public readonly transitionHistory: TransitionRecord[] = [];
 
 	public constructor(
 		private readonly diffData: DiffResult[],
@@ -115,53 +117,123 @@ export class AegisOrchestrator {
 	}
 
 	public async run(): Promise<OrchestrationResult> {
-		const hasAnyChange = this.diffData.some((diff) => diff.hasChanged);
-		if (!hasAnyChange) {
-			return { exitCode: 0, reason: "No changes detected. Idempotent skip." };
-		}
-
-		this.launchedMcp = true;
-		await this.dependencies.startMcp?.();
-
-		while (
-			this.loopCount < this.maxLoops &&
-			this.executionStatus !== "APPROVED"
-		) {
-			this.loopCount++;
-
-			if (
-				this.executionStatus === "PENDING" ||
-				this.executionStatus === "REJECTED"
-			) {
-				this.prState = await this.runWriter(this.loopCount);
-				this.executionStatus = "PROPOSED";
+		try {
+			const hasAnyChange = this.diffData.some((diff) => diff.hasChanged);
+			if (!hasAnyChange) {
+				this.applyTransition("diff_empty");
+				return { exitCode: 0, reason: "No changes detected. Idempotent skip." };
 			}
 
-			if (this.executionStatus === "PROPOSED" && this.prState) {
+			this.applyTransition("diff_found");
+			this.launchedMcp = this.state === "MCP_READY";
+			await this.dependencies.startMcp?.();
+
+			this.loopCount++;
+			this.prState = await this.runWriter(this.loopCount);
+			this.applyTransition("writer_success");
+
+			for (;;) {
+				if (this.state !== "PROPOSED") {
+					break;
+				}
+
 				const review = await this.dependencies.reviewProposal(
 					this.loopCount,
 					this.prState,
 				);
-				if (review.approve) {
-					this.executionStatus = "APPROVED";
-					this.prState.approved = true;
-					this.prState.status = "MERGED";
-				} else {
-					this.executionStatus = "REJECTED";
+
+				const reviewState = this.applyTransition(
+					review.approve ? "reviewer_approved" : "deterministic_guard_failed",
+					review.approve,
+				);
+
+				if (reviewState === "MERGED") {
+					this.mergePr();
+					return {
+						exitCode: 0,
+						reason: "Consensus reached and merged successfully.",
+					};
+				}
+
+				if (reviewState !== "REJECTED") {
+					break;
+				}
+
+				const loopEvent: OrchestratorEvent =
+					this.loopCount >= this.maxLoops ? "loop_exhausted" : "loop_remaining";
+				const loopState = this.applyTransition(loopEvent, review.approve);
+
+				if (loopState === "PROPOSED") {
+					this.loopCount++;
+					this.prState = await this.runWriter(this.loopCount);
 				}
 			}
-		}
 
-		if (this.executionStatus !== "APPROVED") {
-			this.executionStatus = "ESCALATED";
+			if (this.state === "ESCALATED" || this.state === "FAILED") {
+				this.raisedIssue = await this.raiseIssue();
+				return {
+					exitCode: 1,
+					reason: "Agreement failed. Escalated via Issue.",
+				};
+			}
+
+			this.applyTransition("fatal_error");
 			this.raisedIssue = await this.raiseIssue();
-			return { exitCode: 1, reason: "Agreement failed. Escalated via Issue." };
+			return { exitCode: 1, reason: "Orchestration failed." };
+		} catch (error) {
+			if (this.state !== "FAILED") {
+				this.applyTransition("fatal_error");
+			}
+			this.raisedIssue = await this.raiseIssue();
+			const message = error instanceof Error ? error.message : "Unknown error";
+			return { exitCode: 1, reason: `Orchestration failed: ${message}` };
 		}
+	}
 
+	private applyTransition(
+		event: OrchestratorEvent,
+		allGatesPassed = true,
+	): OrchestratorState {
+		const context = this.currentTransitionContext(allGatesPassed);
+		const state = this.state;
+		const result = transition(state, event, context);
+		this.transitionHistory.push({ state, event, context, result });
+		this.state = result.next;
+		this.executionStatus = this.executionStatusFor(result.next);
+		return result.next;
+	}
+
+	private currentTransitionContext(allGatesPassed: boolean): TransitionContext {
 		return {
-			exitCode: 0,
-			reason: "Consensus reached and merged successfully.",
+			loopCount: this.loopCount,
+			maxLoops: this.maxLoops,
+			allGatesPassed,
+			prExists: this.prState !== null,
 		};
+	}
+
+	private executionStatusFor(state: OrchestratorState): ExecutionStatus {
+		if (state === "PROPOSED") {
+			return "PROPOSED";
+		}
+		if (state === "REJECTED") {
+			return "REJECTED";
+		}
+		if (state === "MERGED") {
+			return "APPROVED";
+		}
+		if (state === "ESCALATED" || state === "FAILED") {
+			return "ESCALATED";
+		}
+		return "PENDING";
+	}
+
+	private mergePr(): void {
+		if (!this.prState) {
+			return;
+		}
+		this.prState.approved = true;
+		this.prState.status = "MERGED";
 	}
 
 	private async runWriter(loop: number): Promise<PRState> {

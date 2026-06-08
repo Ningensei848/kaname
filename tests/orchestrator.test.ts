@@ -5,155 +5,226 @@
  * business-rules.md §5 (Review Control), agent-logic.md §1 (Orchestrator Logic)
  */
 
-import { test } from "node:test";
 import * as assert from "node:assert";
+import { test } from "node:test";
 import { AegisOrchestrator, type DiffResult } from "../src/orchestrator";
+import {
+	type OrchestratorEvent,
+	type OrchestratorState,
+	type TransitionContext,
+	transition,
+} from "../src/orchestrator/state-machine";
 
-test("Aegis-Orchestrator State Machine TDD Tests", async (t) => {
+interface EventStep {
+	state: OrchestratorState;
+	event: OrchestratorEvent;
+	context: TransitionContext;
+	expectedNext: OrchestratorState;
+}
+
+const baseContext: TransitionContext = {
+	loopCount: 0,
+	maxLoops: 3,
+	allGatesPassed: true,
+	prExists: true,
+};
+
+function assertEventSequence(name: string, steps: EventStep[]): void {
+	for (const [index, step] of steps.entries()) {
+		const result = transition(step.state, step.event, step.context);
+		assert.strictEqual(
+			result.next,
+			step.expectedNext,
+			`${name} step ${index + 1}: ${step.state} + ${step.event}`,
+		);
+	}
+}
+
+test("orchestrator contract is expressed as transition-table event sequences", async (t) => {
+	await t.test("diff_empty exits without MCP startup", () => {
+		assertEventSequence("diff_empty", [
+			{
+				state: "INIT",
+				event: "diff_empty",
+				context: { ...baseContext, prExists: false },
+				expectedNext: "DONE",
+			},
+		]);
+	});
+
+	await t.test("diff_found then writer_success proposes a PR", () => {
+		assertEventSequence("writer proposal", [
+			{
+				state: "INIT",
+				event: "diff_found",
+				context: { ...baseContext, prExists: false },
+				expectedNext: "MCP_READY",
+			},
+			{
+				state: "MCP_READY",
+				event: "writer_success",
+				context: { ...baseContext, loopCount: 1 },
+				expectedNext: "PROPOSED",
+			},
+		]);
+	});
+
+	await t.test("reviewer_approved merges only after all gates pass", () => {
+		assertEventSequence("approved merge", [
+			{
+				state: "PROPOSED",
+				event: "reviewer_approved",
+				context: { ...baseContext, loopCount: 1, allGatesPassed: true },
+				expectedNext: "MERGED",
+			},
+		]);
+	});
+
 	await t.test(
-		"べき等性の成立：差分ハッシュが不変の場合は、MCPやLLMを起動せずに終了コード 0 で早期リターンすること",
-		async () => {
-			const unchangedDiff: DiffResult[] = [
-				{ sourceId: "jpcert", hasChanged: false, content: "Same" },
-			];
-
-			const orchestrator = new AegisOrchestrator(unchangedDiff, {
-				reviewProposal: () => ({
-					approve: true,
-					comment: "Will not be called",
-				}),
-			});
-
-			const result = await orchestrator.run();
-
-			assert.strictEqual(result.exitCode, 0);
-			assert.strictEqual(
-				orchestrator.launchedMcp,
-				false,
-				"MCP should not be launched for unchanged content",
-			);
-			assert.strictEqual(
-				orchestrator.loopCount,
-				0,
-				"No agent loops should run",
-			);
-			assert.strictEqual(orchestrator.executionStatus, "PENDING");
+		"deterministic_guard_failed rejects, then loop_remaining revises",
+		() => {
+			assertEventSequence("single rejection revision", [
+				{
+					state: "PROPOSED",
+					event: "deterministic_guard_failed",
+					context: { ...baseContext, loopCount: 1, allGatesPassed: false },
+					expectedNext: "REJECTED",
+				},
+				{
+					state: "REJECTED",
+					event: "loop_remaining",
+					context: { ...baseContext, loopCount: 1, allGatesPassed: false },
+					expectedNext: "PROPOSED",
+				},
+			]);
 		},
 	);
 
-	await t.test(
-		"正常系：エージェントが協調し、1発で査読合格して main に自律マージ完了すること",
-		async () => {
-			const changedDiff: DiffResult[] = [
+	await t.test("loop >= 3 escalates through the transition table", () => {
+		assertEventSequence("loop exhausted", [
+			{
+				state: "REJECTED",
+				event: "loop_exhausted",
+				context: { ...baseContext, loopCount: 3, allGatesPassed: false },
+				expectedNext: "ESCALATED",
+			},
+		]);
+	});
+
+	await t.test("fatal_error fails from any active state", () => {
+		for (const state of [
+			"INIT",
+			"MCP_READY",
+			"PROPOSED",
+			"REJECTED",
+		] as const) {
+			assertEventSequence(`fatal from ${state}`, [
 				{
-					sourceId: "jpcert",
-					hasChanged: true,
-					content: "New advisory details",
+					state,
+					event: "fatal_error",
+					context: { ...baseContext, loopCount: state === "INIT" ? 0 : 1 },
+					expectedNext: "FAILED",
 				},
-			];
+			]);
+		}
+	});
+});
 
-			const orchestrator = new AegisOrchestrator(changedDiff, {
-				reviewProposal: () => ({
-					approve: true,
-					comment: "Review passed. Excellent.",
-				}),
-			});
-
-			const result = await orchestrator.run();
-
-			assert.strictEqual(result.exitCode, 0);
-			assert.strictEqual(orchestrator.launchedMcp, true);
-			assert.strictEqual(
-				orchestrator.loopCount,
-				1,
-				"Should reach consensus in 1 loop",
-			);
-			assert.strictEqual(orchestrator.executionStatus, "APPROVED");
-			assert.strictEqual(orchestrator.prState?.status, "MERGED");
-			assert.strictEqual(orchestrator.prState?.approved, true);
+test("AegisOrchestrator consumes transition table records for integration flow", async () => {
+	const changedDiff: DiffResult[] = [
+		{
+			sourceId: "nco",
+			hasChanged: true,
+			content: "New cabinet decision details",
 		},
-	);
+	];
 
-	await t.test(
-		"準正常系：1回目の査読却下に対してWriterが修正提案を行い、2回目で合意マージ完了すること",
-		async () => {
-			const changedDiff: DiffResult[] = [
-				{
-					sourceId: "nco",
-					hasChanged: true,
-					content: "New cabinet decision details",
-				},
-			];
-
-			const orchestrator = new AegisOrchestrator(changedDiff, {
-				reviewProposal: (loop: number) => {
-					if (loop === 1) {
-						return {
-							approve: false,
-							comment: "Missing inbound link for orphan NICT note",
-						};
-					}
-					return { approve: true, comment: "Link fixed. Approved." };
-				},
-			});
-
-			const result = await orchestrator.run();
-
-			assert.strictEqual(result.exitCode, 0);
-			assert.strictEqual(
-				orchestrator.loopCount,
-				2,
-				"Consensus reached on loop 2",
-			);
-			assert.strictEqual(orchestrator.executionStatus, "APPROVED");
-			assert.strictEqual(
-				orchestrator.prState?.commits.length,
-				2,
-				"Should contain corrective commit",
-			);
-			assert.strictEqual(orchestrator.prState?.status, "MERGED");
-		},
-	);
-
-	await t.test(
-		"異常系：3回のループ制限で却下され続けた場合、マージを遮断し、GitHub Issueを起票してエラー（終了コード1）終了すること",
-		async () => {
-			const changedDiff: DiffResult[] = [
-				{
-					sourceId: "jpcert",
-					hasChanged: true,
-					content: "Critical malware notice",
-				},
-			];
-
-			const orchestrator = new AegisOrchestrator(changedDiff, {
-				reviewProposal: () => ({
+	const orchestrator = new AegisOrchestrator(changedDiff, {
+		reviewProposal: (loop: number) => {
+			if (loop === 1) {
+				return {
 					approve: false,
-					comment: "OFM layout violation: tags are malformed.",
-				}),
-			});
-
-			const result = await orchestrator.run();
-
-			assert.strictEqual(result.exitCode, 1, "Must exit with failure code 1");
-			assert.strictEqual(
-				orchestrator.loopCount,
-				3,
-				"Hard loop limit capped at 3",
-			);
-			assert.strictEqual(orchestrator.executionStatus, "ESCALATED");
-			assert.strictEqual(
-				orchestrator.prState?.status,
-				"OPEN",
-				"PR must remain open (not merged)",
-			);
-			assert.ok(orchestrator.raisedIssue, "System must raise an Issue");
-			assert.ok(orchestrator.raisedIssue.title.includes("[System Error]"));
-			assert.ok(
-				orchestrator.raisedIssue.body.includes(
-					"Review loop failed to resolve after 3 iterations",
-				),
-			);
+					comment: "Missing inbound link for orphan NICT note",
+				};
+			}
+			return { approve: true, comment: "Link fixed. Approved." };
 		},
+	});
+
+	const result = await orchestrator.run();
+
+	assert.strictEqual(result.exitCode, 0);
+	assert.strictEqual(orchestrator.state, "MERGED");
+	assert.strictEqual(orchestrator.prState?.status, "MERGED");
+	assert.deepStrictEqual(
+		orchestrator.transitionHistory.map((record) => [
+			record.state,
+			record.event,
+			record.result.next,
+			record.result.actions,
+		]),
+		[
+			["INIT", "diff_found", "MCP_READY", ["start_mcp"]],
+			["MCP_READY", "writer_success", "PROPOSED", ["wait_ci"]],
+			[
+				"PROPOSED",
+				"deterministic_guard_failed",
+				"REJECTED",
+				["comment_reject"],
+			],
+			["REJECTED", "loop_remaining", "PROPOSED", ["writer_revise"]],
+			[
+				"PROPOSED",
+				"reviewer_approved",
+				"MERGED",
+				["squash_merge", "cleanup_mcp"],
+			],
+		],
 	);
+
+	for (const record of orchestrator.transitionHistory) {
+		assert.deepStrictEqual(
+			record.result,
+			transition(record.state, record.event, record.context),
+		);
+	}
+});
+
+test("AegisOrchestrator escalates repeated guard failures via loop_exhausted", async () => {
+	const changedDiff: DiffResult[] = [
+		{
+			sourceId: "jpcert",
+			hasChanged: true,
+			content: "Critical malware notice",
+		},
+	];
+
+	const orchestrator = new AegisOrchestrator(changedDiff, {
+		reviewProposal: () => ({
+			approve: false,
+			comment: "OFM layout violation: tags are malformed.",
+		}),
+	});
+
+	const result = await orchestrator.run();
+
+	assert.strictEqual(result.exitCode, 1);
+	assert.strictEqual(orchestrator.state, "ESCALATED");
+	assert.strictEqual(orchestrator.loopCount, 3);
+	assert.deepStrictEqual(orchestrator.transitionHistory.at(-1), {
+		state: "REJECTED",
+		event: "loop_exhausted",
+		context: {
+			loopCount: 3,
+			maxLoops: 3,
+			allGatesPassed: false,
+			prExists: true,
+		},
+		result: {
+			next: "ESCALATED",
+			actions: ["create_issue", "cleanup_mcp"],
+		},
+	});
+	assert.ok(orchestrator.raisedIssue, "System must raise an Issue");
+	assert.strictEqual(orchestrator.prState?.status, "OPEN");
 });

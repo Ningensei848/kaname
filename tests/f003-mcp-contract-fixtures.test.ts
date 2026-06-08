@@ -10,6 +10,7 @@
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 import { test } from "node:test";
 
 type JsonObject = Record<string, unknown>;
@@ -242,10 +243,7 @@ function validateToolPolicy(
 }
 
 function isAllowedWriterPath(filePath: string): boolean {
-	return (
-		/^topics\/[^/]+\/[^/]+\.md$/.test(filePath) ||
-		/^reports\/\d{4}-\d{2}-\d{2}_Report\.md$/.test(filePath)
-	);
+	return isAllowedMcpWriterPath(filePath);
 }
 
 test("F003 external MCP JSON fixtures are executable", async (t) => {
