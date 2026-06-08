@@ -2,27 +2,30 @@
 
 This matrix maps high-level specifications to feature specs, implementation targets, and current test coverage. Status values are: `done`, `partial`, `missing`, `planned`.
 
-| Requirement | Feature | Existing / target code | Existing / target tests | Status | Notes |
-| --- | --- | --- | --- | --- | --- |
-| SSoT YAML validation | F001 | `src/crawler/parser.ts` | `tests/parser.test.ts` | partial | Move schema to `.spec/schemas/ssot.schema.json`. |
-| Fetch retry and conditional GET | F001 | `src/crawler/fetch.ts` | `tests/fetch.test.ts` | partial | Needs timeout configurability and source-level degraded operation integration. |
-| `crawler-state.json` idempotency | F001 | `src/crawler/state.ts` | `tests/state.test.ts` | partial | Backend must move from local file abstraction to Cloud Storage generation-precondition adapter. |
-| No LLM / commit on unchanged content | F001 | orchestrator guard target | `tests/business-rules.test.ts` | partial | Needs explicit Writer / MCP invocation spy tests. |
-| Topic frontmatter schema | F002 | planned | planned contract tests | missing | Add executable schema. |
-| Incremental Markdown update | F002 | `src/utils/markdown-updater.ts` | `tests/markdown-updater.test.ts` | partial | Current utility is local; full-document guard still missing. |
-| No-overwrite content guard | F002 | planned | planned diff guard tests | missing | Must be deterministic before Reviewer. |
-| Orphan note resolution | F002 | planned graph scanner | planned graph tests | missing | Current tests simulate link insertion only. |
-| Report novelty / duplicate suppression | F002 | planned | planned report tests | missing | Needs measurable thresholds. |
-| Orchestrator max-3 review loop | F003 | `src/orchestrator.ts` | `tests/orchestrator.test.ts` | partial | Needs explicit state transition table coverage. |
-| MCP process lifecycle cleanup | F003 | planned `McpClient` | planned SIGTERM tests | missing | Required by tasks 1.4.1. |
-| GitHub App JWT | F003 | `src/auth/github-auth.ts` | `tests/github-auth.test.ts` | partial | Installation token exchange still missing. |
-| MCP JSON-RPC contracts | F003 | planned contract builders | planned contract tests | missing | Convert examples in `contracts/mcp-contracts.md` into fixtures. |
-| Protected merge preconditions | F003 | planned Reviewer gate | planned gate tests | missing | Must aggregate CI, Takumi Guard, deterministic content gates. |
-| Quartz Graph disabled | F004 | planned Quartz config | planned artifact tests | missing | Verify config and build output. |
-| Cloudflare deployment gate | F004 | planned notification gate | planned webhook tests | missing | Require success + production + main. |
-| Discord embed payload | F004 | planned notification builder | planned schema tests | missing | Convert example to executable fixture. |
-| Discord idempotency | F004 | planned notification state | planned duplicate event tests | missing | Store outside Git. |
-| Takumi Guard required gate | Cross-cutting | CI / Reviewer gate target | CI and gate tests | planned | Fail closed on unavailable / indeterminate status. |
+Coverage depth values are: `missing` (no executable test), `prototype` (test-local helper/model only), `fixture-contract` (external fixture plus schema/policy validation), `src-unit` (`src/` production function imported directly), `src-integration` (multiple production modules combined), and `ci-gate` (operated as an intentional CI failure gate). A test being run by `pnpm test` in CI does not by itself raise a requirement to `ci-gate`; the depth should describe the deepest meaningful production/contract coverage currently present.
+
+| Requirement | Feature | Existing / target code | Existing / target tests | Coverage depth | Status | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| SSoT YAML validation | F001 | `src/crawler/parser.ts`; target executable schema in `.spec/schemas/ssot.schema.json` | `tests/parser.test.ts`; fixture/schema checks in `tests/f001-idempotency-contract.test.ts` | `src-unit` | partial | Parser is imported from `src/`; schema migration remains incomplete. |
+| Fetch retry and conditional GET | F001 | `src/crawler/fetch.ts` | `tests/fetch.test.ts` | `src-unit` | partial | Needs timeout configurability and source-level degraded operation integration. |
+| `crawler-state.json` idempotency | F001 | `src/crawler/state.ts`; target Cloud Storage generation-precondition adapter | `tests/state.test.ts`; Cloud Storage contract model in `tests/f001-idempotency-contract.test.ts` | `src-unit` | partial | Local state functions are covered; Cloud Storage behavior is still a contract model, not production adapter coverage. |
+| No LLM / commit on unchanged content | F001 | `src/orchestrator.ts` guard path plus Writer/MCP invocation boundary target | `tests/f001-idempotency-contract.test.ts`; `tests/business-rules.test.ts` | `src-integration` | partial | Orchestration path is exercised with production code, but explicit Writer / MCP spy coverage is still needed. |
+| Topic frontmatter schema | F002 | target `src/content/frontmatter.ts` or schema-owned validator | `tests/f002-content-guards.test.ts` with `.spec/schemas/topic-frontmatter.schema.json` and fixtures | `fixture-contract` | partial | Executable schema/fixture coverage exists, but validation is still test-local and must not be marked `done`. |
+| Incremental Markdown update | F002 | `src/utils/markdown-updater.ts`; target production Writer integration | `tests/markdown-updater.test.ts`; business-rule scenarios | `src-unit` | partial | Current utility is local; full-document guard and Writer integration are still missing. |
+| No-overwrite content guard | F002 | target `src/content/guards/no-overwrite.ts` | `tests/f002-content-guards.test.ts` | `prototype` | partial | Test-local helper encodes destructive-change policy only; no production guard yet, so not `done`. |
+| Orphan note resolution | F002 | target graph scanner / `src/content/guards/internal-links.ts` and `orphan-score.ts` | `tests/f002-content-guards.test.ts`; `tests/markdown-updater.test.ts` link insertion scenarios | `prototype` | partial | Current coverage simulates link and orphan scoring models; no production graph scanner yet. |
+| Report novelty / duplicate suppression | F002 | target `src/content/guards/report-novelty.ts` | `tests/f002-content-guards.test.ts` | `prototype` | partial | Duplicate threshold is encoded in a test-local helper; needs production report-generation integration. |
+| Orchestrator max-3 review loop | F003 | `src/orchestrator.ts`; target `src/orchestrator/state-machine.ts` | `tests/orchestrator.test.ts`; `tests/f003-orchestrator-state-table.test.ts` | `src-unit` | partial | Legacy production orchestrator tests exist, but explicit transition table coverage is still prototype-only and not `done`. |
+| MCP process lifecycle cleanup | F003 | target `McpClient` / child-process lifecycle adapter | `tests/f003-mcp-lifecycle.test.ts` | `prototype` | partial | Deterministic fake child-process harness exists; real production lifecycle wiring and OS-signal integration remain. |
+| GitHub App JWT / installation token flow | F003 | `src/auth/github-auth.ts`; target installation token exchange and MCP launcher env wiring | `tests/github-auth.test.ts`; `tests/f003-github-installation-token.test.ts` | `src-unit` | partial | JWT generation imports production code; installation-token exchange is still test-local with production TODOs. |
+| MCP JSON-RPC contracts | F003 | target contract builders / `src/mcp/tool-policy.ts` | `tests/f003-mcp-contract-fixtures.test.ts`; legacy `tests/contracts.test.ts` | `fixture-contract` | partial | External JSON fixtures and policy checks exist; builders/validators are not production modules yet, so not `done`. |
+| Protected merge preconditions | F003 | target Reviewer merge gate aggregating CI, Takumi Guard, content, and branch evidence | `tests/f003-mcp-contract-fixtures.test.ts`; `tests/contracts.test.ts` | `fixture-contract` | partial | Merge-call fixtures fail closed, but production Reviewer aggregation and actual protected-branch operation remain missing. |
+| Quartz Graph disabled | F004 | target Quartz config/build artifact policy | `tests/f004-cloudflare-discord.test.ts`; `tests/integration/f004-quartz-public-artifacts.integration.ts` | `fixture-contract` | partial | Fixture and optional artifact-contract coverage exist; production Quartz config/build pipeline is not fully gated as default CI. |
+| Cloudflare deployment gate | F004 | target `src/notifications/cloudflare-discord.ts` | `tests/f004-cloudflare-discord.test.ts`; legacy `tests/contracts.test.ts` shape checks | `prototype` | partial | Test-local notification decision model enforces success + production + main, but no production notification module yet. |
+| Discord embed payload | F004 | target `src/notifications/cloudflare-discord.ts` payload builder | `tests/f004-cloudflare-discord.test.ts`; `.spec/schemas/discord-webhook-payload.schema.json` | `fixture-contract` | partial | Fixture/schema/policy validation exists; canonical builder remains test-local, so not `done`. |
+| Discord idempotency | F004 | target notification state backend outside Git | `tests/f004-cloudflare-discord.test.ts` | `prototype` | partial | Test-local state transition and generation-precondition model exist; no external state backend implementation yet. |
+| Takumi Guard required gate | Cross-cutting | CI / Reviewer gate target | `.github/workflows/ci.yml`; fail-closed contract tests in `tests/contracts.test.ts` | `fixture-contract` | planned | Policy is covered by fixtures/contracts, but CI setup is currently non-blocking and no required Reviewer gate is implemented. |
+
 
 ## Prototype canonical interface catalog
 
