@@ -5,11 +5,23 @@ export interface FetchResult {
 	lastModifiedHeader: string | null;
 }
 
+export type Fetcher = (
+	input: string | URL | Request,
+	init?: RequestInit,
+) => Promise<Response>;
+
+export interface CrawlSourceOptions {
+	fetcher?: Fetcher;
+	retries?: number;
+	delayMs?: number;
+}
+
 export async function fetchWithRetry(
 	url: string,
 	retries = 3,
 	delayMs = 1000,
 	lastModifiedHeader: string | null = null,
+	fetcher: Fetcher = fetch,
 ): Promise<FetchResult> {
 	let attempt = 0;
 	while (attempt < retries) {
@@ -23,7 +35,7 @@ export async function fetchWithRetry(
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-			const response = await fetch(url, {
+			const response = await fetcher(url, {
 				headers,
 				signal: controller.signal,
 			});
@@ -178,6 +190,7 @@ function cleanCdata(text: string): string {
 export async function crawlSource(
 	source: SsotSource,
 	lastModifiedHeader: string | null = null,
+	options: CrawlSourceOptions = {},
 ): Promise<{
 	content: string;
 	lastModifiedHeader: string | null;
@@ -187,7 +200,13 @@ export async function crawlSource(
 	const crawlUrl = source.feed_url || source.url;
 	const isFeed = !!source.feed_url;
 
-	const result = await fetchWithRetry(crawlUrl, 3, 1000, lastModifiedHeader);
+	const result = await fetchWithRetry(
+		crawlUrl,
+		options.retries ?? 3,
+		options.delayMs ?? 1000,
+		lastModifiedHeader,
+		options.fetcher,
+	);
 
 	if (result.content === "") {
 		// 304 Not Modified
