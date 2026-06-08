@@ -4,8 +4,7 @@
  *
  * The helpers in this file are intentionally deterministic: they encode the
  * fail-closed gates that must protect autonomous GitHub MCP writes, merges,
- * and runtime state before production adapters exist. Discord notification
- * prototypes live in `tests/f004-cloudflare-discord.test.ts`.
+ * runtime state, and Discord notifications before production adapters exist.
  */
 
 import { test } from "node:test";
@@ -32,6 +31,24 @@ interface MergePreconditions {
 	branchPolicy: GateStatus;
 	immutableFiles: GateStatus;
 	internalLinks: GateStatus;
+}
+
+interface PagesDeploymentEvent {
+	id: string;
+	project_name: string;
+	deployment: {
+		id: string;
+		url: string;
+		environment: string;
+		status: string;
+		created_on: string;
+		modified_on: string;
+		meta: {
+			branch: string;
+			commit_hash: string;
+			commit_message: string;
+		};
+	};
 }
 
 const owner = "example-org";
@@ -118,6 +135,64 @@ function canAutonomouslyMerge(gates: MergePreconditions): boolean {
 	return Object.values(gates).every((status) => status === "passed");
 }
 
+function shouldNotifyDiscord(
+	event: PagesDeploymentEvent,
+	publicBaseUrl: string,
+	latestReportLive: boolean,
+	notifiedCommitHashes: Set<string>,
+): boolean {
+	return (
+		event.deployment.status === "success" &&
+		event.deployment.environment === "production" &&
+		event.deployment.meta.branch === "main" &&
+		event.deployment.url === publicBaseUrl &&
+		latestReportLive &&
+		!notifiedCommitHashes.has(event.deployment.meta.commit_hash)
+	);
+}
+
+function buildDiscordPayload(event: PagesDeploymentEvent) {
+	return {
+		username: "Aegis-Intelligence",
+		avatar_url:
+			"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp",
+		embeds: [
+			{
+				title: "🛡️ インテリジェンス更新 ＆ 本番デプロイ成功報告",
+				description:
+					"提案・査読エージェントによる検証をすべてパスし、最新のサイバーセキュリティインテリジェンスが本番環境へ安全にホスティングされました。",
+				url: event.deployment.url,
+				color: 3066993,
+				fields: [
+					{
+						name: "📑 更新要約レポート (最新)",
+						value:
+							"[2026-05-27_Report](https://osint-kaname.pages.dev/reports/2026-05-27_Report)",
+						inline: true,
+					},
+					{
+						name: "🔗 関連トピック解説",
+						value:
+							"- [[能動的サイバー防御]](https://osint-kaname.pages.dev/topics/gov-agencies/NCO)\n- [[サイバー演習CYDER]](https://osint-kaname.pages.dev/topics/cyber-exercises/CYDER)",
+						inline: false,
+					},
+					{
+						name: "⚙️ 実行履歴",
+						value: `マージコミット: \`${event.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
+						inline: false,
+					},
+				],
+				footer: {
+					text: "`kaname` • サーバーレス自律監視システム",
+					icon_url:
+						"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp",
+				},
+				timestamp: new Date(event.deployment.modified_on).toISOString(),
+			},
+		],
+	};
+}
+
 const allGreenGates: MergePreconditions = {
 	ci: "passed",
 	takumiGuard: "passed",
@@ -125,6 +200,25 @@ const allGreenGates: MergePreconditions = {
 	branchPolicy: "passed",
 	immutableFiles: "passed",
 	internalLinks: "passed",
+};
+
+const deploymentSuccess: PagesDeploymentEvent = {
+	id: "evt_pages_deploy_success",
+	project_name: "osint-kaname",
+	deployment: {
+		id: "deploy_id_98765",
+		url: "https://osint-kaname.pages.dev",
+		environment: "production",
+		status: "success",
+		created_on: "2026-05-27T09:45:00Z",
+		modified_on: "2026-05-27T09:50:00Z",
+		meta: {
+			branch: "main",
+			commit_hash: "a1b2c3d4e5f6g7h8i9j0",
+			commit_message:
+				"[Aegis-Reviewer] Self-Merge: Intelligence Update Passed Review",
+		},
+	},
 };
 
 test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) => {
@@ -264,6 +358,127 @@ test("Protected merge and Takumi Guard gates fail closed", async (t) => {
 					);
 				}
 			}
+		},
+	);
+});
+
+test("Cloudflare Pages deployment gate and Discord webhook contract", async (t) => {
+	await t.test(
+		"allows notification only for first successful production main deployment",
+		() => {
+			assert.strictEqual(
+				shouldNotifyDiscord(
+					deploymentSuccess,
+					"https://osint-kaname.pages.dev",
+					true,
+					new Set(),
+				),
+				true,
+			);
+		},
+	);
+
+	await t.test(
+		"blocks every non-production, non-main, failed, broken, or duplicate event",
+		() => {
+			const cases: Array<[string, PagesDeploymentEvent, boolean, Set<string>]> =
+				[
+					[
+						"failed deployment",
+						{
+							...deploymentSuccess,
+							deployment: {
+								...deploymentSuccess.deployment,
+								status: "failure",
+							},
+						},
+						true,
+						new Set(),
+					],
+					[
+						"preview environment",
+						{
+							...deploymentSuccess,
+							deployment: {
+								...deploymentSuccess.deployment,
+								environment: "preview",
+							},
+						},
+						true,
+						new Set(),
+					],
+					[
+						"non-main branch",
+						{
+							...deploymentSuccess,
+							deployment: {
+								...deploymentSuccess.deployment,
+								meta: {
+									...deploymentSuccess.deployment.meta,
+									branch: "osint/draft",
+								},
+							},
+						},
+						true,
+						new Set(),
+					],
+					["latest report URL not live", deploymentSuccess, false, new Set()],
+					[
+						"duplicate commit hash",
+						deploymentSuccess,
+						true,
+						new Set([deploymentSuccess.deployment.meta.commit_hash]),
+					],
+				];
+
+			for (const [name, event, latestReportLive, notified] of cases) {
+				assert.strictEqual(
+					shouldNotifyDiscord(
+						event,
+						"https://osint-kaname.pages.dev",
+						latestReportLive,
+						notified,
+					),
+					false,
+					name,
+				);
+			}
+
+			assert.strictEqual(
+				shouldNotifyDiscord(
+					deploymentSuccess,
+					"https://evil.example.invalid",
+					true,
+					new Set(),
+				),
+				false,
+				"public base URL mismatch must block notification",
+			);
+		},
+	);
+
+	await t.test(
+		"Discord rich embed fixture has required public URL and audit trail",
+		() => {
+			const payload = buildDiscordPayload(deploymentSuccess);
+			assert.strictEqual(payload.username, "Aegis-Intelligence");
+			assert.strictEqual(payload.embeds.length, 1);
+			assert.strictEqual(
+				payload.embeds[0].url,
+				"https://osint-kaname.pages.dev",
+			);
+			assert.strictEqual(payload.embeds[0].color, 3066993);
+			assert.ok(
+				payload.embeds[0].fields[0].value.includes("2026-05-27_Report"),
+			);
+			assert.ok(
+				payload.embeds[0].fields[1].value.includes("[[能動的サイバー防御]]"),
+			);
+			assert.ok(payload.embeds[0].fields[2].value.includes("a1b2c3d4e5"));
+			assert.strictEqual(
+				payload.embeds[0].timestamp,
+				"2026-05-27T09:50:00.000Z",
+			);
 		},
 	);
 });
