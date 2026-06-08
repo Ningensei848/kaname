@@ -46,3 +46,35 @@ jobs:
 
       - name: Run Tests
         run: pnpm run test
+
+  quartz-artifact-integration:
+    runs-on: ubuntu-latest
+    if: ${{ vars.RUN_QUARTZ_ARTIFACT_INTEGRATION == 'true' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.5.1
+          standalone: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Download Quartz public artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: quartz-public
+          path: public
+
+      - name: Run Quartz artifact integration tests
+        run: pnpm run test:integration:artifacts
