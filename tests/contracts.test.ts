@@ -11,6 +11,7 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
+import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 
 interface JsonRpcToolCall {
 	jsonrpc: string;
@@ -82,10 +83,7 @@ function assertJsonRpcToolEnvelope(call: JsonRpcToolCall): void {
 }
 
 function isAllowedContentPath(filePath: string): boolean {
-	return (
-		/^topics\/.+\.md$/.test(filePath) ||
-		/^reports\/\d{4}-\d{2}-\d{2}_Report\.md$/.test(filePath)
-	);
+	return isAllowedMcpWriterPath(filePath);
 }
 
 function assertValidMcpCall(
@@ -510,6 +508,33 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 						message: "[Aegis-Writer] Modify runtime code",
 					},
 					203,
+				),
+				readJson(
+					"tests/fixtures/f003/mcp/invalid/writer-nested-topic-path.json",
+				) as JsonRpcToolCall,
+				baseCall(
+					"create_or_update_file",
+					{
+						owner,
+						repo,
+						path: "topics/../nco.md",
+						content: "# traversal",
+						branch: "osint/content-update",
+						message: "[Aegis-Writer] Attempt path traversal",
+					},
+					205,
+				),
+				baseCall(
+					"create_or_update_file",
+					{
+						owner,
+						repo,
+						path: "topics/gov-agencies/NCO\u0000.md",
+						content: "# control",
+						branch: "osint/content-update",
+						message: "[Aegis-Writer] Attempt control char path",
+					},
+					206,
 				),
 			];
 
