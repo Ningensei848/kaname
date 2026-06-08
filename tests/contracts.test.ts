@@ -82,10 +82,27 @@ function assertJsonRpcToolEnvelope(call: JsonRpcToolCall): void {
 }
 
 function isAllowedContentPath(filePath: string): boolean {
+	if (hasPathTraversal(filePath) || hasControlChars(filePath)) {
+		return false;
+	}
+
 	return (
-		/^topics\/.+\.md$/.test(filePath) ||
+		/^topics\/[^/]+\/[^/]+\.md$/.test(filePath) ||
 		/^reports\/\d{4}-\d{2}-\d{2}_Report\.md$/.test(filePath)
 	);
+}
+
+function hasPathTraversal(filePath: string): boolean {
+	return filePath
+		.split("/")
+		.some((segment) => segment === "." || segment === "..");
+}
+
+function hasControlChars(filePath: string): boolean {
+	return [...filePath].some((char) => {
+		const codePoint = char.codePointAt(0);
+		return codePoint !== undefined && (codePoint < 32 || codePoint === 127);
+	});
 }
 
 function assertValidMcpCall(
@@ -510,6 +527,33 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 						message: "[Aegis-Writer] Modify runtime code",
 					},
 					203,
+				),
+				readJson(
+					"tests/fixtures/f003/mcp/invalid/writer-nested-topic-path.json",
+				) as JsonRpcToolCall,
+				baseCall(
+					"create_or_update_file",
+					{
+						owner,
+						repo,
+						path: "topics/../nco.md",
+						content: "# traversal",
+						branch: "osint/content-update",
+						message: "[Aegis-Writer] Attempt path traversal",
+					},
+					205,
+				),
+				baseCall(
+					"create_or_update_file",
+					{
+						owner,
+						repo,
+						path: "topics/gov-agencies/NCO\u0000.md",
+						content: "# control",
+						branch: "osint/content-update",
+						message: "[Aegis-Writer] Attempt control char path",
+					},
+					206,
 				),
 			];
 
