@@ -33,14 +33,19 @@ interface MergePreconditions {
 	internalLinks: GateStatus;
 }
 
-interface PagesDeploymentEvent {
+type JsonObject = Record<string, unknown>;
+type JsonSchema = Record<string, unknown>;
+type ProbeResult = { ok: boolean; status: number };
+type UrlProbe = (url: string) => Promise<ProbeResult>;
+
+interface CloudflareDeploymentEvent {
 	id: string;
 	project_name: string;
 	deployment: {
 		id: string;
 		url: string;
-		environment: string;
-		status: string;
+		environment: "production" | "preview";
+		status: "success" | "failure" | "pending" | "skipped" | "canceled";
 		created_on: string;
 		modified_on: string;
 		meta: {
@@ -88,6 +93,10 @@ function assertValidMcpCall(
 	preconditions?: MergePreconditions,
 ): void {
 	assertJsonRpcToolEnvelope(call);
+	assert.deepStrictEqual(
+		validateWithSchema(".spec/schemas/mcp-tool-call.schema.json", call),
+		[],
+	);
 
 	const args = call.params.arguments;
 	switch (call.params.name) {
@@ -135,23 +144,205 @@ function canAutonomouslyMerge(gates: MergePreconditions): boolean {
 	return Object.values(gates).every((status) => status === "passed");
 }
 
-function shouldNotifyDiscord(
-	event: PagesDeploymentEvent,
-	publicBaseUrl: string,
-	latestReportLive: boolean,
-	notifiedCommitHashes: Set<string>,
-): boolean {
-	return (
-		event.deployment.status === "success" &&
-		event.deployment.environment === "production" &&
-		event.deployment.meta.branch === "main" &&
-		event.deployment.url === publicBaseUrl &&
-		latestReportLive &&
-		!notifiedCommitHashes.has(event.deployment.meta.commit_hash)
+function readJson(relativePath: string): unknown {
+	return JSON.parse(fs.readFileSync(relativePath, "utf8"));
+}
+
+function validateWithSchema(schemaPath: string, value: unknown): string[] {
+	const schema = readJson(schemaPath) as JsonSchema;
+	return validateJsonSchema(schema, value).map(
+		(error) => `${error.path}: ${error.message}`,
 	);
 }
 
-function buildDiscordPayload(event: PagesDeploymentEvent) {
+function validateJsonSchema(
+	schema: JsonSchema,
+	value: unknown,
+	currentPath = "$",
+): Array<{ path: string; message: string }> {
+	const errors: Array<{ path: string; message: string }> = [];
+
+	if (schema.type !== undefined && !matchesSchemaType(schema.type, value)) {
+		return [
+			{
+				path: currentPath,
+				message: `expected type ${JSON.stringify(schema.type)}`,
+			},
+		];
+	}
+
+	if (schema.const !== undefined && value !== schema.const) {
+		errors.push({
+			path: currentPath,
+			message: `expected const ${schema.const}`,
+		});
+	}
+	if (Array.isArray(schema.enum) && !schema.enum.includes(value)) {
+		errors.push({ path: currentPath, message: "expected enum value" });
+	}
+
+	if (typeof value === "string") {
+		if (
+			typeof schema.minLength === "number" &&
+			value.length < schema.minLength
+		) {
+			errors.push({
+				path: currentPath,
+				message: `expected minimum length ${schema.minLength}`,
+			});
+		}
+		if (
+			typeof schema.pattern === "string" &&
+			!new RegExp(schema.pattern).test(value)
+		) {
+			errors.push({ path: currentPath, message: "expected pattern match" });
+		}
+		if (schema.format === "uri" && !isValidUrl(value)) {
+			errors.push({ path: currentPath, message: "expected uri" });
+		}
+		if (schema.format === "date-time" && Number.isNaN(Date.parse(value))) {
+			errors.push({ path: currentPath, message: "expected date-time" });
+		}
+	}
+
+	if (
+		typeof value === "number" &&
+		typeof schema.minimum === "number" &&
+		value < schema.minimum
+	) {
+		errors.push({
+			path: currentPath,
+			message: `expected minimum ${schema.minimum}`,
+		});
+	}
+
+	if (schema.type === "array" && Array.isArray(value)) {
+		if (typeof schema.minItems === "number" && value.length < schema.minItems) {
+			errors.push({
+				path: currentPath,
+				message: `expected at least ${schema.minItems} items`,
+			});
+		}
+		if (typeof schema.maxItems === "number" && value.length > schema.maxItems) {
+			errors.push({
+				path: currentPath,
+				message: `expected at most ${schema.maxItems} items`,
+			});
+		}
+		if (isRecord(schema.items)) {
+			for (const [index, item] of value.entries()) {
+				errors.push(
+					...validateJsonSchema(schema.items, item, `${currentPath}[${index}]`),
+				);
+			}
+		}
+	}
+
+	if (schema.type === "object" && isRecord(value)) {
+		const properties = isRecord(schema.properties) ? schema.properties : {};
+		const required = Array.isArray(schema.required) ? schema.required : [];
+		for (const requiredKey of required) {
+			if (typeof requiredKey === "string" && !(requiredKey in value)) {
+				errors.push({
+					path: currentPath,
+					message: `missing required property ${requiredKey}`,
+				});
+			}
+		}
+		if (schema.additionalProperties === false) {
+			for (const key of Object.keys(value)) {
+				if (!(key in properties)) {
+					errors.push({
+						path: `${currentPath}.${key}`,
+						message: "additional property is not allowed",
+					});
+				}
+			}
+		}
+		for (const [key, propertySchema] of Object.entries(properties)) {
+			if (key in value && isRecord(propertySchema)) {
+				errors.push(
+					...validateJsonSchema(
+						propertySchema,
+						value[key],
+						`${currentPath}.${key}`,
+					),
+				);
+			}
+		}
+	}
+
+	return errors;
+}
+
+function matchesSchemaType(typeRule: unknown, value: unknown): boolean {
+	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
+	return allowedTypes.some((type) => {
+		switch (type) {
+			case "array":
+				return Array.isArray(value);
+			case "boolean":
+				return typeof value === "boolean";
+			case "integer":
+				return Number.isInteger(value);
+			case "number":
+				return typeof value === "number";
+			case "object":
+				return isRecord(value);
+			case "string":
+				return typeof value === "string";
+			default:
+				return false;
+		}
+	});
+}
+
+function isRecord(value: unknown): value is JsonObject {
+	return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isValidUrl(value: string): boolean {
+	try {
+		new URL(value);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+interface NotificationState {
+	notifiedDeploymentIds: string[];
+	notifiedCommitHashes: string[];
+}
+
+interface NotificationConfig {
+	publicBaseUrl: string;
+	latestReportUrl: string;
+}
+
+interface NotificationDecision {
+	shouldNotify: boolean;
+	reason: string;
+	reportUrlChecked: boolean;
+}
+
+type ShouldNotifyDiscord = (
+	event: CloudflareDeploymentEvent,
+	state: NotificationState,
+	config: NotificationConfig,
+	probeReportUrl: UrlProbe,
+) => Promise<NotificationDecision>;
+
+interface DiscordPayloadInput {
+	deployment: CloudflareDeploymentEvent["deployment"];
+	publicBaseUrl: string;
+	latestReportUrl: string;
+	relatedTopics: Array<{ title: string; url: string }>;
+}
+
+function buildDiscordPayload(input: DiscordPayloadInput): JsonObject {
+	const reportTitle =
+		input.latestReportUrl.split("/").at(-1) ?? "latest-report";
 	return {
 		username: "Aegis-Intelligence",
 		avatar_url:
@@ -161,24 +352,24 @@ function buildDiscordPayload(event: PagesDeploymentEvent) {
 				title: "🛡️ インテリジェンス更新 ＆ 本番デプロイ成功報告",
 				description:
 					"提案・査読エージェントによる検証をすべてパスし、最新のサイバーセキュリティインテリジェンスが本番環境へ安全にホスティングされました。",
-				url: event.deployment.url,
+				url: input.publicBaseUrl,
 				color: 3066993,
 				fields: [
 					{
 						name: "📑 更新要約レポート (最新)",
-						value:
-							"[2026-05-27_Report](https://osint-kaname.pages.dev/reports/2026-05-27_Report)",
+						value: `[${reportTitle}](${input.latestReportUrl})`,
 						inline: true,
 					},
 					{
 						name: "🔗 関連トピック解説",
-						value:
-							"- [[能動的サイバー防御]](https://osint-kaname.pages.dev/topics/gov-agencies/NCO)\n- [[サイバー演習CYDER]](https://osint-kaname.pages.dev/topics/cyber-exercises/CYDER)",
+						value: input.relatedTopics
+							.map((topic) => `- [[${topic.title}]](${topic.url})`)
+							.join("\n"),
 						inline: false,
 					},
 					{
 						name: "⚙️ 実行履歴",
-						value: `マージコミット: \`${event.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
+						value: `マージコミット: \`${input.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
 						inline: false,
 					},
 				],
@@ -187,7 +378,7 @@ function buildDiscordPayload(event: PagesDeploymentEvent) {
 					icon_url:
 						"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp",
 				},
-				timestamp: new Date(event.deployment.modified_on).toISOString(),
+				timestamp: new Date(input.deployment.modified_on).toISOString(),
 			},
 		],
 	};
@@ -202,7 +393,7 @@ const allGreenGates: MergePreconditions = {
 	internalLinks: "passed",
 };
 
-const deploymentSuccess: PagesDeploymentEvent = {
+const deploymentSuccess: CloudflareDeploymentEvent = {
 	id: "evt_pages_deploy_success",
 	project_name: "osint-kaname",
 	deployment: {
@@ -362,123 +553,105 @@ test("Protected merge and Takumi Guard gates fail closed", async (t) => {
 	);
 });
 
-test("Cloudflare Pages deployment gate and Discord webhook contract", async (t) => {
+test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t) => {
 	await t.test(
-		"allows notification only for first successful production main deployment",
+		"Cloudflare deployment fixture satisfies the webhook event schema",
 		() => {
-			assert.strictEqual(
-				shouldNotifyDiscord(
+			assert.deepStrictEqual(
+				validateWithSchema(
+					".spec/schemas/cloudflare-pages-deployment.schema.json",
 					deploymentSuccess,
-					"https://osint-kaname.pages.dev",
-					true,
-					new Set(),
 				),
-				true,
+				[],
 			);
 		},
 	);
 
 	await t.test(
-		"blocks every non-production, non-main, failed, broken, or duplicate event",
-		() => {
-			const cases: Array<[string, PagesDeploymentEvent, boolean, Set<string>]> =
-				[
-					[
-						"failed deployment",
-						{
-							...deploymentSuccess,
-							deployment: {
-								...deploymentSuccess.deployment,
-								status: "failure",
-							},
-						},
-						true,
-						new Set(),
-					],
-					[
-						"preview environment",
-						{
-							...deploymentSuccess,
-							deployment: {
-								...deploymentSuccess.deployment,
-								environment: "preview",
-							},
-						},
-						true,
-						new Set(),
-					],
-					[
-						"non-main branch",
-						{
-							...deploymentSuccess,
-							deployment: {
-								...deploymentSuccess.deployment,
-								meta: {
-									...deploymentSuccess.deployment.meta,
-									branch: "osint/draft",
-								},
-							},
-						},
-						true,
-						new Set(),
-					],
-					["latest report URL not live", deploymentSuccess, false, new Set()],
-					[
-						"duplicate commit hash",
-						deploymentSuccess,
-						true,
-						new Set([deploymentSuccess.deployment.meta.commit_hash]),
-					],
-				];
-
-			for (const [name, event, latestReportLive, notified] of cases) {
+		"notification gate contract is the async DI surface owned by F004 tests",
+		async () => {
+			const probeReportUrl: UrlProbe = async (url) => ({
+				ok: url === "https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				status: 200,
+			});
+			const contract: ShouldNotifyDiscord = async (
+				event,
+				state,
+				config,
+				probe,
+			) => {
+				assert.strictEqual(event, deploymentSuccess);
+				assert.deepStrictEqual(state, {
+					notifiedDeploymentIds: [],
+					notifiedCommitHashes: [],
+				});
 				assert.strictEqual(
-					shouldNotifyDiscord(
-						event,
-						"https://osint-kaname.pages.dev",
-						latestReportLive,
-						notified,
-					),
-					false,
-					name,
+					config.latestReportUrl,
+					"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
 				);
-			}
+				const probeResult = await probe(config.latestReportUrl);
+				return {
+					shouldNotify: probeResult.ok,
+					reason: "contract shape only; decision logic is covered in F004",
+					reportUrlChecked: true,
+				};
+			};
 
-			assert.strictEqual(
-				shouldNotifyDiscord(
-					deploymentSuccess,
-					"https://evil.example.invalid",
-					true,
-					new Set(),
-				),
-				false,
-				"public base URL mismatch must block notification",
+			const decision = await contract(
+				deploymentSuccess,
+				{ notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+				{
+					publicBaseUrl: "https://osint-kaname.pages.dev",
+					latestReportUrl:
+						"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				},
+				probeReportUrl,
 			);
+
+			assert.deepStrictEqual(decision, {
+				shouldNotify: true,
+				reason: "contract shape only; decision logic is covered in F004",
+				reportUrlChecked: true,
+			});
 		},
 	);
 
 	await t.test(
-		"Discord rich embed fixture has required public URL and audit trail",
+		"Discord rich embed payload satisfies schema and MCP audit trail expectations",
 		() => {
-			const payload = buildDiscordPayload(deploymentSuccess);
+			const payload = buildDiscordPayload({
+				deployment: deploymentSuccess.deployment,
+				publicBaseUrl: "https://osint-kaname.pages.dev",
+				latestReportUrl:
+					"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				relatedTopics: [
+					{
+						title: "能動的サイバー防御",
+						url: "https://osint-kaname.pages.dev/topics/gov-agencies/NCO",
+					},
+					{
+						title: "サイバー演習CYDER",
+						url: "https://osint-kaname.pages.dev/topics/cyber-exercises/CYDER",
+					},
+				],
+			});
+
+			assert.deepStrictEqual(
+				validateWithSchema(
+					".spec/schemas/discord-webhook-payload.schema.json",
+					payload,
+				),
+				[],
+			);
 			assert.strictEqual(payload.username, "Aegis-Intelligence");
-			assert.strictEqual(payload.embeds.length, 1);
-			assert.strictEqual(
-				payload.embeds[0].url,
-				"https://osint-kaname.pages.dev",
-			);
-			assert.strictEqual(payload.embeds[0].color, 3066993);
-			assert.ok(
-				payload.embeds[0].fields[0].value.includes("2026-05-27_Report"),
-			);
-			assert.ok(
-				payload.embeds[0].fields[1].value.includes("[[能動的サイバー防御]]"),
-			);
-			assert.ok(payload.embeds[0].fields[2].value.includes("a1b2c3d4e5"));
-			assert.strictEqual(
-				payload.embeds[0].timestamp,
-				"2026-05-27T09:50:00.000Z",
-			);
+			const embed = (payload.embeds as JsonObject[])[0];
+			assert.strictEqual(embed.url, "https://osint-kaname.pages.dev");
+			assert.strictEqual(embed.color, 3066993);
+			const fields = embed.fields as JsonObject[];
+			assert.ok(String(fields[0].value).includes("2026-05-27_Report"));
+			assert.ok(String(fields[1].value).includes("[[能動的サイバー防御]]"));
+			assert.ok(String(fields[2].value).includes("a1b2c3d4e5"));
+			assert.strictEqual(embed.timestamp, "2026-05-27T09:50:00.000Z");
 		},
 	);
 });
