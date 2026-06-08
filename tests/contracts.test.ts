@@ -11,6 +11,7 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
+import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 
 interface JsonRpcToolCall {
 	jsonrpc: string;
@@ -82,27 +83,7 @@ function assertJsonRpcToolEnvelope(call: JsonRpcToolCall): void {
 }
 
 function isAllowedContentPath(filePath: string): boolean {
-	if (hasPathTraversal(filePath) || hasControlChars(filePath)) {
-		return false;
-	}
-
-	return (
-		/^topics\/[^/]+\/[^/]+\.md$/.test(filePath) ||
-		/^reports\/\d{4}-\d{2}-\d{2}_Report\.md$/.test(filePath)
-	);
-}
-
-function hasPathTraversal(filePath: string): boolean {
-	return filePath
-		.split("/")
-		.some((segment) => segment === "." || segment === "..");
-}
-
-function hasControlChars(filePath: string): boolean {
-	return [...filePath].some((char) => {
-		const codePoint = char.codePointAt(0);
-		return codePoint !== undefined && (codePoint < 32 || codePoint === 127);
-	});
+	return isAllowedMcpWriterPath(filePath);
 }
 
 function assertValidMcpCall(
