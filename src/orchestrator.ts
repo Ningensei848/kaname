@@ -1,3 +1,54 @@
+import { crawlSource, type Fetcher } from "./crawler/fetch";
+import type { SsotSource } from "./types";
+
+export interface McpToolCall {
+	jsonrpc: "2.0";
+	method: "tools/call";
+	params: {
+		name: "create_issue";
+		arguments: {
+			owner: string;
+			repo: string;
+			title: string;
+			body: string;
+		};
+	};
+	id: number;
+}
+
+export interface McpClient {
+	callTool: (call: McpToolCall) => Promise<unknown> | unknown;
+}
+
+export interface CrawlerEscalationDependencies {
+	mcpClient: McpClient;
+	owner: string;
+	repo: string;
+	fetcher?: Fetcher;
+	now?: () => Date;
+	idFactory?: () => number;
+	thirdPartyMailer?: { send: (message: unknown) => Promise<unknown> | unknown };
+}
+
+export interface CrawlerSourceSuccess {
+	sourceId: string;
+	content: string;
+	lastModifiedHeader: string | null;
+	isNotModified: boolean;
+}
+
+export interface CrawlerSourceFailure {
+	sourceId: string;
+	error: Error;
+}
+
+export interface CrawlerEscalationResult {
+	policy: "continue_after_source_failure";
+	successes: CrawlerSourceSuccess[];
+	failures: CrawlerSourceFailure[];
+	escalatedIssueCalls: McpToolCall[];
+}
+
 export interface DiffResult {
 	sourceId: string;
 	hasChanged: boolean;
@@ -159,4 +210,70 @@ if (require.main === module) {
 	console.log(
 		"kaname orchestrator module loaded. Use runOrchestration() from Cloud Run entrypoint wiring.",
 	);
+}
+
+export async function crawlSourcesWithFailureEscalation(
+	sources: SsotSource[],
+	dependencies: CrawlerEscalationDependencies,
+): Promise<CrawlerEscalationResult> {
+	const successes: CrawlerSourceSuccess[] = [];
+	const failures: CrawlerSourceFailure[] = [];
+	const escalatedIssueCalls: McpToolCall[] = [];
+
+	for (const source of sources) {
+		try {
+			const result = await crawlSource(source, null, {
+				fetcher: dependencies.fetcher,
+				retries: 3,
+				delayMs: 0,
+			});
+			successes.push({ sourceId: source.id, ...result });
+		} catch (error) {
+			const normalizedError =
+				error instanceof Error ? error : new Error(String(error));
+			failures.push({ sourceId: source.id, error: normalizedError });
+			const issueCall = buildCrawlerFailureIssueCall(
+				source,
+				normalizedError,
+				dependencies,
+			);
+			escalatedIssueCalls.push(issueCall);
+			await dependencies.mcpClient.callTool(issueCall);
+		}
+	}
+
+	return {
+		policy: "continue_after_source_failure",
+		successes,
+		failures,
+		escalatedIssueCalls,
+	};
+}
+
+function buildCrawlerFailureIssueCall(
+	source: SsotSource,
+	error: Error,
+	dependencies: CrawlerEscalationDependencies,
+): McpToolCall {
+	const now = dependencies.now?.() ?? new Date();
+	return {
+		jsonrpc: "2.0",
+		method: "tools/call",
+		params: {
+			name: "create_issue",
+			arguments: {
+				owner: dependencies.owner,
+				repo: dependencies.repo,
+				title: `[System Error] Crawling Failed for ID: ${source.id}`,
+				body: [
+					"## 障害発生報告",
+					`- **発生日時**: ${now.toISOString()}`,
+					`- **対象ソース**: ${source.name}`,
+					`- **エラー内容**: ${error.message}`,
+					"- **ステータス**: 縮退運転を継続中です。GCP Cloud Loggingおよび接続ステータスを確認してください。",
+				].join("\n"),
+			},
+		},
+		id: dependencies.idFactory?.() ?? 104,
+	};
 }
