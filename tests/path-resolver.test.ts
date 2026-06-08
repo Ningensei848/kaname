@@ -65,12 +65,47 @@ test("Path Resolver MECE Tests", async (t) => {
 	);
 
 	await t.test(
+		"フォールバック制限：サブディレクトリ総数が94件の時に新規カテゴリにアサインされること",
+		() => {
+			const topicsDir = path.join(tempDir, "topics");
+			fs.rmSync(topicsDir, { recursive: true, force: true });
+			fs.mkdirSync(topicsDir, { recursive: true });
+
+			// 94個のダミーフォルダを作成
+			for (let i = 0; i < 94; i++) {
+				fs.mkdirSync(path.join(topicsDir, `dummy_agency_${i}`), {
+					recursive: true,
+				});
+			}
+
+			// 閾値未満の新規カテゴリは、そのカテゴリのフォルダへアサイン
+			const resolved = resolveTopicPath(
+				tempDir,
+				"brand-new-agency",
+				"IntelligenceReport",
+				100,
+				95,
+			);
+			const expected = path.join(
+				tempDir,
+				"topics",
+				"brand-new-agency",
+				"IntelligenceReport.md",
+			);
+			assert.strictEqual(resolved, expected);
+			assert.notStrictEqual(
+				resolved,
+				path.join(tempDir, "topics", "misc", "IntelligenceReport.md"),
+			);
+		},
+	);
+
+	await t.test(
 		"フォールバック制限：サブディレクトリ総数が95件以上の時にmiscにアサインされること",
 		() => {
 			const topicsDir = path.join(tempDir, "topics");
-			if (!fs.existsSync(topicsDir)) {
-				fs.mkdirSync(topicsDir, { recursive: true });
-			}
+			fs.rmSync(topicsDir, { recursive: true, force: true });
+			fs.mkdirSync(topicsDir, { recursive: true });
 
 			// 95個のダミーフォルダを作成
 			for (let i = 0; i < 95; i++) {
