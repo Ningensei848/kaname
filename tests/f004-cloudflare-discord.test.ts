@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
+import { assertQuartzGraphDisabledArtifact } from "./helpers/quartz-artifact-contract";
 
 const repoRoot = process.cwd();
 const publicBaseUrl = "https://osint-kaname.pages.dev";
@@ -461,35 +462,6 @@ function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
 	return errors;
 }
 
-function assertQuartzGraphDisabledArtifact(relativePaths: string[]): string[] {
-	const forbiddenPatterns = [
-		/\bGraph View\b/i,
-		/\bglobal-graph\b/i,
-		/\blocal-graph\b/i,
-		/\bgraph\.inline\.js\b/i,
-		/data-component=["']Graph["']/i,
-	];
-	const violations: string[] = [];
-	for (const relativePath of relativePaths) {
-		const content = fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
-		for (const pattern of forbiddenPatterns) {
-			if (pattern.test(content)) {
-				violations.push(`${relativePath} contains ${pattern}`);
-			}
-		}
-	}
-	return violations;
-}
-
-function listHtmlFiles(rootDir: string): string[] {
-	const entries = fs.readdirSync(rootDir, { withFileTypes: true });
-	return entries.flatMap((entry) => {
-		const absolutePath = path.join(rootDir, entry.name);
-		if (entry.isDirectory()) return listHtmlFiles(absolutePath);
-		return entry.isFile() && entry.name.endsWith(".html") ? [absolutePath] : [];
-	});
-}
-
 class GenerationMismatchError extends Error {
 	constructor() {
 		super("notification state generation mismatch");
@@ -932,50 +904,35 @@ test("F004 Discord payload schema fixture is executable", async (t) => {
 
 test("F004 Quartz Graph disabled artifact contract", async (t) => {
 	await t.test(
-		"published artifact fixture contains no graph view UI or scripts",
+		"graph-disabled fixture contains no graph view UI or scripts",
 		() => {
+			const fixturePath =
+				"tests/fixtures/f004/quartz-artifacts/graph-disabled.html";
 			assert.deepStrictEqual(
 				assertQuartzGraphDisabledArtifact([
-					"tests/fixtures/f004/quartz-artifacts/graph-disabled.html",
+					{
+						path: fixturePath,
+						html: fs.readFileSync(path.join(repoRoot, fixturePath), "utf8"),
+					},
 				]),
 				[],
 			);
 		},
 	);
 
-	await t.test(
-		"graph-enabled artifact fixture is rejected deterministically",
-		() => {
-			assert.match(
-				assertQuartzGraphDisabledArtifact([
-					"tests/fixtures/f004/quartz-artifacts/graph-enabled.html",
-				]).join("\n"),
-				/Graph View|global-graph|graph\.inline\.js|data-component=\["'\]Graph/,
-			);
-		},
-	);
-
-	await t.test(
-		"actual production build artifacts comply when a Quartz output directory exists",
-		() => {
-			const actualArtifactsDir = path.join(repoRoot, "public");
-			if (!fs.existsSync(actualArtifactsDir)) {
-				assert.ok(
-					true,
-					"public/ does not exist until the Quartz build step is wired",
-				);
-				return;
-			}
-
-			const htmlArtifacts = listHtmlFiles(actualArtifactsDir).map(
-				(absolutePath) => path.relative(repoRoot, absolutePath),
-			);
-			assert.deepStrictEqual(
-				assertQuartzGraphDisabledArtifact(htmlArtifacts),
-				[],
-			);
-		},
-	);
+	await t.test("graph-enabled fixture is rejected deterministically", () => {
+		const fixturePath =
+			"tests/fixtures/f004/quartz-artifacts/graph-enabled.html";
+		assert.match(
+			assertQuartzGraphDisabledArtifact([
+				{
+					path: fixturePath,
+					html: fs.readFileSync(path.join(repoRoot, fixturePath), "utf8"),
+				},
+			]).join("\n"),
+			/Graph View|global-graph|graph\.inline\.js|data-component=\["'\]Graph/,
+		);
+	});
 });
 
 test("F004 Discord webhook retry contract is bounded and escalates safely", async (t) => {

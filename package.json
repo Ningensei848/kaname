@@ -10,7 +10,8 @@
 		"format": "biome format --write package.json tsconfig.json src tests",
 		"lint": "biome lint package.json tsconfig.json src tests",
 		"test": "node --import tsx --test tests/**/*.test.ts",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"test:integration:artifacts": "node --import tsx --test tests/integration/**/*.integration.ts"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.5",
