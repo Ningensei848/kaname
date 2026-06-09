@@ -119,6 +119,8 @@ test("AegisOrchestrator performs successful all-green squash merge through MCP",
 	assert.strictEqual(calls.length, 1);
 	assert.strictEqual(calls[0].params.name, "merge_pull_request");
 	assert.strictEqual(calls[0].params.arguments.merge_method, "squash");
+	assert.strictEqual("head" in calls[0].params.arguments, false);
+	assert.strictEqual("base" in calls[0].params.arguments, false);
 	assert.deepStrictEqual(validateToolPolicy(calls[0]), []);
 });
 

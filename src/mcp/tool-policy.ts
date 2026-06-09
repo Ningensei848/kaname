@@ -46,6 +46,9 @@ export function validateToolPolicy(
 	}
 
 	const args = call.params.arguments;
+	errors.push(...validateToolArgumentsShape(call.params.name, args));
+	recordFailedMergePreconditions(call.params.name, preconditions, errors);
+
 	switch (call.params.name) {
 		case "create_or_update_file": {
 			if (!String(args.branch).startsWith("osint/")) {
@@ -75,12 +78,6 @@ export function validateToolPolicy(
 			break;
 		}
 		case "merge_pull_request": {
-			if (!String(args.head).startsWith("osint/")) {
-				errors.push("merge head must be osint/*");
-			}
-			if (args.base !== "main") {
-				errors.push("merge base must be main");
-			}
 			if (args.merge_method !== "squash") {
 				errors.push("merge method must be squash");
 			}
@@ -120,6 +117,113 @@ export function validateToolPolicy(
 
 export function canMerge(gates: MergePreconditions): boolean {
 	return Object.values(gates).every((status) => status === "passed");
+}
+
+type ToolName = PolicyMcpToolCall["params"]["name"];
+type ArgumentTypeName = "integer" | "string";
+interface ToolArgumentShape {
+	required: string[];
+	properties: Record<string, ArgumentTypeName>;
+}
+
+const toolArgumentShapes: Record<ToolName, ToolArgumentShape> = {
+	create_or_update_file: {
+		required: ["owner", "repo", "path", "content", "branch", "message"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			path: "string",
+			content: "string",
+			branch: "string",
+			message: "string",
+		},
+	},
+	create_pull_request: {
+		required: ["owner", "repo", "title", "head", "base", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			head: "string",
+			base: "string",
+			body: "string",
+		},
+	},
+	merge_pull_request: {
+		required: ["owner", "repo", "pull_number", "merge_method", "commit_title"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			pull_number: "integer",
+			merge_method: "string",
+			commit_title: "string",
+		},
+	},
+	create_issue: {
+		required: ["owner", "repo", "title", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			body: "string",
+		},
+	},
+};
+
+function validateToolArgumentsShape(
+	name: ToolName,
+	args: JsonObject,
+): string[] {
+	const errors: string[] = [];
+	const shape = toolArgumentShapes[name];
+
+	for (const requiredProperty of shape.required) {
+		if (!(requiredProperty in args)) {
+			errors.push(
+				`$.params.arguments.${requiredProperty}: required property is missing`,
+			);
+		}
+	}
+
+	for (const [key, value] of Object.entries(args)) {
+		const expectedType = shape.properties[key];
+		if (!expectedType) {
+			errors.push(
+				`$.params.arguments.${key}: additional property is not allowed`,
+			);
+			continue;
+		}
+		if (!matchesArgumentType(expectedType, value)) {
+			errors.push(`$.params.arguments.${key}: expected type ${expectedType}`);
+		}
+	}
+
+	return errors;
+}
+
+function matchesArgumentType(
+	expectedType: ArgumentTypeName,
+	value: unknown,
+): boolean {
+	if (expectedType === "integer") {
+		return Number.isInteger(value);
+	}
+	return typeof value === "string";
+}
+
+function recordFailedMergePreconditions(
+	toolName: PolicyMcpToolCall["params"]["name"],
+	preconditions: MergePreconditions,
+	errors: string[],
+): void {
+	if (toolName !== "merge_pull_request") {
+		return;
+	}
+	for (const [gateName, status] of Object.entries(preconditions)) {
+		if (status !== "passed") {
+			errors.push(`merge precondition ${gateName} is ${status}`);
+		}
+	}
 }
 
 function validateEnvelopeShape(call: PolicyMcpToolCall): string[] {
