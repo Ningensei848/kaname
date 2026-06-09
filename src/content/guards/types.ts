@@ -8,3 +8,10 @@ export interface VaultDocument {
 	title: string;
 	markdown: string;
 }
+
+export interface TopicAliasMap {
+	[keywordAlias: string]: {
+		resolvedFilePath: string;
+		primaryTitle: string;
+	};
+}

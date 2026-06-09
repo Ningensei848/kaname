@@ -20,20 +20,19 @@ export function orphanScoreRegressionGuard(
 
 function orphanTitles(vault: VaultDocument[]): Set<string> {
 	const titles = new Set(vault.map((document) => document.title));
-	const degrees = new Map([...titles].map((title) => [title, 0]));
+	const inboundCounts = new Map([...titles].map((title) => [title, 0]));
 
 	for (const document of vault) {
 		const uniqueLinks = new Set(collectInternalLinks(document.markdown));
 		for (const link of uniqueLinks) {
 			if (!titles.has(link)) continue;
-			degrees.set(document.title, (degrees.get(document.title) ?? 0) + 1);
-			degrees.set(link, (degrees.get(link) ?? 0) + 1);
+			inboundCounts.set(link, (inboundCounts.get(link) ?? 0) + 1);
 		}
 	}
 
 	return new Set(
-		[...degrees.entries()]
-			.filter(([, degree]) => degree === 0)
+		[...inboundCounts.entries()]
+			.filter(([, inboundCount]) => inboundCount === 0)
 			.map(([title]) => title),
 	);
 }
