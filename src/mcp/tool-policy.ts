@@ -2,6 +2,13 @@ import { isAllowedMcpWriterPath } from "../policies/mcp-write-policy";
 
 export type JsonObject = Record<string, unknown>;
 
+type JsonPrimitiveType = "integer" | "string";
+
+interface ToolArgumentsSchema {
+	required: readonly string[];
+	properties: Record<string, JsonPrimitiveType>;
+}
+
 export type GateStatus = "passed" | "failed" | "unavailable" | "indeterminate";
 
 export interface MergePreconditions {
@@ -46,6 +53,11 @@ export function validateToolPolicy(
 	}
 
 	const args = call.params.arguments;
+	const argumentErrors = validateToolArgumentsShape(call.params.name, args);
+	if (argumentErrors.length > 0) {
+		return argumentErrors;
+	}
+
 	switch (call.params.name) {
 		case "create_or_update_file": {
 			if (!String(args.branch).startsWith("osint/")) {
@@ -75,17 +87,16 @@ export function validateToolPolicy(
 			break;
 		}
 		case "merge_pull_request": {
-			if (!String(args.head).startsWith("osint/")) {
-				errors.push("merge head must be osint/*");
-			}
-			if (args.base !== "main") {
-				errors.push("merge base must be main");
-			}
 			if (args.merge_method !== "squash") {
 				errors.push("merge method must be squash");
 			}
 			if (!String(args.commit_title).startsWith("[Aegis-Reviewer]")) {
 				errors.push("Reviewer merge commit title prefix is required");
+			}
+			for (const [gateName, status] of Object.entries(preconditions)) {
+				if (status !== "passed") {
+					errors.push(`merge precondition ${gateName} is ${status}`);
+				}
 			}
 			if (!canMerge(preconditions)) {
 				errors.push("merge preconditions are not all passed");
@@ -122,8 +133,63 @@ export function canMerge(gates: MergePreconditions): boolean {
 	return Object.values(gates).every((status) => status === "passed");
 }
 
+const toolArgumentsSchemas: Record<
+	PolicyMcpToolCall["params"]["name"],
+	ToolArgumentsSchema
+> = {
+	create_or_update_file: {
+		required: ["owner", "repo", "path", "content", "branch", "message"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			path: "string",
+			content: "string",
+			branch: "string",
+			message: "string",
+		},
+	},
+	create_pull_request: {
+		required: ["owner", "repo", "title", "head", "base", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			head: "string",
+			base: "string",
+			body: "string",
+		},
+	},
+	merge_pull_request: {
+		required: ["owner", "repo", "pull_number", "merge_method", "commit_title"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			pull_number: "integer",
+			merge_method: "string",
+			commit_title: "string",
+		},
+	},
+	create_issue: {
+		required: ["owner", "repo", "title", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			body: "string",
+		},
+	},
+};
+
 function validateEnvelopeShape(call: PolicyMcpToolCall): string[] {
 	const errors: string[] = [];
+	if (!isJsonObject(call)) {
+		return ["$: expected object"];
+	}
+	for (const key of Object.keys(call)) {
+		if (!["jsonrpc", "method", "params", "id"].includes(key)) {
+			errors.push(`$.${key}: additional property is not allowed`);
+		}
+	}
 	if (call.jsonrpc !== "2.0") {
 		errors.push("$.jsonrpc: expected const 2.0");
 	}
@@ -133,19 +199,70 @@ function validateEnvelopeShape(call: PolicyMcpToolCall): string[] {
 	if (!Number.isInteger(call.id)) {
 		errors.push("$.id: expected integer");
 	}
-	if (!call.params || typeof call.params !== "object") {
+	if (!isJsonObject(call.params)) {
 		errors.push("$.params: expected object");
 		return errors;
 	}
+	for (const key of Object.keys(call.params)) {
+		if (!["name", "arguments"].includes(key)) {
+			errors.push(`$.params.${key}: additional property is not allowed`);
+		}
+	}
 	if (typeof call.params.name !== "string") {
 		errors.push("$.params.name: expected string");
+	} else if (!isKnownToolName(call.params.name)) {
+		errors.push("$.params.name: expected enum value");
 	}
-	if (
-		!call.params.arguments ||
-		typeof call.params.arguments !== "object" ||
-		Array.isArray(call.params.arguments)
-	) {
+	if (!isJsonObject(call.params.arguments)) {
 		errors.push("$.params.arguments: expected object");
 	}
 	return errors;
+}
+
+function validateToolArgumentsShape(
+	name: PolicyMcpToolCall["params"]["name"],
+	args: JsonObject,
+): string[] {
+	const schema = toolArgumentsSchemas[name];
+	const errors: string[] = [];
+	for (const requiredKey of schema.required) {
+		if (!(requiredKey in args)) {
+			errors.push(
+				`$.params.arguments: missing required property ${requiredKey}`,
+			);
+		}
+	}
+	for (const key of Object.keys(args)) {
+		const expectedType = schema.properties[key];
+		if (!expectedType) {
+			errors.push(
+				`$.params.arguments.${key}: additional property is not allowed`,
+			);
+			continue;
+		}
+		if (!matchesJsonPrimitiveType(args[key], expectedType)) {
+			errors.push(`$.params.arguments.${key}: expected type ${expectedType}`);
+		}
+	}
+	return errors;
+}
+
+function matchesJsonPrimitiveType(
+	value: unknown,
+	expectedType: JsonPrimitiveType,
+): boolean {
+	if (expectedType === "integer") {
+		return Number.isInteger(value);
+	}
+	return typeof value === expectedType;
+}
+
+function isKnownToolName(
+	name: string,
+): name is PolicyMcpToolCall["params"]["name"] {
+	return name in toolArgumentsSchemas;
+}
+
+function isJsonObject(value: unknown): value is JsonObject {
+	return value !== null && typeof value === "object" && !Array.isArray(value);
 }
