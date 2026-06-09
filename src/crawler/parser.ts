@@ -16,6 +16,17 @@ interface SourceCandidate {
 	custom_extraction_instruction?: unknown;
 }
 
+const ROOT_KEYS = new Set(["ssot_sources"]);
+const SOURCE_KEYS = new Set([
+	"id",
+	"name",
+	"url",
+	"feed_url",
+	"description",
+	"meta_url",
+	"custom_extraction_instruction",
+]);
+
 export function parseSsotYaml(filePath: string): SsotSource[] {
 	if (!fs.existsSync(filePath)) {
 		throw new Error(`SSoT configuration file not found at: ${filePath}`);
@@ -31,44 +42,70 @@ export function parseSsotYaml(filePath: string): SsotSource[] {
 		);
 	}
 
-	if (
-		!parsed ||
-		typeof parsed !== "object" ||
-		!Array.isArray(parsed.ssot_sources)
-	) {
-		throw new Error("Invalid SSoT YAML structure: missing ssot_sources list");
-	}
+	validateRoot(parsed);
 
 	const validatedSources: SsotSource[] = [];
-
-	for (const source of parsed.ssot_sources) {
+	for (const [index, source] of parsed.ssot_sources.entries()) {
 		try {
 			validateSource(source);
-			validatedSources.push(source);
-		} catch (validationError) {
-			const candidate = isRecord(source) ? source : undefined;
-			console.warn(
-				`Skipping invalid SSoT source (ID: ${String(candidate?.id || "unknown")}): ${(validationError as Error).message}`,
+		} catch (error) {
+			throw new Error(
+				`Invalid SSoT source at index ${index}: ${(error as Error).message}`,
 			);
 		}
+		validatedSources.push(source);
 	}
 
 	return validatedSources;
 }
 
+function validateRoot(
+	root: unknown,
+): asserts root is { ssot_sources: unknown[] } {
+	if (!isPlainObject(root)) {
+		throw new Error("Invalid SSoT YAML structure: root must be an object");
+	}
+
+	const unknownKeys = Object.keys(root).filter((key) => !ROOT_KEYS.has(key));
+	if (unknownKeys.length > 0) {
+		throw new Error(
+			`Invalid SSoT YAML structure: unknown root key(s): ${unknownKeys.join(", ")}`,
+		);
+	}
+
+	if (!Object.hasOwn(root, "ssot_sources")) {
+		throw new Error("Invalid SSoT YAML structure: missing ssot_sources list");
+	}
+	if (!Array.isArray(root.ssot_sources)) {
+		throw new Error("Invalid SSoT YAML structure: ssot_sources must be a list");
+	}
+	if (root.ssot_sources.length < 1) {
+		throw new Error(
+			"Invalid SSoT YAML structure: ssot_sources must contain at least one source",
+		);
+	}
+}
+
 function validateSource(source: unknown): asserts source is SsotSource {
-	if (!isRecord(source)) {
-		throw new Error("Source is not a valid object");
+	if (!isPlainObject(source)) {
+		throw new Error("Source must be an object");
+	}
+
+	const unknownKeys = Object.keys(source).filter(
+		(key) => !SOURCE_KEYS.has(key),
+	);
+	if (unknownKeys.length > 0) {
+		throw new Error(`Unknown source key(s): ${unknownKeys.join(", ")}`);
 	}
 
 	const candidate = source as SourceCandidate;
-	if (typeof candidate.id !== "string") {
+	if (typeof candidate.id !== "string" || candidate.id.length < 1) {
 		throw new Error("Missing or invalid required parameter: id");
 	}
 	if (!/^[a-z0-9_]+$/.test(candidate.id)) {
 		throw new Error(`ID "${candidate.id}" does not match pattern ^[a-z0-9_]+$`);
 	}
-	if (typeof candidate.name !== "string" || candidate.name.trim() === "") {
+	if (typeof candidate.name !== "string" || candidate.name.length < 1) {
 		throw new Error("Missing or invalid required parameter: name");
 	}
 	if (typeof candidate.url !== "string" || !isValidUri(candidate.url)) {
@@ -76,7 +113,7 @@ function validateSource(source: unknown): asserts source is SsotSource {
 	}
 	if (
 		typeof candidate.description !== "string" ||
-		candidate.description.trim() === ""
+		candidate.description.length < 1
 	) {
 		throw new Error("Missing or invalid required parameter: description");
 	}
@@ -103,8 +140,14 @@ function validateSource(source: unknown): asserts source is SsotSource {
 	}
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return value !== null && typeof value === "object";
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+	return (
+		value !== null &&
+		typeof value === "object" &&
+		!Array.isArray(value) &&
+		(Object.getPrototypeOf(value) === Object.prototype ||
+			Object.getPrototypeOf(value) === null)
+	);
 }
 
 function isValidUri(val: string): boolean {

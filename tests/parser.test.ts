@@ -6,14 +6,18 @@ import { parseSsotYaml } from "../src/crawler/parser";
 
 const tempDir = path.join(__dirname, "temp");
 
-test("SSoT Parser Tests", async (t) => {
-	if (!fs.existsSync(tempDir)) {
-		fs.mkdirSync(tempDir, { recursive: true });
-	}
+function writeTempYaml(fileName: string, content: string): string {
+	fs.mkdirSync(tempDir, { recursive: true });
+	const yamlPath = path.join(tempDir, fileName);
+	fs.writeFileSync(yamlPath, content, "utf8");
+	return yamlPath;
+}
 
+test("SSoT Parser Tests", async (t) => {
 	await t.test("should parse valid SSoT YAML correctly", () => {
-		const yamlPath = path.join(tempDir, "valid_ssot.yml");
-		const yamlContent = `
+		const yamlPath = writeTempYaml(
+			"valid_ssot.yml",
+			`
 ssot_sources:
   - id: jpcert
     name: JPCERT/CC
@@ -21,8 +25,8 @@ ssot_sources:
     description: Security alerts and incidents
     feed_url: https://www.jpcert.or.jp/rss/jpcert.rdf
     custom_extraction_instruction: Extract latest alerts
-`;
-		fs.writeFileSync(yamlPath, yamlContent, "utf8");
+`,
+		);
 
 		const sources = parseSsotYaml(yamlPath);
 		assert.strictEqual(sources.length, 1);
@@ -38,15 +42,12 @@ ssot_sources:
 			sources[0].custom_extraction_instruction,
 			"Extract latest alerts",
 		);
-
-		fs.unlinkSync(yamlPath);
 	});
 
-	await t.test(
-		"should skip invalid sources and transition to degraded operation",
-		() => {
-			const yamlPath = path.join(tempDir, "invalid_ssot.yml");
-			const yamlContent = `
+	await t.test("should fail entire parse when any source is invalid", () => {
+		const yamlPath = writeTempYaml(
+			"invalid_ssot.yml",
+			`
 ssot_sources:
   - id: valid_one
     name: Valid Source
@@ -56,40 +57,95 @@ ssot_sources:
     name: Source with bad ID pattern
     url: https://example.com
     description: Bad ID
-  - id: missing_name
-    url: https://example.com
-    description: Missing name
-  - id: invalid_url
-    name: Bad URL
-    url: not-a-url
-    description: Bad URL
-`;
-			fs.writeFileSync(yamlPath, yamlContent, "utf8");
+`,
+		);
 
-			const sources = parseSsotYaml(yamlPath);
-			assert.strictEqual(sources.length, 1);
-			assert.strictEqual(sources[0].id, "valid_one");
-
-			fs.unlinkSync(yamlPath);
-		},
-	);
+		assert.throws(() => {
+			parseSsotYaml(yamlPath);
+		}, /Invalid SSoT source at index 1: ID "invalid-id" does not match pattern/);
+	});
 
 	await t.test("should throw error when ssot_sources list is missing", () => {
-		const yamlPath = path.join(tempDir, "missing_list.yml");
-		const yamlContent = `
+		const yamlPath = writeTempYaml(
+			"missing_list.yml",
+			`
 wrong_root:
   - id: one
     name: One
     url: https://example.com
     description: One
-`;
-		fs.writeFileSync(yamlPath, yamlContent, "utf8");
+`,
+		);
 
 		assert.throws(() => {
 			parseSsotYaml(yamlPath);
-		}, /missing ssot_sources list/);
+		}, /unknown root key\(s\): wrong_root/);
+	});
 
-		fs.unlinkSync(yamlPath);
+	await t.test("should reject unknown root keys", () => {
+		const yamlPath = writeTempYaml(
+			"unknown_root_key.yml",
+			`
+ssot_sources:
+  - id: one
+    name: One
+    url: https://example.com
+    description: One
+unexpected: true
+`,
+		);
+
+		assert.throws(() => {
+			parseSsotYaml(yamlPath);
+		}, /unknown root key\(s\): unexpected/);
+	});
+
+	await t.test("should reject unknown source keys", () => {
+		const yamlPath = writeTempYaml(
+			"unknown_source_key.yml",
+			`
+ssot_sources:
+  - id: one
+    name: One
+    url: https://example.com
+    description: One
+    unexpected: true
+`,
+		);
+
+		assert.throws(() => {
+			parseSsotYaml(yamlPath);
+		}, /Invalid SSoT source at index 0: Unknown source key\(s\): unexpected/);
+	});
+
+	await t.test("should reject empty ssot_sources", () => {
+		const yamlPath = writeTempYaml(
+			"empty_sources.yml",
+			`
+ssot_sources: []
+`,
+		);
+
+		assert.throws(() => {
+			parseSsotYaml(yamlPath);
+		}, /ssot_sources must contain at least one source/);
+	});
+
+	await t.test("should reject invalid URL fields", () => {
+		const yamlPath = writeTempYaml(
+			"invalid_urls.yml",
+			`
+ssot_sources:
+  - id: invalid_url
+    name: Bad URL
+    url: not-a-url
+    description: Bad URL
+`,
+		);
+
+		assert.throws(() => {
+			parseSsotYaml(yamlPath);
+		}, /Invalid SSoT source at index 0: Missing or invalid required parameter: url/);
 	});
 
 	await t.test("should throw error when file does not exist", () => {
@@ -98,8 +154,7 @@ wrong_root:
 		}, /SSoT configuration file not found/);
 	});
 
-	// Clean up
 	if (fs.existsSync(tempDir)) {
-		fs.rmdirSync(tempDir);
+		fs.rmSync(tempDir, { recursive: true, force: true });
 	}
 });
