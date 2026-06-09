@@ -8,7 +8,9 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"outDir": "./dist",
-		"rootDir": "./"
+		"rootDir": "./",
+		"incremental": true,
+		"tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo"
 	},
 	"include": ["src/**/*", "tests/**/*"]
 }

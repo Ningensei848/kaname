@@ -5,18 +5,18 @@ import { test } from "node:test";
 
 import {
 	allGreenMergePreconditions,
-	type McpToolCall,
+	type PolicyMcpToolCall,
 	validateToolPolicy,
 } from "../src/mcp/tool-policy";
 import { AegisOrchestrator, type DiffResult } from "../src/orchestrator";
 
-function readFixture(...segments: string[]): McpToolCall {
+function readFixture(...segments: string[]): PolicyMcpToolCall {
 	return JSON.parse(
 		fs.readFileSync(
 			path.join(__dirname, "fixtures", "f003", ...segments),
 			"utf8",
 		),
-	) as McpToolCall;
+	) as PolicyMcpToolCall;
 }
 
 const changedDiff: DiffResult[] = [
@@ -98,7 +98,7 @@ test("validateToolPolicy fails closed for invalid argument types and merge extra
 });
 
 test("AegisOrchestrator performs successful all-green squash merge through MCP", async () => {
-	const calls: McpToolCall[] = [];
+	const calls: PolicyMcpToolCall[] = [];
 	const orchestrator = new AegisOrchestrator(changedDiff, {
 		mcpClient: {
 			callTool: (call) => {
@@ -123,7 +123,7 @@ test("AegisOrchestrator performs successful all-green squash merge through MCP",
 });
 
 test("AegisOrchestrator blocks approved merges when any gate is indeterminate", async () => {
-	const calls: McpToolCall[] = [];
+	const calls: PolicyMcpToolCall[] = [];
 	const orchestrator = new AegisOrchestrator(changedDiff, {
 		mcpClient: {
 			callTool: (call) => {
