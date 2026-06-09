@@ -98,7 +98,7 @@ test("validateToolPolicy fails closed for invalid argument types and merge extra
 });
 
 test("AegisOrchestrator performs successful all-green squash merge through MCP", async () => {
-	const calls: McpToolCall[] = [];
+	const calls: PolicyMcpToolCall[] = [];
 	const orchestrator = new AegisOrchestrator(changedDiff, {
 		mcpClient: {
 			callTool: (call) => {
@@ -123,7 +123,7 @@ test("AegisOrchestrator performs successful all-green squash merge through MCP",
 });
 
 test("AegisOrchestrator blocks approved merges when any gate is indeterminate", async () => {
-	const calls: McpToolCall[] = [];
+	const calls: PolicyMcpToolCall[] = [];
 	const orchestrator = new AegisOrchestrator(changedDiff, {
 		mcpClient: {
 			callTool: (call) => {
