@@ -49,11 +49,18 @@ export function parseSsotYaml(filePath: string): SsotSource[] {
 		try {
 			validateSource(source);
 		} catch (error) {
-			throw new Error(
-				`Invalid SSoT source at index ${index}: ${(error as Error).message}`,
+			console.warn(
+				`[Degraded Mode] Skipping invalid SSoT source at index ${index}: ${(error as Error).message}`,
 			);
+			continue;
 		}
 		validatedSources.push(source);
+	}
+
+	if (validatedSources.length === 0) {
+		throw new Error(
+			"Invalid SSoT YAML structure: No valid sources found to process.",
+		);
 	}
 
 	return validatedSources;
