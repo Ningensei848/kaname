@@ -7,6 +7,7 @@
 
 import * as assert from "node:assert";
 import { test } from "node:test";
+import { allGreenMergePreconditions } from "../src/mcp/tool-policy";
 import { AegisOrchestrator, type DiffResult } from "../src/orchestrator";
 import {
 	type OrchestratorEvent,
@@ -145,9 +146,17 @@ test("AegisOrchestrator consumes transition table records for integration flow",
 				return {
 					approve: false,
 					comment: "Missing inbound link for orphan NICT note",
+					mergePreconditions: {
+						...allGreenMergePreconditions,
+						deterministicContentGuards: "failed",
+					},
 				};
 			}
-			return { approve: true, comment: "Link fixed. Approved." };
+			return {
+				approve: true,
+				comment: "Link fixed. Approved.",
+				mergePreconditions: allGreenMergePreconditions,
+			};
 		},
 	});
 
@@ -203,6 +212,10 @@ test("AegisOrchestrator escalates repeated guard failures via loop_exhausted", a
 		reviewProposal: () => ({
 			approve: false,
 			comment: "OFM layout violation: tags are malformed.",
+			mergePreconditions: {
+				...allGreenMergePreconditions,
+				deterministicContentGuards: "failed",
+			},
 		}),
 	});
 

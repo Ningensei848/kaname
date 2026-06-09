@@ -7,8 +7,6 @@
 			"owner": "Ningensei848",
 			"repo": "kaname-vault",
 			"pull_number": 42,
-			"head": "osint/content-acd-update-20260527",
-			"base": "main",
 			"merge_method": "squash",
 			"commit_title": "[Aegis-Reviewer] Unsafe merge while gates are red"
 		}

@@ -1,10 +1,10 @@
 /**
  * Feature 002 deterministic content guard executable tests.
  *
- * Scope: test-code-first contracts only. These tests encode the reviewer/CI
+ * Scope: executable guard contracts. These tests encode the reviewer/CI
  * expectations for destructive Markdown changes, topic frontmatter, link graph
- * quality, orphan-score regression, and report novelty without introducing
- * production guard modules yet.
+ * quality, orphan-score regression, and report novelty while importing
+ * extracted production guard modules for the deterministic checks.
  *
  * Acceptance source: `.spec/features/002-wiki-incremental-update/*` and
  * `.spec/policies/content-integrity-policy.md`.
@@ -15,6 +15,15 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
+import { internalLinkGuard } from "../src/content/guards/internalLinkGuard";
+import { noOverwriteGuard } from "../src/content/guards/noOverwriteGuard";
+import { orphanScoreRegressionGuard } from "../src/content/guards/orphanScoreRegressionGuard";
+import { reportNoveltyGuard } from "../src/content/guards/reportNoveltyGuard";
+import type {
+	GuardResult,
+	TopicAliasMap,
+	VaultDocument,
+} from "../src/content/guards/types";
 
 type JsonSchema = Record<string, unknown>;
 type JsonObject = Record<string, unknown>;
@@ -27,17 +36,6 @@ interface ValidationError {
 interface MarkdownDocument {
 	frontmatter: JsonObject;
 	body: string;
-}
-
-interface GuardResult {
-	ok: boolean;
-	errors: string[];
-}
-
-interface VaultDocument {
-	path: string;
-	title: string;
-	markdown: string;
 }
 
 function fixturePath(...segments: string[]): string {
@@ -53,7 +51,7 @@ function readJson(filePath: string): unknown {
 }
 
 function parseMarkdown(markdown: string): MarkdownDocument {
-	const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(markdown);
+	const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(markdown);
 	if (!match) return { frontmatter: {}, body: markdown };
 	return {
 		frontmatter: (YAML.parse(match[1]) ?? {}) as JsonObject,
@@ -224,138 +222,6 @@ function immutablePathGuard(
 	};
 }
 
-function noOverwriteGuard(before: string, after: string): GuardResult {
-	const beforeLines = parseMarkdown(before)
-		.body.split(/\r?\n/)
-		.filter((line) => line.trim().length > 0);
-	const afterLines = parseMarkdown(after).body.split(/\r?\n/);
-	const errors: string[] = [];
-	let searchFrom = 0;
-
-	for (const line of beforeLines) {
-		const foundAt = afterLines.findIndex(
-			(candidate, index) => index >= searchFrom && candidate === line,
-		);
-		if (foundAt === -1) {
-			errors.push(`existing line was removed or modified: ${line}`);
-			continue;
-		}
-		searchFrom = foundAt + 1;
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function collectInternalLinks(markdown: string): string[] {
-	return [...markdown.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map(
-		(match) => match[1],
-	);
-}
-
-function internalLinkGuard(
-	markdown: string,
-	knownTitles: Set<string>,
-): GuardResult {
-	const errors: string[] = [];
-	if (/\[\[\[\[|\]\]\]\]/.test(markdown)) {
-		errors.push("internal link is double-wrapped");
-	}
-
-	for (const link of collectInternalLinks(markdown)) {
-		if (!knownTitles.has(link)) {
-			errors.push(`broken internal link: ${link}`);
-		}
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function orphanScoreRegressionGuard(
-	beforeVault: VaultDocument[],
-	afterVault: VaultDocument[],
-	allowedNewHighSeverityOrphans = 0,
-): GuardResult {
-	const before = orphanTitles(beforeVault);
-	const after = orphanTitles(afterVault);
-	const newOrphans = [...after].filter((title) => !before.has(title));
-	const errors =
-		newOrphans.length > allowedNewHighSeverityOrphans
-			? [
-					`orphan score regressed: ${newOrphans.length} new orphan(s): ${newOrphans.join(", ")}`,
-				]
-			: [];
-	return { ok: errors.length === 0, errors };
-}
-
-function orphanTitles(vault: VaultDocument[]): Set<string> {
-	const titles = new Set(vault.map((document) => document.title));
-	const degrees = new Map([...titles].map((title) => [title, 0]));
-
-	for (const document of vault) {
-		const uniqueLinks = new Set(collectInternalLinks(document.markdown));
-		for (const link of uniqueLinks) {
-			if (!titles.has(link)) continue;
-			degrees.set(document.title, (degrees.get(document.title) ?? 0) + 1);
-			degrees.set(link, (degrees.get(link) ?? 0) + 1);
-		}
-	}
-
-	return new Set(
-		[...degrees.entries()]
-			.filter(([, degree]) => degree === 0)
-			.map(([title]) => title),
-	);
-}
-
-function reportNoveltyGuard(
-	reportMarkdown: string,
-	existingTopicMarkdown: string,
-	options: { duplicateThreshold: number; createsNewRootTopic?: boolean },
-): GuardResult {
-	const errors: string[] = [];
-	const duplicateRatio = calculateDuplicateRatio(
-		reportMarkdown,
-		existingTopicMarkdown,
-	);
-	const hasEvidence =
-		/https?:\/\//.test(reportMarkdown) || /根拠\s*[:：]/.test(reportMarkdown);
-	const hasInternalLink = collectInternalLinks(reportMarkdown).length > 0;
-
-	if (duplicateRatio > options.duplicateThreshold) {
-		errors.push(
-			`duplicate report threshold exceeded: ${duplicateRatio.toFixed(2)} > ${options.duplicateThreshold}`,
-		);
-	}
-	if (!hasEvidence) errors.push("report item lacks source evidence");
-	if (!options.createsNewRootTopic && !hasInternalLink) {
-		errors.push("report item lacks required internal link");
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function calculateDuplicateRatio(candidate: string, reference: string): number {
-	const candidateSentences = normalizeJapaneseSentences(candidate);
-	const referenceSentences = new Set(normalizeJapaneseSentences(reference));
-	if (candidateSentences.length === 0) return 0;
-	const duplicateCount = candidateSentences.filter((sentence) =>
-		referenceSentences.has(sentence),
-	).length;
-	return duplicateCount / candidateSentences.length;
-}
-
-function normalizeJapaneseSentences(markdown: string): string[] {
-	return markdown
-		.replace(/^---[\s\S]*?---/m, "")
-		.replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1")
-		.split(/[。\n]/)
-		.map((sentence) => sentence.replace(/^[-*#\s]+/, "").trim())
-		.filter(
-			(sentence) =>
-				sentence.length >= 12 && !/^title:|^tags:|^source_ids:/.test(sentence),
-		);
-}
-
 test("F002 topic frontmatter schema guard", async (t) => {
 	const schema = readJson(
 		".spec/schemas/topic-frontmatter.schema.json",
@@ -371,6 +237,14 @@ test("F002 topic frontmatter schema guard", async (t) => {
 			assert.deepStrictEqual(result, { ok: true, errors: [] });
 		},
 	);
+
+	await t.test("CRLF topic frontmatter satisfies the executable schema", () => {
+		const result = validateTopicFrontmatter(
+			readFixture("topics", "before", "nco.md").replace(/\n/g, "\r\n"),
+			schema,
+		);
+		assert.deepStrictEqual(result, { ok: true, errors: [] });
+	});
 
 	await t.test(
 		"invalid topic frontmatter rejects empty titles, bad tags, empty sources, bad dates, and unknown keys",
@@ -415,12 +289,25 @@ test("F002 immutable path and no-overwrite guards", async (t) => {
 	);
 
 	await t.test(
-		"incremental topic update preserves every existing body line in order",
+		"incremental topic update preserves every existing body line",
 		() => {
 			const result = noOverwriteGuard(
 				readFixture("topics", "before", "nco.md"),
 				readFixture("topics", "after", "nco.incremental.md"),
 			);
+			assert.deepStrictEqual(result, { ok: true, errors: [] });
+		},
+	);
+
+	await t.test(
+		"CRLF frontmatter and body line reordering do not create false overwrite failures",
+		() => {
+			const before = readFixture("topics", "before", "nco.md").replace(
+				/\n/g,
+				"\r\n",
+			);
+			const after = `---\r\ntitle: 能動的サイバー防御\r\naliases:\r\n  - ACD\r\ntags:\r\n  - policy/cybersecurity\r\nsource_ids:\r\n  - nisc\r\nupdated: 2026-05-27\r\nstatus: published\r\n---\r\n# 能動的サイバー防御\r\n\r\n## 既存ファクト\r\n- JPCERT/CC などの既存機関との連携が前提となる。\r\n- 2025年: 政府は官民連携を含む制度設計を進めた。\r\n\r\n## 概要\r\n能動的サイバー防御は、重大なサイバー攻撃を未然に防ぐための政策概念である。\r\n\r\n### 最新動向\r\n- 2026-05-27: 追加事実。\r\n`;
+			const result = noOverwriteGuard(before, after);
 			assert.deepStrictEqual(result, { ok: true, errors: [] });
 		},
 	);
@@ -458,6 +345,32 @@ test("F002 internal link graph guard", async (t) => {
 		},
 	);
 
+	await t.test("links with extra spaces resolve against known titles", () => {
+		const result = internalLinkGuard(
+			"関連項目: [[  JPCERT_CC  ]]",
+			knownTitles,
+		);
+		assert.deepStrictEqual(result, { ok: true, errors: [] });
+	});
+
+	await t.test(
+		"alias map entries resolve as valid internal link targets",
+		() => {
+			const aliases: TopicAliasMap = {
+				ACD: {
+					resolvedFilePath: "topics/gov-agencies/NCO.md",
+					primaryTitle: "能動的サイバー防御",
+				},
+			};
+			const result = internalLinkGuard(
+				"詳細は [[ACD|能動的サイバー防御]] を参照。",
+				knownTitles,
+				aliases,
+			);
+			assert.deepStrictEqual(result, { ok: true, errors: [] });
+		},
+	);
+
 	await t.test(
 		"broken links fail deterministic validation before Reviewer approval",
 		() => {
@@ -480,6 +393,21 @@ test("F002 internal link graph guard", async (t) => {
 		assert.strictEqual(result.ok, false);
 		assert.ok(result.errors.includes("internal link is double-wrapped"));
 	});
+
+	await t.test("space-separated nested Obsidian links are rejected", () => {
+		const result = internalLinkGuard(
+			"不正リンク [[ [[JPCERT_CC]] ]]",
+			knownTitles,
+		);
+		assert.strictEqual(result.ok, false);
+		assert.ok(result.errors.includes("internal link is double-wrapped"));
+	});
+
+	await t.test("triple-bracket Obsidian links are rejected", () => {
+		const result = internalLinkGuard("不正リンク [[[JPCERT_CC]]]", knownTitles);
+		assert.strictEqual(result.ok, false);
+		assert.ok(result.errors.includes("internal link is double-wrapped"));
+	});
 });
 
 test("F002 orphan score regression guard", async (t) => {
@@ -497,10 +425,15 @@ test("F002 orphan score regression guard", async (t) => {
 	];
 
 	await t.test(
-		"connected updates do not increase high-severity orphan count",
+		"inbound-connected updates do not increase high-severity orphan count",
 		() => {
 			const afterVault = [
-				...beforeVault,
+				beforeVault[0],
+				{
+					...beforeVault[1],
+					markdown:
+						"# JPCERT_CC\n[[能動的サイバー防御]] を支援する。[[サイバー演習CYDER]] と訓練面で関連する。",
+				},
 				{
 					path: "topics/CYDER.md",
 					title: "サイバー演習CYDER",
@@ -525,10 +458,30 @@ test("F002 orphan score regression guard", async (t) => {
 		assert.strictEqual(result.ok, false);
 		assert.ok(result.errors[0].includes("孤立新規トピック"));
 	});
+
+	await t.test(
+		"outbound-only new documents remain inbound orphans and fail CI",
+		() => {
+			const afterVault = [
+				...beforeVault,
+				{
+					path: "topics/OutboundOnly.md",
+					title: "アウトバウンドのみの新規トピック",
+					markdown:
+						"# アウトバウンドのみの新規トピック\n[[JPCERT_CC]] への参照はあるが、誰からも被リンクされていない。",
+				},
+			];
+			const result = orphanScoreRegressionGuard(beforeVault, afterVault);
+			assert.strictEqual(result.ok, false);
+			assert.ok(result.errors[0].includes("アウトバウンドのみの新規トピック"));
+		},
+	);
 });
 
 test("F002 report novelty and duplicate suppression guard", async (t) => {
 	const existingTopic = readFixture("topics", "before", "nco.md");
+	const previousReport =
+		"# Previous Report\n\n- ゼロトラスト導入計画は省庁横断で段階的に進められた。根拠: https://example.test/previous。";
 
 	await t.test(
 		"valid delta report has source evidence and an internal link while staying below duplicate threshold",
@@ -559,6 +512,47 @@ test("F002 report novelty and duplicate suppression guard", async (t) => {
 			assert.ok(
 				result.errors.includes("report item lacks required internal link"),
 			);
+		},
+	);
+
+	await t.test(
+		"duplicate detection compares against the whole provided vault context",
+		() => {
+			const result = reportNoveltyGuard(
+				"# 2026-05-28 Report\n\n- ゼロトラスト導入計画は省庁横断で段階的に進められます。根拠: https://example.test/new。詳細は [[能動的サイバー防御]] を参照。",
+				[
+					{
+						path: "reports/2026-05-27_Report.md",
+						title: "Previous Report",
+						markdown: previousReport,
+					},
+					{
+						path: "topics/NCO.md",
+						title: "能動的サイバー防御",
+						markdown: existingTopic,
+					},
+				],
+				{ duplicateThreshold: 0.2 },
+			);
+			assert.strictEqual(result.ok, false);
+			assert.ok(
+				result.errors.some((error) =>
+					error.startsWith("duplicate report threshold exceeded"),
+				),
+			);
+		},
+	);
+
+	await t.test(
+		"frontmatter-only evidence does not satisfy item-level report evidence",
+		() => {
+			const result = reportNoveltyGuard(
+				"---\ntitle: 2026-05-28 Report\nsource_url: https://example.test/frontmatter-only\n---\n# Report\n\n- 新しい制度更新は [[能動的サイバー防御]] に関連する。",
+				[existingTopic, previousReport],
+				{ duplicateThreshold: 0.9 },
+			);
+			assert.strictEqual(result.ok, false);
+			assert.ok(result.errors.includes("report item lacks source evidence"));
 		},
 	);
 });
