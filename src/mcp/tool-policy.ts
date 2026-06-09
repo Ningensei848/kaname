@@ -36,6 +36,68 @@ export const allGreenMergePreconditions: MergePreconditions = {
 	internalLinks: "passed",
 };
 
+const mergePreconditionKeys: readonly (keyof MergePreconditions)[] = [
+	"ci",
+	"takumiGuard",
+	"deterministicContentGuards",
+	"branchPolicy",
+	"immutableFiles",
+	"internalLinks",
+];
+
+type ToolName = PolicyMcpToolCall["params"]["name"];
+
+type ArgumentTypeName = "integer" | "string";
+
+interface ToolArgumentShape {
+	required: readonly string[];
+	properties: Readonly<Record<string, ArgumentTypeName>>;
+}
+
+const toolArgumentShapes: Record<ToolName, ToolArgumentShape> = {
+	create_or_update_file: {
+		required: ["owner", "repo", "path", "content", "branch", "message"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			path: "string",
+			content: "string",
+			branch: "string",
+			message: "string",
+		},
+	},
+	create_pull_request: {
+		required: ["owner", "repo", "title", "head", "base", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			head: "string",
+			base: "string",
+			body: "string",
+		},
+	},
+	merge_pull_request: {
+		required: ["owner", "repo", "pull_number", "merge_method", "commit_title"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			pull_number: "integer",
+			merge_method: "string",
+			commit_title: "string",
+		},
+	},
+	create_issue: {
+		required: ["owner", "repo", "title", "body"],
+		properties: {
+			owner: "string",
+			repo: "string",
+			title: "string",
+			body: "string",
+		},
+	},
+};
+
 export function validateToolPolicy(
 	call: PolicyMcpToolCall,
 	preconditions: MergePreconditions = allGreenMergePreconditions,
@@ -46,6 +108,8 @@ export function validateToolPolicy(
 	}
 
 	const args = call.params.arguments;
+	errors.push(...validateArgumentTypes(call));
+	errors.push(...validateToolArgumentsShape(call.params.name, args));
 	switch (call.params.name) {
 		case "create_or_update_file": {
 			if (!String(args.branch).startsWith("osint/")) {
@@ -75,11 +139,12 @@ export function validateToolPolicy(
 			break;
 		}
 		case "merge_pull_request": {
-			if (!String(args.head).startsWith("osint/")) {
-				errors.push("merge head must be osint/*");
-			}
-			if (args.base !== "main") {
-				errors.push("merge base must be main");
+			for (const disallowedProperty of ["head", "base"] as const) {
+				if (disallowedProperty in args) {
+					errors.push(
+						`$.params.arguments.${disallowedProperty}: additional property is not allowed`,
+					);
+				}
 			}
 			if (args.merge_method !== "squash") {
 				errors.push("merge method must be squash");
@@ -87,7 +152,9 @@ export function validateToolPolicy(
 			if (!String(args.commit_title).startsWith("[Aegis-Reviewer]")) {
 				errors.push("Reviewer merge commit title prefix is required");
 			}
-			if (!canMerge(preconditions)) {
+			const mergePreconditionErrors = validateMergePreconditions(preconditions);
+			errors.push(...mergePreconditionErrors);
+			if (mergePreconditionErrors.length > 0) {
 				errors.push("merge preconditions are not all passed");
 			}
 			break;
@@ -122,6 +189,60 @@ export function canMerge(gates: MergePreconditions): boolean {
 	return Object.values(gates).every((status) => status === "passed");
 }
 
+export function validateMergePreconditions(
+	preconditions: MergePreconditions,
+): string[] {
+	const errors: string[] = [];
+	for (const key of mergePreconditionKeys) {
+		const status = preconditions[key];
+		if (status !== "passed") {
+			errors.push(`merge precondition ${key} is ${status}`);
+		}
+	}
+	return errors;
+}
+
+function validateToolArgumentsShape(
+	name: ToolName,
+	args: JsonObject,
+): string[] {
+	const errors: string[] = [];
+	const shape = toolArgumentShapes[name];
+
+	for (const requiredProperty of shape.required) {
+		if (!(requiredProperty in args)) {
+			errors.push(
+				`$.params.arguments.${requiredProperty}: required property is missing`,
+			);
+		}
+	}
+
+	for (const [key, value] of Object.entries(args)) {
+		const expectedType = shape.properties[key];
+		if (!expectedType) {
+			errors.push(
+				`$.params.arguments.${key}: additional property is not allowed`,
+			);
+			continue;
+		}
+		if (!matchesArgumentType(expectedType, value)) {
+			errors.push(`$.params.arguments.${key}: expected type ${expectedType}`);
+		}
+	}
+
+	return errors;
+}
+
+function matchesArgumentType(
+	expectedType: ArgumentTypeName,
+	value: unknown,
+): boolean {
+	if (expectedType === "integer") {
+		return Number.isInteger(value);
+	}
+	return typeof value === "string";
+}
+
 function validateEnvelopeShape(call: PolicyMcpToolCall): string[] {
 	const errors: string[] = [];
 	if (call.jsonrpc !== "2.0") {
@@ -149,3 +270,53 @@ function validateEnvelopeShape(call: PolicyMcpToolCall): string[] {
 	}
 	return errors;
 }
+
+function validateArgumentTypes(call: PolicyMcpToolCall): string[] {
+	const errors: string[] = [];
+	const args = call.params.arguments;
+
+	switch (call.params.name) {
+		case "create_or_update_file":
+			expectString(errors, args, "branch");
+			expectString(errors, args, "path");
+			expectString(errors, args, "message");
+			break;
+		case "create_pull_request":
+			expectString(errors, args, "head");
+			expectString(errors, args, "base");
+			expectString(errors, args, "title");
+			break;
+		case "merge_pull_request":
+			expectInteger(errors, args, "pull_number");
+			expectString(errors, args, "merge_method");
+			expectString(errors, args, "commit_title");
+			break;
+		case "create_issue":
+			expectString(errors, args, "title");
+			expectString(errors, args, "body");
+			break;
+	}
+
+	return errors;
+}
+
+function expectString(
+	errors: string[],
+	args: JsonObject,
+	property: string,
+): void {
+	if (typeof args[property] !== "string") {
+		errors.push(`$.params.arguments.${property}: expected type string`);
+	}
+}
+
+function expectInteger(
+	errors: string[],
+	args: JsonObject,
+	property: string,
+): void {
+	if (!Number.isInteger(args[property])) {
+		errors.push(`$.params.arguments.${property}: expected type integer`);
+	}
+}
+
