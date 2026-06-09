@@ -2,82 +2,27 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
+import {
+	GenerationMismatchError,
+	buildDiscordPayload,
+	evaluateAndPersistNotification,
+	evaluateDiscordNotification,
+	recordNotificationState,
+	sendDiscordWithBoundedRetry,
+	type CloudflareDeploymentEvent,
+	type JsonObject,
+	type NotificationState,
+	type NotificationStateBackend,
+	type NotificationStateSnapshot,
+	type RetryPolicy,
+	type UrlProbe,
+} from "../src/notifications/cloudflare-discord";
 import { assertQuartzGraphDisabledArtifact } from "./helpers/quartz-artifact-contract";
 
 const repoRoot = process.cwd();
 const publicBaseUrl = "https://osint-kaname.pages.dev";
 const latestReportUrl = `${publicBaseUrl}/reports/2026-05-27_Report`;
-const avatarUrl =
-	"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp";
-
-type JsonObject = Record<string, unknown>;
 type JsonSchema = Record<string, unknown>;
-type ProbeResult = { ok: boolean; status: number };
-type UrlProbe = (url: string) => Promise<ProbeResult>;
-type DiscordSendResult = "sent" | "escalate_issue";
-
-interface CloudflareDeploymentEvent {
-	id: string;
-	project_name: string;
-	deployment: {
-		id: string;
-		url: string;
-		environment: "production" | "preview";
-		status: "success" | "failure" | "pending" | "skipped" | "canceled";
-		created_on: string;
-		modified_on: string;
-		meta: {
-			branch: string;
-			commit_hash: string;
-			commit_message: string;
-		};
-	};
-}
-
-interface NotificationState {
-	notifiedDeploymentIds: string[];
-	notifiedCommitHashes: string[];
-}
-
-interface NotificationStateSnapshot {
-	state: NotificationState;
-	generation: number;
-}
-
-interface NotificationStateBackend {
-	load(): Promise<NotificationStateSnapshot>;
-	save(
-		nextState: NotificationState,
-		options: { ifGenerationMatch: number },
-	): Promise<void>;
-}
-
-interface NotificationConfig {
-	publicBaseUrl: string;
-	latestReportUrl: string;
-}
-
-interface NotificationDecision {
-	shouldNotify: boolean;
-	reason: string;
-	reportUrlChecked: boolean;
-}
-
-interface PersistedNotificationDecision extends NotificationDecision {
-	stateSaved: boolean;
-}
-
-interface DiscordPayloadInput {
-	deployment: CloudflareDeploymentEvent["deployment"];
-	publicBaseUrl: string;
-	latestReportUrl: string;
-	relatedTopics: Array<{ title: string; url: string }>;
-}
-
-interface RetryPolicy {
-	maxAttempts: number;
-	backoffMs: number[];
-}
 
 function readJson(relativePath: string): unknown {
 	return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), "utf8"));
@@ -251,190 +196,6 @@ function isValidUrl(value: string): boolean {
 	}
 }
 
-function isHttpsUrl(value: string): boolean {
-	try {
-		return new URL(value).protocol === "https:";
-	} catch {
-		return false;
-	}
-}
-
-async function shouldNotifyDiscord(
-	event: CloudflareDeploymentEvent,
-	state: NotificationState,
-	config: NotificationConfig,
-	probeReportUrl: UrlProbe,
-): Promise<NotificationDecision> {
-	const deployment = event.deployment;
-	if (deployment.status !== "success") {
-		return {
-			shouldNotify: false,
-			reason: "deployment status is not success",
-			reportUrlChecked: false,
-		};
-	}
-	if (deployment.environment !== "production") {
-		return {
-			shouldNotify: false,
-			reason: "deployment is not production",
-			reportUrlChecked: false,
-		};
-	}
-	if (deployment.meta.branch !== "main") {
-		return {
-			shouldNotify: false,
-			reason: "deployment branch is not main",
-			reportUrlChecked: false,
-		};
-	}
-	if (!isHttpsUrl(deployment.url) || !isHttpsUrl(config.publicBaseUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment and public base URLs must be HTTPS",
-			reportUrlChecked: false,
-		};
-	}
-	if (!isHttpsUrl(config.latestReportUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "latest report URL must be HTTPS",
-			reportUrlChecked: false,
-		};
-	}
-	if (normalizeUrl(deployment.url) !== normalizeUrl(config.publicBaseUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment URL does not match public base URL",
-			reportUrlChecked: false,
-		};
-	}
-	if (state.notifiedDeploymentIds.includes(deployment.id)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment id was already notified",
-			reportUrlChecked: false,
-		};
-	}
-	if (state.notifiedCommitHashes.includes(deployment.meta.commit_hash)) {
-		return {
-			shouldNotify: false,
-			reason: "commit hash was already notified",
-			reportUrlChecked: false,
-		};
-	}
-
-	const reportProbe = await probeReportUrl(config.latestReportUrl);
-	if (
-		!reportProbe.ok ||
-		reportProbe.status < 200 ||
-		reportProbe.status >= 300
-	) {
-		return {
-			shouldNotify: false,
-			reason: "latest report URL is not live",
-			reportUrlChecked: true,
-		};
-	}
-
-	return {
-		shouldNotify: true,
-		reason: "production deployment and report are live",
-		reportUrlChecked: true,
-	};
-}
-
-function recordNotifiedDeployment(
-	state: NotificationState,
-	event: CloudflareDeploymentEvent,
-): NotificationState {
-	return {
-		notifiedDeploymentIds: unique([
-			...state.notifiedDeploymentIds,
-			event.deployment.id,
-		]),
-		notifiedCommitHashes: unique([
-			...state.notifiedCommitHashes,
-			event.deployment.meta.commit_hash,
-		]),
-	};
-}
-
-async function evaluateAndPersistNotification(
-	event: CloudflareDeploymentEvent,
-	backend: NotificationStateBackend,
-	config: NotificationConfig,
-	probeReportUrl: UrlProbe,
-): Promise<PersistedNotificationDecision> {
-	const snapshot = await backend.load();
-	const decision = await shouldNotifyDiscord(
-		event,
-		snapshot.state,
-		config,
-		probeReportUrl,
-	);
-	if (!decision.shouldNotify) {
-		return { ...decision, stateSaved: false };
-	}
-
-	try {
-		await backend.save(recordNotifiedDeployment(snapshot.state, event), {
-			ifGenerationMatch: snapshot.generation,
-		});
-		return { ...decision, stateSaved: true };
-	} catch (error) {
-		if (error instanceof GenerationMismatchError) {
-			return {
-				shouldNotify: false,
-				reason: "notification state generation precondition failed",
-				reportUrlChecked: decision.reportUrlChecked,
-				stateSaved: false,
-			};
-		}
-		throw error;
-	}
-}
-
-function buildDiscordPayload(input: DiscordPayloadInput): JsonObject {
-	const reportTitle = path.basename(input.latestReportUrl);
-	return {
-		username: "Aegis-Intelligence",
-		avatar_url: avatarUrl,
-		embeds: [
-			{
-				title: "🛡️ インテリジェンス更新 ＆ 本番デプロイ成功報告",
-				description:
-					"提案・査読エージェントによる検証をすべてパスし、最新のサイバーセキュリティインテリジェンスが本番環境へ安全にホスティングされました。",
-				url: input.publicBaseUrl,
-				color: 3066993,
-				fields: [
-					{
-						name: "📑 更新要約レポート (最新)",
-						value: `[${reportTitle}](${input.latestReportUrl})`,
-						inline: true,
-					},
-					{
-						name: "🔗 関連トピック解説",
-						value: input.relatedTopics
-							.map((topic) => `- [[${topic.title}]](${topic.url})`)
-							.join("\n"),
-						inline: false,
-					},
-					{
-						name: "⚙️ 実行履歴",
-						value: `マージコミット: \`${input.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
-						inline: false,
-					},
-				],
-				footer: {
-					text: "`kaname` • サーバーレス自律監視システム",
-					icon_url: avatarUrl,
-				},
-				timestamp: new Date(input.deployment.modified_on).toISOString(),
-			},
-		],
-	};
-}
-
 function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
 	const errors = validateWithSchema(
 		".spec/schemas/discord-webhook-payload.schema.json",
@@ -460,12 +221,6 @@ function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
 		errors.push("execution history field is required");
 	}
 	return errors;
-}
-
-class GenerationMismatchError extends Error {
-	constructor() {
-		super("notification state generation mismatch");
-	}
 }
 
 class FakeExternalNotificationStateBackend implements NotificationStateBackend {
@@ -513,32 +268,8 @@ function cloneState(state: NotificationState): NotificationState {
 	};
 }
 
-async function sendDiscordWithBoundedRetry(
-	sendWebhook: () => Promise<{ ok: boolean; status: number }>,
-	sleep: (ms: number) => Promise<void>,
-	policy: RetryPolicy,
-): Promise<DiscordSendResult> {
-	for (let attempt = 0; attempt < policy.maxAttempts; attempt += 1) {
-		const result = await sendWebhook();
-		if (result.ok && result.status >= 200 && result.status < 300) {
-			return "sent";
-		}
-		if (attempt < policy.maxAttempts - 1) {
-			await sleep(policy.backoffMs[attempt] ?? policy.backoffMs.at(-1) ?? 0);
-		}
-	}
-	return "escalate_issue";
-}
-
-function normalizeUrl(value: string): string {
-	return value.replace(/\/+$/, "");
-}
-
-function unique(values: string[]): string[] {
-	return Array.from(new Set(values));
-}
-
-function liveReportProbe(
+// Fixture builder only: this URL probe simulates report reachability for tests.
+function buildFixtureLiveReportProbe(
 	liveUrls: Set<string>,
 	checkedUrls: string[],
 ): UrlProbe {
@@ -577,7 +308,7 @@ test("F004 Cloudflare deployment fixtures match the webhook schema", async (t) =
 	}
 });
 
-test("F004 schema URI format remains generic while business gate requires HTTPS", async () => {
+test("F004 production notification gate permits generic schema URI while business gate requires HTTPS", async () => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -597,7 +328,7 @@ test("F004 schema URI format remains generic while business gate requires HTTPS"
 		[],
 	);
 
-	const decision = await shouldNotifyDiscord(
+	const decision = await evaluateDiscordNotification(
 		httpEvent,
 		readFixture<NotificationState>("state", "notification-state.empty.json"),
 		{
@@ -605,7 +336,7 @@ test("F004 schema URI format remains generic while business gate requires HTTPS"
 			latestReportUrl:
 				"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
 		},
-		liveReportProbe(new Set([latestReportUrl]), []),
+		buildFixtureLiveReportProbe(new Set([latestReportUrl]), []),
 	);
 	assert.deepStrictEqual(decision, {
 		shouldNotify: false,
@@ -614,7 +345,7 @@ test("F004 schema URI format remains generic while business gate requires HTTPS"
 	});
 });
 
-test("F004 Discord notification gate is impossible before production success", async (t) => {
+test("F004 production notification gate is impossible before production success", async (t) => {
 	const emptyState = readFixture<NotificationState>(
 		"state",
 		"notification-state.empty.json",
@@ -632,11 +363,11 @@ test("F004 Discord notification gate is impossible before production success", a
 			`${fixtureName} does not notify and does not probe report URL`,
 			async () => {
 				const checkedUrls: string[] = [];
-				const decision = await shouldNotifyDiscord(
+				const decision = await evaluateDiscordNotification(
 					readFixture<CloudflareDeploymentEvent>("cloudflare", fixtureName),
 					emptyState,
 					config,
-					liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+					buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 				);
 
 				assert.deepStrictEqual(decision, {
@@ -657,7 +388,7 @@ test("F004 Discord notification gate is impossible before production success", a
 				"cloudflare",
 				"production-success.json",
 			);
-			const decision = await shouldNotifyDiscord(
+			const decision = await evaluateDiscordNotification(
 				{
 					...event,
 					deployment: {
@@ -667,7 +398,7 @@ test("F004 Discord notification gate is impossible before production success", a
 				},
 				emptyState,
 				config,
-				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+				buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -680,7 +411,7 @@ test("F004 Discord notification gate is impossible before production success", a
 	);
 });
 
-test("F004 live report URL check is mocked and required before Discord send", async (t) => {
+test("F004 production notification gate requires mocked live report URL before Discord send", async (t) => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -695,11 +426,11 @@ test("F004 live report URL check is mocked and required before Discord send", as
 		"production success is still blocked when the latest report URL is not live",
 		async () => {
 			const checkedUrls: string[] = [];
-			const decision = await shouldNotifyDiscord(
+			const decision = await evaluateDiscordNotification(
 				event,
 				emptyState,
 				config,
-				liveReportProbe(new Set(), checkedUrls),
+				buildFixtureLiveReportProbe(new Set(), checkedUrls),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -715,11 +446,11 @@ test("F004 live report URL check is mocked and required before Discord send", as
 		"production success with a live latest report URL can notify",
 		async () => {
 			const checkedUrls: string[] = [];
-			const decision = await shouldNotifyDiscord(
+			const decision = await evaluateDiscordNotification(
 				event,
 				emptyState,
 				config,
-				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+				buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -732,7 +463,7 @@ test("F004 live report URL check is mocked and required before Discord send", as
 	);
 });
 
-test("F004 duplicate deployment idempotency state blocks repeated events", async (t) => {
+test("F004 production idempotency state blocks repeated events", async (t) => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -744,7 +475,7 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 			"state",
 			"notification-state.empty.json",
 		);
-		assert.deepStrictEqual(recordNotifiedDeployment(emptyState, event), {
+		assert.deepStrictEqual(recordNotificationState(emptyState, event), {
 			notifiedDeploymentIds: [event.deployment.id],
 			notifiedCommitHashes: [event.deployment.meta.commit_hash],
 		});
@@ -756,11 +487,11 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 			"notification-state.duplicate.json",
 		);
 		const checkedUrls: string[] = [];
-		const decision = await shouldNotifyDiscord(
+		const decision = await evaluateDiscordNotification(
 			event,
 			duplicateState,
 			config,
-			liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+			buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 		);
 
 		assert.deepStrictEqual(decision, {
@@ -784,11 +515,11 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 				deployment: { ...event.deployment, id: "deploy_replayed_different_id" },
 			};
 
-			const decision = await shouldNotifyDiscord(
+			const decision = await evaluateDiscordNotification(
 				replayWithNewDeploymentId,
 				state,
 				config,
-				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+				buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -815,7 +546,7 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 				event,
 				backend,
 				config,
-				liveReportProbe(new Set([latestReportUrl]), checkedUrls),
+				buildFixtureLiveReportProbe(new Set([latestReportUrl]), checkedUrls),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -843,13 +574,13 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 			);
 			backend.onBeforeSave = () =>
 				backend.simulateConcurrentWrite((current) =>
-					recordNotifiedDeployment(current, event),
+					recordNotificationState(current, event),
 				);
 			const decision = await evaluateAndPersistNotification(
 				event,
 				backend,
 				config,
-				liveReportProbe(new Set([latestReportUrl]), []),
+				buildFixtureLiveReportProbe(new Set([latestReportUrl]), []),
 			);
 
 			assert.deepStrictEqual(decision, {
@@ -865,7 +596,7 @@ test("F004 duplicate deployment idempotency state blocks repeated events", async
 	);
 });
 
-test("F004 Discord payload schema fixture is executable", async (t) => {
+test("F004 Discord payload builder satisfies executable schema policy", async (t) => {
 	await t.test("canonical fixture satisfies schema and policy checks", () => {
 		const payload = readFixture<JsonObject>(
 			"discord",
@@ -935,7 +666,7 @@ test("F004 Quartz Graph disabled artifact contract", async (t) => {
 	});
 });
 
-test("F004 Discord webhook retry contract is bounded and escalates safely", async (t) => {
+test("F004 production Discord webhook retry is bounded and escalates safely", async (t) => {
 	const retryPolicy: RetryPolicy = { maxAttempts: 3, backoffMs: [100, 500] };
 
 	await t.test(

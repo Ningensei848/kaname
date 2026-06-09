@@ -8,86 +8,18 @@
 import * as assert from "node:assert";
 import * as crypto from "node:crypto";
 import { test } from "node:test";
-import { generateGitHubAppJwt } from "../src/auth/github-auth";
-
-interface FakeResponse {
-	ok: boolean;
-	status: number;
-	statusText: string;
-	json: () => Promise<unknown>;
-}
-
-type FetchLike = (url: string, init: RequestInit) => Promise<FakeResponse>;
-
-interface InstallationTokenResult {
-	token: string;
-	expiresAt: string;
-	permissions: Record<string, string>;
-	repositorySelection: string;
-}
-
-async function exchangeJwtForInstallationToken(
-	fetchFn: FetchLike,
-	options: {
-		jwt: string;
-		installationId: number;
-		nowMs: number;
-		githubApiBaseUrl?: string;
-	},
-): Promise<InstallationTokenResult> {
-	const apiBaseUrl = options.githubApiBaseUrl ?? "https://api.github.com";
-	const response = await fetchFn(
-		`${apiBaseUrl}/app/installations/${options.installationId}/access_tokens`,
-		{
-			method: "POST",
-			headers: {
-				Accept: "application/vnd.github+json",
-				Authorization: `Bearer ${options.jwt}`,
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
-		},
-	);
-
-	if (!response.ok) {
-		throw new Error(
-			`GitHub installation token exchange failed: ${response.status} ${response.statusText}`,
-		);
-	}
-
-	const body = (await response.json()) as Record<string, unknown>;
-	if (typeof body.token !== "string" || body.token.length === 0) {
-		throw new Error("GitHub installation token response did not contain token");
-	}
-	if (typeof body.expires_at !== "string") {
-		throw new Error(
-			"GitHub installation token response did not contain expires_at",
-		);
-	}
-
-	const expiresAtMs = Date.parse(body.expires_at);
-	if (Number.isNaN(expiresAtMs) || expiresAtMs <= options.nowMs) {
-		throw new Error(
-			"GitHub installation token expires_at is not in the future",
-		);
-	}
-	if (expiresAtMs - options.nowMs > 60 * 60 * 1000) {
-		throw new Error("GitHub installation token expiry exceeds one hour");
-	}
-
-	return {
-		token: body.token,
-		expiresAt: body.expires_at,
-		permissions: (body.permissions ?? {}) as Record<string, string>,
-		repositorySelection: String(body.repository_selection ?? "unknown"),
-	};
-}
+import {
+	exchangeJwtForInstallationToken,
+	generateGitHubAppJwt,
+	type GitHubInstallationTokenFetch,
+} from "../src/auth/github-auth";
 
 function decodeJwtPayload(jwt: string): Record<string, unknown> {
 	const [, payload] = jwt.split(".");
 	return JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
 }
 
-test("F003 GitHub App installation token exchange", async (t) => {
+test("F003 GitHub App installation token exchange drives production auth module", async (t) => {
 	const { privateKey } = crypto.generateKeyPairSync("rsa", {
 		modulusLength: 2048,
 		privateKeyEncoding: { type: "pkcs8", format: "pem" },
@@ -107,7 +39,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 		"successful exchange uses POST, bearer JWT, GitHub API version, and returns a sub-hour token",
 		async () => {
 			const calls: Array<{ url: string; init: RequestInit }> = [];
-			const fetchFn: FetchLike = async (url, init) => {
+			const fetchFn: GitHubInstallationTokenFetch = async (url, init) => {
 				calls.push({ url, init });
 				return {
 					ok: true,
@@ -147,7 +79,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 	await t.test(
 		"HTTP failures are converted into safe exchange errors without leaking JWT contents",
 		async () => {
-			const fetchFn: FetchLike = async () => ({
+			const fetchFn: GitHubInstallationTokenFetch = async () => ({
 				ok: false,
 				status: 403,
 				statusText: "Forbidden",
@@ -173,7 +105,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 	await t.test(
 		"tokens expiring after one hour are rejected fail-closed",
 		async () => {
-			const fetchFn: FetchLike = async () => ({
+			const fetchFn: GitHubInstallationTokenFetch = async () => ({
 				ok: true,
 				status: 201,
 				statusText: "Created",
@@ -196,9 +128,6 @@ test("F003 GitHub App installation token exchange", async (t) => {
 	);
 });
 
-test.todo(
-	"F003 production GitHub auth module exports installation token exchange with injectable fetch",
-);
 test.todo(
 	"F003 MCP launcher passes installation token as GITHUB_TOKEN_FOR_MCP and never uses PAT",
 );
