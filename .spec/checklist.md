@@ -58,10 +58,10 @@
 - `ssot.yml` および過去の日付スタンプ付き「定時レポートMarkdown」が完全不変（Immutable）として保護されていること。
 - トピック/概念/組織の解説Markdownが最新ファクトのマージ・名寄せ・アップデートを許容する可変（Mutable）として保護されていること。
 
-### [ ] Cloud Storage state backend の検証
+### [x] Cloud Storage state backend の検証
 
-- `crawler-state.json` が Git repository に commit されず、Cloud Storage state backend から読み書きされること。
-- generation precondition によって並行 job の state 競合が検出されること。
+- [x] `crawler-state.json` が Git repository に commit されず、Cloud Storage state backend から読み書きされること。
+- [x] generation precondition によって並行 job の state 競合が検出されること。
 
 ### [ ] 上書き禁止（インクリメンタルアップデート）の遵守
 
