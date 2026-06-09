@@ -19,10 +19,10 @@ import {
 import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 
 interface JsonRpcToolCall {
-	jsonrpc: string;
-	method: string;
+	jsonrpc: "2.0";
+	method: "tools/call";
 	params: {
-		name: string;
+		name: "create_issue" | "create_or_update_file" | "create_pull_request" | "merge_pull_request";
 		arguments: Record<string, unknown>;
 	};
 	id: number;
@@ -55,7 +55,7 @@ const owner = "example-org";
 const repo = "kaname-vault";
 
 function baseCall(
-	name: string,
+	name: "create_issue" | "create_or_update_file" | "create_pull_request" | "merge_pull_request", 
 	args: Record<string, unknown>,
 	id: number,
 ): JsonRpcToolCall {

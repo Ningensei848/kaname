@@ -5,18 +5,18 @@ import { test } from "node:test";
 
 import {
 	allGreenMergePreconditions,
-	type McpToolCall,
+	type PolicyMcpToolCall,
 	validateToolPolicy,
 } from "../src/mcp/tool-policy";
 import { AegisOrchestrator, type DiffResult } from "../src/orchestrator";
 
-function readFixture(...segments: string[]): McpToolCall {
+function readFixture(...segments: string[]): PolicyMcpToolCall {
 	return JSON.parse(
 		fs.readFileSync(
 			path.join(__dirname, "fixtures", "f003", ...segments),
 			"utf8",
 		),
-	) as McpToolCall;
+	) as PolicyMcpToolCall;
 }
 
 const changedDiff: DiffResult[] = [
