@@ -1,10 +1,10 @@
 /**
  * Feature 002 deterministic content guard executable tests.
  *
- * Scope: test-code-first contracts only. These tests encode the reviewer/CI
+ * Scope: executable guard contracts. These tests encode the reviewer/CI
  * expectations for destructive Markdown changes, topic frontmatter, link graph
- * quality, orphan-score regression, and report novelty without introducing
- * production guard modules yet.
+ * quality, orphan-score regression, and report novelty while importing
+ * extracted production guard modules for the deterministic checks.
  *
  * Acceptance source: `.spec/features/002-wiki-incremental-update/*` and
  * `.spec/policies/content-integrity-policy.md`.
@@ -15,6 +15,11 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
+import { internalLinkGuard } from "../src/content/guards/internalLinkGuard";
+import { noOverwriteGuard } from "../src/content/guards/noOverwriteGuard";
+import { orphanScoreRegressionGuard } from "../src/content/guards/orphanScoreRegressionGuard";
+import { reportNoveltyGuard } from "../src/content/guards/reportNoveltyGuard";
+import type { GuardResult, VaultDocument } from "../src/content/guards/types";
 
 type JsonSchema = Record<string, unknown>;
 type JsonObject = Record<string, unknown>;
@@ -27,17 +32,6 @@ interface ValidationError {
 interface MarkdownDocument {
 	frontmatter: JsonObject;
 	body: string;
-}
-
-interface GuardResult {
-	ok: boolean;
-	errors: string[];
-}
-
-interface VaultDocument {
-	path: string;
-	title: string;
-	markdown: string;
 }
 
 function fixturePath(...segments: string[]): string {
@@ -222,138 +216,6 @@ function immutablePathGuard(
 			(changedPath) => `${changedPath} is immutable for this run`,
 		),
 	};
-}
-
-function noOverwriteGuard(before: string, after: string): GuardResult {
-	const beforeLines = parseMarkdown(before)
-		.body.split(/\r?\n/)
-		.filter((line) => line.trim().length > 0);
-	const afterLines = parseMarkdown(after).body.split(/\r?\n/);
-	const errors: string[] = [];
-	let searchFrom = 0;
-
-	for (const line of beforeLines) {
-		const foundAt = afterLines.findIndex(
-			(candidate, index) => index >= searchFrom && candidate === line,
-		);
-		if (foundAt === -1) {
-			errors.push(`existing line was removed or modified: ${line}`);
-			continue;
-		}
-		searchFrom = foundAt + 1;
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function collectInternalLinks(markdown: string): string[] {
-	return [...markdown.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map(
-		(match) => match[1],
-	);
-}
-
-function internalLinkGuard(
-	markdown: string,
-	knownTitles: Set<string>,
-): GuardResult {
-	const errors: string[] = [];
-	if (/\[\[\[\[|\]\]\]\]/.test(markdown)) {
-		errors.push("internal link is double-wrapped");
-	}
-
-	for (const link of collectInternalLinks(markdown)) {
-		if (!knownTitles.has(link)) {
-			errors.push(`broken internal link: ${link}`);
-		}
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function orphanScoreRegressionGuard(
-	beforeVault: VaultDocument[],
-	afterVault: VaultDocument[],
-	allowedNewHighSeverityOrphans = 0,
-): GuardResult {
-	const before = orphanTitles(beforeVault);
-	const after = orphanTitles(afterVault);
-	const newOrphans = [...after].filter((title) => !before.has(title));
-	const errors =
-		newOrphans.length > allowedNewHighSeverityOrphans
-			? [
-					`orphan score regressed: ${newOrphans.length} new orphan(s): ${newOrphans.join(", ")}`,
-				]
-			: [];
-	return { ok: errors.length === 0, errors };
-}
-
-function orphanTitles(vault: VaultDocument[]): Set<string> {
-	const titles = new Set(vault.map((document) => document.title));
-	const degrees = new Map([...titles].map((title) => [title, 0]));
-
-	for (const document of vault) {
-		const uniqueLinks = new Set(collectInternalLinks(document.markdown));
-		for (const link of uniqueLinks) {
-			if (!titles.has(link)) continue;
-			degrees.set(document.title, (degrees.get(document.title) ?? 0) + 1);
-			degrees.set(link, (degrees.get(link) ?? 0) + 1);
-		}
-	}
-
-	return new Set(
-		[...degrees.entries()]
-			.filter(([, degree]) => degree === 0)
-			.map(([title]) => title),
-	);
-}
-
-function reportNoveltyGuard(
-	reportMarkdown: string,
-	existingTopicMarkdown: string,
-	options: { duplicateThreshold: number; createsNewRootTopic?: boolean },
-): GuardResult {
-	const errors: string[] = [];
-	const duplicateRatio = calculateDuplicateRatio(
-		reportMarkdown,
-		existingTopicMarkdown,
-	);
-	const hasEvidence =
-		/https?:\/\//.test(reportMarkdown) || /根拠\s*[:：]/.test(reportMarkdown);
-	const hasInternalLink = collectInternalLinks(reportMarkdown).length > 0;
-
-	if (duplicateRatio > options.duplicateThreshold) {
-		errors.push(
-			`duplicate report threshold exceeded: ${duplicateRatio.toFixed(2)} > ${options.duplicateThreshold}`,
-		);
-	}
-	if (!hasEvidence) errors.push("report item lacks source evidence");
-	if (!options.createsNewRootTopic && !hasInternalLink) {
-		errors.push("report item lacks required internal link");
-	}
-
-	return { ok: errors.length === 0, errors };
-}
-
-function calculateDuplicateRatio(candidate: string, reference: string): number {
-	const candidateSentences = normalizeJapaneseSentences(candidate);
-	const referenceSentences = new Set(normalizeJapaneseSentences(reference));
-	if (candidateSentences.length === 0) return 0;
-	const duplicateCount = candidateSentences.filter((sentence) =>
-		referenceSentences.has(sentence),
-	).length;
-	return duplicateCount / candidateSentences.length;
-}
-
-function normalizeJapaneseSentences(markdown: string): string[] {
-	return markdown
-		.replace(/^---[\s\S]*?---/m, "")
-		.replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1")
-		.split(/[。\n]/)
-		.map((sentence) => sentence.replace(/^[-*#\s]+/, "").trim())
-		.filter(
-			(sentence) =>
-				sentence.length >= 12 && !/^title:|^tags:|^source_ids:/.test(sentence),
-		);
 }
 
 test("F002 topic frontmatter schema guard", async (t) => {
