@@ -148,7 +148,7 @@ test("AegisOrchestrator consumes transition table records for integration flow",
 					comment: "Missing inbound link for orphan NICT note",
 					mergePreconditions: {
 						...allGreenMergePreconditions,
-						f002ContentGuards: "failed",
+						deterministicContentGuards: "failed",
 					},
 				};
 			}
@@ -214,7 +214,7 @@ test("AegisOrchestrator escalates repeated guard failures via loop_exhausted", a
 			comment: "OFM layout violation: tags are malformed.",
 			mergePreconditions: {
 				...allGreenMergePreconditions,
-				f002ContentGuards: "failed",
+				deterministicContentGuards: "failed",
 			},
 		}),
 	});

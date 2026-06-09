@@ -29,10 +29,10 @@ test("validateToolPolicy rejects broken F002 content guard verdict aggregation",
 	assert.deepStrictEqual(
 		validateToolPolicy(call, {
 			...allGreenMergePreconditions,
-			f002ContentGuards: "failed",
+			deterministicContentGuards: "failed",
 		}),
 		[
-			"merge precondition f002ContentGuards is failed",
+			"merge precondition deterministicContentGuards is failed",
 			"merge preconditions are not all passed",
 		],
 	);
@@ -53,7 +53,7 @@ test("validateToolPolicy rejects indeterminate merge gates", () => {
 	);
 });
 
-test("validateToolPolicy rejects disallowed writer and merge branches", () => {
+test("validateToolPolicy rejects disallowed writer branches and spec-external merge properties", () => {
 	assert.ok(
 		validateToolPolicy(
 			readFixture("mcp", "invalid", "writer-main-branch.json"),
@@ -63,7 +63,9 @@ test("validateToolPolicy rejects disallowed writer and merge branches", () => {
 	const mergeCall = readFixture("mcp", "valid", "merge-pull-request.json");
 	mergeCall.params.arguments.head = "main";
 	assert.ok(
-		validateToolPolicy(mergeCall).includes("merge head must be osint/*"),
+		validateToolPolicy(mergeCall).includes(
+			"$.params.arguments.head: additional property is not allowed",
+		),
 	);
 });
 
@@ -73,6 +75,24 @@ test("validateToolPolicy rejects disallowed writer paths", () => {
 			readFixture("mcp", "invalid", "writer-nested-topic-path.json"),
 		).includes(
 			"Writer path is not allowed: topics/bad/nested/sub/dir/exploit.md",
+		),
+	);
+});
+
+test("validateToolPolicy fails closed for invalid argument types and merge extras", () => {
+	const writerCall = readFixture("mcp", "valid", "create-or-update-file.json");
+	writerCall.params.arguments.branch = ["osint/content-update"];
+	assert.ok(
+		validateToolPolicy(writerCall).includes(
+			"$.params.arguments.branch: expected type string",
+		),
+	);
+
+	const mergeCall = readFixture("mcp", "valid", "merge-pull-request.json");
+	mergeCall.params.arguments.base = "main";
+	assert.ok(
+		validateToolPolicy(mergeCall).includes(
+			"$.params.arguments.base: additional property is not allowed",
 		),
 	);
 });
@@ -115,7 +135,7 @@ test("AegisOrchestrator blocks approved merges when any gate is indeterminate", 
 			comment: "reviewer approval is not enough without deterministic gates",
 			mergePreconditions: {
 				...allGreenMergePreconditions,
-				node: "indeterminate",
+				ci: "indeterminate",
 			},
 		}),
 	});

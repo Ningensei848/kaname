@@ -166,14 +166,25 @@ export class AegisOrchestrator {
 				const allGatesPassed = areMergePreconditionsPassed(
 					review.mergePreconditions,
 				);
+				const mergeCall = review.approve
+					? this.buildMergePullRequestCall()
+					: null;
+				const policyErrors = mergeCall
+					? validateToolPolicy(mergeCall, review.mergePreconditions)
+					: [];
+
+				if (review.approve && policyErrors.length > 0) {
+					this.applyTransition("fatal_error", false);
+					break;
+				}
 
 				const reviewState = this.applyTransition(
 					review.approve ? "reviewer_approved" : "deterministic_guard_failed",
 					allGatesPassed,
 				);
 
-				if (reviewState === "MERGED") {
-					await this.mergePr(review.mergePreconditions);
+				if (reviewState === "MERGED" && mergeCall) {
+					await this.mergePr(mergeCall);
 					return {
 						exitCode: 0,
 						reason: "Consensus reached and merged successfully.",
@@ -253,14 +264,9 @@ export class AegisOrchestrator {
 		return "PENDING";
 	}
 
-	private async mergePr(preconditions: MergePreconditions): Promise<void> {
+	private async mergePr(mergeCall: PolicyMcpToolCall): Promise<void> {
 		if (!this.prState) {
 			return;
-		}
-		const mergeCall = this.buildMergePullRequestCall();
-		const policyErrors = validateToolPolicy(mergeCall, preconditions);
-		if (policyErrors.length > 0) {
-			throw new Error(`Blocked merge_pull_request: ${policyErrors.join("; ")}`);
 		}
 		await this.dependencies.mcpClient?.callTool(mergeCall);
 		this.prState.approved = true;
@@ -280,8 +286,6 @@ export class AegisOrchestrator {
 					owner: this.dependencies.owner ?? "Ningensei848",
 					repo: this.dependencies.repo ?? "kaname-vault",
 					pull_number: this.prState.prNumber,
-					head: this.prState.head ?? "osint/content-acd-update-20260527",
-					base: this.prState.base ?? "main",
 					merge_method: "squash",
 					commit_title:
 						"[Aegis-Reviewer] Self-Merge: Intelligence Update Passed Review",
