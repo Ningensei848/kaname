@@ -11,7 +11,7 @@ export interface StateSnapshot<T> {
 }
 
 export interface SaveStateOptions {
-	ifGenerationMatch: string | null;
+	ifGenerationMatch?: string | null;
 }
 
 export interface StateBackendAdapter<T> {

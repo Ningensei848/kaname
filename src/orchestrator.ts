@@ -1,11 +1,17 @@
 import { crawlSource, type Fetcher } from "./crawler/fetch";
-import type { SsotSource } from "./types";
 import {
-    type OrchestratorState,
-    type OrchestratorEvent,
-    type TransitionContext,
-    type TransitionRecord,
-    transition,
+	calculateHash,
+	StateConflictError,
+	type StateBackendAdapter,
+	updateSourceState,
+} from "./crawler/state";
+import type { CrawlerState, SsotSource } from "./types";
+import {
+	type OrchestratorState,
+	type OrchestratorEvent,
+	type TransitionContext,
+	type TransitionRecord,
+	transition,
 } from "./orchestrator/state-machine";
 
 export interface McpToolCall {
@@ -32,6 +38,7 @@ export interface CrawlerEscalationDependencies {
 	owner: string;
 	repo: string;
 	fetcher?: Fetcher;
+	stateBackend?: StateBackendAdapter<CrawlerState>;
 	now?: () => Date;
 	idFactory?: () => number;
 	thirdPartyMailer?: { send: (message: unknown) => Promise<unknown> | unknown };
@@ -50,7 +57,7 @@ export interface CrawlerSourceFailure {
 }
 
 export interface CrawlerEscalationResult {
-	policy: "continue_after_source_failure";
+	policy: "continue_after_source_failure" | "state_conflict_aborted";
 	successes: CrawlerSourceSuccess[];
 	failures: CrawlerSourceFailure[];
 	escalatedIssueCalls: McpToolCall[];
@@ -298,15 +305,31 @@ export async function crawlSourcesWithFailureEscalation(
 	const successes: CrawlerSourceSuccess[] = [];
 	const failures: CrawlerSourceFailure[] = [];
 	const escalatedIssueCalls: McpToolCall[] = [];
+	const stateSnapshot = await dependencies.stateBackend?.load();
+	let nextState = stateSnapshot?.state;
 
 	for (const source of sources) {
 		try {
-			const result = await crawlSource(source, null, {
-				fetcher: dependencies.fetcher,
-				retries: 3,
-				delayMs: 0,
-			});
+			const previousSourceState = nextState?.sources[source.id];
+			const result = await crawlSource(
+				source,
+				previousSourceState?.last_modified_header ?? null,
+				{
+					fetcher: dependencies.fetcher,
+					retries: 3,
+					delayMs: 0,
+				},
+			);
 			successes.push({ sourceId: source.id, ...result });
+
+			if (nextState && !result.isNotModified) {
+				nextState = updateSourceState(
+					nextState,
+					source.id,
+					calculateHash(result.content),
+					result.lastModifiedHeader,
+				);
+			}
 		} catch (error) {
 			const normalizedError =
 				error instanceof Error ? error : new Error(String(error));
@@ -321,11 +344,64 @@ export async function crawlSourcesWithFailureEscalation(
 		}
 	}
 
+	if (dependencies.stateBackend && nextState && stateSnapshot) {
+		try {
+			await dependencies.stateBackend.save(nextState, {
+				ifGenerationMatch: stateSnapshot.generation,
+			});
+		} catch (error) {
+			if (!(error instanceof StateConflictError)) {
+				throw error;
+			}
+
+			console.warn(
+				`Crawler state save conflict. Safe abort to prevent duplicate downstream work. Expected generation: ${error.expectedGeneration ?? "<none>"}. Current generation: ${error.currentGeneration ?? "<unknown>"}.`,
+			);
+			const issueCall = buildCrawlerStateConflictIssueCall(error, dependencies);
+			escalatedIssueCalls.push(issueCall);
+			await dependencies.mcpClient.callTool(issueCall);
+
+			return {
+				policy: "state_conflict_aborted",
+				successes,
+				failures,
+				escalatedIssueCalls,
+			};
+		}
+	}
+
 	return {
 		policy: "continue_after_source_failure",
 		successes,
 		failures,
 		escalatedIssueCalls,
+	};
+}
+
+function buildCrawlerStateConflictIssueCall(
+	error: StateConflictError,
+	dependencies: CrawlerEscalationDependencies,
+): McpToolCall {
+	const now = dependencies.now?.() ?? new Date();
+	return {
+		jsonrpc: "2.0",
+		method: "tools/call",
+		params: {
+			name: "create_issue",
+			arguments: {
+				owner: dependencies.owner,
+				repo: dependencies.repo,
+				title: "[System Error] Crawler State Conflict",
+				body: [
+					"## crawler-state.json 世代競合",
+					`- **発生日時**: ${now.toISOString()}`,
+					`- **期待 generation**: ${error.expectedGeneration ?? "<none>"}`,
+					`- **現在 generation**: ${error.currentGeneration ?? "<unknown>"}`,
+					"- **ステータス**: 重複 Writer / MCP 実行とコスト暴走を防ぐため、安全に処理を中断しました。",
+				].join("\n"),
+			},
+		},
+		id: dependencies.idFactory?.() ?? 104,
 	};
 }
 

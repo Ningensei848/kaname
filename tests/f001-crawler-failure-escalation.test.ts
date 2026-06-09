@@ -5,7 +5,8 @@ import {
 	type McpToolCall,
 } from "../src/orchestrator";
 import type { Fetcher } from "../src/crawler/fetch";
-import type { SsotSource } from "../src/types";
+import { StateConflictError } from "../src/crawler/state";
+import type { CrawlerState, SsotSource } from "../src/types";
 
 test("F001 crawler retry failure escalates through GitHub MCP create_issue only", async () => {
 	const sources: SsotSource[] = [
@@ -132,3 +133,127 @@ test("F001 crawler retry failure escalates through GitHub MCP create_issue only"
 	);
 	assert.strictEqual(result.escalatedIssueCalls[0], createIssueCall);
 });
+
+test("F001 crawler integrates StateBackendAdapter generation writes", async () => {
+	const sources: SsotSource[] = [
+		{
+			id: "jpcert",
+			name: "JPCERT/CC",
+			url: "https://example.test/jpcert",
+			description: "JPCERT source",
+		},
+	];
+	const stateBackend = new RecordingStateBackend({
+		last_execution: "2026-05-27T08:00:00.000Z",
+		sources: {
+			jpcert: {
+				last_checked: "2026-05-27T08:00:00.000Z",
+				content_hash: "oldhash",
+				last_modified_header: "Wed, 27 May 2026 08:00:00 GMT",
+			},
+		},
+	});
+	let ifModifiedSince: string | null = null;
+	const fakeFetcher: Fetcher = async (_input, init) => {
+		ifModifiedSince = new Headers(init?.headers).get("if-modified-since");
+		return new Response(
+			"<html><body><main>Updated advisory</main></body></html>",
+			{
+				status: 200,
+				headers: { "Last-Modified": "Wed, 27 May 2026 09:30:00 GMT" },
+			},
+		);
+	};
+
+	const result = await crawlSourcesWithFailureEscalation(sources, {
+		mcpClient: { callTool: () => undefined },
+		owner: "Ningensei848",
+		repo: "kaname-vault",
+		fetcher: fakeFetcher,
+		stateBackend,
+	});
+
+	assert.strictEqual(result.policy, "continue_after_source_failure");
+	assert.strictEqual(ifModifiedSince, "Wed, 27 May 2026 08:00:00 GMT");
+	assert.strictEqual(stateBackend.loadCalls, 1);
+	assert.strictEqual(stateBackend.saveCalls.length, 1);
+	assert.strictEqual(stateBackend.saveCalls[0].ifGenerationMatch, "7");
+	assert.strictEqual(
+		stateBackend.saveCalls[0].state.sources.jpcert.last_modified_header,
+		"Wed, 27 May 2026 09:30:00 GMT",
+	);
+	assert.notStrictEqual(
+		stateBackend.saveCalls[0].state.sources.jpcert.content_hash,
+		"oldhash",
+	);
+});
+
+test("F001 crawler state generation conflict aborts safely via Issue", async () => {
+	const sources: SsotSource[] = [
+		{
+			id: "jpcert",
+			name: "JPCERT/CC",
+			url: "https://example.test/jpcert",
+			description: "JPCERT source",
+		},
+	];
+	const stateBackend = new RecordingStateBackend({
+		last_execution: "2026-05-27T08:00:00.000Z",
+		sources: {},
+	});
+	stateBackend.conflictOnSave = true;
+	const mcpCalls: McpToolCall[] = [];
+	const fakeFetcher: Fetcher = async () =>
+		new Response("<html><body><main>Updated advisory</main></body></html>", {
+			status: 200,
+		});
+
+	const result = await crawlSourcesWithFailureEscalation(sources, {
+		mcpClient: { callTool: (call) => mcpCalls.push(call) },
+		owner: "Ningensei848",
+		repo: "kaname-vault",
+		fetcher: fakeFetcher,
+		stateBackend,
+		now: () => new Date("2026-05-27T09:30:00.000Z"),
+		idFactory: () => 204,
+	});
+
+	assert.strictEqual(result.policy, "state_conflict_aborted");
+	assert.strictEqual(mcpCalls.length, 1);
+	assert.strictEqual(
+		mcpCalls[0].params.arguments.title,
+		"[System Error] Crawler State Conflict",
+	);
+	assert.match(mcpCalls[0].params.arguments.body, /安全に処理を中断/);
+	assert.match(mcpCalls[0].params.arguments.body, /<unknown>/);
+});
+
+class RecordingStateBackend {
+	public loadCalls = 0;
+	public saveCalls: Array<{
+		state: CrawlerState;
+		ifGenerationMatch?: string | null;
+	}> = [];
+	public conflictOnSave = false;
+
+	public constructor(private readonly state: CrawlerState) {}
+
+	public async load() {
+		this.loadCalls++;
+		return { state: structuredClone(this.state), generation: "7" };
+	}
+
+	public async save(
+		state: CrawlerState,
+		options: { ifGenerationMatch?: string | null },
+	) {
+		this.saveCalls.push({ state: structuredClone(state), ...options });
+		if (this.conflictOnSave) {
+			throw new StateConflictError("stale write", {
+				expectedGeneration: options.ifGenerationMatch ?? null,
+				currentGeneration: null,
+			});
+		}
+		return { state: structuredClone(state), generation: "8" };
+	}
+}

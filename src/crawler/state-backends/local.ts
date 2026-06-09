@@ -16,10 +16,14 @@ export class LocalFileStateBackend
 
 	public async save(
 		state: CrawlerState,
-		options: { ifGenerationMatch: string | null },
+		options: { ifGenerationMatch?: string | null },
 	): Promise<StateSnapshot<CrawlerState>> {
 		const current = loadCrawlerStateSnapshotFromFile(this.filePath);
-		if (options.ifGenerationMatch !== current.generation) {
+		if (
+			options.ifGenerationMatch !== null &&
+			options.ifGenerationMatch !== undefined &&
+			options.ifGenerationMatch !== current.generation
+		) {
 			throw new StateConflictError("Local crawler state generation is stale", {
 				expectedGeneration: options.ifGenerationMatch,
 				currentGeneration: current.generation,

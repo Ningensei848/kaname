@@ -67,7 +67,6 @@ test("GcsStateBackend contract", async (t) => {
 			const fetchFn: FetchLike = async () =>
 				new Response(JSON.stringify({ error: { code: 412 } }), {
 					status: 412,
-					headers: { "x-goog-generation": "9" },
 				});
 
 			const backend = new GcsStateBackend({
@@ -79,9 +78,44 @@ test("GcsStateBackend contract", async (t) => {
 				(error: unknown) => {
 					assert.ok(error instanceof StateConflictError);
 					assert.strictEqual(error.expectedGeneration, "7");
-					assert.strictEqual(error.currentGeneration, "9");
+					assert.strictEqual(error.currentGeneration, null);
 					return true;
 				},
+			);
+		},
+	);
+	await t.test("unconditional save omits ifGenerationMatch", async () => {
+		const calls: Array<{ url: string; init?: RequestInit }> = [];
+		const fetchFn: FetchLike = async (url, init) => {
+			calls.push({ url: String(url), init });
+			return Response.json({ generation: "10" }, { status: 200 });
+		};
+
+		const backend = new GcsStateBackend({
+			bucket: "state-bucket",
+			fetch: fetchFn,
+		});
+		await backend.save(state, { ifGenerationMatch: null });
+
+		assert.doesNotMatch(calls[0].url, /ifGenerationMatch/);
+	});
+
+	await t.test(
+		"malformed existing object throws instead of bootstrapping",
+		async () => {
+			const fetchFn: FetchLike = async () =>
+				new Response("{ not json", {
+					status: 200,
+					headers: { "x-goog-generation": "11" },
+				});
+
+			const backend = new GcsStateBackend({
+				bucket: "state-bucket",
+				fetch: fetchFn,
+			});
+			await assert.rejects(
+				() => backend.load(),
+				/Failed to parse existing crawler state from GCS/,
 			);
 		},
 	);

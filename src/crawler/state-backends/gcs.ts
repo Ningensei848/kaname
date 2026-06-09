@@ -56,9 +56,17 @@ export class GcsStateBackend implements StateBackendAdapter<CrawlerState> {
 		}
 
 		const raw = await response.text();
-		const state = parseCrawlerState(raw);
+		let state: CrawlerState | null;
+		try {
+			state = parseCrawlerState(raw);
+		} catch (error) {
+			throw new Error(
+				`Failed to parse existing crawler state from GCS: ${(error as Error).message}`,
+			);
+		}
+
 		if (!state) {
-			return { state: createInitialCrawlerState(), generation: null };
+			throw new Error("Existing crawler state object in GCS is invalid");
 		}
 
 		return {
@@ -82,7 +90,7 @@ export class GcsStateBackend implements StateBackendAdapter<CrawlerState> {
 
 		if (response.status === 409 || response.status === 412) {
 			throw new StateConflictError("GCS crawler state generation is stale", {
-				expectedGeneration: options.ifGenerationMatch,
+				expectedGeneration: options.ifGenerationMatch ?? null,
 				currentGeneration: response.headers.get("x-goog-generation"),
 				cause: await safeResponseBody(response),
 			});
@@ -110,13 +118,15 @@ export class GcsStateBackend implements StateBackendAdapter<CrawlerState> {
 		return url.toString();
 	}
 
-	private uploadUrl(ifGenerationMatch: string | null): string {
+	private uploadUrl(ifGenerationMatch?: string | null): string {
 		const url = new URL(
 			`${this.uploadBaseUrl}/b/${encodeURIComponent(this.options.bucket)}/o`,
 		);
 		url.searchParams.set("uploadType", "media");
 		url.searchParams.set("name", this.objectName);
-		url.searchParams.set("ifGenerationMatch", ifGenerationMatch ?? "0");
+		if (ifGenerationMatch !== null && ifGenerationMatch !== undefined) {
+			url.searchParams.set("ifGenerationMatch", ifGenerationMatch);
+		}
 		return url.toString();
 	}
 
