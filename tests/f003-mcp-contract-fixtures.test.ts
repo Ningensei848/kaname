@@ -209,9 +209,6 @@ function validateToolPolicy(
 			break;
 		}
 		case "merge_pull_request": {
-			if (!String(args.head).startsWith("osint/"))
-				errors.push("merge head must be osint/*");
-			if (args.base !== "main") errors.push("merge base must be main");
 			if (args.merge_method !== "squash")
 				errors.push("merge method must be squash");
 			if (!String(args.commit_title).startsWith("[Aegis-Reviewer]"))

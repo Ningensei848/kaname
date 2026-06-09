@@ -1,14 +1,21 @@
 import { crawlSource, type Fetcher } from "./crawler/fetch";
+import {
+	allGreenMergePreconditions,
+	type GateStatus,
+	type McpToolCall as PolicyMcpToolCall,
+	type MergePreconditions,
+	validateToolPolicy,
+} from "./mcp/tool-policy";
 import type { SsotSource } from "./types";
 import {
-    type OrchestratorState,
-    type OrchestratorEvent,
-    type TransitionContext,
-    type TransitionRecord,
-    transition,
+	type OrchestratorState,
+	type OrchestratorEvent,
+	type TransitionContext,
+	type TransitionRecord,
+	transition,
 } from "./orchestrator/state-machine";
 
-export interface McpToolCall {
+export interface McpToolCall extends PolicyMcpToolCall {
 	jsonrpc: "2.0";
 	method: "tools/call";
 	params: {
@@ -20,11 +27,14 @@ export interface McpToolCall {
 			body: string;
 		};
 	};
-	id: number;
 }
 
 export interface McpClient {
 	callTool: (call: McpToolCall) => Promise<unknown> | unknown;
+}
+
+export interface ToolMcpClient {
+	callTool: (call: PolicyMcpToolCall) => Promise<unknown> | unknown;
 }
 
 export interface CrawlerEscalationDependencies {
@@ -65,6 +75,7 @@ export interface DiffResult {
 export interface ReviewResult {
 	approve: boolean;
 	comment: string;
+	mergePreconditions: MergePreconditions;
 }
 
 export interface PRState {
@@ -72,6 +83,8 @@ export interface PRState {
 	status: "OPEN" | "CLOSED" | "MERGED";
 	commits: string[];
 	approved: boolean;
+	head?: string;
+	base?: string;
 }
 
 export interface OrchestrationResult {
@@ -88,6 +101,9 @@ export type ExecutionStatus =
 
 export interface OrchestratorDependencies {
 	startMcp?: () => Promise<void> | void;
+	mcpClient?: ToolMcpClient;
+	owner?: string;
+	repo?: string;
 	writeProposal?: (
 		loop: number,
 		currentPr: PRState | null,
@@ -144,18 +160,31 @@ export class AegisOrchestrator {
 					break;
 				}
 
-				const review = await this.dependencies.reviewProposal(
-					this.loopCount,
-					this.prState,
+				const review = this.requireDeterministicReview(
+					await this.dependencies.reviewProposal(this.loopCount, this.prState),
 				);
+				const allGatesPassed = areMergePreconditionsPassed(
+					review.mergePreconditions,
+				);
+				const mergeCall = review.approve
+					? this.buildMergePullRequestCall()
+					: null;
+				const policyErrors = mergeCall
+					? validateToolPolicy(mergeCall, review.mergePreconditions)
+					: [];
+
+				if (review.approve && policyErrors.length > 0) {
+					this.applyTransition("fatal_error", false);
+					break;
+				}
 
 				const reviewState = this.applyTransition(
 					review.approve ? "reviewer_approved" : "deterministic_guard_failed",
-					review.approve,
+					allGatesPassed,
 				);
 
-				if (reviewState === "MERGED") {
-					this.mergePr();
+				if (reviewState === "MERGED" && mergeCall) {
+					await this.mergePr(mergeCall);
 					return {
 						exitCode: 0,
 						reason: "Consensus reached and merged successfully.",
@@ -235,12 +264,53 @@ export class AegisOrchestrator {
 		return "PENDING";
 	}
 
-	private mergePr(): void {
+	private async mergePr(mergeCall: PolicyMcpToolCall): Promise<void> {
 		if (!this.prState) {
 			return;
 		}
+		await this.dependencies.mcpClient?.callTool(mergeCall);
 		this.prState.approved = true;
 		this.prState.status = "MERGED";
+	}
+
+	private buildMergePullRequestCall(): PolicyMcpToolCall {
+		if (!this.prState) {
+			throw new Error("Cannot build merge_pull_request without a PR");
+		}
+		return {
+			jsonrpc: "2.0",
+			method: "tools/call",
+			params: {
+				name: "merge_pull_request",
+				arguments: {
+					owner: this.dependencies.owner ?? "Ningensei848",
+					repo: this.dependencies.repo ?? "kaname-vault",
+					pull_number: this.prState.prNumber,
+					merge_method: "squash",
+					commit_title:
+						"[Aegis-Reviewer] Self-Merge: Intelligence Update Passed Review",
+				},
+			},
+			id: 103,
+		};
+	}
+
+	private requireDeterministicReview(review: ReviewResult): ReviewResult {
+		const verdicts = review.mergePreconditions;
+		if (!verdicts) {
+			throw new Error(
+				"Reviewer must return deterministic merge precondition verdicts",
+			);
+		}
+		for (const key of Object.keys(allGreenMergePreconditions)) {
+			const status = verdicts[key as keyof MergePreconditions];
+			if (!isGateStatus(status)) {
+				throw new Error(
+					`Reviewer merge precondition ${key} is missing or invalid`,
+				);
+			}
+		}
+		return review;
 	}
 
 	private async runWriter(loop: number): Promise<PRState> {
@@ -273,6 +343,21 @@ export class AegisOrchestrator {
 			body: `Review loop failed to resolve after ${this.loopCount} iterations.`,
 		};
 	}
+}
+
+function areMergePreconditionsPassed(
+	preconditions: MergePreconditions,
+): boolean {
+	return Object.values(preconditions).every((status) => status === "passed");
+}
+
+function isGateStatus(status: unknown): status is GateStatus {
+	return (
+		status === "passed" ||
+		status === "failed" ||
+		status === "unavailable" ||
+		status === "indeterminate"
+	);
 }
 
 export async function runOrchestration(

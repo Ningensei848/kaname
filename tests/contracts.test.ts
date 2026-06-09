@@ -11,6 +11,11 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
+import {
+	allGreenMergePreconditions,
+	type MergePreconditions,
+	validateToolPolicy,
+} from "../src/mcp/tool-policy";
 import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 
 interface JsonRpcToolCall {
@@ -21,17 +26,6 @@ interface JsonRpcToolCall {
 		arguments: Record<string, unknown>;
 	};
 	id: number;
-}
-
-type GateStatus = "passed" | "failed" | "unavailable" | "indeterminate";
-
-interface MergePreconditions {
-	ci: GateStatus;
-	takumiGuard: GateStatus;
-	deterministicContentGuards: GateStatus;
-	branchPolicy: GateStatus;
-	immutableFiles: GateStatus;
-	internalLinks: GateStatus;
 }
 
 type JsonObject = Record<string, unknown>;
@@ -71,71 +65,6 @@ function baseCall(
 		params: { name, arguments: args },
 		id,
 	};
-}
-
-function assertJsonRpcToolEnvelope(call: JsonRpcToolCall): void {
-	assert.strictEqual(call.jsonrpc, "2.0");
-	assert.strictEqual(call.method, "tools/call");
-	assert.ok(Number.isInteger(call.id), "JSON-RPC id must be an integer");
-	assert.ok(call.params.name.length > 0, "tool name is required");
-	assert.strictEqual(typeof call.params.arguments.owner, "string");
-	assert.strictEqual(typeof call.params.arguments.repo, "string");
-}
-
-function isAllowedContentPath(filePath: string): boolean {
-	return isAllowedMcpWriterPath(filePath);
-}
-
-function assertValidMcpCall(
-	call: JsonRpcToolCall,
-	preconditions?: MergePreconditions,
-): void {
-	assertJsonRpcToolEnvelope(call);
-	assert.deepStrictEqual(
-		validateWithSchema(".spec/schemas/mcp-tool-call.schema.json", call),
-		[],
-	);
-
-	const args = call.params.arguments;
-	switch (call.params.name) {
-		case "create_or_update_file": {
-			assert.match(String(args.branch), /^osint\//);
-			assert.notStrictEqual(args.branch, "main");
-			assert.ok(
-				isAllowedContentPath(String(args.path)),
-				"Writer may only modify approved generated content paths",
-			);
-			assert.notStrictEqual(
-				String(args.path),
-				"crawler-state.json",
-				"runtime crawler state must not be written through Git",
-			);
-			assert.strictEqual(typeof args.content, "string");
-			assert.match(String(args.message), /^\[Aegis-Writer\]/);
-			return;
-		}
-		case "create_pull_request": {
-			assert.match(String(args.head), /^osint\//);
-			assert.strictEqual(args.base, "main");
-			assert.match(String(args.title), /^\[Wiki-Sync\]/);
-			assert.ok(String(args.body).includes("## 提案要約"));
-			return;
-		}
-		case "merge_pull_request": {
-			assert.ok(preconditions, "merge calls require explicit gate evidence");
-			assert.strictEqual(canAutonomouslyMerge(preconditions), true);
-			assert.strictEqual(args.merge_method, "squash");
-			assert.match(String(args.commit_title), /^\[Aegis-Reviewer\]/);
-			return;
-		}
-		case "create_issue": {
-			assert.match(String(args.title), /^\[System Error\]/);
-			assert.ok(String(args.body).includes("## 障害発生報告"));
-			return;
-		}
-		default:
-			assert.fail(`Unexpected MCP tool name: ${call.params.name}`);
-	}
 }
 
 function canAutonomouslyMerge(gates: MergePreconditions): boolean {
@@ -382,14 +311,7 @@ function buildDiscordPayload(input: DiscordPayloadInput): JsonObject {
 	};
 }
 
-const allGreenGates: MergePreconditions = {
-	ci: "passed",
-	takumiGuard: "passed",
-	deterministicContentGuards: "passed",
-	branchPolicy: "passed",
-	immutableFiles: "passed",
-	internalLinks: "passed",
-};
+const allGreenGates: MergePreconditions = allGreenMergePreconditions;
 
 const deploymentSuccess: CloudflareDeploymentEvent = {
 	id: "evt_pages_deploy_success",
@@ -457,14 +379,14 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 						owner,
 						repo,
 						title: "[System Error] Crawling Failed for ID: nco",
-						body: "## 障害発生報告\n- **対象ソース**: 国家サイバー統括室",
+						body: "## 障害発生報告\n- **発生日時**: 2026-05-27T18:30:00JST\n- **対象ソース**: 国家サイバー統括室\n- **エラー内容**: HTTP 500\n- **ステータス**: 縮退運転中",
 					},
 					104,
 				),
 			];
 
 			for (const call of calls) {
-				assertValidMcpCall(call, allGreenGates);
+				assert.deepStrictEqual(validateToolPolicy(call, allGreenGates), []);
 			}
 		},
 	);
@@ -539,10 +461,17 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 			];
 
 			for (const call of invalidCalls) {
-				assert.throws(() => assertValidMcpCall(call, allGreenGates));
+				assert.notDeepStrictEqual(validateToolPolicy(call, allGreenGates), []);
 			}
 		},
 	);
+	await t.test("uses production writer path allowlist directly", () => {
+		assert.strictEqual(
+			isAllowedMcpWriterPath("topics/gov-agencies/NCO.md"),
+			true,
+		);
+		assert.strictEqual(isAllowedMcpWriterPath("src/orchestrator.ts"), false);
+	});
 });
 
 test("Protected merge and Takumi Guard gates fail closed", async (t) => {
