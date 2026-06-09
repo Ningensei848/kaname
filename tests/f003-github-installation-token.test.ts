@@ -9,32 +9,19 @@ import * as assert from "node:assert";
 import * as crypto from "node:crypto";
 import { test } from "node:test";
 import { generateGitHubAppJwt } from "../src/auth/github-auth";
+import type {
+	GitHubInstallationTokenExchangeOptions,
+	GitHubInstallationTokenFetch,
+	GitHubInstallationTokenResponse,
+} from "../src/auth/github-installation-token-contract";
 
-interface FakeResponse {
-	ok: boolean;
-	status: number;
-	statusText: string;
-	json: () => Promise<unknown>;
-}
-
-type FetchLike = (url: string, init: RequestInit) => Promise<FakeResponse>;
-
-interface InstallationTokenResult {
-	token: string;
-	expiresAt: string;
-	permissions: Record<string, string>;
-	repositorySelection: string;
-}
-
-async function exchangeJwtForInstallationToken(
-	fetchFn: FetchLike,
-	options: {
-		jwt: string;
-		installationId: number;
-		nowMs: number;
-		githubApiBaseUrl?: string;
-	},
-): Promise<InstallationTokenResult> {
+// Specification oracle only: this test-local function encodes the expected
+// GitHub App exchange contract until a production adapter exists in src/. It is
+// not runtime implementation and must not be imported by product code.
+async function oracleGitHubInstallationTokenExchange(
+	fetchFn: GitHubInstallationTokenFetch,
+	options: GitHubInstallationTokenExchangeOptions,
+): Promise<GitHubInstallationTokenResponse> {
 	const apiBaseUrl = options.githubApiBaseUrl ?? "https://api.github.com";
 	const response = await fetchFn(
 		`${apiBaseUrl}/app/installations/${options.installationId}/access_tokens`,
@@ -87,7 +74,7 @@ function decodeJwtPayload(jwt: string): Record<string, unknown> {
 	return JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
 }
 
-test("F003 GitHub App installation token exchange", async (t) => {
+test("F003 GitHub App installation token exchange contract-only oracle until production adapter exists", async (t) => {
 	const { privateKey } = crypto.generateKeyPairSync("rsa", {
 		modulusLength: 2048,
 		privateKeyEncoding: { type: "pkcs8", format: "pem" },
@@ -107,7 +94,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 		"successful exchange uses POST, bearer JWT, GitHub API version, and returns a sub-hour token",
 		async () => {
 			const calls: Array<{ url: string; init: RequestInit }> = [];
-			const fetchFn: FetchLike = async (url, init) => {
+			const fetchFn: GitHubInstallationTokenFetch = async (url, init) => {
 				calls.push({ url, init });
 				return {
 					ok: true,
@@ -122,7 +109,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 				};
 			};
 
-			const result = await exchangeJwtForInstallationToken(fetchFn, {
+			const result = await oracleGitHubInstallationTokenExchange(fetchFn, {
 				jwt,
 				installationId: 98765,
 				nowMs,
@@ -147,7 +134,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 	await t.test(
 		"HTTP failures are converted into safe exchange errors without leaking JWT contents",
 		async () => {
-			const fetchFn: FetchLike = async () => ({
+			const fetchFn: GitHubInstallationTokenFetch = async () => ({
 				ok: false,
 				status: 403,
 				statusText: "Forbidden",
@@ -156,7 +143,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 
 			await assert.rejects(
 				() =>
-					exchangeJwtForInstallationToken(fetchFn, {
+					oracleGitHubInstallationTokenExchange(fetchFn, {
 						jwt,
 						installationId: 98765,
 						nowMs,
@@ -173,7 +160,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 	await t.test(
 		"tokens expiring after one hour are rejected fail-closed",
 		async () => {
-			const fetchFn: FetchLike = async () => ({
+			const fetchFn: GitHubInstallationTokenFetch = async () => ({
 				ok: true,
 				status: 201,
 				statusText: "Created",
@@ -185,7 +172,7 @@ test("F003 GitHub App installation token exchange", async (t) => {
 
 			await assert.rejects(
 				() =>
-					exchangeJwtForInstallationToken(fetchFn, {
+					oracleGitHubInstallationTokenExchange(fetchFn, {
 						jwt,
 						installationId: 98765,
 						nowMs,
