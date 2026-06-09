@@ -3,13 +3,15 @@
  *
  * These TODOs intentionally do not implement production code. They translate
  * reviewer feedback into a precise, test-visible backlog for the implementation
- * agent that will later move from test prototypes to `src/` modules.
+ * agent while preserving the architecture rule that `src/` stays limited to
+ * type and contract definitions. Concrete guard behavior belongs in test
+ * harnesses, fixtures, schemas, or a future separate runtime package.
  */
 
 import { test } from "node:test";
 
 test.todo(
-	"F002 guards are extracted from test prototypes into pure src/guards functions with identical fixture verdicts",
+	"F002 guards are promoted from test prototypes into contract-backed harnesses or a future guard package with identical fixture verdicts",
 );
 
 test.todo(
