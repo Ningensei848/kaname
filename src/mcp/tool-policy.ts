@@ -319,4 +319,3 @@ function expectInteger(
 		errors.push(`$.params.arguments.${property}: expected type integer`);
 	}
 }
-

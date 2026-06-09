@@ -2,28 +2,26 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
+import {
+	GenerationMismatchError,
+	buildDiscordPayload,
+	evaluateAndPersistNotification,
+	evaluateDiscordNotification,
+	recordNotificationState,
+	sendDiscordWithBoundedRetry,
+	type CloudflareDeploymentEvent,
+	type JsonObject,
+	type NotificationState,
+	type NotificationStateBackend,
+	type NotificationStateSnapshot,
+	type RetryPolicy,
+	type UrlProbe,
+} from "../src/notifications/cloudflare-discord";
 import { assertQuartzGraphDisabledArtifact } from "./helpers/quartz-artifact-contract";
-import type {
-	CloudflareDeploymentEvent,
-	DiscordPayloadInput,
-	DiscordSendResult,
-	NotificationConfig,
-	NotificationDecision,
-	NotificationState,
-	NotificationStateBackend,
-	NotificationStateSnapshot,
-	PersistedNotificationDecision,
-	RetryPolicy,
-	UrlProbe,
-} from "../src/notifications/cloudflare-discord-contract";
 
 const repoRoot = process.cwd();
 const publicBaseUrl = "https://osint-kaname.pages.dev";
 const latestReportUrl = `${publicBaseUrl}/reports/2026-05-27_Report`;
-const avatarUrl =
-	"https://raw.githubusercontent.com/github/spec-kit/main/media/logo_small.webp";
-
-type JsonObject = Record<string, unknown>;
 type JsonSchema = Record<string, unknown>;
 
 function readJson(relativePath: string): unknown {
@@ -198,199 +196,6 @@ function isValidUrl(value: string): boolean {
 	}
 }
 
-function isHttpsUrl(value: string): boolean {
-	try {
-		return new URL(value).protocol === "https:";
-	} catch {
-		return false;
-	}
-}
-
-// Specification oracle only: this test-local gate models the expected
-// Cloudflare/Discord notification decision contract. It is not production
-// implementation and exists only to validate src/ boundary types and fixtures.
-async function oracleDiscordNotificationDecision(
-	event: CloudflareDeploymentEvent,
-	state: NotificationState,
-	config: NotificationConfig,
-	probeReportUrl: UrlProbe,
-): Promise<NotificationDecision> {
-	const deployment = event.deployment;
-	if (deployment.status !== "success") {
-		return {
-			shouldNotify: false,
-			reason: "deployment status is not success",
-			reportUrlChecked: false,
-		};
-	}
-	if (deployment.environment !== "production") {
-		return {
-			shouldNotify: false,
-			reason: "deployment is not production",
-			reportUrlChecked: false,
-		};
-	}
-	if (deployment.meta.branch !== "main") {
-		return {
-			shouldNotify: false,
-			reason: "deployment branch is not main",
-			reportUrlChecked: false,
-		};
-	}
-	if (!isHttpsUrl(deployment.url) || !isHttpsUrl(config.publicBaseUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment and public base URLs must be HTTPS",
-			reportUrlChecked: false,
-		};
-	}
-	if (!isHttpsUrl(config.latestReportUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "latest report URL must be HTTPS",
-			reportUrlChecked: false,
-		};
-	}
-	if (normalizeUrl(deployment.url) !== normalizeUrl(config.publicBaseUrl)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment URL does not match public base URL",
-			reportUrlChecked: false,
-		};
-	}
-	if (state.notifiedDeploymentIds.includes(deployment.id)) {
-		return {
-			shouldNotify: false,
-			reason: "deployment id was already notified",
-			reportUrlChecked: false,
-		};
-	}
-	if (state.notifiedCommitHashes.includes(deployment.meta.commit_hash)) {
-		return {
-			shouldNotify: false,
-			reason: "commit hash was already notified",
-			reportUrlChecked: false,
-		};
-	}
-
-	const reportProbe = await probeReportUrl(config.latestReportUrl);
-	if (
-		!reportProbe.ok ||
-		reportProbe.status < 200 ||
-		reportProbe.status >= 300
-	) {
-		return {
-			shouldNotify: false,
-			reason: "latest report URL is not live",
-			reportUrlChecked: true,
-		};
-	}
-
-	return {
-		shouldNotify: true,
-		reason: "production deployment and report are live",
-		reportUrlChecked: true,
-	};
-}
-
-// Specification oracle only: this deterministic state transition describes the
-// expected idempotency contract for tests; it is not a runtime state adapter.
-function oracleRecordedNotificationState(
-	state: NotificationState,
-	event: CloudflareDeploymentEvent,
-): NotificationState {
-	return {
-		notifiedDeploymentIds: unique([
-			...state.notifiedDeploymentIds,
-			event.deployment.id,
-		]),
-		notifiedCommitHashes: unique([
-			...state.notifiedCommitHashes,
-			event.deployment.meta.commit_hash,
-		]),
-	};
-}
-
-// Specification oracle only: this composes the test-local decision oracle with a
-// fake backend to prove generation-precondition behavior before src/ implementation.
-async function oracleEvaluateAndPersistedNotification(
-	event: CloudflareDeploymentEvent,
-	backend: NotificationStateBackend,
-	config: NotificationConfig,
-	probeReportUrl: UrlProbe,
-): Promise<PersistedNotificationDecision> {
-	const snapshot = await backend.load();
-	const decision = await oracleDiscordNotificationDecision(
-		event,
-		snapshot.state,
-		config,
-		probeReportUrl,
-	);
-	if (!decision.shouldNotify) {
-		return { ...decision, stateSaved: false };
-	}
-
-	try {
-		await backend.save(oracleRecordedNotificationState(snapshot.state, event), {
-			ifGenerationMatch: snapshot.generation,
-		});
-		return { ...decision, stateSaved: true };
-	} catch (error) {
-		if (error instanceof GenerationMismatchError) {
-			return {
-				shouldNotify: false,
-				reason: "notification state generation precondition failed",
-				reportUrlChecked: decision.reportUrlChecked,
-				stateSaved: false,
-			};
-		}
-		throw error;
-	}
-}
-
-// Fixture builder only: this creates a canonical Discord payload specimen for
-// schema/policy assertions and is not the production payload implementation.
-function buildFixtureDiscordPayload(input: DiscordPayloadInput): JsonObject {
-	const reportTitle = path.basename(input.latestReportUrl);
-	return {
-		username: "Aegis-Intelligence",
-		avatar_url: avatarUrl,
-		embeds: [
-			{
-				title: "🛡️ インテリジェンス更新 ＆ 本番デプロイ成功報告",
-				description:
-					"提案・査読エージェントによる検証をすべてパスし、最新のサイバーセキュリティインテリジェンスが本番環境へ安全にホスティングされました。",
-				url: input.publicBaseUrl,
-				color: 3066993,
-				fields: [
-					{
-						name: "📑 更新要約レポート (最新)",
-						value: `[${reportTitle}](${input.latestReportUrl})`,
-						inline: true,
-					},
-					{
-						name: "🔗 関連トピック解説",
-						value: input.relatedTopics
-							.map((topic) => `- [[${topic.title}]](${topic.url})`)
-							.join("\n"),
-						inline: false,
-					},
-					{
-						name: "⚙️ 実行履歴",
-						value: `マージコミット: \`${input.deployment.meta.commit_hash.slice(0, 10)}\` by Aegis-Reviewer`,
-						inline: false,
-					},
-				],
-				footer: {
-					text: "`kaname` • サーバーレス自律監視システム",
-					icon_url: avatarUrl,
-				},
-				timestamp: new Date(input.deployment.modified_on).toISOString(),
-			},
-		],
-	};
-}
-
 function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
 	const errors = validateWithSchema(
 		".spec/schemas/discord-webhook-payload.schema.json",
@@ -416,12 +221,6 @@ function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
 		errors.push("execution history field is required");
 	}
 	return errors;
-}
-
-class GenerationMismatchError extends Error {
-	constructor() {
-		super("notification state generation mismatch");
-	}
 }
 
 class FakeExternalNotificationStateBackend implements NotificationStateBackend {
@@ -469,33 +268,6 @@ function cloneState(state: NotificationState): NotificationState {
 	};
 }
 
-// Specification oracle only: this bounded retry loop defines expected webhook
-// behavior for tests until a production Discord sender exists in src/.
-async function oracleDiscordBoundedRetryResult(
-	sendWebhook: () => Promise<{ ok: boolean; status: number }>,
-	sleep: (ms: number) => Promise<void>,
-	policy: RetryPolicy,
-): Promise<DiscordSendResult> {
-	for (let attempt = 0; attempt < policy.maxAttempts; attempt += 1) {
-		const result = await sendWebhook();
-		if (result.ok && result.status >= 200 && result.status < 300) {
-			return "sent";
-		}
-		if (attempt < policy.maxAttempts - 1) {
-			await sleep(policy.backoffMs[attempt] ?? policy.backoffMs.at(-1) ?? 0);
-		}
-	}
-	return "escalate_issue";
-}
-
-function normalizeUrl(value: string): string {
-	return value.replace(/\/+$/, "");
-}
-
-function unique(values: string[]): string[] {
-	return Array.from(new Set(values));
-}
-
 // Fixture builder only: this URL probe simulates report reachability for tests.
 function buildFixtureLiveReportProbe(
 	liveUrls: Set<string>,
@@ -536,7 +308,7 @@ test("F004 Cloudflare deployment fixtures match the webhook schema", async (t) =
 	}
 });
 
-test("F004 contract-only oracle permits generic schema URI while business gate requires HTTPS until production notification implementation exists", async () => {
+test("F004 production notification gate permits generic schema URI while business gate requires HTTPS", async () => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -556,7 +328,7 @@ test("F004 contract-only oracle permits generic schema URI while business gate r
 		[],
 	);
 
-	const decision = await oracleDiscordNotificationDecision(
+	const decision = await evaluateDiscordNotification(
 		httpEvent,
 		readFixture<NotificationState>("state", "notification-state.empty.json"),
 		{
@@ -573,7 +345,7 @@ test("F004 contract-only oracle permits generic schema URI while business gate r
 	});
 });
 
-test("F004 contract-only notification oracle is impossible before production success until production implementation exists", async (t) => {
+test("F004 production notification gate is impossible before production success", async (t) => {
 	const emptyState = readFixture<NotificationState>(
 		"state",
 		"notification-state.empty.json",
@@ -591,7 +363,7 @@ test("F004 contract-only notification oracle is impossible before production suc
 			`${fixtureName} does not notify and does not probe report URL`,
 			async () => {
 				const checkedUrls: string[] = [];
-				const decision = await oracleDiscordNotificationDecision(
+				const decision = await evaluateDiscordNotification(
 					readFixture<CloudflareDeploymentEvent>("cloudflare", fixtureName),
 					emptyState,
 					config,
@@ -616,7 +388,7 @@ test("F004 contract-only notification oracle is impossible before production suc
 				"cloudflare",
 				"production-success.json",
 			);
-			const decision = await oracleDiscordNotificationDecision(
+			const decision = await evaluateDiscordNotification(
 				{
 					...event,
 					deployment: {
@@ -639,7 +411,7 @@ test("F004 contract-only notification oracle is impossible before production suc
 	);
 });
 
-test("F004 contract-only oracle requires mocked live report URL before Discord send until production implementation exists", async (t) => {
+test("F004 production notification gate requires mocked live report URL before Discord send", async (t) => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -654,7 +426,7 @@ test("F004 contract-only oracle requires mocked live report URL before Discord s
 		"production success is still blocked when the latest report URL is not live",
 		async () => {
 			const checkedUrls: string[] = [];
-			const decision = await oracleDiscordNotificationDecision(
+			const decision = await evaluateDiscordNotification(
 				event,
 				emptyState,
 				config,
@@ -674,7 +446,7 @@ test("F004 contract-only oracle requires mocked live report URL before Discord s
 		"production success with a live latest report URL can notify",
 		async () => {
 			const checkedUrls: string[] = [];
-			const decision = await oracleDiscordNotificationDecision(
+			const decision = await evaluateDiscordNotification(
 				event,
 				emptyState,
 				config,
@@ -691,7 +463,7 @@ test("F004 contract-only oracle requires mocked live report URL before Discord s
 	);
 });
 
-test("F004 contract-only idempotency oracle blocks repeated events until production state backend exists", async (t) => {
+test("F004 production idempotency state blocks repeated events", async (t) => {
 	const event = readFixture<CloudflareDeploymentEvent>(
 		"cloudflare",
 		"production-success.json",
@@ -703,7 +475,7 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 			"state",
 			"notification-state.empty.json",
 		);
-		assert.deepStrictEqual(oracleRecordedNotificationState(emptyState, event), {
+		assert.deepStrictEqual(recordNotificationState(emptyState, event), {
 			notifiedDeploymentIds: [event.deployment.id],
 			notifiedCommitHashes: [event.deployment.meta.commit_hash],
 		});
@@ -715,7 +487,7 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 			"notification-state.duplicate.json",
 		);
 		const checkedUrls: string[] = [];
-		const decision = await oracleDiscordNotificationDecision(
+		const decision = await evaluateDiscordNotification(
 			event,
 			duplicateState,
 			config,
@@ -743,7 +515,7 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 				deployment: { ...event.deployment, id: "deploy_replayed_different_id" },
 			};
 
-			const decision = await oracleDiscordNotificationDecision(
+			const decision = await evaluateDiscordNotification(
 				replayWithNewDeploymentId,
 				state,
 				config,
@@ -770,7 +542,7 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 				41,
 			);
 			const checkedUrls: string[] = [];
-			const decision = await oracleEvaluateAndPersistedNotification(
+			const decision = await evaluateAndPersistNotification(
 				event,
 				backend,
 				config,
@@ -802,9 +574,9 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 			);
 			backend.onBeforeSave = () =>
 				backend.simulateConcurrentWrite((current) =>
-					oracleRecordedNotificationState(current, event),
+					recordNotificationState(current, event),
 				);
-			const decision = await oracleEvaluateAndPersistedNotification(
+			const decision = await evaluateAndPersistNotification(
 				event,
 				backend,
 				config,
@@ -824,7 +596,7 @@ test("F004 contract-only idempotency oracle blocks repeated events until product
 	);
 });
 
-test("F004 Discord payload schema fixture builder is executable without production payload implementation", async (t) => {
+test("F004 Discord payload builder satisfies executable schema policy", async (t) => {
 	await t.test("canonical fixture satisfies schema and policy checks", () => {
 		const payload = readFixture<JsonObject>(
 			"discord",
@@ -840,7 +612,7 @@ test("F004 Discord payload schema fixture builder is executable without producti
 				"cloudflare",
 				"production-success.json",
 			);
-			const payload = buildFixtureDiscordPayload({
+			const payload = buildDiscordPayload({
 				deployment: event.deployment,
 				publicBaseUrl,
 				latestReportUrl,
@@ -894,7 +666,7 @@ test("F004 Quartz Graph disabled artifact contract", async (t) => {
 	});
 });
 
-test("F004 contract-only Discord webhook retry oracle is bounded and escalates safely until production sender exists", async (t) => {
+test("F004 production Discord webhook retry is bounded and escalates safely", async (t) => {
 	const retryPolicy: RetryPolicy = { maxAttempts: 3, backoffMs: [100, 500] };
 
 	await t.test(
@@ -902,7 +674,7 @@ test("F004 contract-only Discord webhook retry oracle is bounded and escalates s
 		async () => {
 			let attempts = 0;
 			const sleeps: number[] = [];
-			const result = await oracleDiscordBoundedRetryResult(
+			const result = await sendDiscordWithBoundedRetry(
 				async () => {
 					attempts += 1;
 					return attempts === 2
@@ -926,7 +698,7 @@ test("F004 contract-only Discord webhook retry oracle is bounded and escalates s
 		async () => {
 			let attempts = 0;
 			const sleeps: number[] = [];
-			const result = await oracleDiscordBoundedRetryResult(
+			const result = await sendDiscordWithBoundedRetry(
 				async () => {
 					attempts += 1;
 					return { ok: false, status: 500 };
