@@ -43,6 +43,7 @@ export interface TransitionResult {
 export interface TransitionRecord {
 	state: OrchestratorState;
 	event: OrchestratorEvent;
+	context: TransitionContext;
 	result: TransitionResult;
 }
 
@@ -85,3 +86,9 @@ export type OrchestratorTransitionContract =
 			to: "PROPOSED" | "ESCALATED";
 			actions: ["writer_revise"] | ["create_issue", "cleanup_mcp"];
 	  };
+
+export declare function transition(
+	state: OrchestratorState,
+	event: OrchestratorEvent,
+	context: TransitionContext,
+): TransitionResult;

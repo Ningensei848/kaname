@@ -5,6 +5,7 @@ export type ReportNoveltyContext = string | string[] | VaultDocument[];
 export interface ReportNoveltyOptions {
 	sentenceSimilarityThreshold?: number;
 	nGramSize?: number;
+	duplicateThreshold?: number;
 }
 
 export interface ReportNoveltyGuardInput {
@@ -14,3 +15,9 @@ export interface ReportNoveltyGuardInput {
 }
 
 export type ReportNoveltyGuardResult = GuardResult;
+
+export declare function reportNoveltyGuard(
+	reportMarkdown: string,
+	contexts: ReportNoveltyContext,
+	options?: ReportNoveltyOptions,
+): GuardResult;

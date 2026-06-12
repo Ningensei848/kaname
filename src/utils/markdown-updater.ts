@@ -18,3 +18,14 @@ export interface MarkdownUpdateResult {
 	markdown: string;
 	changed: boolean;
 }
+
+export declare function appendSectionToMarkdown(
+	markdown: string,
+	heading: string,
+	content: string,
+): string;
+export declare function injectInternalLinkToMarkdown(
+	markdown: string,
+	targetTitle: string,
+	aliases?: string[],
+): string;

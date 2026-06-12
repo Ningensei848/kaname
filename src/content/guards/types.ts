@@ -13,9 +13,13 @@ export interface VaultDocument {
 	markdown: string;
 }
 
-export interface TopicAliasMap {
-	[topicTitle: string]: string[];
+export interface TopicAliasTarget {
+	resolvedFilePath: string;
+	primaryTitle: string;
+	aliases?: string[];
 }
+
+export type TopicAliasMap = Record<string, TopicAliasTarget | string[]>;
 
 export type ContentGuardVerdict =
 	| { guard: string; status: "passed"; reasons?: readonly string[] }

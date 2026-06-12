@@ -54,3 +54,13 @@ export type GitHubInstallationTokenExchangeResult =
 			status?: number;
 			statusText?: string;
 	  };
+
+export declare function generateGitHubAppJwt(
+	appId: string,
+	privateKeyPem: string,
+	nowSeconds?: number,
+): string;
+export declare function exchangeJwtForInstallationToken(
+	fetchFn: GitHubInstallationTokenFetch,
+	options: GitHubInstallationTokenExchangeOptions,
+): Promise<GitHubInstallationTokenResponse>;

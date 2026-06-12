@@ -27,3 +27,18 @@ export interface CrawlSourceRequest {
 	lastModifiedHeader?: string | null;
 	options?: CrawlSourceOptions;
 }
+
+export declare function fetchWithRetry(
+	url: string,
+	retries?: number,
+	delayMs?: number,
+	lastModifiedHeader?: string | null,
+	fetcher?: Fetcher,
+): Promise<FetchResult>;
+export declare function cleanHtml(html: string): string;
+export declare function parseRssFeed(xml: string): string;
+export declare function crawlSource(
+	source: SsotSource,
+	lastModifiedHeader?: string | null,
+	options?: CrawlSourceOptions,
+): Promise<CrawlSourceResult>;

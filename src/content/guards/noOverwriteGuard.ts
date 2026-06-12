@@ -6,3 +6,8 @@ export interface NoOverwriteGuardInput {
 }
 
 export type NoOverwriteGuardResult = GuardResult;
+
+export declare function noOverwriteGuard(
+	before: string,
+	after: string,
+): GuardResult;

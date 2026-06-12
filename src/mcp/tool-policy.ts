@@ -28,7 +28,7 @@ export interface McpToolCallEnvelope<TName extends ToolName, TArguments> {
 	};
 }
 
-export interface BaseRepoArguments {
+export interface BaseRepoArguments extends JsonObject {
 	owner: string;
 	repo: string;
 }
@@ -61,7 +61,36 @@ export interface CreateIssueArguments extends BaseRepoArguments {
 	labels?: string[];
 }
 
-export type PolicyMcpToolCall =
+export interface ToolArguments extends JsonObject {
+	owner?: string;
+	repo?: string;
+	branch?: unknown;
+	path?: unknown;
+	message?: unknown;
+	content?: unknown;
+	sha?: unknown;
+	title: string;
+	head?: unknown;
+	base?: unknown;
+	body: string;
+	pull_number?: unknown;
+	commit_title?: unknown;
+	commit_message?: unknown;
+	merge_method?: unknown;
+	labels?: unknown;
+}
+
+export interface PolicyMcpToolCall {
+	jsonrpc: "2.0";
+	method: "tools/call";
+	id: number;
+	params: {
+		name: ToolName;
+		arguments: ToolArguments;
+	};
+}
+
+export type StrictPolicyMcpToolCall =
 	| McpToolCallEnvelope<"create_or_update_file", CreateOrUpdateFileArguments>
 	| McpToolCallEnvelope<"create_pull_request", CreatePullRequestArguments>
 	| McpToolCallEnvelope<"merge_pull_request", MergePullRequestArguments>
@@ -76,3 +105,20 @@ export type ToolPolicyViolation =
 			status: GateStatus;
 	  }
 	| { kind: "repository_boundary"; path: string; message: string };
+
+export declare const allGreenMergePreconditions: MergePreconditions;
+export interface JsonRpcToolCallLike {
+	jsonrpc: string;
+	method: string;
+	id: number;
+	params: { name: string; arguments: Record<string, unknown> };
+}
+
+export declare function validateToolPolicy(
+	call: JsonRpcToolCallLike,
+	preconditions?: MergePreconditions,
+): string[];
+export declare function canMerge(gates: MergePreconditions): boolean;
+export declare function validateMergePreconditions(
+	preconditions: MergePreconditions,
+): string[];

@@ -23,3 +23,5 @@ export type SsotParseIssue =
 export type SsotParseResult =
 	| { ok: true; sources: SsotSource[] }
 	| { ok: false; issues: SsotParseIssue[] };
+
+export declare function parseSsotYaml(filePath: string): SsotSource[];

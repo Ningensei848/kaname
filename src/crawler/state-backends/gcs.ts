@@ -1,5 +1,5 @@
 import type { CrawlerState } from "../../types";
-import type { StateBackendAdapter } from "../state";
+import type { SaveStateOptions, StateBackendAdapter } from "../state";
 
 export type FetchLike = (
 	input: string | URL | Request,
@@ -8,8 +8,9 @@ export type FetchLike = (
 
 export interface GcsStateBackendOptions {
 	bucket: string;
-	objectName: string;
-	accessToken: string;
+	objectName?: string;
+	accessToken?: string;
+	fetch?: FetchLike;
 	fetchFn?: FetchLike;
 	apiBaseUrl?: string;
 }
@@ -26,7 +27,15 @@ export interface GcsStateSnapshot {
 	metadata?: GcsObjectMetadata;
 }
 
-export interface GcsStateBackend extends StateBackendAdapter<CrawlerState> {
+export declare class GcsStateBackend
+	implements StateBackendAdapter<CrawlerState>
+{
 	readonly bucket: string;
 	readonly objectName: string;
+	constructor(options: GcsStateBackendOptions);
+	load(): Promise<GcsStateSnapshot>;
+	save(
+		state: CrawlerState,
+		options?: SaveStateOptions,
+	): Promise<GcsStateSnapshot>;
 }

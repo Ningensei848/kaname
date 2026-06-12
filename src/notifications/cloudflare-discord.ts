@@ -15,18 +15,20 @@ export type DiscordSendResult = "sent" | "escalate_issue";
 export interface CloudflareDeploymentEvent {
 	id: string;
 	project_name: string;
-	deployment: {
-		id: string;
-		url: string;
-		environment: CloudflareEnvironment;
-		status: CloudflareDeploymentStatus;
-		created_on: string;
-		modified_on: string;
-		meta: {
-			branch: string;
-			commit_hash: string;
-			commit_message: string;
-		};
+	deployment: CloudflareDeployment;
+}
+
+export interface CloudflareDeployment {
+	id: string;
+	url: string;
+	environment: CloudflareEnvironment;
+	status: CloudflareDeploymentStatus;
+	created_on: string;
+	modified_on: string;
+	meta: {
+		branch: string;
+		commit_hash: string;
+		commit_message: string;
 	};
 }
 
@@ -45,16 +47,14 @@ export interface NotificationStateBackend {
 	load(): Promise<NotificationStateSnapshot>;
 	save(
 		state: NotificationState,
-		options:
-			| { ifGenerationMatch: number }
-			| { expectedGeneration?: string | null },
-	): Promise<NotificationStateSnapshot | undefined>;
+		options: { ifGenerationMatch: number },
+	): Promise<void>;
 }
 
 export interface NotificationConfig {
 	publicBaseUrl: string;
 	latestReportUrl: string;
-	requiredBranch: string;
+	requiredBranch?: string;
 }
 
 export type NotificationDecisionKind =
@@ -73,17 +73,20 @@ export interface NotificationDecision {
 	shouldNotify?: boolean;
 	reason?: string;
 	reportUrlChecked?: boolean;
+	stateSaved?: boolean;
 }
 
 export interface PersistedNotificationDecision extends NotificationDecision {
-	state: NotificationState;
-	generation: number | string | null;
+	state?: NotificationState;
+	generation?: number | string | null;
 }
 
 export interface DiscordPayloadInput {
-	event: CloudflareDeploymentEvent;
+	event?: CloudflareDeploymentEvent;
+	deployment?: CloudflareDeployment;
 	publicBaseUrl: string;
 	latestReportUrl: string;
+	relatedTopics?: Array<{ title: string; url: string }>;
 }
 
 export interface DiscordWebhookPayload {
@@ -117,13 +120,35 @@ export interface RetryPolicy {
 	backoffMs?: number[];
 }
 
-export type GenerationMismatchError = {
-	name: "GenerationMismatchError";
-	message: string;
-	expectedGeneration: string | null;
-	actualGeneration: string | null;
-};
+export declare class GenerationMismatchError extends Error {
+	constructor(message?: string);
+}
 
 export type NotificationPersistenceResult =
 	| { ok: true; snapshot: NotificationStateSnapshot }
 	| { ok: false; error: GenerationMismatchError };
+
+export declare function evaluateDiscordNotification(
+	event: CloudflareDeploymentEvent,
+	state: NotificationState,
+	config: NotificationConfig,
+	probe: UrlProbe,
+): Promise<NotificationDecision>;
+export declare function recordNotificationState(
+	state: NotificationState,
+	event: CloudflareDeploymentEvent,
+): NotificationState;
+export declare function evaluateAndPersistNotification(
+	event: CloudflareDeploymentEvent,
+	backend: NotificationStateBackend,
+	config: NotificationConfig,
+	probe: UrlProbe,
+): Promise<PersistedNotificationDecision>;
+export declare function buildDiscordPayload(
+	input: DiscordPayloadInput,
+): JsonObject;
+export declare function sendDiscordWithBoundedRetry(
+	send: () => Promise<ProbeResult>,
+	sleep: (ms: number) => Promise<void>,
+	policy: RetryPolicy,
+): Promise<DiscordSendResult>;
