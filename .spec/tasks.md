@@ -11,6 +11,10 @@
 
 現フェーズでは、`src/` 以下の変更は type / interface / contract boundary / schema-derived type に限定する。実行可能な production 実装は、Red / contract test / traceability 同期が完了した後に開始する。
 
+棚卸し成果物:
+
+- 現フェーズ境界に対する `src/` ファイル単位の分類は `.spec/audits/src-phase-boundary-inventory.md` を正とし、runtime 実装を退避・削除する際の対象リストとして扱う。
+
 禁止事項:
 
 - `src/` に新規の関数実装を追加しない。
