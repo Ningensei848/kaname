@@ -15,14 +15,27 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
-import type {
-	GuardResult,
-	TopicAliasMap,
-	VaultDocument,
-} from "../src/content/guards/types";
 
 type JsonSchema = Record<string, unknown>;
 type JsonObject = Record<string, unknown>;
+
+interface GuardResult {
+	ok: boolean;
+	errors: string[];
+}
+
+interface TopicAliasMap {
+	[keywordAlias: string]: {
+		resolvedFilePath: string;
+		primaryTitle: string;
+	};
+}
+
+interface VaultDocument {
+	path: string;
+	title: string;
+	markdown: string;
+}
 
 interface ValidationError {
 	path: string;
@@ -812,9 +825,77 @@ test("F002 report novelty and duplicate suppression guard", async (t) => {
 	);
 });
 
-test.todo(
-	"F002 production deterministic guard module exports the same verdicts as these executable fixtures",
-);
-test.todo(
-	"F002 CI wires no-overwrite, frontmatter, link graph, orphan, and duplicate guards before Reviewer approval",
-);
+test("F002 executable fixture verdict contract is locked without production imports", () => {
+	const topicSchema = readJson(
+		".spec/schemas/topic-frontmatter.schema.json",
+	) as JsonSchema;
+	const beforeTopic = readFixture("topics", "before", "nco.md");
+	const validTopic = readFixture("topics", "after", "nco.incremental.md");
+	const destructiveTopic = readFixture("topics", "after", "nco.destructive.md");
+	const brokenLinkTopic = readFixture("topics", "after", "nco.broken-link.md");
+	const duplicateReport = readFixture("reports", "duplicate-without-link.md");
+	const knownTitles = new Set(["能動的サイバー防御", "JPCERT_CC"]);
+	const beforeVault: VaultDocument[] = [
+		{
+			path: "topics/NCO.md",
+			title: "能動的サイバー防御",
+			markdown: "# 能動的サイバー防御\n[[JPCERT_CC]] と連携する。",
+		},
+		{
+			path: "topics/JPCERT_CC.md",
+			title: "JPCERT_CC",
+			markdown: "# JPCERT_CC\n[[能動的サイバー防御]] を支援する。",
+		},
+	];
+	const orphanedVault: VaultDocument[] = [
+		...beforeVault,
+		{
+			path: "topics/Isolated.md",
+			title: "孤立新規トピック",
+			markdown: "# 孤立新規トピック\nどの既存トピックにも接続していない。",
+		},
+	];
+
+	const verdicts = {
+		validFrontmatter: validateTopicFrontmatter(validTopic, topicSchema),
+		incrementalUpdate: noOverwriteGuard(beforeTopic, validTopic),
+		destructiveUpdate: noOverwriteGuard(beforeTopic, destructiveTopic),
+		validLinks: internalLinkGuard(validTopic, knownTitles),
+		brokenLinks: internalLinkGuard(brokenLinkTopic, knownTitles),
+		orphanRegression: orphanScoreRegressionGuard(beforeVault, orphanedVault),
+		duplicateReport: reportNoveltyGuard(duplicateReport, beforeTopic, {
+			duplicateThreshold: 0.2,
+		}),
+	};
+
+	assert.deepStrictEqual(verdicts, {
+		validFrontmatter: { ok: true, errors: [] },
+		incrementalUpdate: { ok: true, errors: [] },
+		destructiveUpdate: {
+			ok: false,
+			errors: [
+				"existing line was removed or modified: ## 概要",
+				"existing line was removed or modified: 能動的サイバー防御は、重大なサイバー攻撃を未然に防ぐための政策概念である。",
+				"existing line was removed or modified: ## 既存ファクト",
+				"existing line was removed or modified: - 2025年: 政府は官民連携を含む制度設計を進めた。",
+				"existing line was removed or modified: - JPCERT/CC などの既存機関との連携が前提となる。",
+			],
+		},
+		validLinks: { ok: true, errors: [] },
+		brokenLinks: {
+			ok: false,
+			errors: ["broken internal link: 存在しないトピック"],
+		},
+		orphanRegression: {
+			ok: false,
+			errors: ["orphan score regressed: 1 new orphan(s): 孤立新規トピック"],
+		},
+		duplicateReport: {
+			ok: false,
+			errors: [
+				"duplicate report threshold exceeded: 0.40 > 0.2",
+				"report item lacks required internal link",
+			],
+		},
+	});
+});

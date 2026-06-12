@@ -12,7 +12,10 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { StateConflictError } from "../src/crawler/state-errors";
+import { GcsStateBackend } from "../src/crawler/state-backends/gcs";
 import type { DiffResult, OrchestratorDependencies } from "../src/orchestrator";
+import type { CrawlerState } from "../src/types";
 
 async function runUnchangedDiffContract(
 	diffData: DiffResult[],
@@ -41,6 +44,18 @@ interface ValidationError {
 interface StoredStateObject {
 	content: JsonObject | null;
 	generation: number;
+}
+
+function makeResponse(
+	status: number,
+	body: string,
+	headers: Record<string, string> = {},
+): Response {
+	return new Response(body, {
+		status,
+		statusText: status === 412 ? "Precondition Failed" : "OK",
+		headers,
+	});
 }
 
 class PreconditionFailedError extends Error {
@@ -416,9 +431,78 @@ test("F001 unchanged sources do not invoke Writer or MCP write paths", async (t)
 	);
 });
 
-test.todo(
-	"F001 Cloud Storage production adapter maps generation-precondition failures to safe degraded operation",
-);
-test.todo(
-	"F001 unchanged source guard records zero create_or_update_file and zero create_pull_request MCP calls in replay fixtures",
-);
+test("F001 production GCS adapter maps generation conflicts to StateConflictError", async () => {
+	const backend = new GcsStateBackend({
+		bucket: "kaname-state",
+		fetch: async (_url, init) => {
+			assert.strictEqual(init?.method, "POST");
+			return makeResponse(412, "stale generation", {
+				"x-goog-generation": "43",
+			});
+		},
+	});
+
+	await assert.rejects(
+		() =>
+			backend.save(
+				readJson(fixturePath("crawler-state.valid.json")) as CrawlerState,
+				{
+					ifGenerationMatch: "42",
+				},
+			),
+		(error: Error) => {
+			assert.ok(error instanceof StateConflictError);
+			assert.strictEqual(
+				error.message,
+				"GCS crawler state generation is stale",
+			);
+			assert.strictEqual(error.expectedGeneration, "42");
+			assert.strictEqual(error.currentGeneration, "43");
+			assert.strictEqual(error.cause, "stale generation");
+			return true;
+		},
+	);
+});
+
+test("F001 unchanged replay fixtures record zero GitHub MCP write calls", async () => {
+	const gitWriteToolNames = [
+		"create_or_update_file",
+		"create_pull_request",
+	] as const;
+	const mcpWriteSpy = {
+		callCount: 0,
+		calls: [] as string[],
+		call(name: string) {
+			this.calls.push(name);
+			if (
+				gitWriteToolNames.includes(name as (typeof gitWriteToolNames)[number])
+			) {
+				this.callCount++;
+			}
+		},
+	};
+
+	await runUnchangedDiffContract(
+		[
+			{ sourceId: "jpcert_cc", hasChanged: false, content: "unchanged" },
+			{ sourceId: "nisc", hasChanged: false, content: "unchanged" },
+		],
+		{
+			mcpClient: {
+				callTool: (call) => {
+					mcpWriteSpy.call(call.params.name);
+				},
+			},
+			reviewProposal: () => {
+				throw new Error("Reviewer must not run when no PR exists");
+			},
+		},
+	);
+
+	assert.strictEqual(
+		mcpWriteSpy.callCount,
+		0,
+		"unchanged replay must make zero Git write MCP tool calls",
+	);
+	assert.deepStrictEqual(mcpWriteSpy.calls, []);
+});

@@ -10,8 +10,13 @@
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 import { test } from "node:test";
+import {
+	allGreenMergePreconditions,
+	validateToolPolicy as productionValidateToolPolicy,
+	type PolicyMcpToolCall,
+} from "../src/mcp/tool-policy";
+import { isAllowedMcpWriterPath } from "../src/policies/mcp-write-policy";
 
 type JsonObject = Record<string, unknown>;
 type JsonSchema = Record<string, unknown>;
@@ -316,9 +321,32 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 	});
 });
 
-test.todo(
-	"F003 production MCP client loads and validates these external fixtures before real tool calls",
-);
-test.todo(
-	"F003 Writer path policy adds generated index paths only after the feature plan explicitly lists their exact locations",
-);
+test("F003 production MCP policy validates every external fixture before tool calls", () => {
+	for (const fixtureName of listJsonFixtures("mcp", "valid")) {
+		const call = readFixture("mcp", "valid", fixtureName) as PolicyMcpToolCall;
+		assert.deepStrictEqual(
+			productionValidateToolPolicy(call, allGreenMergePreconditions),
+			[],
+			fixtureName,
+		);
+	}
+
+	const generatedIndexCall = {
+		...readFixture("mcp", "valid", "create-or-update-file.json"),
+		params: {
+			...readFixture("mcp", "valid", "create-or-update-file.json").params,
+			arguments: {
+				...readFixture("mcp", "valid", "create-or-update-file.json").params
+					.arguments,
+				path: "topics/index.md",
+			},
+		},
+	} as PolicyMcpToolCall;
+
+	assert.ok(
+		productionValidateToolPolicy(generatedIndexCall).includes(
+			"Writer path is not allowed: topics/index.md",
+		),
+		"generated index paths stay rejected until an exact feature-plan path is added",
+	);
+});
