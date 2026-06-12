@@ -3,8 +3,8 @@
  *
  * Scope: executable guard contracts. These tests encode the reviewer/CI
  * expectations for destructive Markdown changes, topic frontmatter, link graph
- * quality, orphan-score regression, and report novelty while importing
- * extracted production guard modules for the deterministic checks.
+ * quality, orphan-score regression, and report novelty using local
+ * executable contract fixtures, without importing production runtime logic.
  *
  * Acceptance source: `.spec/features/002-wiki-incremental-update/*` and
  * `.spec/policies/content-integrity-policy.md`.
@@ -15,10 +15,6 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
-import { internalLinkGuard } from "../src/content/guards/internalLinkGuard";
-import { noOverwriteGuard } from "../src/content/guards/noOverwriteGuard";
-import { orphanScoreRegressionGuard } from "../src/content/guards/orphanScoreRegressionGuard";
-import { reportNoveltyGuard } from "../src/content/guards/reportNoveltyGuard";
 import type {
 	GuardResult,
 	TopicAliasMap,
@@ -201,6 +197,265 @@ function validateTopicFrontmatter(
 		(error) => `${error.path}: ${error.message}`,
 	);
 	return { ok: errors.length === 0, errors };
+}
+
+function noOverwriteGuard(before: string, after: string): GuardResult {
+	const beforeLines = parseMarkdownBody(before)
+		.split(/\r?\n/)
+		.map(normalizePreservedLine)
+		.filter((line) => line.length > 0);
+	const afterLineCounts = countLines(
+		parseMarkdownBody(after)
+			.split(/\r?\n/)
+			.map(normalizePreservedLine)
+			.filter((line) => line.length > 0),
+	);
+	const errors: string[] = [];
+
+	for (const line of beforeLines) {
+		const remainingCount = afterLineCounts.get(line) ?? 0;
+		if (remainingCount === 0) {
+			errors.push(`existing line was removed or modified: ${line}`);
+			continue;
+		}
+		afterLineCounts.set(line, remainingCount - 1);
+	}
+
+	return { ok: errors.length === 0, errors };
+}
+
+function parseMarkdownBody(markdown: string): string {
+	return parseMarkdown(markdown).body;
+}
+
+function normalizePreservedLine(line: string): string {
+	return line.trim();
+}
+
+function countLines(lines: string[]): Map<string, number> {
+	const counts = new Map<string, number>();
+	for (const line of lines) {
+		counts.set(line, (counts.get(line) ?? 0) + 1);
+	}
+	return counts;
+}
+
+function internalLinkGuard(
+	markdown: string,
+	knownTitles: Set<string>,
+	aliases?: Iterable<string> | TopicAliasMap | ReadonlyMap<string, unknown>,
+): GuardResult {
+	const errors: string[] = [];
+	if (hasMalformedInternalLinkBrackets(markdown)) {
+		errors.push("internal link is double-wrapped");
+	}
+
+	const resolvableTargets = new Set(knownTitles);
+	for (const alias of collectAliases(aliases)) {
+		resolvableTargets.add(alias);
+	}
+
+	for (const link of collectInternalLinks(markdown)) {
+		if (!resolvableTargets.has(link)) {
+			errors.push(`broken internal link: ${link}`);
+		}
+	}
+
+	return { ok: errors.length === 0, errors };
+}
+
+function collectInternalLinks(markdown: string): string[] {
+	return [...markdown.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map(
+		(match) => match[1].trim(),
+	);
+}
+
+function hasMalformedInternalLinkBrackets(markdown: string): boolean {
+	return /\[{3,}|\]{3,}|\[\[\s*\[\[|\]\]\s*\]\]/.test(markdown);
+}
+
+function collectAliases(
+	aliases?: Iterable<string> | TopicAliasMap | ReadonlyMap<string, unknown>,
+): string[] {
+	if (!aliases) return [];
+	if ("keys" in aliases && typeof aliases.keys === "function") {
+		return Array.from(aliases.keys()).map((alias) => String(alias).trim());
+	}
+	if (Symbol.iterator in aliases) {
+		return Array.from(aliases as Iterable<string>).map((alias) => alias.trim());
+	}
+	return Object.keys(aliases).map((alias) => alias.trim());
+}
+
+function orphanScoreRegressionGuard(
+	beforeVault: VaultDocument[],
+	afterVault: VaultDocument[],
+	allowedNewHighSeverityOrphans = 0,
+): GuardResult {
+	const before = orphanTitles(beforeVault);
+	const after = orphanTitles(afterVault);
+	const newOrphans = [...after].filter((title) => !before.has(title));
+	const errors =
+		newOrphans.length > allowedNewHighSeverityOrphans
+			? [
+					`orphan score regressed: ${newOrphans.length} new orphan(s): ${newOrphans.join(", ")}`,
+				]
+			: [];
+	return { ok: errors.length === 0, errors };
+}
+
+function orphanTitles(vault: VaultDocument[]): Set<string> {
+	const titles = new Set(vault.map((document) => document.title));
+	const inboundCounts = new Map([...titles].map((title) => [title, 0]));
+
+	for (const document of vault) {
+		const uniqueLinks = new Set(collectInternalLinks(document.markdown));
+		for (const link of uniqueLinks) {
+			if (!titles.has(link)) continue;
+			inboundCounts.set(link, (inboundCounts.get(link) ?? 0) + 1);
+		}
+	}
+
+	return new Set(
+		[...inboundCounts.entries()]
+			.filter(([, inboundCount]) => inboundCount === 0)
+			.map(([title]) => title),
+	);
+}
+
+type ReportNoveltyContext = string | string[] | VaultDocument[];
+
+interface ReportNoveltyOptions {
+	duplicateThreshold: number;
+	createsNewRootTopic?: boolean;
+	sentenceSimilarityThreshold?: number;
+	nGramSize?: number;
+}
+
+function reportNoveltyGuard(
+	reportMarkdown: string,
+	existingContexts: ReportNoveltyContext,
+	options: ReportNoveltyOptions,
+): GuardResult {
+	const errors: string[] = [];
+	const duplicateRatio = calculateDuplicateRatio(
+		reportMarkdown,
+		existingContexts,
+		{
+			nGramSize: options.nGramSize ?? 3,
+			sentenceSimilarityThreshold: options.sentenceSimilarityThreshold ?? 0.82,
+		},
+	);
+	const reportItems = extractReportItems(reportMarkdown);
+	const hasEvidence =
+		reportItems.length > 0 && reportItems.every(hasItemLevelEvidence);
+	const hasInternalLink = collectInternalLinks(reportMarkdown).length > 0;
+
+	if (duplicateRatio > options.duplicateThreshold) {
+		errors.push(
+			`duplicate report threshold exceeded: ${duplicateRatio.toFixed(2)} > ${options.duplicateThreshold}`,
+		);
+	}
+	if (!hasEvidence) errors.push("report item lacks source evidence");
+	if (!options.createsNewRootTopic && !hasInternalLink) {
+		errors.push("report item lacks required internal link");
+	}
+
+	return { ok: errors.length === 0, errors };
+}
+
+function calculateDuplicateRatio(
+	candidate: string,
+	references: ReportNoveltyContext,
+	options: { sentenceSimilarityThreshold: number; nGramSize: number },
+): number {
+	const candidateSentences = normalizeJapaneseSentences(candidate);
+	const referenceSentences = normalizeReferenceSentences(references);
+	if (candidateSentences.length === 0) return 0;
+
+	const duplicateCount = candidateSentences.filter((candidateSentence) =>
+		referenceSentences.some(
+			(referenceSentence) =>
+				jaccardSimilarity(
+					toCharacterNGrams(candidateSentence, options.nGramSize),
+					toCharacterNGrams(referenceSentence, options.nGramSize),
+				) >= options.sentenceSimilarityThreshold,
+		),
+	).length;
+	return duplicateCount / candidateSentences.length;
+}
+
+function normalizeReferenceSentences(
+	references: ReportNoveltyContext,
+): string[] {
+	return normalizeContextMarkdowns(references).flatMap((reference) =>
+		normalizeJapaneseSentences(reference),
+	);
+}
+
+function normalizeContextMarkdowns(contexts: ReportNoveltyContext): string[] {
+	if (typeof contexts === "string") return [contexts];
+	return contexts.map((context) =>
+		typeof context === "string" ? context : context.markdown,
+	);
+}
+
+function normalizeJapaneseSentences(markdown: string): string[] {
+	return parseMarkdownBody(markdown)
+		.replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1")
+		.split(/[。\n]/)
+		.map((sentence) => sentence.replace(/^[-*#\s]+/, "").trim())
+		.filter(
+			(sentence) =>
+				sentence.length >= 12 && !/^title:|^tags:|^source_ids:/.test(sentence),
+		)
+		.map(normalizeForSimilarity);
+}
+
+function extractReportItems(markdown: string): string[] {
+	const body = parseMarkdownBody(markdown);
+	const bulletItems = body
+		.split(/\r?\n/)
+		.map((line) => line.trim())
+		.filter((line) => /^[-*]\s+/.test(line))
+		.map((line) => line.replace(/^[-*]\s+/, "").trim());
+	if (bulletItems.length > 0) return bulletItems;
+
+	return body
+		.split(/\r?\n\s*\r?\n|\r?\n(?=##\s+)/)
+		.map((section) => section.replace(/^#+\s+.*$/m, "").trim())
+		.filter((section) => section.length > 0);
+}
+
+function hasItemLevelEvidence(item: string): boolean {
+	return /https?:\/\//.test(item) || /根拠\s*[:：]/.test(item);
+}
+
+function normalizeForSimilarity(value: string): string {
+	return value
+		.replace(/https?:\/\/\S+/g, "")
+		.replace(/根拠\s*[:：]/g, "")
+		.replace(/[\s、，,.・:：/／-]+/g, "")
+		.replace(/です|ます|でした|ました|である|だ/g, "")
+		.trim();
+}
+
+function toCharacterNGrams(value: string, nGramSize: number): Set<string> {
+	if (value.length <= nGramSize) return new Set([value]);
+	const nGrams = new Set<string>();
+	for (let index = 0; index <= value.length - nGramSize; index += 1) {
+		nGrams.add(value.slice(index, index + nGramSize));
+	}
+	return nGrams;
+}
+
+function jaccardSimilarity(left: Set<string>, right: Set<string>): number {
+	if (left.size === 0 && right.size === 0) return 1;
+	let intersection = 0;
+	for (const value of left) {
+		if (right.has(value)) intersection += 1;
+	}
+	return intersection / (left.size + right.size - intersection);
 }
 
 function immutablePathGuard(
