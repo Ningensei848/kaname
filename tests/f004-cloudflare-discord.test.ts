@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
+import {
+	evaluateAndPersistNotification as productionEvaluateAndPersistNotification,
+	GenerationMismatchError as ProductionGenerationMismatchError,
+} from "../src/notifications/cloudflare-discord";
 import type {
 	CloudflareDeploymentEvent,
 	JsonObject,
@@ -941,9 +945,82 @@ test("F004 production Discord webhook retry is bounded and escalates safely", as
 	);
 });
 
-test.todo(
-	"F004 production notification module uses external state backend family, not Git, for duplicate deployment notification state",
-);
-test.todo(
-	"F004 integration tests live under tests/integration/ and may use real Cloudflare/Discord only behind explicit credentials",
-);
+test("F004 production notification state persists through injected external backend", async () => {
+	const event = readFixture(
+		"cloudflare",
+		"production-success.json",
+	) as CloudflareDeploymentEvent;
+	const saved: Array<{ state: NotificationState; ifGenerationMatch: number }> =
+		[];
+	const backend: NotificationStateBackend = {
+		load: async () => ({
+			state: { notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+			generation: 7,
+		}),
+		save: async (nextState, options) => {
+			saved.push({
+				state: nextState,
+				ifGenerationMatch: options.ifGenerationMatch,
+			});
+		},
+	};
+
+	const decision = await productionEvaluateAndPersistNotification(
+		event,
+		backend,
+		{
+			publicBaseUrl: "https://osint-kaname.pages.dev",
+			latestReportUrl: "https://osint-kaname.pages.dev/reports/latest",
+		},
+		async () => ({ ok: true, status: 200 }),
+	);
+
+	assert.deepStrictEqual(decision, {
+		shouldNotify: true,
+		reason: "production deployment and report are live",
+		reportUrlChecked: true,
+		stateSaved: true,
+	});
+	assert.deepStrictEqual(saved, [
+		{
+			state: {
+				notifiedDeploymentIds: [event.deployment.id],
+				notifiedCommitHashes: [event.deployment.meta.commit_hash],
+			},
+			ifGenerationMatch: 7,
+		},
+	]);
+});
+
+test("F004 production notification state fails closed on backend generation mismatch", async () => {
+	const event = readFixture(
+		"cloudflare",
+		"production-success.json",
+	) as CloudflareDeploymentEvent;
+	const backend: NotificationStateBackend = {
+		load: async () => ({
+			state: { notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+			generation: 8,
+		}),
+		save: async () => {
+			throw new ProductionGenerationMismatchError();
+		},
+	};
+
+	const decision = await productionEvaluateAndPersistNotification(
+		event,
+		backend,
+		{
+			publicBaseUrl: "https://osint-kaname.pages.dev",
+			latestReportUrl: "https://osint-kaname.pages.dev/reports/latest",
+		},
+		async () => ({ ok: true, status: 200 }),
+	);
+
+	assert.deepStrictEqual(decision, {
+		shouldNotify: false,
+		reason: "notification state generation precondition failed",
+		reportUrlChecked: true,
+		stateSaved: false,
+	});
+});

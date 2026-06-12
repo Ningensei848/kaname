@@ -15,6 +15,12 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
+import {
+	internalLinkGuard as productionInternalLinkGuard,
+	noOverwriteGuard as productionNoOverwriteGuard,
+	orphanScoreRegressionGuard as productionOrphanScoreRegressionGuard,
+	reportNoveltyGuard as productionReportNoveltyGuard,
+} from "../src/content/guards";
 import type {
 	GuardResult,
 	TopicAliasMap,
@@ -812,9 +818,66 @@ test("F002 report novelty and duplicate suppression guard", async (t) => {
 	);
 });
 
-test.todo(
-	"F002 production deterministic guard module exports the same verdicts as these executable fixtures",
-);
-test.todo(
-	"F002 CI wires no-overwrite, frontmatter, link graph, orphan, and duplicate guards before Reviewer approval",
-);
+test("F002 production guard module matches executable fixture verdicts", () => {
+	const beforeTopic = readFixture("topics", "before", "nco.md");
+	const validTopic = readFixture("topics", "after", "nco.incremental.md");
+	const destructiveTopic = readFixture("topics", "after", "nco.destructive.md");
+	const knownTitles = new Set(["能動的サイバー防御", "JPCERT_CC"]);
+	const beforeVault: VaultDocument[] = [
+		{
+			path: "topics/NCO.md",
+			title: "能動的サイバー防御",
+			markdown: "# 能動的サイバー防御\n[[JPCERT_CC]] と連携する。",
+		},
+		{
+			path: "topics/JPCERT_CC.md",
+			title: "JPCERT_CC",
+			markdown: "# JPCERT_CC\n[[能動的サイバー防御]] を支援する。",
+		},
+	];
+	const orphanedVault: VaultDocument[] = [
+		...beforeVault,
+		{
+			path: "topics/Isolated.md",
+			title: "孤立新規トピック",
+			markdown: "# 孤立新規トピック\nどの既存トピックにも接続していない。",
+		},
+	];
+
+	assert.deepStrictEqual(
+		productionNoOverwriteGuard(beforeTopic, validTopic),
+		noOverwriteGuard(beforeTopic, validTopic),
+	);
+	assert.deepStrictEqual(
+		productionNoOverwriteGuard(beforeTopic, destructiveTopic),
+		noOverwriteGuard(beforeTopic, destructiveTopic),
+	);
+	assert.deepStrictEqual(
+		productionInternalLinkGuard(validTopic, knownTitles),
+		internalLinkGuard(validTopic, knownTitles),
+	);
+	assert.deepStrictEqual(
+		productionInternalLinkGuard(
+			readFixture("topics", "after", "nco.broken-link.md"),
+			knownTitles,
+		),
+		internalLinkGuard(
+			readFixture("topics", "after", "nco.broken-link.md"),
+			knownTitles,
+		),
+	);
+	assert.deepStrictEqual(
+		productionOrphanScoreRegressionGuard(beforeVault, orphanedVault),
+		orphanScoreRegressionGuard(beforeVault, orphanedVault),
+	);
+	assert.deepStrictEqual(
+		productionReportNoveltyGuard(
+			readFixture("reports", "valid-delta.md"),
+			beforeTopic,
+			{ duplicateThreshold: 0.4 },
+		),
+		reportNoveltyGuard(readFixture("reports", "valid-delta.md"), beforeTopic, {
+			duplicateThreshold: 0.4,
+		}),
+	);
+});

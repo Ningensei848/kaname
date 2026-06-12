@@ -127,7 +127,3 @@ test("F003 GitHub App installation token exchange drives production auth module"
 		},
 	);
 });
-
-test.todo(
-	"F003 MCP launcher passes installation token as GITHUB_TOKEN_FOR_MCP and never uses PAT",
-);
