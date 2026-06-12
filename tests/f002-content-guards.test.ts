@@ -15,20 +15,27 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
-import {
-	internalLinkGuard as productionInternalLinkGuard,
-	noOverwriteGuard as productionNoOverwriteGuard,
-	orphanScoreRegressionGuard as productionOrphanScoreRegressionGuard,
-	reportNoveltyGuard as productionReportNoveltyGuard,
-} from "../src/content/guards";
-import type {
-	GuardResult,
-	TopicAliasMap,
-	VaultDocument,
-} from "../src/content/guards/types";
 
 type JsonSchema = Record<string, unknown>;
 type JsonObject = Record<string, unknown>;
+
+interface GuardResult {
+	ok: boolean;
+	errors: string[];
+}
+
+interface TopicAliasMap {
+	[keywordAlias: string]: {
+		resolvedFilePath: string;
+		primaryTitle: string;
+	};
+}
+
+interface VaultDocument {
+	path: string;
+	title: string;
+	markdown: string;
+}
 
 interface ValidationError {
 	path: string;
@@ -818,10 +825,15 @@ test("F002 report novelty and duplicate suppression guard", async (t) => {
 	);
 });
 
-test("F002 production guard module matches executable fixture verdicts", () => {
+test("F002 executable fixture verdict contract is locked without production imports", () => {
+	const topicSchema = readJson(
+		".spec/schemas/topic-frontmatter.schema.json",
+	) as JsonSchema;
 	const beforeTopic = readFixture("topics", "before", "nco.md");
 	const validTopic = readFixture("topics", "after", "nco.incremental.md");
 	const destructiveTopic = readFixture("topics", "after", "nco.destructive.md");
+	const brokenLinkTopic = readFixture("topics", "after", "nco.broken-link.md");
+	const duplicateReport = readFixture("reports", "duplicate-without-link.md");
 	const knownTitles = new Set(["能動的サイバー防御", "JPCERT_CC"]);
 	const beforeVault: VaultDocument[] = [
 		{
@@ -844,40 +856,46 @@ test("F002 production guard module matches executable fixture verdicts", () => {
 		},
 	];
 
-	assert.deepStrictEqual(
-		productionNoOverwriteGuard(beforeTopic, validTopic),
-		noOverwriteGuard(beforeTopic, validTopic),
-	);
-	assert.deepStrictEqual(
-		productionNoOverwriteGuard(beforeTopic, destructiveTopic),
-		noOverwriteGuard(beforeTopic, destructiveTopic),
-	);
-	assert.deepStrictEqual(
-		productionInternalLinkGuard(validTopic, knownTitles),
-		internalLinkGuard(validTopic, knownTitles),
-	);
-	assert.deepStrictEqual(
-		productionInternalLinkGuard(
-			readFixture("topics", "after", "nco.broken-link.md"),
-			knownTitles,
-		),
-		internalLinkGuard(
-			readFixture("topics", "after", "nco.broken-link.md"),
-			knownTitles,
-		),
-	);
-	assert.deepStrictEqual(
-		productionOrphanScoreRegressionGuard(beforeVault, orphanedVault),
-		orphanScoreRegressionGuard(beforeVault, orphanedVault),
-	);
-	assert.deepStrictEqual(
-		productionReportNoveltyGuard(
-			readFixture("reports", "valid-delta.md"),
-			beforeTopic,
-			{ duplicateThreshold: 0.4 },
-		),
-		reportNoveltyGuard(readFixture("reports", "valid-delta.md"), beforeTopic, {
-			duplicateThreshold: 0.4,
+	const verdicts = {
+		validFrontmatter: validateTopicFrontmatter(validTopic, topicSchema),
+		incrementalUpdate: noOverwriteGuard(beforeTopic, validTopic),
+		destructiveUpdate: noOverwriteGuard(beforeTopic, destructiveTopic),
+		validLinks: internalLinkGuard(validTopic, knownTitles),
+		brokenLinks: internalLinkGuard(brokenLinkTopic, knownTitles),
+		orphanRegression: orphanScoreRegressionGuard(beforeVault, orphanedVault),
+		duplicateReport: reportNoveltyGuard(duplicateReport, beforeTopic, {
+			duplicateThreshold: 0.2,
 		}),
-	);
+	};
+
+	assert.deepStrictEqual(verdicts, {
+		validFrontmatter: { ok: true, errors: [] },
+		incrementalUpdate: { ok: true, errors: [] },
+		destructiveUpdate: {
+			ok: false,
+			errors: [
+				"existing line was removed or modified: ## 概要",
+				"existing line was removed or modified: 能動的サイバー防御は、重大なサイバー攻撃を未然に防ぐための政策概念である。",
+				"existing line was removed or modified: ## 既存ファクト",
+				"existing line was removed or modified: - 2025年: 政府は官民連携を含む制度設計を進めた。",
+				"existing line was removed or modified: - JPCERT/CC などの既存機関との連携が前提となる。",
+			],
+		},
+		validLinks: { ok: true, errors: [] },
+		brokenLinks: {
+			ok: false,
+			errors: ["broken internal link: 存在しないトピック"],
+		},
+		orphanRegression: {
+			ok: false,
+			errors: ["orphan score regressed: 1 new orphan(s): 孤立新規トピック"],
+		},
+		duplicateReport: {
+			ok: false,
+			errors: [
+				"duplicate report threshold exceeded: 0.40 > 0.2",
+				"report item lacks required internal link",
+			],
+		},
+	});
 });

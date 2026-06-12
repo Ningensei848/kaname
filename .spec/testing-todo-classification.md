@@ -23,7 +23,7 @@ Residual `test.todo` entries are not allowed to remain in feature test files wit
 
 | Source TODO | Classification | Destination |
 | --- | --- | --- |
-| F002 guards are extracted from test prototypes into pure `src/guards` functions with identical fixture verdicts | Red contract test | `tests/f002-content-guards.test.ts` production guard parity test |
+| F002 guards are extracted from test prototypes into pure `src/guards` functions with identical fixture verdicts | Spec backlog | `.spec/features/002-wiki-incremental-update/tasks.md`; current tests lock fixture verdicts without production value imports |
 | F002 Aegis-Reviewer merge preconditions consume deterministic content guard verdicts before `merge_pull_request` | Spec backlog | `.spec/features/002-wiki-incremental-update/tasks.md` and `.spec/features/003-orchestrator-mcp-review-loop/tasks.md` |
 | F001 crawler state uses a `StateBackendAdapter` abstraction rather than direct filesystem coupling | Red contract test | Existing F001 state backend tests and traceability entry |
 | F001 GCS backend contract rejects stale generation writes and maps conflicts to safe escalation or retry policy | Red contract test | `tests/f001-idempotency-contract.test.ts` GCS conflict test |
@@ -31,7 +31,7 @@ Residual `test.todo` entries are not allowed to remain in feature test files wit
 | F003 installation token exchange failures produce safe degraded operation metadata for Issue escalation | Spec backlog | `.spec/features/003-orchestrator-mcp-review-loop/tasks.md` |
 | F001 Cloud Storage production adapter maps generation-precondition failures to safe degraded operation | Red contract test | `tests/f001-idempotency-contract.test.ts` GCS conflict test |
 | F001 unchanged source guard records zero `create_or_update_file` and zero `create_pull_request` MCP calls in replay fixtures | Red contract test | `tests/f001-idempotency-contract.test.ts` unchanged replay MCP-call test |
-| F002 production deterministic guard module exports the same verdicts as executable fixtures | Red contract test | `tests/f002-content-guards.test.ts` production guard parity test |
+| F002 production deterministic guard module exports the same verdicts as executable fixtures | Spec backlog | `.spec/features/002-wiki-incremental-update/tasks.md`; current tests lock executable fixture verdicts only |
 | F002 CI wires no-overwrite, frontmatter, link graph, orphan, and duplicate guards before Reviewer approval | Spec backlog | `.spec/features/002-wiki-incremental-update/tasks.md` |
 | F003 MCP launcher passes installation token as `GITHUB_TOKEN_FOR_MCP` and never uses PAT | Spec backlog | `.spec/features/003-orchestrator-mcp-review-loop/tasks.md` |
 | F003 production MCP client loads and validates external fixtures before real tool calls | Red contract test | `tests/f003-mcp-contract-fixtures.test.ts` production MCP policy fixture test |

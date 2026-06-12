@@ -465,7 +465,22 @@ test("F001 production GCS adapter maps generation conflicts to StateConflictErro
 });
 
 test("F001 unchanged replay fixtures record zero GitHub MCP write calls", async () => {
-	const mcpCalls: string[] = [];
+	const gitWriteToolNames = [
+		"create_or_update_file",
+		"create_pull_request",
+	] as const;
+	const mcpWriteSpy = {
+		callCount: 0,
+		calls: [] as string[],
+		call(name: string) {
+			this.calls.push(name);
+			if (
+				gitWriteToolNames.includes(name as (typeof gitWriteToolNames)[number])
+			) {
+				this.callCount++;
+			}
+		},
+	};
 
 	await runUnchangedDiffContract(
 		[
@@ -475,7 +490,7 @@ test("F001 unchanged replay fixtures record zero GitHub MCP write calls", async 
 		{
 			mcpClient: {
 				callTool: (call) => {
-					mcpCalls.push(call.params.name);
+					mcpWriteSpy.call(call.params.name);
 				},
 			},
 			reviewProposal: () => {
@@ -484,10 +499,10 @@ test("F001 unchanged replay fixtures record zero GitHub MCP write calls", async 
 		},
 	);
 
-	assert.deepStrictEqual(
-		mcpCalls.filter((name) =>
-			["create_or_update_file", "create_pull_request"].includes(name),
-		),
-		[],
+	assert.strictEqual(
+		mcpWriteSpy.callCount,
+		0,
+		"unchanged replay must make zero Git write MCP tool calls",
 	);
+	assert.deepStrictEqual(mcpWriteSpy.calls, []);
 });
