@@ -47,7 +47,7 @@ export interface NotificationStateBackend {
 	load(): Promise<NotificationStateSnapshot>;
 	save(
 		state: NotificationState,
-		options: { ifGenerationMatch: number },
+		options: { ifGenerationMatch: number | string | null },
 	): Promise<void>;
 }
 
@@ -117,7 +117,7 @@ export interface DiscordEmbedField {
 export interface RetryPolicy {
 	maxAttempts: number;
 	baseDelayMs?: number;
-	backoffMs?: number[];
+	backoffMs: number[];
 }
 
 export declare class GenerationMismatchError extends Error {

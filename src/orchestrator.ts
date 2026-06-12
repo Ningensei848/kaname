@@ -5,6 +5,8 @@ import type {
 	GateStatus,
 	MergePreconditions,
 	PolicyMcpToolCall,
+	ToolArguments,
+	ToolName,
 } from "./mcp/tool-policy";
 import type {
 	OrchestratorEvent,
@@ -16,7 +18,12 @@ import type {
 export type OrchestratorGateStatus = GateStatus;
 export type OrchestratorMergePreconditions = MergePreconditions;
 
-export type McpToolCall = PolicyMcpToolCall;
+export interface McpToolCall extends PolicyMcpToolCall {
+	params: {
+		name: ToolName;
+		arguments: ToolArguments & { title: string; body: string };
+	};
+}
 
 export interface McpClient {
 	callTool(call: PolicyMcpToolCall): Promise<unknown> | unknown;
@@ -26,7 +33,7 @@ export interface ToolMcpClient extends McpClient {}
 
 export interface CrawlerEscalationDependencies {
 	stateBackend?: StateBackendAdapter<CrawlerState>;
-	mcpClient: McpClient;
+	mcpClient: { callTool(call: McpToolCall): Promise<unknown> | unknown };
 	owner: string;
 	repo: string;
 	fetcher?: Fetcher;
@@ -97,6 +104,8 @@ export interface OrchestratorDependencies {
 		| ((diffs: DiffResult[]) => unknown);
 	mergePreconditions?: MergePreconditions;
 	maxReviewLoops?: number;
+	startMcp?: () => unknown;
+	writeProposal?: (...args: unknown[]) => unknown;
 }
 
 export interface AegisOrchestratorContract {

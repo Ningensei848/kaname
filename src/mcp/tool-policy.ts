@@ -69,10 +69,10 @@ export interface ToolArguments extends JsonObject {
 	message?: unknown;
 	content?: unknown;
 	sha?: unknown;
-	title: string;
+	title?: string;
 	head?: unknown;
 	base?: unknown;
-	body: string;
+	body?: string;
 	pull_number?: unknown;
 	commit_title?: unknown;
 	commit_message?: unknown;
