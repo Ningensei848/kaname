@@ -7,6 +7,17 @@
 
 ## 2. フェーズ別・アトミック実装タスク
 
+### 現フェーズの `src/` 変更境界
+
+現フェーズでは、`src/` 以下の変更は type / interface / contract boundary / schema-derived type に限定する。実行可能な production 実装は、Red / contract test / traceability 同期が完了した後に開始する。
+
+禁止事項:
+
+- `src/` に新規の関数実装を追加しない。
+- `src/` に新規の class 実装を追加しない。
+- テストから `src/` の値 import に依存しない。
+- production 実装は Red / contract test / traceability 同期後に開始する。
+
 ### Phase 1: サーバーレスバッチ ＆ クローリング基礎（基礎の確立）
 
 #### [P] タスク 1.1: pnpm基本環境・CIおよび型定義の初期化
