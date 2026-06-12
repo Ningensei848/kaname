@@ -1,9 +1,4 @@
-import * as crypto from "node:crypto";
-import type { CrawlerState } from "../types";
-import {
-	loadCrawlerStateFromFile,
-	saveCrawlerStateToFile,
-} from "./state-backends/local";
+import type { CrawlerState, SourceState } from "../types";
 
 export interface StateSnapshot<T> {
 	state: T;
@@ -11,68 +6,35 @@ export interface StateSnapshot<T> {
 }
 
 export interface SaveStateOptions {
-	ifGenerationMatch?: string | null;
+	expectedGeneration?: string | null;
 }
 
 export interface StateBackendAdapter<T> {
 	load(): Promise<StateSnapshot<T>>;
-	save(state: T, options: SaveStateOptions): Promise<StateSnapshot<T>>;
+	save(state: T, options?: SaveStateOptions): Promise<StateSnapshot<T>>;
 }
 
-export { StateConflictError } from "./state-errors";
-export function createInitialCrawlerState(): CrawlerState {
-	return {
-		last_execution: new Date(0).toISOString(),
-		sources: {},
-	};
+export interface CrawlerStateUpdateInput {
+	state: CrawlerState;
+	sourceId: string;
+	content: string;
+	lastModifiedHeader: string | null;
+	checkedAt: string;
 }
 
-export function parseCrawlerState(raw: string): CrawlerState | null {
-	const parsed = JSON.parse(raw);
-	if (
-		parsed &&
-		typeof parsed === "object" &&
-		"sources" in parsed &&
-		parsed.sources &&
-		typeof parsed.sources === "object"
-	) {
-		return parsed as CrawlerState;
-	}
-
-	return null;
+export interface CrawlerSourceStateUpdate {
+	sourceId: string;
+	state: SourceState;
 }
 
-export function calculateHash(content: string): string {
-	return crypto.createHash("sha256").update(content, "utf8").digest("hex");
-}
+export type CrawlerStateParseResult =
+	| { ok: true; state: CrawlerState }
+	| { ok: false; reason: "invalid_json" | "invalid_shape" };
 
-export function loadCrawlerState(filePath: string): CrawlerState {
-	return loadCrawlerStateFromFile(filePath);
-}
-
-export function saveCrawlerState(filePath: string, state: CrawlerState): void {
-	saveCrawlerStateToFile(filePath, state);
-}
-
-export function updateSourceState(
-	state: CrawlerState,
-	sourceId: string,
-	contentHash: string,
-	lastModifiedHeader: string | null,
-): CrawlerState {
-	const now = new Date().toISOString();
-
-	const sourcesUpdate = {
-		...state.sources,
-		[sourceId]: {
-			last_checked: now,
-			content_hash: contentHash,
-			last_modified_header: lastModifiedHeader,
-		},
-	};
-
-	return {
-		last_execution: now,
-		sources: sourcesUpdate,
-	};
-}
+export type StateConflictError = {
+	name: "StateConflictError";
+	message: string;
+	expectedGeneration: string | null;
+	currentGeneration: string | null;
+	cause?: unknown;
+};

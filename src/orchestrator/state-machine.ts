@@ -24,9 +24,9 @@ export type OrchestratorAction =
 	| "wait_ci"
 	| "comment_reject"
 	| "squash_merge"
+	| "cleanup_mcp"
 	| "writer_revise"
-	| "create_issue"
-	| "cleanup_mcp";
+	| "create_issue";
 
 export interface TransitionContext {
 	loopCount: number;
@@ -43,55 +43,45 @@ export interface TransitionResult {
 export interface TransitionRecord {
 	state: OrchestratorState;
 	event: OrchestratorEvent;
-	context: TransitionContext;
 	result: TransitionResult;
 }
 
-export function transition(
-	state: OrchestratorState,
-	event: OrchestratorEvent,
-	context: TransitionContext,
-): TransitionResult {
-	if (event === "fatal_error") {
-		return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-	if (context.loopCount >= context.maxLoops && state === "REJECTED") {
-		return { next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-
-	if (state === "INIT" && event === "diff_empty") {
-		return { next: "DONE", actions: ["exit_0"] };
-	}
-	if (state === "INIT" && event === "diff_found") {
-		return { next: "MCP_READY", actions: ["start_mcp"] };
-	}
-	if (state === "MCP_READY" && event === "writer_success" && context.prExists) {
-		return { next: "PROPOSED", actions: ["wait_ci"] };
-	}
-	if (state === "PROPOSED" && event === "deterministic_guard_failed") {
-		return { next: "REJECTED", actions: ["comment_reject"] };
-	}
-	if (
-		state === "PROPOSED" &&
-		event === "reviewer_approved" &&
-		context.allGatesPassed
-	) {
-		return { next: "MERGED", actions: ["squash_merge", "cleanup_mcp"] };
-	}
-	if (
-		state === "REJECTED" &&
-		event === "loop_remaining" &&
-		context.loopCount < context.maxLoops
-	) {
-		return { next: "PROPOSED", actions: ["writer_revise"] };
-	}
-	if (
-		state === "REJECTED" &&
-		event === "loop_exhausted" &&
-		context.loopCount >= context.maxLoops
-	) {
-		return { next: "ESCALATED", actions: ["create_issue", "cleanup_mcp"] };
-	}
-
-	return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
-}
+export type OrchestratorTransitionContract =
+	| {
+			from: "INIT";
+			on: "diff_empty";
+			to: "DONE";
+			actions: ["exit_0"];
+	  }
+	| {
+			from: "INIT";
+			on: "diff_found";
+			to: "MCP_READY";
+			actions: ["start_mcp"];
+	  }
+	| {
+			from: "MCP_READY";
+			on: "writer_success";
+			to: "PROPOSED";
+			actions: ["wait_ci"];
+	  }
+	| {
+			from: "PROPOSED";
+			on: "deterministic_guard_failed";
+			to: "REJECTED";
+			actions: ["comment_reject"];
+	  }
+	| {
+			from: "PROPOSED";
+			on: "reviewer_approved";
+			to: "MERGED" | "FAILED";
+			actions:
+				| ["squash_merge", "cleanup_mcp"]
+				| ["create_issue", "cleanup_mcp"];
+	  }
+	| {
+			from: "REJECTED";
+			on: "loop_remaining" | "loop_exhausted";
+			to: "PROPOSED" | "ESCALATED";
+			actions: ["writer_revise"] | ["create_issue", "cleanup_mcp"];
+	  };
