@@ -9,29 +9,41 @@ on:
     branches:
       - main
 
+# 1. ワークフロー全体に最小権限を適用（他ワークフローの成果物を探すため actions: read を付与）
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    # 2. タイムアウトを設定し、リソースの異常浪費を防ぐ
+    timeout-minutes: 15
 
     steps:
+      # 3. サプライチェーン攻撃対策としてコミットSHAで固定
       - name: Checkout repository
-        uses: actions/checkout@v6
-
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         with:
           version: 11.5.1
           standalone: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
           cache: 'pnpm'
 
       - name: Setup Takumi Guard
-        uses: flatt-security/setup-takumi-guard-npm@v1
-        continue-on-error: true # Ensure fallback if service credentials are not configured
+        uses: flatt-security/setup-takumi-guard-npm@9a5d797c2085b6326d3a2985c08e3a114b9b88c1 # v1.1.1
+        continue-on-error: true # Service credentials fallback
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -49,32 +61,36 @@ jobs:
 
   quartz-artifact-integration:
     runs-on: ubuntu-latest
+    # 4. 先行ジョブの成功を必須条件にする
+    needs: build-and-test
     if: ${{ vars.RUN_QUARTZ_ARTIFACT_INTEGRATION == 'true' }}
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         with:
           version: 11.5.1
           standalone: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
-          cache: 'pnpm'
+          #cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      # 5. actions/download-artifact の代わりに GitHub CLI を利用して別ワークフローの成果物を安全に取得
       - name: Download Quartz public artifacts
-        uses: actions/download-artifact@v6
-        with:
-          name: quartz-public
-          path: public
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download --name quartz-public --dir public --workflow "Quartz Build" 
 
       - name: Run Quartz artifact integration tests
         run: pnpm run test:integration:artifacts
