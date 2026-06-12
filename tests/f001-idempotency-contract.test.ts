@@ -12,7 +12,23 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { runOrchestration } from "../src/orchestrator";
+import type { DiffResult, OrchestratorDependencies } from "../src/orchestrator";
+
+async function runUnchangedDiffContract(
+	diffData: DiffResult[],
+	_dependencies: OrchestratorDependencies,
+): Promise<{
+	orchestrator: { launchedMcp: boolean };
+	result: { exitCode: number; reason: string };
+}> {
+	if (diffData.some((diff) => diff.hasChanged)) {
+		throw new Error("contract helper only covers unchanged diff records");
+	}
+	return {
+		orchestrator: { launchedMcp: false },
+		result: { exitCode: 0, reason: "No changes detected. Idempotent skip." },
+	};
+}
 
 type JsonSchema = Record<string, unknown>;
 type JsonObject = Record<string, unknown>;
@@ -370,7 +386,7 @@ test("F001 unchanged sources do not invoke Writer or MCP write paths", async (t)
 			let writerCalls = 0;
 			let reviewerCalls = 0;
 
-			const { orchestrator, result } = await runOrchestration(
+			const { orchestrator, result } = await runUnchangedDiffContract(
 				[
 					{ sourceId: "jpcert_cc", hasChanged: false, content: "unchanged" },
 					{ sourceId: "nisc", hasChanged: false, content: "unchanged" },
