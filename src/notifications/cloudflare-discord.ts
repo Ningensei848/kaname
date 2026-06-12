@@ -40,14 +40,14 @@ export interface NotificationState {
 
 export interface NotificationStateSnapshot {
 	state: NotificationState;
-	generation: number | string | null;
+	generation: number;
 }
 
 export interface NotificationStateBackend {
 	load(): Promise<NotificationStateSnapshot>;
 	save(
 		state: NotificationState,
-		options: { ifGenerationMatch: number | string | null },
+		options: { ifGenerationMatch: number },
 	): Promise<void>;
 }
 
@@ -78,7 +78,7 @@ export interface NotificationDecision {
 
 export interface PersistedNotificationDecision extends NotificationDecision {
 	state?: NotificationState;
-	generation?: number | string | null;
+	generation?: number;
 }
 
 export interface DiscordPayloadInput {
