@@ -83,7 +83,27 @@ test("F003 reviewer rejection retries writer up to three attempts", () => {
 		});
 		assert.equal(retry.next, "PROPOSED");
 		assert.equal(retry.actions.includes("writer_revise"), true);
+		assert.equal(retry.actions.includes("start_writer_append"), true);
 	}
+});
+
+test("F003 reviewer rejection uses detailed reject before append retry", () => {
+	const rejected = transition("PROPOSED", "reviewer_rejected", {
+		...baseContext,
+		allGatesPassed: false,
+	});
+
+	assert.equal(rejected.next, "REJECTED");
+	assert.equal(rejected.actions.includes("DETAILED_REJECT"), true);
+
+	const retry = transition("REJECTED", "reviewer_rejected_retry", {
+		...baseContext,
+		loopCount: 1,
+		allGatesPassed: false,
+	});
+
+	assert.equal(retry.next, "PROPOSED");
+	assert.equal(retry.actions.includes("start_writer_append"), true);
 });
 
 test("F003 rejection beyond three attempts escalates", () => {
