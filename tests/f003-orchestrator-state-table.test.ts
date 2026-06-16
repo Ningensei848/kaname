@@ -12,6 +12,7 @@ import { test } from "node:test";
 
 import { transition } from "../src/orchestrator/state-machine";
 import type {
+	DetailedRejectPayload,
 	OrchestratorEvent,
 	TerminalState,
 	TransitionAction,
@@ -84,6 +85,27 @@ test("F003 reviewer rejection retries writer up to three attempts", () => {
 		assert.equal(retry.next, "PROPOSED");
 		assert.equal(retry.actions.includes("writer_revise"), true);
 	}
+});
+
+test("F003 detailed reject records payload contract and rejects proposed state", () => {
+	const payload = {
+		rejectReason: "Content guard found a destructive rewrite.",
+		targetGuard: "content_guard",
+		revisionInstruction:
+			"Restore removed facts and keep the update incremental.",
+		loopCount: 1,
+	} satisfies DetailedRejectPayload;
+
+	const result = transition("PROPOSED", "detailed_reject", {
+		...baseContext,
+		loopCount: payload.loopCount,
+		allGatesPassed: false,
+		contentGuardPassed: false,
+	});
+
+	assert.equal(result.next, "REJECTED");
+	assert.equal(result.actions.includes("comment_reject"), true);
+	assert.equal(result.mergeable, false);
 });
 
 test("F003 rejection beyond three attempts escalates", () => {
