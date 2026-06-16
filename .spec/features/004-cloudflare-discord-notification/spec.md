@@ -19,7 +19,16 @@ Discord notification MUST be sent only when all are true:
 
 ### F004-R2: Idempotency
 
-Notification state SHOULD be stored outside Git, using the same state backend family as crawler state unless a separate ADR says otherwise.
+Notification state SHOULD be stored outside Git, using the same Cloud Storage backend family as crawler state unless a separate ADR says otherwise. Notification idempotency MUST be persisted in a dedicated `notification-state.json` object, separate from `crawler-state.json` and vault metadata state, so deployment notification history cannot conflict with crawler source hashes or taxonomy metadata writes.
+
+
+Recommended object layout:
+
+```text
+gs://<KANAME_STATE_BUCKET>/<environment>/notification-state.json
+```
+
+The executable schema is `.spec/schemas/notification-state.schema.json`; it records `notified_deployment_ids`, `notified_commit_hashes`, `last_successful_notification_at`, and `last_failed_notification_at`.
 
 ### F004-R3: Failure handling
 
