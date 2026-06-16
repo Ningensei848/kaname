@@ -16,8 +16,11 @@ import * as path from "node:path";
 import { test } from "node:test";
 import * as YAML from "yaml";
 
-type JsonSchema = Record<string, unknown>;
-type JsonObject = Record<string, unknown>;
+import {
+	validateJsonSchema,
+	type JsonObject,
+	type JsonSchema,
+} from "./helpers/schema-validator";
 
 interface GuardResult {
 	ok: boolean;
@@ -35,11 +38,6 @@ interface VaultDocument {
 	path: string;
 	title: string;
 	markdown: string;
-}
-
-interface ValidationError {
-	path: string;
-	message: string;
 }
 
 interface MarkdownDocument {
@@ -66,139 +64,6 @@ function parseMarkdown(markdown: string): MarkdownDocument {
 		frontmatter: (YAML.parse(match[1]) ?? {}) as JsonObject,
 		body: match[2],
 	};
-}
-
-function validateJsonSchema(
-	schema: JsonSchema,
-	value: unknown,
-	currentPath = "$",
-): ValidationError[] {
-	const errors: ValidationError[] = [];
-	const typeRule = schema.type;
-
-	if (typeRule !== undefined && !matchesType(typeRule, value)) {
-		errors.push({
-			path: currentPath,
-			message: `expected type ${JSON.stringify(typeRule)}`,
-		});
-		return errors;
-	}
-
-	if (
-		schema.enum &&
-		Array.isArray(schema.enum) &&
-		!schema.enum.includes(value)
-	) {
-		errors.push({ path: currentPath, message: "expected enum value" });
-	}
-
-	if (schema.type === "object" && isRecord(value)) {
-		const properties = isRecord(schema.properties) ? schema.properties : {};
-		const required = Array.isArray(schema.required) ? schema.required : [];
-
-		for (const requiredKey of required) {
-			if (typeof requiredKey === "string" && !(requiredKey in value)) {
-				errors.push({
-					path: currentPath,
-					message: `missing required property ${requiredKey}`,
-				});
-			}
-		}
-
-		if (schema.additionalProperties === false) {
-			for (const key of Object.keys(value)) {
-				if (!(key in properties)) {
-					errors.push({
-						path: `${currentPath}.${key}`,
-						message: "additional property is not allowed",
-					});
-				}
-			}
-		}
-
-		for (const [key, propertySchema] of Object.entries(properties)) {
-			if (key in value && isRecord(propertySchema)) {
-				errors.push(
-					...validateJsonSchema(
-						propertySchema,
-						value[key],
-						`${currentPath}.${key}`,
-					),
-				);
-			}
-		}
-	}
-
-	if (schema.type === "array" && Array.isArray(value)) {
-		if (typeof schema.minItems === "number" && value.length < schema.minItems) {
-			errors.push({
-				path: currentPath,
-				message: `expected at least ${schema.minItems} items`,
-			});
-		}
-
-		if (isRecord(schema.items)) {
-			value.forEach((item, index) => {
-				errors.push(
-					...validateJsonSchema(
-						schema.items as JsonSchema,
-						item,
-						`${currentPath}[${index}]`,
-					),
-				);
-			});
-		}
-	}
-
-	if (typeof value === "string") {
-		if (
-			typeof schema.minLength === "number" &&
-			value.length < schema.minLength
-		) {
-			errors.push({
-				path: currentPath,
-				message: `expected minimum length ${schema.minLength}`,
-			});
-		}
-
-		if (
-			typeof schema.pattern === "string" &&
-			!new RegExp(schema.pattern).test(value)
-		) {
-			errors.push({
-				path: currentPath,
-				message: `expected to match ${schema.pattern}`,
-			});
-		}
-
-		if (schema.format === "date" && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-			errors.push({ path: currentPath, message: "expected date format" });
-		}
-	}
-
-	return errors;
-}
-
-function matchesType(typeRule: unknown, value: unknown): boolean {
-	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
-	return allowedTypes.some((type) => {
-		switch (type) {
-			case "object":
-				return isRecord(value) && !Array.isArray(value);
-			case "array":
-				return Array.isArray(value);
-			case "string":
-				return typeof value === "string";
-			case "null":
-				return value === null;
-			default:
-				return false;
-		}
-	});
-}
-
-function isRecord(value: unknown): value is JsonObject {
-	return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function validateTopicFrontmatter(

@@ -11,10 +11,7 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import {
-	allGreenMergePreconditions,
-	type MergePreconditions,
-} from "../src/mcp/tool-policy";
+import type { MergePreconditions } from "../src/mcp/tool-policy";
 
 type ProbeResult = { ok: boolean; status: number };
 type UrlProbe = (url: string) => Promise<ProbeResult>;
@@ -64,7 +61,14 @@ type ShouldNotifyDiscord = (
 	probeReportUrl: UrlProbe,
 ) => Promise<NotificationDecision>;
 
-const allGreenGates: MergePreconditions = allGreenMergePreconditions;
+const allGreenGates: MergePreconditions = {
+	ci: "passed",
+	takumiGuard: "passed",
+	deterministicContentGuards: "passed",
+	branchPolicy: "passed",
+	immutableFiles: "passed",
+	internalLinks: "passed",
+};
 
 const deploymentSuccess: CloudflareDeploymentEvent = {
 	id: "evt_pages_deploy_success",
