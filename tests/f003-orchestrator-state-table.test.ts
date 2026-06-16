@@ -10,55 +10,13 @@
 import * as assert from "node:assert";
 import { test } from "node:test";
 
+import { transition } from "../src/orchestrator/state-machine";
 import type {
 	OrchestratorEvent,
 	TerminalState,
 	TransitionAction,
 	TransitionContext,
-	TransitionResult,
 } from "../src/orchestrator/state-machine";
-
-function transition(
-	state: "INIT" | "MCP_READY" | "PROPOSED" | "REJECTED" | TerminalState,
-	event: OrchestratorEvent,
-	context: TransitionContext,
-): TransitionResult {
-	if (event === "fatal_error")
-		return { next: "FAILED", actions: ["create_issue", "cleanup_mcp"] };
-	if (event === "timeout") return { next: "TIMEOUT", actions: ["cleanup_mcp"] };
-	if (state === "INIT" && event === "diff_empty")
-		return { next: "DONE", actions: ["exit_0", "cleanup_mcp"] };
-	if (state === "INIT" && event === "diff_found")
-		return { next: "MCP_READY", actions: ["start_mcp"] };
-	if (state === "MCP_READY" && event === "writer_success")
-		return { next: "PROPOSED", actions: ["start_writer", "wait_ci"] };
-	if (
-		state === "PROPOSED" &&
-		[
-			"reviewer_rejected",
-			"ci_failed",
-			"takumi_guard_failed",
-			"content_guard_failed",
-			"protected_branch_evidence_missing",
-		].includes(event)
-	)
-		return { next: "REJECTED", actions: ["comment_reject"], mergeable: false };
-	if (
-		state === "PROPOSED" &&
-		event === "reviewer_approved" &&
-		context.allGatesPassed
-	)
-		return {
-			next: "MERGED",
-			actions: ["squash_merge", "cleanup_mcp"],
-			mergeable: true,
-		};
-	if (state === "REJECTED" && event === "loop_remaining")
-		return { next: "PROPOSED", actions: ["writer_revise"] };
-	if (state === "REJECTED" && event === "loop_exhausted")
-		return { next: "ESCALATED", actions: ["escalate_issue", "cleanup_mcp"] };
-	return { next: "FAILED", actions: ["cleanup_mcp"], mergeable: false };
-}
 
 const baseContext: TransitionContext = {
 	loopCount: 0,
