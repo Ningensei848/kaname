@@ -94,3 +94,58 @@ test("F004 integration backlog: real Cloudflare deployment polling and Discord w
 		`Discord webhook returned ${discordResponse.status}`,
 	);
 });
+
+test("F005 integration backlog: GitHub live API repository metadata probe requires explicit credentials", async (t) => {
+	const missing = missingEnv([
+		"KANAME_RUN_GITHUB_LIVE_INTEGRATION",
+		"GITHUB_TOKEN_FOR_MCP",
+		"GITHUB_OWNER",
+		"GITHUB_REPO",
+	]);
+	if (missing.length > 0) {
+		t.skip(`missing env: ${missing.join(", ")}`);
+		return;
+	}
+
+	const owner = process.env.GITHUB_OWNER as string;
+	const repo = process.env.GITHUB_REPO as string;
+	const token = process.env.GITHUB_TOKEN_FOR_MCP as string;
+
+	assert.ok(token.trim().length > 0, "GitHub token must not be empty");
+	assert.ok(owner.trim().length > 0, "GitHub owner must not be empty");
+	assert.ok(repo.trim().length > 0, "GitHub repo must not be empty");
+
+	const repositoryUrl = new URL(
+		`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(
+			repo,
+		)}`,
+	);
+
+	const repositoryResponse = await fetch(repositoryUrl, {
+		headers: {
+			Accept: "application/vnd.github+json",
+			Authorization: `Bearer ${token}`,
+			"User-Agent": "kaname-integration-check",
+			"X-GitHub-Api-Version": "2022-11-28",
+		},
+	});
+	assert.ok(
+		repositoryResponse.status >= 200 && repositoryResponse.status < 300,
+		`GitHub repository metadata probe returned ${repositoryResponse.status}`,
+	);
+
+	const repositoryBody = (await repositoryResponse.json()) as {
+		full_name?: string;
+		name?: string;
+		owner?: { login?: string };
+	};
+	assert.strictEqual(repositoryBody.name?.toLowerCase(), repo.toLowerCase());
+	assert.strictEqual(
+		repositoryBody.owner?.login?.toLowerCase(),
+		owner.toLowerCase(),
+	);
+	assert.strictEqual(
+		repositoryBody.full_name?.toLowerCase(),
+		`${owner}/${repo}`.toLowerCase(),
+	);
+});
