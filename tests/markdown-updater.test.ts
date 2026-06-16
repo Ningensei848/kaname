@@ -12,7 +12,7 @@
  */
 
 import { test } from "node:test";
-import * as assert from "node:assert";
+import * as assert from "node:assert/strict";
 import {
 	appendSectionToMarkdown,
 	injectInternalLinkToMarkdown,
@@ -118,6 +118,93 @@ test("appendSectionToMarkdown", async (t) => {
 			const result = appendSectionToMarkdown("", "概要", "コンテンツ");
 			assert.ok(result.includes("# 概要"));
 			assert.ok(result.includes("- コンテンツ"));
+		},
+	);
+});
+
+test("appendSectionToMarkdown F002 public behavior contract", async (t) => {
+	await t.test("preserves frontmatter while appending new information", () => {
+		const original = [
+			"---",
+			"title: 能動的サイバー防御",
+			"aliases:",
+			"  - ACD",
+			"updated: 2026-05-01",
+			"---",
+			"# 能動的サイバー防御",
+			"",
+			"## 概要",
+			"既存の概要。",
+		].join("\n");
+
+		const result = appendSectionToMarkdown(
+			original,
+			"最新動向",
+			"2026-05-27: 関係機関との調整を更新。",
+		);
+
+		assert.ok(
+			result.startsWith(
+				[
+					"---",
+					"title: 能動的サイバー防御",
+					"aliases:",
+					"  - ACD",
+					"updated: 2026-05-01",
+					"---",
+				].join("\n"),
+			),
+		);
+	});
+
+	await t.test("preserves existing headings and body text", () => {
+		const original = [
+			"# 能動的サイバー防御",
+			"",
+			"## 概要",
+			"能動的サイバー防御は政策概念である。",
+			"",
+			"## 既存ファクト",
+			"- 2025年: 政府は制度設計を進めた。",
+		].join("\n");
+
+		const result = appendSectionToMarkdown(
+			original,
+			"最新動向",
+			"2026-05-27: 新たな更新。",
+		);
+
+		assert.ok(result.includes("## 概要"));
+		assert.ok(result.includes("## 既存ファクト"));
+		assert.ok(result.includes("能動的サイバー防御は政策概念である。"));
+		assert.ok(result.includes("- 2025年: 政府は制度設計を進めた。"));
+	});
+
+	await t.test(
+		"appends new information without destroying the existing structure",
+		() => {
+			const original = [
+				"# 能動的サイバー防御",
+				"",
+				"## 概要",
+				"既存の概要。",
+				"",
+				"## 既存ファクト",
+				"- 2025年: 既存ファクト。",
+			].join("\n");
+
+			const result = appendSectionToMarkdown(
+				original,
+				"既存ファクト",
+				"2026-05-27: 追加ファクト。",
+			);
+
+			assert.ok(result.includes("- 2025年: 既存ファクト。"));
+			assert.ok(result.includes("- 2026-05-27: 追加ファクト。"));
+			assert.ok(
+				result.indexOf("- 2025年: 既存ファクト。") <
+					result.indexOf("- 2026-05-27: 追加ファクト。"),
+			);
 		},
 	);
 });
