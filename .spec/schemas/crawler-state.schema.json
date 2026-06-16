@@ -15,18 +15,32 @@
 			"additionalProperties": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["last_checked", "content_hash", "last_modified_header"],
+				"required": [
+					"content_hash",
+					"last_checked",
+					"last_modified_header",
+					"etag_header",
+					"last_status"
+				],
 				"properties": {
-					"last_checked": {
-						"type": "string",
-						"format": "date-time"
-					},
 					"content_hash": {
 						"type": "string",
 						"pattern": "^[0-9a-f]{64}$"
 					},
+					"last_checked": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"last_modified_header": {
 						"type": ["string", "null"]
+					},
+					"etag_header": {
+						"type": ["string", "null"]
+					},
+					"last_status": {
+						"type": "integer",
+						"minimum": 100,
+						"maximum": 599
 					}
 				}
 			}
