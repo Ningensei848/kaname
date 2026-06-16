@@ -7,6 +7,10 @@ import { assertQuartzGraphDisabledArtifact } from "../helpers/quartz-artifact-co
 const repoRoot = process.cwd();
 const publicDir = path.join(repoRoot, "public");
 
+function missingEnv(names: string[]): string[] {
+	return names.filter((name) => !process.env[name]);
+}
+
 function listHtmlFiles(rootDir: string): string[] {
 	const entries = fs.readdirSync(rootDir, { withFileTypes: true });
 	return entries.flatMap((entry) => {
@@ -16,7 +20,13 @@ function listHtmlFiles(rootDir: string): string[] {
 	});
 }
 
-test("F004 production Quartz public artifacts contain no graph view UI or scripts", () => {
+test("F004 production Quartz public artifacts contain no graph view UI or scripts", (t) => {
+	const missing = missingEnv(["KANAME_RUN_QUARTZ_ARTIFACT_INTEGRATION"]);
+	if (missing.length > 0) {
+		t.skip(`missing env: ${missing.join(", ")}`);
+		return;
+	}
+
 	assert.ok(
 		fs.existsSync(publicDir),
 		"public/ must be prepared by the CI job before this integration test runs",

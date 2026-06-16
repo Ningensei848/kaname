@@ -10,9 +10,10 @@ Residual `test.todo` entries are not allowed to remain in feature test files wit
    - The test must not require real OS signals, cloud credentials, GitHub / Discord / Cloudflare access, or nondeterministic network calls.
 
 2. **Integration backlog**
-   - Use when the expectation requires real OS signal handling, external credentials, or live Cloudflare / Discord / GitHub connectivity.
+   - Use when the expectation requires real OS signal handling, external credentials, live Cloudflare / Discord / GitHub connectivity, or pre-built artifacts that are absent from default local and CI runs.
    - Move it under `tests/integration/`.
-   - Add an explicit environment-variable guard so default local and CI test runs do not hit external services accidentally.
+   - Add an explicit environment-variable guard so default local and CI test runs do not hit external services or artifact preconditions accidentally.
+   - Artifact-precondition integration guards are distinct from live credential guards; for example, Quartz `public/` artifact assertions require `KANAME_RUN_QUARTZ_ARTIFACT_INTEGRATION`, but no Cloudflare or Discord credentials.
 
 3. **Spec backlog**
    - Use when the behavior is still too ambiguous to make a red contract test without inventing implementation details.
