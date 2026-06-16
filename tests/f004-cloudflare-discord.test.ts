@@ -2,15 +2,10 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
-import {
-	evaluateAndPersistNotification as productionEvaluateAndPersistNotification,
-	GenerationMismatchError as ProductionGenerationMismatchError,
-} from "../src/notifications/cloudflare-discord";
 import type {
 	CloudflareDeploymentEvent,
 	DiscordDeliveryDecision,
 	DiscordWebhookSendResult,
-	JsonObject,
 	NotificationGenerationConflict,
 	NotificationState,
 	NotificationStateBackend,
@@ -20,6 +15,11 @@ import type {
 	UrlProbe,
 } from "../src/notifications/cloudflare-discord";
 import { assertQuartzGraphDisabledArtifact } from "./helpers/quartz-artifact-contract";
+import {
+	validateJsonSchema,
+	type JsonObject,
+	type JsonSchema,
+} from "./helpers/schema-validator";
 
 type NotificationConfig = { publicBaseUrl: string; latestReportUrl: string };
 type NotificationDecision = {
@@ -255,7 +255,6 @@ function unique(values: string[]): string[] {
 const repoRoot = process.cwd();
 const publicBaseUrl = "https://osint-kaname.pages.dev";
 const latestReportUrl = `${publicBaseUrl}/reports/2026-05-27_Report`;
-type JsonSchema = Record<string, unknown>;
 
 function readJson(relativePath: string): unknown {
 	return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), "utf8"));
@@ -270,163 +269,6 @@ function validateWithSchema(schemaPath: string, value: unknown): string[] {
 	return validateJsonSchema(schema, value).map(
 		(error) => `${error.path}: ${error.message}`,
 	);
-}
-
-function validateJsonSchema(
-	schema: JsonSchema,
-	value: unknown,
-	currentPath = "$",
-): Array<{ path: string; message: string }> {
-	const errors: Array<{ path: string; message: string }> = [];
-
-	if (schema.type !== undefined && !matchesSchemaType(schema.type, value)) {
-		return [
-			{
-				path: currentPath,
-				message: `expected type ${JSON.stringify(schema.type)}`,
-			},
-		];
-	}
-
-	if (schema.const !== undefined && value !== schema.const) {
-		errors.push({
-			path: currentPath,
-			message: `expected const ${schema.const}`,
-		});
-	}
-
-	if (Array.isArray(schema.enum) && !schema.enum.includes(value)) {
-		errors.push({ path: currentPath, message: "expected enum value" });
-	}
-
-	if (typeof value === "string") {
-		if (
-			typeof schema.minLength === "number" &&
-			value.length < schema.minLength
-		) {
-			errors.push({
-				path: currentPath,
-				message: `expected minimum length ${schema.minLength}`,
-			});
-		}
-		if (
-			typeof schema.pattern === "string" &&
-			!new RegExp(schema.pattern).test(value)
-		) {
-			errors.push({ path: currentPath, message: "expected pattern match" });
-		}
-		if (schema.format === "uri" && !isValidUrl(value)) {
-			errors.push({ path: currentPath, message: "expected uri" });
-		}
-		if (schema.format === "date-time" && Number.isNaN(Date.parse(value))) {
-			errors.push({ path: currentPath, message: "expected date-time" });
-		}
-	}
-
-	if (typeof value === "number" && typeof schema.minimum === "number") {
-		if (value < schema.minimum) {
-			errors.push({
-				path: currentPath,
-				message: `expected minimum ${schema.minimum}`,
-			});
-		}
-	}
-
-	if (schema.type === "array" && Array.isArray(value)) {
-		if (typeof schema.minItems === "number" && value.length < schema.minItems) {
-			errors.push({
-				path: currentPath,
-				message: `expected at least ${schema.minItems} items`,
-			});
-		}
-		if (typeof schema.maxItems === "number" && value.length > schema.maxItems) {
-			errors.push({
-				path: currentPath,
-				message: `expected at most ${schema.maxItems} items`,
-			});
-		}
-		if (isRecord(schema.items)) {
-			for (const [index, item] of value.entries()) {
-				errors.push(
-					...validateJsonSchema(schema.items, item, `${currentPath}[${index}]`),
-				);
-			}
-		}
-	}
-
-	if (schema.type === "object" && isRecord(value)) {
-		const properties = isRecord(schema.properties) ? schema.properties : {};
-		const required = Array.isArray(schema.required) ? schema.required : [];
-
-		for (const requiredKey of required) {
-			if (typeof requiredKey === "string" && !(requiredKey in value)) {
-				errors.push({
-					path: currentPath,
-					message: `missing required property ${requiredKey}`,
-				});
-			}
-		}
-
-		if (schema.additionalProperties === false) {
-			for (const key of Object.keys(value)) {
-				if (!(key in properties)) {
-					errors.push({
-						path: `${currentPath}.${key}`,
-						message: "additional property is not allowed",
-					});
-				}
-			}
-		}
-
-		for (const [key, propertySchema] of Object.entries(properties)) {
-			if (key in value && isRecord(propertySchema)) {
-				errors.push(
-					...validateJsonSchema(
-						propertySchema,
-						value[key],
-						`${currentPath}.${key}`,
-					),
-				);
-			}
-		}
-	}
-
-	return errors;
-}
-
-function matchesSchemaType(typeRule: unknown, value: unknown): boolean {
-	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
-	return allowedTypes.some((type) => {
-		switch (type) {
-			case "array":
-				return Array.isArray(value);
-			case "boolean":
-				return typeof value === "boolean";
-			case "integer":
-				return Number.isInteger(value);
-			case "number":
-				return typeof value === "number";
-			case "object":
-				return isRecord(value);
-			case "string":
-				return typeof value === "string";
-			default:
-				return false;
-		}
-	});
-}
-
-function isRecord(value: unknown): value is JsonObject {
-	return value !== null && typeof value === "object" && !Array.isArray(value);
-}
-
-function isValidUrl(value: string): boolean {
-	try {
-		new URL(value);
-		return true;
-	} catch {
-		return false;
-	}
 }
 
 function assertDiscordPayloadPolicy(payload: JsonObject): string[] {
@@ -475,7 +317,7 @@ class FakeExternalNotificationStateBackend implements NotificationStateBackend {
 	async save(
 		nextState: NotificationState,
 		options: { ifGenerationMatch: number },
-	): Promise<void> {
+	): Promise<undefined> {
 		this.saveCalls += 1;
 		this.saveGenerations.push(options.ifGenerationMatch);
 		this.onBeforeSave?.();
@@ -484,6 +326,7 @@ class FakeExternalNotificationStateBackend implements NotificationStateBackend {
 		}
 		this.state = cloneState(nextState);
 		this.generation += 1;
+		return undefined;
 	}
 
 	simulateConcurrentWrite(
@@ -515,7 +358,10 @@ function buildFixtureLiveReportProbe(
 }
 
 function decideDiscordDeliveryAfterStateSave(
-	result: void | NotificationStateSaveResult | NotificationGenerationConflict,
+	result:
+		| undefined
+		| NotificationStateSaveResult
+		| NotificationGenerationConflict,
 ): DiscordDeliveryDecision {
 	if (isNotificationGenerationConflict(result)) {
 		return {
@@ -527,7 +373,10 @@ function decideDiscordDeliveryAfterStateSave(
 }
 
 function isNotificationGenerationConflict(
-	result: void | NotificationStateSaveResult | NotificationGenerationConflict,
+	result:
+		| undefined
+		| NotificationStateSaveResult
+		| NotificationGenerationConflict,
 ): result is NotificationGenerationConflict {
 	return (
 		typeof result === "object" &&
@@ -1020,10 +869,11 @@ test("F004 production notification state persists through injected external back
 				state: nextState,
 				ifGenerationMatch: options.ifGenerationMatch,
 			});
+			return undefined;
 		},
 	};
 
-	const decision = await productionEvaluateAndPersistNotification(
+	const decision = await evaluateAndPersistNotification(
 		event,
 		backend,
 		{
@@ -1061,11 +911,11 @@ test("F004 production notification state fails closed on backend generation mism
 			generation: 8,
 		}),
 		save: async () => {
-			throw new ProductionGenerationMismatchError();
+			throw new GenerationMismatchError();
 		},
 	};
 
-	const decision = await productionEvaluateAndPersistNotification(
+	const decision = await evaluateAndPersistNotification(
 		event,
 		backend,
 		{

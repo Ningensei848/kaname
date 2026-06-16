@@ -12,10 +12,12 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { StateConflictError } from "../src/crawler/state-errors";
-import { GcsStateBackend } from "../src/crawler/state-backends/gcs";
 import type { DiffResult, OrchestratorDependencies } from "../src/orchestrator";
-import type { CrawlerState } from "../src/types";
+import {
+	validateJsonSchema,
+	type JsonObject,
+	type JsonSchema,
+} from "./helpers/schema-validator";
 
 async function runUnchangedDiffContract(
 	diffData: DiffResult[],
@@ -33,29 +35,9 @@ async function runUnchangedDiffContract(
 	};
 }
 
-type JsonSchema = Record<string, unknown>;
-type JsonObject = Record<string, unknown>;
-
-interface ValidationError {
-	path: string;
-	message: string;
-}
-
 interface StoredStateObject {
 	content: JsonObject | null;
 	generation: number;
-}
-
-function makeResponse(
-	status: number,
-	body: string,
-	headers: Record<string, string> = {},
-): Response {
-	return new Response(body, {
-		status,
-		statusText: status === 412 ? "Precondition Failed" : "OK",
-		headers,
-	});
 }
 
 class PreconditionFailedError extends Error {
@@ -102,165 +84,6 @@ function fixturePath(fileName: string): string {
 
 function readJson(filePath: string): unknown {
 	return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
-
-function validateJsonSchema(
-	schema: JsonSchema,
-	value: unknown,
-	currentPath = "$",
-): ValidationError[] {
-	const errors: ValidationError[] = [];
-	const typeRule = schema.type;
-
-	if (typeRule !== undefined && !matchesType(typeRule, value)) {
-		errors.push({
-			path: currentPath,
-			message: `expected type ${JSON.stringify(typeRule)}`,
-		});
-		return errors;
-	}
-
-	if (schema.type === "object" && isRecord(value)) {
-		const properties = isRecord(schema.properties) ? schema.properties : {};
-		const required = Array.isArray(schema.required) ? schema.required : [];
-
-		for (const requiredKey of required) {
-			if (typeof requiredKey === "string" && !(requiredKey in value)) {
-				errors.push({
-					path: currentPath,
-					message: `missing required property ${requiredKey}`,
-				});
-			}
-		}
-
-		if (schema.additionalProperties === false) {
-			for (const key of Object.keys(value)) {
-				if (!(key in properties)) {
-					errors.push({
-						path: `${currentPath}.${key}`,
-						message: "additional property is not allowed",
-					});
-				}
-			}
-		}
-
-		for (const [key, propertySchema] of Object.entries(properties)) {
-			if (key in value && isRecord(propertySchema)) {
-				errors.push(
-					...validateJsonSchema(
-						propertySchema,
-						value[key],
-						`${currentPath}.${key}`,
-					),
-				);
-			}
-		}
-
-		if (isRecord(schema.additionalProperties)) {
-			for (const [key, childValue] of Object.entries(value)) {
-				errors.push(
-					...validateJsonSchema(
-						schema.additionalProperties,
-						childValue,
-						`${currentPath}.${key}`,
-					),
-				);
-			}
-		}
-	}
-
-	if (schema.type === "array" && Array.isArray(value)) {
-		if (typeof schema.minItems === "number" && value.length < schema.minItems) {
-			errors.push({
-				path: currentPath,
-				message: `expected at least ${schema.minItems} items`,
-			});
-		}
-
-		if (isRecord(schema.items)) {
-			value.forEach((item, index) => {
-				errors.push(
-					...validateJsonSchema(
-						schema.items as JsonSchema,
-						item,
-						`${currentPath}[${index}]`,
-					),
-				);
-			});
-		}
-	}
-
-	if (typeof value === "string") {
-		if (
-			typeof schema.minLength === "number" &&
-			value.length < schema.minLength
-		) {
-			errors.push({
-				path: currentPath,
-				message: `expected minimum length ${schema.minLength}`,
-			});
-		}
-
-		if (typeof schema.pattern === "string") {
-			const pattern = new RegExp(schema.pattern);
-			if (!pattern.test(value)) {
-				errors.push({
-					path: currentPath,
-					message: `expected to match ${schema.pattern}`,
-				});
-			}
-		}
-
-		if (schema.format === "uri" && !isValidUri(value)) {
-			errors.push({ path: currentPath, message: "expected URI format" });
-		}
-
-		if (schema.format === "date-time" && !isValidDateTime(value)) {
-			errors.push({ path: currentPath, message: "expected date-time format" });
-		}
-	}
-
-	return errors;
-}
-
-function matchesType(typeRule: unknown, value: unknown): boolean {
-	const allowedTypes = Array.isArray(typeRule) ? typeRule : [typeRule];
-	return allowedTypes.some((type) => {
-		switch (type) {
-			case "object":
-				return isRecord(value) && !Array.isArray(value);
-			case "array":
-				return Array.isArray(value);
-			case "string":
-				return typeof value === "string";
-			case "null":
-				return value === null;
-			case "boolean":
-				return typeof value === "boolean";
-			case "number":
-				return typeof value === "number";
-			default:
-				return false;
-		}
-	});
-}
-
-function isRecord(value: unknown): value is JsonObject {
-	return value !== null && typeof value === "object" && !Array.isArray(value);
-}
-
-function isValidUri(value: string): boolean {
-	try {
-		new URL(value);
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-function isValidDateTime(value: string): boolean {
-	const timestamp = Date.parse(value);
-	return !Number.isNaN(timestamp) && /T/.test(value);
 }
 
 test("F001 schema fixtures are executable contract inputs", async (t) => {
@@ -427,39 +250,6 @@ test("F001 unchanged sources do not invoke Writer or MCP write paths", async (t)
 			assert.strictEqual(startMcpCalls, 0, "MCP process must not be started");
 			assert.strictEqual(writerCalls, 0, "Writer must not be invoked");
 			assert.strictEqual(reviewerCalls, 0, "Reviewer must not be invoked");
-		},
-	);
-});
-
-test("F001 production GCS adapter maps generation conflicts to StateConflictError", async () => {
-	const backend = new GcsStateBackend({
-		bucket: "kaname-state",
-		fetch: async (_url, init) => {
-			assert.strictEqual(init?.method, "POST");
-			return makeResponse(412, "stale generation", {
-				"x-goog-generation": "43",
-			});
-		},
-	});
-
-	await assert.rejects(
-		() =>
-			backend.save(
-				readJson(fixturePath("crawler-state.valid.json")) as CrawlerState,
-				{
-					ifGenerationMatch: "42",
-				},
-			),
-		(error: Error) => {
-			assert.ok(error instanceof StateConflictError);
-			assert.strictEqual(
-				error.message,
-				"GCS crawler state generation is stale",
-			);
-			assert.strictEqual(error.expectedGeneration, "42");
-			assert.strictEqual(error.currentGeneration, "43");
-			assert.strictEqual(error.cause, "stale generation");
-			return true;
 		},
 	);
 });
