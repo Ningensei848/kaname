@@ -10,7 +10,7 @@
  * `.spec/policies/content-integrity-policy.md`.
  */
 
-import * as assert from "node:assert";
+import * as assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
@@ -824,6 +824,103 @@ test("F002 report novelty and duplicate suppression guard", async (t) => {
 		},
 	);
 });
+
+test("F002 fixture-driven guard verdict matrix", async (t) => {
+	const topicSchema = readJson(
+		".spec/schemas/topic-frontmatter.schema.json",
+	) as JsonSchema;
+	const beforeTopic = readFixture("topics", "before", "nco.md");
+	const existingTopicContext = beforeTopic;
+	const knownTitles = new Set(["能動的サイバー防御", "JPCERT_CC"]);
+
+	const cases: Array<{
+		name: string;
+		expectedOk: boolean;
+		actual: () => GuardResult;
+	}> = [
+		{
+			name: "topics/after/nco.incremental.md is accepted",
+			expectedOk: true,
+			actual: () => {
+				const after = readFixture("topics", "after", "nco.incremental.md");
+				return combineGuardResults(
+					validateTopicFrontmatter(after, topicSchema),
+					noOverwriteGuard(beforeTopic, after),
+					internalLinkGuard(after, knownTitles),
+				);
+			},
+		},
+		{
+			name: "topics/after/nco.destructive.md is rejected",
+			expectedOk: false,
+			actual: () =>
+				noOverwriteGuard(
+					beforeTopic,
+					readFixture("topics", "after", "nco.destructive.md"),
+				),
+		},
+		{
+			name: "topics/after/nco.double-wrapped.md is rejected",
+			expectedOk: false,
+			actual: () =>
+				internalLinkGuard(
+					readFixture("topics", "after", "nco.double-wrapped.md"),
+					knownTitles,
+				),
+		},
+		{
+			name: "topics/after/nco.invalid-frontmatter.md is rejected",
+			expectedOk: false,
+			actual: () =>
+				validateTopicFrontmatter(
+					readFixture("topics", "after", "nco.invalid-frontmatter.md"),
+					topicSchema,
+				),
+		},
+		{
+			name: "topics/after/nco.broken-link.md is rejected",
+			expectedOk: false,
+			actual: () =>
+				internalLinkGuard(
+					readFixture("topics", "after", "nco.broken-link.md"),
+					knownTitles,
+				),
+		},
+		{
+			name: "reports/duplicate-without-link.md is rejected",
+			expectedOk: false,
+			actual: () =>
+				reportNoveltyGuard(
+					readFixture("reports", "duplicate-without-link.md"),
+					existingTopicContext,
+					{ duplicateThreshold: 0.2 },
+				),
+		},
+		{
+			name: "reports/valid-delta.md is accepted",
+			expectedOk: true,
+			actual: () =>
+				reportNoveltyGuard(
+					readFixture("reports", "valid-delta.md"),
+					existingTopicContext,
+					{ duplicateThreshold: 0.4 },
+				),
+		},
+	];
+
+	for (const fixtureCase of cases) {
+		await t.test(fixtureCase.name, () => {
+			assert.strictEqual(fixtureCase.actual().ok, fixtureCase.expectedOk);
+		});
+	}
+});
+
+function combineGuardResults(...results: GuardResult[]): GuardResult {
+	return {
+		ok: results.every((result) => result.ok),
+		errors: results.flatMap((result) => result.errors),
+	};
+}
 
 test("F002 executable fixture verdict contract is locked without production imports", () => {
 	const topicSchema = readJson(

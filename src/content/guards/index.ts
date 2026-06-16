@@ -4,4 +4,12 @@ export { noOverwriteGuard } from "./noOverwriteGuard";
 export { orphanScoreRegressionGuard } from "./orphanScoreRegressionGuard";
 export { reportNoveltyGuard } from "./reportNoveltyGuard";
 export type { ReportNoveltyContext } from "./reportNoveltyGuard";
-export type { GuardResult, TopicAliasMap, VaultDocument } from "./types";
+export type {
+	ContentGuardContext,
+	ContentGuardName,
+	GuardResult,
+	GuardSeverity,
+	GuardViolation,
+	TopicAliasMap,
+	VaultDocument,
+} from "./types";
