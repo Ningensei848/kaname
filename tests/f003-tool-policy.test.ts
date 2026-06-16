@@ -4,6 +4,7 @@ import * as path from "node:path";
 import { test } from "node:test";
 
 import type {
+	McpToolName,
 	MergePreconditions,
 	PolicyMcpToolCall,
 } from "../src/mcp/tool-policy";
@@ -496,4 +497,42 @@ test("AegisOrchestrator blocks approved merges when any gate is indeterminate", 
 	assert.strictEqual(orchestrator.state, "FAILED");
 	assert.deepStrictEqual(calls, []);
 	assert.match(result.reason, /Agreement failed|Orchestration failed/);
+});
+
+test("F003 path, branch, and tool-name contracts are deterministic", () => {
+	const pathCases = [
+		["topics/gov-agencies/NCO.md", true],
+		["reports/2026-05-27_Report.md", true],
+		["topics/bad/nested/sub/dir/exploit.md", false],
+		["topics/index.md", false],
+		["src/orchestrator.ts", false],
+		["crawler-state.json", false],
+	] as const;
+	for (const [filePath, expected] of pathCases) {
+		assert.strictEqual(isAllowedMcpWriterPath(filePath), expected, filePath);
+	}
+
+	const branchCases = [
+		["osint/content-acd-update-20260527", []],
+		["main", ["Writer branch must be osint/*"]],
+	] as const;
+	for (const [branch, expectedErrors] of branchCases) {
+		const call = readFixture("mcp", "valid", "create-or-update-file.json");
+		call.params.arguments.branch = branch;
+		const errors = validateToolPolicy(call);
+		for (const expectedError of expectedErrors) {
+			assert.ok(errors.includes(expectedError), `${branch}: ${expectedError}`);
+		}
+	}
+
+	const allowedToolNames: readonly McpToolName[] = [
+		"create_issue",
+		"create_or_update_file",
+		"create_pull_request",
+		"merge_pull_request",
+	];
+	assert.deepStrictEqual(
+		Object.keys(toolArgumentShapes).sort(),
+		[...allowedToolNames].sort(),
+	);
 });

@@ -14,6 +14,34 @@ import {
 	type GitHubInstallationTokenFetch,
 } from "../src/auth/github-auth";
 
+function buildLauncherEnvContract(
+	baseEnv: NodeJS.ProcessEnv,
+	installationToken: string,
+): NodeJS.ProcessEnv {
+	const nextEnv: NodeJS.ProcessEnv = {
+		...baseEnv,
+		GITHUB_TOKEN_FOR_MCP: installationToken,
+	};
+	for (const forbiddenKey of [
+		"GITHUB_TOKEN",
+		"GH_TOKEN",
+		"PERSONAL_ACCESS_TOKEN",
+		"PAT",
+	] as const) {
+		delete nextEnv[forbiddenKey];
+	}
+	return nextEnv;
+}
+
+function safeTokenExchangeFailureMetadataContract(
+	error: Error,
+): Record<string, string> {
+	return {
+		name: error.name,
+		message: error.message,
+	};
+}
+
 function decodeJwtPayload(jwt: string): Record<string, unknown> {
 	const [, payload] = jwt.split(".");
 	return JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
@@ -126,4 +154,39 @@ test("F003 GitHub App installation token exchange drives production auth module"
 			);
 		},
 	);
+});
+
+test("F003 MCP launcher env boundary keeps installation token isolated", () => {
+	const installationToken = "ghs_super_secret_installation_token";
+	const env = buildLauncherEnvContract(
+		{
+			PATH: "/usr/bin",
+			GITHUB_TOKEN: "legacy-gh-token",
+			GH_TOKEN: "legacy-gh-cli-token",
+			PERSONAL_ACCESS_TOKEN: "legacy-pat-long-name",
+			PAT: "legacy-pat-short-name",
+		},
+		installationToken,
+	);
+
+	assert.strictEqual(env.GITHUB_TOKEN_FOR_MCP, installationToken);
+	assert.strictEqual(env.GITHUB_TOKEN, undefined);
+	assert.strictEqual(env.GH_TOKEN, undefined);
+	assert.strictEqual(env.PERSONAL_ACCESS_TOKEN, undefined);
+	assert.strictEqual(env.PAT, undefined);
+	assert.strictEqual(env.PATH, "/usr/bin");
+});
+
+test("F003 token exchange failure metadata redacts secret values", () => {
+	const secretJwt = "jwt.header.payload.secret";
+	const secretInstallationToken = "ghs_super_secret_installation_token";
+	const metadata = safeTokenExchangeFailureMetadataContract(
+		new Error("GitHub installation token exchange failed: 403 Forbidden"),
+	);
+	const serialized = JSON.stringify(metadata);
+
+	assert.ok(!serialized.includes(secretJwt));
+	assert.ok(!serialized.includes(secretInstallationToken));
+	assert.ok(!serialized.includes("legacy-pat"));
+	assert.match(serialized, /403 Forbidden/);
 });
