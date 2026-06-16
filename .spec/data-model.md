@@ -72,6 +72,27 @@ state 書き込みは generation precondition を用い、並行 Cloud Run Jobs 
       "format": "date-time",
       "description": "最後にクローラーが正常完了したUTC ISO-8601時刻"
     },
+    "active_directories_count": {
+      "type": ["object", "null"],
+      "description": "Vault 中間ディレクトリ数の任意cache。フォルダ数上限判定の正本ではなく、main branch上のVaultディレクトリ構造から再計算可能な派生値として扱う。",
+      "required": ["count", "vault_revision", "generated_at"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "cache生成時点の topics/ 配下の有効な中間ディレクトリ数"
+        },
+        "vault_revision": {
+          "type": "string",
+          "description": "このcacheを生成したmain branch上のGit commit SHAまたは同等のgeneration識別子"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "cache生成UTC時刻"
+        }
+      }
+    },
     "sources": {
       "type": "object",
       "additionalProperties": {
@@ -100,7 +121,7 @@ state 書き込みは generation precondition を用い、並行 Cloud Run Jobs 
 
 ## 3. 階層分類トピックディレクトリ・パス決定モデル
 
-トピックファイルの中間ディレクトリ決定、およびシステム制限である最大100フォルダ未満の保護を保証するための論理パス決定ワークフロー。
+トピックファイルの中間ディレクトリ決定、およびシステム制限である最大100フォルダ未満の保護を保証するための論理パス決定ワークフロー。フォルダ数上限判定の正本は main branch 上の Vault ディレクトリ構造であり、state 上の `active_directories_count` は cache としてのみ参照できる。Writer が新規カテゴリを提案する前には、main branch 基準で中間ディレクトリ数を再計算するか、cache の `vault_revision` / generation が対象 main branch リビジョンと一致する最新値であることを検証する。cache が欠落・古い・indeterminate のいずれかの場合は、新規フォルダ作成を禁止し、初期カテゴリとして必ず存在する `topics/misc/` に fallback する。
 
 ```mermaid
 flowchart TD
@@ -110,11 +131,14 @@ flowchart TD
     ResolveCategory -- "例: SSoT ID: 'digital_agency'" --> GovAgencies[カテゴリ: 'gov-agencies']
     ResolveCategory -- "例: Tag: 'incident'" --> Incidents[カテゴリ: 'incidents']
 
-    GovAgencies --> CheckLimit{既存中間フォルダ総数チェック}
-    Incidents --> CheckLimit
+    GovAgencies --> VerifyCache{main branch基準で再計算<br/>またはcache generation検証}
+    Incidents --> VerifyCache
+
+    VerifyCache -- "cache欠落/古い/indeterminate" --> ForceFallback[新規フォルダ作成を強制遮断<br/>初期カテゴリ topics/misc/ へfallback]
+    VerifyCache -- "正本または最新cacheを確認" --> CheckLimit{既存中間フォルダ総数チェック}
 
     CheckLimit -- "既存フォルダ総数 < 95件" --> CreateDir[新しいカテゴリ名でフォルダを自律新規作成<br/>例: topics/gov-agencies/]
-    CheckLimit -- "既存フォルダ総数 ≥ 95件<br/>(上限保護発動)" --> ForceFallback[新規フォルダ作成を強制遮断<br/>代替共通フォルダ topics/misc/ または<br/>最も意味親和性の高い既存フォルダへ自動退避・集約]
+    CheckLimit -- "既存フォルダ総数 ≥ 95件<br/>(上限保護発動)" --> ForceFallback
 
     CreateDir --> Path[論理決定パスのマッピング<br/>例: topics/gov-agencies/Digital_Agency.md]
     ForceFallback --> Path
@@ -153,6 +177,15 @@ sources:
 GCP Cloud Storage への状態ファイル（`crawler-state.json`）保存時において、並行ジョブによる Last-Write-Wins 破壊を 100% 防御するための世代制御トークンを内包する構造。
 
 ```typescript
+export interface ActiveDirectoriesCountCache {
+	/** cache生成時点の topics/ 配下の有効な中間ディレクトリ数 */
+	count: number;
+	/** このcacheを生成したmain branch上のGit commit SHAまたは同等のgeneration識別子 */
+	vault_revision: string;
+	/** cache生成UTC時刻 */
+	generated_at: string;
+}
+
 export interface SourceState {
 	last_checked: string;
 	content_hash: string;
@@ -161,6 +194,8 @@ export interface SourceState {
 
 export interface CrawlerState {
 	last_execution: string;
+	/** フォルダ数上限判定の正本ではない任意cache。欠落・古い・判定不能の場合は新規フォルダ作成禁止。 */
+	active_directories_count?: ActiveDirectoriesCountCache | null;
 	sources: Record<string, SourceState>;
 }
 

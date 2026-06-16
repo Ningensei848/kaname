@@ -24,7 +24,11 @@
 ### フォルダ乱立の最大制限ルール（最大100フォルダ）
 
 - 中間ディレクトリの総数が乱立し混乱するのを防ぎ、かつ過度なオーバーヘッドを避けるため、中間フォルダの最大上限数は「100以下」とシステムレベルで厳格に制約を課す。
-- 新しいカテゴリフォルダを自律作成する際、既存のフォルダ数がすでに「95」に達している場合は、新規フォルダ作成を行わず、意味的に最も類似する既存フォルダ（例：`topics/misc/` や `topics/others/` などの共通の受け皿フォルダ）へ格納することを義務付ける。将来的には `.spec/taxonomy/` のカテゴリ registry、または Cloud Storage 上の専用 `vault-metadata-state.json` object（schema: `.spec/schemas/vault-metadata-state.schema.json`）に記録した `active_directories_count`、`registered_categories`、`soft_limit`、`hard_limit` に基づき、LLM が無制限に新カテゴリを作成しない運用へ移行する。
+- フォルダ数上限判定の正本（canonical source）は、**main branch 上の Obsidian Vault の実ディレクトリ構造**とする。Cloud Storage 等の state に保存される `active_directories_count` は高速化のための cache にすぎず、正本として扱ってはならない。
+- 提案エージェント（Aegis-Writer）は、新しいカテゴリフォルダを提案・作成する前に、main branch を基準に Vault 配下の中間ディレクトリ数を再計算するか、`active_directories_count` cache が main branch の対象リビジョンと同一 generation で生成された最新値であることを検証しなければならない。
+- `active_directories_count` cache が欠落している、古い generation を指している、または正本との整合性が indeterminate（判定不能）である場合は、新規フォルダ作成を禁止し、必ず初期カテゴリである `topics/misc/` へ fallback する。
+- `topics/misc/` は共通の受け皿となる初期カテゴリとして、Vault 初期化時点から必ず存在させる。フォルダ数上限判定や cache 不整合時の fallback は、`topics/misc/` が存在することを前提条件とする。
+- 新しいカテゴリフォルダを自律作成する際、正本または検証済み最新 cache に基づく既存フォルダ数がすでに「95」に達している場合は、新規フォルダ作成を行わず、意味的に最も類似する既存フォルダ（原則として共通の受け皿フォルダ `topics/misc/`）へ格納することを義務付ける。将来的には `.spec/taxonomy/` のカテゴリ registry に基づき、LLM が無制限に新カテゴリを作成しない運用へ移行する。
 
 
 ## 3. 動的キーワード抽出および既存ファイルのインクリメンタルアップデートルール
