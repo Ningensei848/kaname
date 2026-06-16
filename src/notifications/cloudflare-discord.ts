@@ -8,6 +8,28 @@ export type ProbeResult = { ok: boolean; status: number };
 export type UrlProbe = (url: string) => Promise<ProbeResult>;
 export type DiscordSendResult = "sent" | "escalate_issue";
 
+export interface NotificationStateSaveResult {
+	saved: boolean;
+	generation: number;
+}
+
+export interface NotificationGenerationConflict {
+	kind: "generation_conflict";
+	expectedGeneration: number;
+	actualGeneration?: number;
+}
+
+export interface DiscordDeliveryDecision {
+	action: "send" | "skip" | "escalate";
+	reason: string;
+}
+
+export interface DiscordWebhookSendResult {
+	status: "sent" | "failed" | "escalate_issue";
+	statusCode?: number;
+	attempts: number;
+}
+
 export interface CloudflareDeploymentEvent {
 	id: string;
 	project_name: string;
@@ -41,7 +63,9 @@ export interface NotificationStateBackend {
 	save(
 		nextState: NotificationState,
 		options: { ifGenerationMatch: number },
-	): Promise<void>;
+	): Promise<
+		void | NotificationStateSaveResult | NotificationGenerationConflict
+	>;
 }
 
 export interface NotificationConfig {

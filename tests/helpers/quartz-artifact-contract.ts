@@ -3,6 +3,14 @@ export interface QuartzHtmlArtifact {
 	html: string;
 }
 
+export interface QuartzGraphDisabledArtifact extends QuartzHtmlArtifact {
+	expectedGraphDisabled: true;
+}
+
+export type QuartzGraphArtifactContract =
+	| QuartzHtmlArtifact
+	| QuartzGraphDisabledArtifact;
+
 const forbiddenGraphPatterns = [
 	/\bGraph View\b/i,
 	/\bglobal-graph\b/i,
@@ -12,7 +20,7 @@ const forbiddenGraphPatterns = [
 ];
 
 export function assertQuartzGraphDisabledArtifact(
-	artifacts: QuartzHtmlArtifact[],
+	artifacts: QuartzGraphArtifactContract[],
 ): string[] {
 	const violations: string[] = [];
 	for (const artifact of artifacts) {

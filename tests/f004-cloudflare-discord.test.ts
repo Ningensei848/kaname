@@ -8,9 +8,13 @@ import {
 } from "../src/notifications/cloudflare-discord";
 import type {
 	CloudflareDeploymentEvent,
+	DiscordDeliveryDecision,
+	DiscordWebhookSendResult,
 	JsonObject,
+	NotificationGenerationConflict,
 	NotificationState,
 	NotificationStateBackend,
+	NotificationStateSaveResult,
 	NotificationStateSnapshot,
 	RetryPolicy,
 	UrlProbe,
@@ -509,6 +513,60 @@ function buildFixtureLiveReportProbe(
 			: { ok: false, status: 404 };
 	};
 }
+
+function decideDiscordDeliveryAfterStateSave(
+	result: void | NotificationStateSaveResult | NotificationGenerationConflict,
+): DiscordDeliveryDecision {
+	if (isNotificationGenerationConflict(result)) {
+		return {
+			action: "skip",
+			reason: "notification state generation conflict",
+		};
+	}
+	return { action: "send", reason: "notification state saved" };
+}
+
+function isNotificationGenerationConflict(
+	result: void | NotificationStateSaveResult | NotificationGenerationConflict,
+): result is NotificationGenerationConflict {
+	return (
+		typeof result === "object" &&
+		result !== null &&
+		"kind" in result &&
+		result.kind === "generation_conflict"
+	);
+}
+
+test("F004 notification type shells model safe delivery boundaries", () => {
+	const saveResult: NotificationStateSaveResult = {
+		saved: true,
+		generation: 42,
+	};
+	const conflict: NotificationGenerationConflict = {
+		kind: "generation_conflict",
+		expectedGeneration: 41,
+		actualGeneration: 42,
+	};
+	const sentResult: DiscordWebhookSendResult = {
+		status: "sent",
+		statusCode: 204,
+		attempts: 1,
+	};
+
+	assert.deepStrictEqual(decideDiscordDeliveryAfterStateSave(saveResult), {
+		action: "send",
+		reason: "notification state saved",
+	});
+	assert.deepStrictEqual(decideDiscordDeliveryAfterStateSave(conflict), {
+		action: "skip",
+		reason: "notification state generation conflict",
+	});
+	assert.deepStrictEqual(sentResult, {
+		status: "sent",
+		statusCode: 204,
+		attempts: 1,
+	});
+});
 
 test("F004 Cloudflare deployment fixtures match the webhook schema", async (t) => {
 	for (const fixtureName of [
