@@ -6,7 +6,7 @@
 
 - 起動周期的スケジュール管理は、アプリケーションのプログラムコード内（cronデーモン等）で行うことを厳禁とする。
 - トリガー制御は、GCP Cloud Scheduler で定義された cron パターンに基づき稼働する。
-- 実行時のみコンテナを立ち上げてジョブを実行する GCP Cloud Run Jobs をトリガー対象とすることで、1回あたりの収集コストを極小化しつつ、時次・日次・週次などのスケジュール頻度変更をシステム実装の変更なし（完全疎結合）に運用する。ランタイム state は Cloud Storage 等の外部 state backend に保存し、コンテナローカルファイルや Git commit に依存しない。
+- 実行時のみコンテナを立ち上げてジョブを実行する GCP Cloud Run Jobs をトリガー対象とすることで、1回あたりの収集コストを極小化しつつ、時次・日次・週次などのスケジュール頻度変更をシステム実装の変更なし（完全疎結合）に運用する。ランタイム state は Cloud Storage 等の外部 state backend に保存し、コンテナローカルファイルや Git commit に依存しない。Crawler state、notification state、vault metadata state は同じ Cloud Storage backend family を共有してよいが、`crawler-state.json`、`notification-state.json`、`vault-metadata-state.json` のように object を分け、generation precondition と障害影響範囲を state 種別ごとに分離する。
 - **インフラタイムアウトによるコスト暴走防止ルール：**
   エージェントのバグや通信のハングアップによる無限ループ・コスト高騰をインフラ層で機械的に遮断するため、GCP Cloud Run Jobs の最大実行時間（タイムアウト）は「30~60分（想定最大処理時間に安全マージンを付加した値）」を上限として厳格に設定・デプロイしなければならない。
 
@@ -84,7 +84,7 @@
 ### 通知チェーンの厳格化
 
 - PR作成時、または main マージ時のプッシュイベントを直接のDiscord通知契機として用いることを禁止する。
-- DiscordへのWebhook送信は、必ず本番環境（Cloudflare Pages）への静的ファイルの展開完了を知らせる `pages-deployment` イベント（またはActions上のデプロイ成功確認ステップ）のフックに限定する。これにより、サイトにアクセスできないリンクの誤通知を100%防止する。
+- DiscordへのWebhook送信は、必ず本番環境（Cloudflare Pages）への静的ファイルの展開完了を知らせる `pages-deployment` イベント（またはActions上のデプロイ成功確認ステップ）のフックに限定する。これにより、サイトにアクセスできないリンクの誤通知を100%防止する。通知済み deployment id / commit hash と通知成功・失敗時刻は、crawler state と同じ Cloud Storage backend family の専用 `notification-state.json` object（schema: `.spec/schemas/notification-state.schema.json`）に保存し、crawler state object へ混在させない。
 
 
 ## 7. 障害起票および通知ルール

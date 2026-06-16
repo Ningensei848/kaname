@@ -6,6 +6,8 @@ Planned schemas:
 
 - `ssot.schema.json`
 - `crawler-state.schema.json`
+- `notification-state.schema.json`
+- `vault-metadata-state.schema.json`
 - `topic-frontmatter.schema.json`
 - `github-mcp-tool-call.schema.json`
 - `cloudflare-pages-deployment.schema.json`

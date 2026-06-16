@@ -14,8 +14,10 @@ export type OrchestratorEvent =
 	| "diff_empty"
 	| "diff_found"
 	| "writer_success"
+	| "detailed_reject"
 	| "reviewer_approved"
 	| "reviewer_rejected"
+	| "reviewer_rejected_retry"
 	| "ci_failed"
 	| "takumi_guard_failed"
 	| "content_guard_failed"
@@ -25,6 +27,21 @@ export type OrchestratorEvent =
 	| "loop_exhausted"
 	| "timeout"
 	| "fatal_error";
+export type DetailedRejectTargetGuard =
+	| "reviewer"
+	| "ci"
+	| "takumi_guard"
+	| "content_guard"
+	| "protected_branch"
+	| "deterministic_guard";
+
+export interface DetailedRejectPayload {
+	readonly rejectReason: string;
+	readonly targetGuard: DetailedRejectTargetGuard;
+	readonly revisionInstruction: string;
+	readonly loopCount: number;
+}
+
 export interface ReviewAttempt {
 	readonly attempt: number;
 	readonly reviewerApproved: boolean;
@@ -47,9 +64,11 @@ export type TransitionAction =
 	| "start_writer"
 	| "start_reviewer"
 	| "wait_ci"
+	| "DETAILED_REJECT"
 	| "comment_reject"
 	| "squash_merge"
 	| "writer_revise"
+	| "start_writer_append"
 	| "create_issue"
 	| "escalate_issue"
 	| "cleanup_mcp";
@@ -75,6 +94,7 @@ export interface OrchestratorStateMachineContract {
 
 const proposedRejectionEvents: ReadonlySet<OrchestratorEvent> = new Set([
 	"reviewer_rejected",
+	"detailed_reject",
 	"ci_failed",
 	"takumi_guard_failed",
 	"content_guard_failed",
@@ -108,7 +128,11 @@ export function transition(
 	}
 
 	if (state === "PROPOSED" && proposedRejectionEvents.has(event)) {
-		return { next: "REJECTED", actions: ["comment_reject"], mergeable: false };
+		return {
+			next: "REJECTED",
+			actions: ["DETAILED_REJECT", "comment_reject"],
+			mergeable: false,
+		};
 	}
 
 	if (
@@ -123,8 +147,14 @@ export function transition(
 		};
 	}
 
-	if (state === "REJECTED" && event === "loop_remaining") {
-		return { next: "PROPOSED", actions: ["writer_revise"] };
+	if (
+		state === "REJECTED" &&
+		(event === "loop_remaining" || event === "reviewer_rejected_retry")
+	) {
+		return {
+			next: "PROPOSED",
+			actions: ["writer_revise", "start_writer_append"],
+		};
 	}
 
 	if (state === "REJECTED" && event === "loop_exhausted") {
