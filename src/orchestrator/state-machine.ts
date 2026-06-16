@@ -14,6 +14,7 @@ export type OrchestratorEvent =
 	| "diff_empty"
 	| "diff_found"
 	| "writer_success"
+	| "detailed_reject"
 	| "reviewer_approved"
 	| "reviewer_rejected"
 	| "reviewer_rejected_retry"
@@ -26,6 +27,21 @@ export type OrchestratorEvent =
 	| "loop_exhausted"
 	| "timeout"
 	| "fatal_error";
+export type DetailedRejectTargetGuard =
+	| "reviewer"
+	| "ci"
+	| "takumi_guard"
+	| "content_guard"
+	| "protected_branch"
+	| "deterministic_guard";
+
+export interface DetailedRejectPayload {
+	readonly rejectReason: string;
+	readonly targetGuard: DetailedRejectTargetGuard;
+	readonly revisionInstruction: string;
+	readonly loopCount: number;
+}
+
 export interface ReviewAttempt {
 	readonly attempt: number;
 	readonly reviewerApproved: boolean;
@@ -78,6 +94,7 @@ export interface OrchestratorStateMachineContract {
 
 const proposedRejectionEvents: ReadonlySet<OrchestratorEvent> = new Set([
 	"reviewer_rejected",
+	"detailed_reject",
 	"ci_failed",
 	"takumi_guard_failed",
 	"content_guard_failed",

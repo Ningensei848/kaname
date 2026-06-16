@@ -16,6 +16,7 @@ The orchestrator MUST be defined by an explicit state transition table, not only
 | INIT | diff_found | - | start MCP | MCP_READY |
 | MCP_READY | writer_success | PR exists | wait CI | PROPOSED |
 | PROPOSED | deterministic_guard_failed | - | comment reject | REJECTED |
+| PROPOSED | detailed_reject | reject reason, target guard, revision instruction, and loop count are present | comment detailed reject | REJECTED |
 | PROPOSED | reviewer_approved | all gates passed | squash merge | MERGED |
 | REJECTED | loop < 3 | - | writer revise | PROPOSED |
 | REJECTED | loop >= 3 | - | create issue | ESCALATED |
