@@ -13,19 +13,41 @@ export interface MergePreconditions {
 	internalLinks: GateStatus;
 }
 
-export interface PolicyMcpToolCall {
+export type McpToolName =
+	| "create_issue"
+	| "create_or_update_file"
+	| "create_pull_request"
+	| "merge_pull_request";
+
+export interface McpToolPolicyViolation {
+	code: string;
+	message: string;
+	path?: string;
+}
+
+export interface ReviewerGateEvidence {
+	name: keyof MergePreconditions;
+	status: GateStatus;
+	details?: string;
+}
+
+export interface WriterPathPolicy {
+	allowedPatterns: readonly RegExp[];
+	rejectGeneratedIndexesUntilExplicitlyListed: boolean;
+	rejectNestedTopicPaths: boolean;
+}
+
+export interface McpToolCall {
 	jsonrpc: "2.0";
 	method: "tools/call";
 	params: {
-		name:
-			| "create_issue"
-			| "create_or_update_file"
-			| "create_pull_request"
-			| "merge_pull_request";
+		name: McpToolName;
 		arguments: JsonObject;
 	};
 	id: number;
 }
+
+export type PolicyMcpToolCall = McpToolCall;
 
 export const allGreenMergePreconditions: MergePreconditions = {
 	ci: "passed",
@@ -45,7 +67,7 @@ const mergePreconditionKeys: readonly (keyof MergePreconditions)[] = [
 	"internalLinks",
 ];
 
-type ToolName = PolicyMcpToolCall["params"]["name"];
+type ToolName = McpToolName;
 
 type ArgumentTypeName = "integer" | "string";
 

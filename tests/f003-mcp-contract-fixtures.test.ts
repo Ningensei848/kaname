@@ -265,12 +265,20 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 			const invalidCases = new Map([
 				["writer-main-branch.json", "Writer branch must be osint/*"],
 				[
+					"writer-outside-path.json",
+					"Writer path is not allowed: src/orchestrator.ts",
+				],
+				[
 					"writer-runtime-state-git-write.json",
 					"crawler-state.json must not be written through Git MCP",
 				],
 				[
 					"writer-nested-topic-path.json",
 					"Writer path is not allowed: topics/bad/nested/sub/dir/exploit.md",
+				],
+				[
+					"writer-generated-index-path.json",
+					"Writer path is not allowed: topics/index.md",
 				],
 				[
 					"merge-bad-commit-title.json",

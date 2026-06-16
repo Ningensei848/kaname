@@ -1,3 +1,16 @@
+export interface McpWriterPathPolicyRule {
+	description: string;
+	pattern: RegExp;
+}
+
+export interface McpWriterPathPolicy {
+	allowedRules: readonly McpWriterPathPolicyRule[];
+	rejectPathTraversal: boolean;
+	rejectControlCharacters: boolean;
+	rejectNestedTopicPaths: boolean;
+	rejectGeneratedIndexesUntilExplicitlyListed: boolean;
+}
+
 /**
  * Shared fail-closed policy for GitHub MCP Writer file destinations.
  *
