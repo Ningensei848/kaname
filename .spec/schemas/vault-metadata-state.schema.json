@@ -1,0 +1,36 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://kaname.local/schemas/vault-metadata-state.schema.json",
+	"title": "kaname external vault metadata state",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"active_directories_count",
+		"registered_categories",
+		"soft_limit",
+		"hard_limit"
+	],
+	"properties": {
+		"active_directories_count": {
+			"type": "integer",
+			"minimum": 0
+		},
+		"registered_categories": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z0-9][a-z0-9-]*$"
+			},
+			"uniqueItems": true
+		},
+		"soft_limit": {
+			"type": "integer",
+			"minimum": 1,
+			"maximum": 100
+		},
+		"hard_limit": {
+			"type": "integer",
+			"const": 100
+		}
+	}
+}

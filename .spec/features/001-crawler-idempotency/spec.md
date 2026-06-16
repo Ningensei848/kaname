@@ -23,12 +23,14 @@ SSoT から公式情報源を収集し、正規化済み本文ハッシュと条
 
 ### F001-R1: State storage
 
-`crawler-state.json` は Git repository に commit しない。Cloud Run Jobs は Cloud Storage の object として state を読み書きする。
+`crawler-state.json` は Git repository に commit しない。Cloud Run Jobs は Cloud Storage の object として state を読み書きする。Crawler state、notification state、vault metadata state は同じ Cloud Storage backend family を用いるが、generation precondition と責務境界を独立させるため、それぞれ別 object として保存する。
 
 Recommended object layout:
 
 ```text
 gs://<KANAME_STATE_BUCKET>/<environment>/crawler-state.json
+gs://<KANAME_STATE_BUCKET>/<environment>/notification-state.json
+gs://<KANAME_STATE_BUCKET>/<environment>/vault-metadata-state.json
 ```
 
 ### F001-R2: Concurrency control

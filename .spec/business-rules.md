@@ -6,7 +6,7 @@
 
 - 起動周期的スケジュール管理は、アプリケーションのプログラムコード内（cronデーモン等）で行うことを厳禁とする。
 - トリガー制御は、GCP Cloud Scheduler で定義された cron パターンに基づき稼働する。
-- 実行時のみコンテナを立ち上げてジョブを実行する GCP Cloud Run Jobs をトリガー対象とすることで、1回あたりの収集コストを極小化しつつ、時次・日次・週次などのスケジュール頻度変更をシステム実装の変更なし（完全疎結合）に運用する。ランタイム state は Cloud Storage 等の外部 state backend に保存し、コンテナローカルファイルや Git commit に依存しない。
+- 実行時のみコンテナを立ち上げてジョブを実行する GCP Cloud Run Jobs をトリガー対象とすることで、1回あたりの収集コストを極小化しつつ、時次・日次・週次などのスケジュール頻度変更をシステム実装の変更なし（完全疎結合）に運用する。ランタイム state は Cloud Storage 等の外部 state backend に保存し、コンテナローカルファイルや Git commit に依存しない。Crawler state、notification state、vault metadata state は同じ Cloud Storage backend family を共有してよいが、`crawler-state.json`、`notification-state.json`、`vault-metadata-state.json` のように object を分け、generation precondition と障害影響範囲を state 種別ごとに分離する。
 - **インフラタイムアウトによるコスト暴走防止ルール：**
   エージェントのバグや通信のハングアップによる無限ループ・コスト高騰をインフラ層で機械的に遮断するため、GCP Cloud Run Jobs の最大実行時間（タイムアウト）は「30~60分（想定最大処理時間に安全マージンを付加した値）」を上限として厳格に設定・デプロイしなければならない。
 
@@ -24,7 +24,7 @@
 ### フォルダ乱立の最大制限ルール（最大100フォルダ）
 
 - 中間ディレクトリの総数が乱立し混乱するのを防ぎ、かつ過度なオーバーヘッドを避けるため、中間フォルダの最大上限数は「100以下」とシステムレベルで厳格に制約を課す。
-- 新しいカテゴリフォルダを自律作成する際、既存のフォルダ数がすでに「95」に達している場合は、新規フォルダ作成を行わず、意味的に最も類似する既存フォルダ（例：`topics/misc/` や `topics/others/` などの共通の受け皿フォルダ）へ格納することを義務付ける。将来的には `.spec/taxonomy/` のカテゴリ registry に基づき、LLM が無制限に新カテゴリを作成しない運用へ移行する。
+- 新しいカテゴリフォルダを自律作成する際、既存のフォルダ数がすでに「95」に達している場合は、新規フォルダ作成を行わず、意味的に最も類似する既存フォルダ（例：`topics/misc/` や `topics/others/` などの共通の受け皿フォルダ）へ格納することを義務付ける。将来的には `.spec/taxonomy/` のカテゴリ registry、または Cloud Storage 上の専用 `vault-metadata-state.json` object（schema: `.spec/schemas/vault-metadata-state.schema.json`）に記録した `active_directories_count`、`registered_categories`、`soft_limit`、`hard_limit` に基づき、LLM が無制限に新カテゴリを作成しない運用へ移行する。
 
 
 ## 3. 動的キーワード抽出および既存ファイルのインクリメンタルアップデートルール
@@ -80,7 +80,7 @@
 ### 通知チェーンの厳格化
 
 - PR作成時、または main マージ時のプッシュイベントを直接のDiscord通知契機として用いることを禁止する。
-- DiscordへのWebhook送信は、必ず本番環境（Cloudflare Pages）への静的ファイルの展開完了を知らせる `pages-deployment` イベント（またはActions上のデプロイ成功確認ステップ）のフックに限定する。これにより、サイトにアクセスできないリンクの誤通知を100%防止する。
+- DiscordへのWebhook送信は、必ず本番環境（Cloudflare Pages）への静的ファイルの展開完了を知らせる `pages-deployment` イベント（またはActions上のデプロイ成功確認ステップ）のフックに限定する。これにより、サイトにアクセスできないリンクの誤通知を100%防止する。通知済み deployment id / commit hash と通知成功・失敗時刻は、crawler state と同じ Cloud Storage backend family の専用 `notification-state.json` object（schema: `.spec/schemas/notification-state.schema.json`）に保存し、crawler state object へ混在させない。
 
 
 ## 7. 障害起票および通知ルール

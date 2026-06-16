@@ -84,28 +84,27 @@ test("F003 reviewer rejection retries writer up to three attempts", () => {
 		});
 		assert.equal(retry.next, "PROPOSED");
 		assert.equal(retry.actions.includes("writer_revise"), true);
+		assert.equal(retry.actions.includes("start_writer_append"), true);
 	}
 });
 
-test("F003 detailed reject records payload contract and rejects proposed state", () => {
-	const payload = {
-		rejectReason: "Content guard found a destructive rewrite.",
-		targetGuard: "content_guard",
-		revisionInstruction:
-			"Restore removed facts and keep the update incremental.",
-		loopCount: 1,
-	} satisfies DetailedRejectPayload;
-
-	const result = transition("PROPOSED", "detailed_reject", {
+test("F003 reviewer rejection uses detailed reject before append retry", () => {
+	const rejected = transition("PROPOSED", "reviewer_rejected", {
 		...baseContext,
-		loopCount: payload.loopCount,
 		allGatesPassed: false,
-		contentGuardPassed: false,
 	});
 
-	assert.equal(result.next, "REJECTED");
-	assert.equal(result.actions.includes("comment_reject"), true);
-	assert.equal(result.mergeable, false);
+	assert.equal(rejected.next, "REJECTED");
+	assert.equal(rejected.actions.includes("DETAILED_REJECT"), true);
+
+	const retry = transition("REJECTED", "reviewer_rejected_retry", {
+		...baseContext,
+		loopCount: 1,
+		allGatesPassed: false,
+	});
+
+	assert.equal(retry.next, "PROPOSED");
+	assert.equal(retry.actions.includes("start_writer_append"), true);
 });
 
 test("F003 rejection beyond three attempts escalates", () => {
