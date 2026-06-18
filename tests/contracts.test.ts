@@ -61,6 +61,12 @@ interface NotificationDecision {
 	reportUrlChecked: boolean;
 }
 
+interface ExternalApiFailureDecision extends NotificationDecision {
+	stateTransition: "ready" | "pending" | "error";
+	stateFrozen: boolean;
+	retryAttempted: boolean;
+}
+
 type ShouldNotifyDiscord = (
 	event: CloudflareDeploymentEvent,
 	state: NotificationState,
@@ -105,12 +111,15 @@ async function evaluateProbeFailureNotificationContract(
 	state: NotificationState,
 	config: NotificationConfig,
 	probeReportUrl: UrlProbe,
-): Promise<NotificationDecision> {
+): Promise<ExternalApiFailureDecision> {
 	if (event.deployment.status !== "success") {
 		return {
 			shouldNotify: false,
 			reason: `deployment status is ${event.deployment.status}; pending/error responses do not notify`,
 			reportUrlChecked: false,
+			stateTransition: "pending",
+			stateFrozen: true,
+			retryAttempted: false,
 		};
 	}
 
@@ -125,6 +134,9 @@ async function evaluateProbeFailureNotificationContract(
 				shouldNotify: false,
 				reason: `report URL probe pending/error: status ${probeResult.status}`,
 				reportUrlChecked: true,
+				stateTransition: "pending",
+				stateFrozen: true,
+				retryAttempted: false,
 			};
 		}
 	} catch (error) {
@@ -132,6 +144,9 @@ async function evaluateProbeFailureNotificationContract(
 			shouldNotify: false,
 			reason: `report URL probe error: ${(error as Error).message}`,
 			reportUrlChecked: true,
+			stateTransition: "error",
+			stateFrozen: true,
+			retryAttempted: false,
 		};
 	}
 
@@ -141,6 +156,9 @@ async function evaluateProbeFailureNotificationContract(
 			!state.notifiedCommitHashes.includes(event.deployment.meta.commit_hash),
 		reason: "report URL is reachable",
 		reportUrlChecked: true,
+		stateTransition: "ready",
+		stateFrozen: false,
+		retryAttempted: false,
 	};
 }
 
@@ -399,6 +417,9 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
+			assert.strictEqual(decision.stateTransition, "pending");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /pending|error/);
 		},
 	);
@@ -428,6 +449,9 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
+			assert.strictEqual(decision.stateTransition, "error");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /error/);
 		},
 	);
