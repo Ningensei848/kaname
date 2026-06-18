@@ -76,6 +76,17 @@ function readJsonSchema(schemaPath: string): JsonSchema {
 	return JSON.parse(fs.readFileSync(schemaPath, "utf8")) as JsonSchema;
 }
 
+function assertValidExternalPayload(schema: JsonSchema, value: unknown): void {
+	const errors = validateJsonSchema(schema, value);
+	if (errors.length === 0) return;
+
+	throw new Error(
+		`external payload schema validation failed: ${errors
+			.map(({ path, message }) => `${path} ${message}`)
+			.join("; ")}`,
+	);
+}
+
 function assertContractSchemaValid(schema: JsonSchema, payload: unknown): void {
 	const errors = validateJsonSchema(schema, payload);
 	if (errors.length === 0) return;
@@ -206,6 +217,39 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 			assert.throws(
 				() => assertContractSchemaValid(mcpToolCallSchema, missingJsonRpc),
 				/Contract schema validation failed immediately: .*missing required property jsonrpc/,
+			);
+		},
+	);
+
+	await t.test(
+		"external MCP payload helper fails closed and accepts valid payloads",
+		() => {
+			const mcpToolCallSchema = readJsonSchema(
+				".spec/schemas/mcp-tool-call.schema.json",
+			);
+			const validPayload = {
+				jsonrpc: "2.0",
+				method: "tools/call",
+				params: {
+					name: "create_issue",
+					arguments: { owner: "Ningensei848", repo: "kaname-vault" },
+				},
+				id: 302,
+			};
+			const invalidPayload = {
+				...validPayload,
+				params: {
+					...validPayload.params,
+					name: "delete_repository",
+				},
+			};
+
+			assert.throws(
+				() => assertValidExternalPayload(mcpToolCallSchema, invalidPayload),
+				/schema validation failed/,
+			);
+			assert.doesNotThrow(() =>
+				assertValidExternalPayload(mcpToolCallSchema, validPayload),
 			);
 		},
 	);
