@@ -16,9 +16,10 @@ import {
 	type MergePreconditions,
 } from "../src/mcp/tool-policy";
 import {
+	assertValidJsonSchema,
 	validateJsonSchema,
 	type JsonSchema,
-} from "./helpers/schema-validator";
+} from "../src/validation/schema-validator";
 
 type ProbeResult = { ok: boolean; status: number };
 type UrlProbe = (url: string) => Promise<ProbeResult>;
@@ -83,13 +84,10 @@ function readJsonSchema(schemaPath: string): JsonSchema {
 }
 
 function assertValidExternalPayload(schema: JsonSchema, value: unknown): void {
-	const errors = validateJsonSchema(schema, value);
-	if (errors.length === 0) return;
-
-	throw new Error(
-		`external payload schema validation failed: ${errors
-			.map(({ path, message }) => `${path} ${message}`)
-			.join("; ")}`,
+	assertValidJsonSchema(
+		schema,
+		value,
+		"external payload schema validation failed",
 	);
 }
 
