@@ -4,6 +4,21 @@ This matrix maps high-level specifications to feature specs, implementation targ
 
 Coverage depth values are: `missing` (no executable test), `prototype` (test-local helper/model only), `fixture-contract` (external fixture plus shared schema/policy validation), `type-boundary` (`src/` exposes only type/contract shells and tests import them with `import type`), `src-unit` (legacy production function imported directly; quarantined for the current phase), `src-integration` (multiple production modules combined; quarantined for the current phase), and `ci-gate` (operated as an intentional CI failure gate). A test being run by `pnpm test` in CI does not by itself raise a requirement to `ci-gate`; the depth should describe the deepest meaningful production/contract coverage currently present.
 
+## Phase 2 completion evidence
+
+Phase 2 is complete only when the default contract suite proves both successful
+paths and fail-closed negative paths while production runtime modules remain
+type/contract boundaries. This table records the direct evidence for the final
+Phase 2 exit criteria.
+
+| Exit criterion | Required fail-closed evidence | Current evidence | Status | Next handoff |
+| --- | --- | --- | --- | --- |
+| `tests/contracts.test.ts` catches negative MCP write-policy violations | Protected branch/direct-write attempts are rejected before any Git write side effect. | `tests/contracts.test.ts` direct `main` writer rejection plus `tests/f003-mcp-contract-fixtures.test.ts` invalid branch/path fixtures. | covered | Production Code must call the same `src/mcp/tool-policy.ts` validation before GitHub MCP writes. |
+| `tests/contracts.test.ts` catches invalid external JSON payloads | Schema-invalid MCP and Cloudflare payloads throw immediately instead of continuing with partially trusted data. | `tests/contracts.test.ts` schema-validation helpers backed by `.spec/schemas/mcp-tool-call.schema.json`, `.spec/schemas/cloudflare-pages-deployment.schema.json`, and `tests/helpers/schema-validator.ts`. | covered | Production Code must promote the same schema-validation logic from the test helper into runtime external-input guards. |
+| `tests/contracts.test.ts` catches external API timeout/malformed-response failures | Cloudflare/GitHub/Discord probe failures produce a frozen pending/error state and do not start retry loops. | `tests/contracts.test.ts` no-retry pending/error probe contracts and `tests/f004-cloudflare-discord.test.ts` bounded Discord retry escalation. | covered | Production Code must keep orchestration state transitions separate from notification/API side effects so only adapters are mocked. |
+| `npm test` executes the Phase 2 contract evidence by default | Default test command runs the negative contracts without live GitHub/Cloudflare/Discord credentials. | `package.json` `test` script runs `node --import tsx --test tests/**/*.test.ts`; integration/live checks remain opt-in. | covered | CI should keep live service smoke checks behind explicit `KANAME_RUN_*` flags until credentials are intentionally provisioned. |
+| Traceability links spec changes to executable evidence | Each Phase 2 guardrail is mapped to spec/schema sources, target code, and tests. | This table plus the requirement matrix below map MCP policy, external schema validation, and external API fail-closed behavior. | covered | Future production PRs should update this file when runtime modules replace test-local models. |
+
 | Requirement | Feature | Existing / target code | Existing / target tests | Coverage depth | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | SSoT YAML validation | F001 | `.spec/schemas/ssot.schema.json`; `src/crawler/parser.ts` type boundary | `tests/f001-idempotency-contract.test.ts`; legacy parser runtime tests quarantined under `tests/legacy-production/` | `fixture-contract` | partial | Shared test schema validator now owns executable schema checks; `src/` is type-only for Phase 2. |
