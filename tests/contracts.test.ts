@@ -16,10 +16,7 @@ import {
 	timeoutRejectionToExternalServiceDecision,
 	type ExternalServiceDecision,
 } from "../src/external/fail-closed-adapter";
-import {
-	validateToolPolicy,
-	type MergePreconditions,
-} from "../src/mcp/tool-policy";
+import type { MergePreconditions } from "../src/mcp/tool-policy";
 import { assertMcpToolCallAllowed } from "../src/mcp/validated-tool-call";
 import {
 	assertValidJsonSchema,
@@ -160,6 +157,54 @@ async function evaluateProbeFailureNotificationContract(
 		status: "ready",
 		stateFrozen: false,
 		retryAttempted: false,
+	};
+}
+
+
+interface GitHubFailureSideEffects {
+	gitWrites: string[];
+	mergeAttempts: number;
+	notifications: string[];
+}
+
+interface GitHubFailureContractDecision extends ExternalServiceDecision {
+	gitWriteAttempted: boolean;
+	mergeAttempted: boolean;
+	notifyAttempted: boolean;
+}
+
+type GitHubApiProbe = () => Promise<unknown>;
+
+async function evaluateGitHubExternalApiFailureContract(
+	probeGitHubApi: GitHubApiProbe,
+	sideEffects: GitHubFailureSideEffects,
+): Promise<GitHubFailureContractDecision> {
+	let decision: ExternalServiceDecision;
+
+	try {
+		decision = malformedResponseToExternalServiceDecision(await probeGitHubApi());
+	} catch (error) {
+		decision = timeoutRejectionToExternalServiceDecision(error);
+	}
+
+	if (decision.status !== "ready") {
+		return {
+			...decision,
+			gitWriteAttempted: sideEffects.gitWrites.length > 0,
+			mergeAttempted: sideEffects.mergeAttempts > 0,
+			notifyAttempted: sideEffects.notifications.length > 0,
+		};
+	}
+
+	sideEffects.gitWrites.push("topics/gov-agencies/NCO.md");
+	sideEffects.mergeAttempts += 1;
+	sideEffects.notifications.push("discord:ready");
+
+	return {
+		...decision,
+		gitWriteAttempted: true,
+		mergeAttempted: true,
+		notifyAttempted: true,
 	};
 }
 
@@ -373,6 +418,77 @@ test("Protected merge and Takumi Guard gates fail closed", async (t) => {
 					);
 				}
 			}
+		},
+	);
+});
+
+
+test("GitHub external API failure contract fails closed before side effects", async (t) => {
+	await t.test(
+		"timeout freezes state without retrying, Git writes, merge, or notify",
+		async () => {
+			let callCount = 0;
+			const sideEffects: GitHubFailureSideEffects = {
+				gitWrites: [],
+				mergeAttempts: 0,
+				notifications: [],
+			};
+
+			const decision = await evaluateGitHubExternalApiFailureContract(
+				async () => {
+					callCount += 1;
+					throw new Error("GitHub API request timeout");
+				},
+				sideEffects,
+			);
+
+			assert.strictEqual(callCount, 1);
+			assert.strictEqual(decision.status, "pending");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
+			assert.strictEqual(decision.gitWriteAttempted, false);
+			assert.strictEqual(decision.mergeAttempted, false);
+			assert.strictEqual(decision.notifyAttempted, false);
+			assert.deepStrictEqual(sideEffects, {
+				gitWrites: [],
+				mergeAttempts: 0,
+				notifications: [],
+			});
+			assert.match(decision.reason, /timeout/i);
+		},
+	);
+
+	await t.test(
+		"malformed response freezes state without retrying, Git writes, merge, or notify",
+		async () => {
+			let callCount = 0;
+			const sideEffects: GitHubFailureSideEffects = {
+				gitWrites: [],
+				mergeAttempts: 0,
+				notifications: [],
+			};
+
+			const decision = await evaluateGitHubExternalApiFailureContract(
+				async () => {
+					callCount += 1;
+					return { ok: "yes", status: "200" };
+				},
+				sideEffects,
+			);
+
+			assert.strictEqual(callCount, 1);
+			assert.strictEqual(decision.status, "error");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
+			assert.strictEqual(decision.gitWriteAttempted, false);
+			assert.strictEqual(decision.mergeAttempted, false);
+			assert.strictEqual(decision.notifyAttempted, false);
+			assert.deepStrictEqual(sideEffects, {
+				gitWrites: [],
+				mergeAttempts: 0,
+				notifications: [],
+			});
+			assert.match(decision.reason, /malformed response/);
 		},
 	);
 });
