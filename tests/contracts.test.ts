@@ -11,7 +11,14 @@ import { test } from "node:test";
 import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import type { MergePreconditions } from "../src/mcp/tool-policy";
+import {
+	validateToolPolicy,
+	type MergePreconditions,
+} from "../src/mcp/tool-policy";
+import {
+	validateJsonSchema,
+	type JsonSchema,
+} from "./helpers/schema-validator";
 
 type ProbeResult = { ok: boolean; status: number };
 type UrlProbe = (url: string) => Promise<ProbeResult>;
@@ -61,6 +68,71 @@ type ShouldNotifyDiscord = (
 	probeReportUrl: UrlProbe,
 ) => Promise<NotificationDecision>;
 
+interface ContractSchemaValidationError extends Error {
+	validationErrors: ReturnType<typeof validateJsonSchema>;
+}
+
+function readJsonSchema(schemaPath: string): JsonSchema {
+	return JSON.parse(fs.readFileSync(schemaPath, "utf8")) as JsonSchema;
+}
+
+function assertContractSchemaValid(schema: JsonSchema, payload: unknown): void {
+	const errors = validateJsonSchema(schema, payload);
+	if (errors.length === 0) return;
+
+	const error = new Error(
+		`Contract schema validation failed immediately: ${errors
+			.map(({ path, message }) => `${path} ${message}`)
+			.join("; ")}`,
+	) as ContractSchemaValidationError;
+	error.validationErrors = errors;
+	throw error;
+}
+
+async function evaluateProbeFailureNotificationContract(
+	event: CloudflareDeploymentEvent,
+	state: NotificationState,
+	config: NotificationConfig,
+	probeReportUrl: UrlProbe,
+): Promise<NotificationDecision> {
+	if (event.deployment.status !== "success") {
+		return {
+			shouldNotify: false,
+			reason: `deployment status is ${event.deployment.status}; pending/error responses do not notify`,
+			reportUrlChecked: false,
+		};
+	}
+
+	try {
+		const probeResult = await probeReportUrl(config.latestReportUrl);
+		if (
+			!probeResult.ok ||
+			probeResult.status < 200 ||
+			probeResult.status >= 300
+		) {
+			return {
+				shouldNotify: false,
+				reason: `report URL probe pending/error: status ${probeResult.status}`,
+				reportUrlChecked: true,
+			};
+		}
+	} catch (error) {
+		return {
+			shouldNotify: false,
+			reason: `report URL probe error: ${(error as Error).message}`,
+			reportUrlChecked: true,
+		};
+	}
+
+	return {
+		shouldNotify:
+			!state.notifiedDeploymentIds.includes(event.deployment.id) &&
+			!state.notifiedCommitHashes.includes(event.deployment.meta.commit_hash),
+		reason: "report URL is reachable",
+		reportUrlChecked: true,
+	};
+}
+
 const allGreenGates: MergePreconditions = {
 	ci: "passed",
 	takumiGuard: "passed",
@@ -90,6 +162,54 @@ const deploymentSuccess: CloudflareDeploymentEvent = {
 };
 
 test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) => {
+	await t.test(
+		"create_or_update_file rejects direct writer writes to main",
+		() => {
+			const call = {
+				jsonrpc: "2.0",
+				method: "tools/call",
+				params: {
+					name: "create_or_update_file",
+					arguments: {
+						owner: "Ningensei848",
+						repo: "kaname-vault",
+						path: "topics/gov-agencies/NCO.md",
+						content: "# unsafe direct write",
+						branch: "main",
+						message: "[Aegis-Writer] Unsafe direct main write",
+					},
+				},
+				id: 201,
+			} as const;
+
+			assert.deepStrictEqual(validateToolPolicy(call), [
+				"Writer branch must be osint/*",
+			]);
+		},
+	);
+
+	await t.test(
+		"invalid MCP JSON-RPC payload fails contract validation immediately",
+		() => {
+			const mcpToolCallSchema = readJsonSchema(
+				".spec/schemas/mcp-tool-call.schema.json",
+			);
+			const missingJsonRpc = {
+				method: "tools/call",
+				params: {
+					name: "create_issue",
+					arguments: { owner: "Ningensei848", repo: "kaname-vault" },
+				},
+				id: 301,
+			};
+
+			assert.throws(
+				() => assertContractSchemaValid(mcpToolCallSchema, missingJsonRpc),
+				/Contract schema validation failed immediately: .*missing required property jsonrpc/,
+			);
+		},
+	);
+
 	await t.test("defers MCP fixture and policy ownership to F003 tests", () => {
 		const contract = fs.readFileSync(
 			".spec/contracts/mcp-contracts.md",
@@ -182,6 +302,89 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 				reason: "contract shape only; decision logic is covered in F004",
 				reportUrlChecked: true,
 			});
+		},
+	);
+
+	await t.test(
+		"invalid Cloudflare deployment payload fails contract validation immediately",
+		() => {
+			const deploymentSchema = readJsonSchema(
+				".spec/schemas/cloudflare-pages-deployment.schema.json",
+			);
+			const invalidDeployment = {
+				...deploymentSuccess,
+				deployment: {
+					...deploymentSuccess.deployment,
+					status: "unknown",
+					meta: {
+						branch: deploymentSuccess.deployment.meta.branch,
+						commit_message: deploymentSuccess.deployment.meta.commit_message,
+					},
+				},
+			};
+
+			assert.throws(
+				() => assertContractSchemaValid(deploymentSchema, invalidDeployment),
+				/Contract schema validation failed immediately: .*(expected enum value|missing required property commit_hash)/,
+			);
+		},
+	);
+
+	await t.test(
+		"broken report URL probe response is a single pending/error decision without retry increment",
+		async () => {
+			let callCount = 0;
+			let retryCounter = 0;
+			const brokenProbe: UrlProbe = async () => {
+				callCount += 1;
+				return { ok: false, status: 0 };
+			};
+
+			const decision = await evaluateProbeFailureNotificationContract(
+				deploymentSuccess,
+				{ notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+				{
+					publicBaseUrl: "https://osint-kaname.pages.dev",
+					latestReportUrl:
+						"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				},
+				brokenProbe,
+			);
+			if (decision.shouldNotify) retryCounter += 1;
+
+			assert.strictEqual(callCount, 1);
+			assert.strictEqual(retryCounter, 0);
+			assert.strictEqual(decision.shouldNotify, false);
+			assert.match(decision.reason, /pending|error/);
+		},
+	);
+
+	await t.test(
+		"rejected report URL probe is a single error decision without retry increment",
+		async () => {
+			let callCount = 0;
+			let retryCounter = 0;
+			const rejectingProbe: UrlProbe = async () => {
+				callCount += 1;
+				throw new Error("network timeout");
+			};
+
+			const decision = await evaluateProbeFailureNotificationContract(
+				deploymentSuccess,
+				{ notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+				{
+					publicBaseUrl: "https://osint-kaname.pages.dev",
+					latestReportUrl:
+						"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				},
+				rejectingProbe,
+			);
+			if (decision.shouldNotify) retryCounter += 1;
+
+			assert.strictEqual(callCount, 1);
+			assert.strictEqual(retryCounter, 0);
+			assert.strictEqual(decision.shouldNotify, false);
+			assert.match(decision.reason, /error/);
 		},
 	);
 });
