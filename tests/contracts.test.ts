@@ -12,6 +12,11 @@ import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
 import {
+	malformedResponseToExternalServiceDecision,
+	timeoutRejectionToExternalServiceDecision,
+	type ExternalServiceDecision,
+} from "../src/external/fail-closed-adapter";
+import {
 	validateToolPolicy,
 	type MergePreconditions,
 } from "../src/mcp/tool-policy";
@@ -61,11 +66,9 @@ interface NotificationDecision {
 	reportUrlChecked: boolean;
 }
 
-interface ExternalApiFailureDecision extends NotificationDecision {
-	stateTransition: "ready" | "pending" | "error";
-	stateFrozen: boolean;
-	retryAttempted: boolean;
-}
+interface ExternalApiFailureDecision
+	extends NotificationDecision,
+		ExternalServiceDecision {}
 
 type ShouldNotifyDiscord = (
 	event: CloudflareDeploymentEvent,
@@ -117,36 +120,35 @@ async function evaluateProbeFailureNotificationContract(
 			shouldNotify: false,
 			reason: `deployment status is ${event.deployment.status}; pending/error responses do not notify`,
 			reportUrlChecked: false,
-			stateTransition: "pending",
+			status: "pending",
 			stateFrozen: true,
 			retryAttempted: false,
 		};
 	}
 
 	try {
-		const probeResult = await probeReportUrl(config.latestReportUrl);
-		if (
-			!probeResult.ok ||
-			probeResult.status < 200 ||
-			probeResult.status >= 300
-		) {
+		const probeDecision = malformedResponseToExternalServiceDecision(
+			await probeReportUrl(config.latestReportUrl),
+		);
+		if (probeDecision.status !== "ready") {
 			return {
 				shouldNotify: false,
-				reason: `report URL probe pending/error: status ${probeResult.status}`,
+				reason: probeDecision.reason,
 				reportUrlChecked: true,
-				stateTransition: "pending",
-				stateFrozen: true,
-				retryAttempted: false,
+				status: probeDecision.status,
+				stateFrozen: probeDecision.stateFrozen,
+				retryAttempted: probeDecision.retryAttempted,
 			};
 		}
 	} catch (error) {
+		const probeDecision = timeoutRejectionToExternalServiceDecision(error);
 		return {
 			shouldNotify: false,
-			reason: `report URL probe error: ${(error as Error).message}`,
+			reason: probeDecision.reason,
 			reportUrlChecked: true,
-			stateTransition: "error",
-			stateFrozen: true,
-			retryAttempted: false,
+			status: probeDecision.status,
+			stateFrozen: probeDecision.stateFrozen,
+			retryAttempted: probeDecision.retryAttempted,
 		};
 	}
 
@@ -156,7 +158,7 @@ async function evaluateProbeFailureNotificationContract(
 			!state.notifiedCommitHashes.includes(event.deployment.meta.commit_hash),
 		reason: "report URL is reachable",
 		reportUrlChecked: true,
-		stateTransition: "ready",
+		status: "ready",
 		stateFrozen: false,
 		retryAttempted: false,
 	};
@@ -417,10 +419,39 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
-			assert.strictEqual(decision.stateTransition, "pending");
+			assert.strictEqual(decision.status, "pending");
 			assert.strictEqual(decision.stateFrozen, true);
 			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /pending|error/);
+		},
+	);
+
+	await t.test(
+		"malformed report URL probe response is converted without retrying",
+		async () => {
+			let callCount = 0;
+			const malformedProbe = (async () => {
+				callCount += 1;
+				return { status: Number.NaN };
+			}) as unknown as UrlProbe;
+
+			const decision = await evaluateProbeFailureNotificationContract(
+				deploymentSuccess,
+				{ notifiedDeploymentIds: [], notifiedCommitHashes: [] },
+				{
+					publicBaseUrl: "https://osint-kaname.pages.dev",
+					latestReportUrl:
+						"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
+				},
+				malformedProbe,
+			);
+
+			assert.strictEqual(callCount, 1);
+			assert.strictEqual(decision.shouldNotify, false);
+			assert.strictEqual(decision.status, "error");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
+			assert.match(decision.reason, /malformed response/);
 		},
 	);
 
@@ -449,10 +480,10 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
-			assert.strictEqual(decision.stateTransition, "error");
+			assert.match(decision.status, /pending|error/);
 			assert.strictEqual(decision.stateFrozen, true);
 			assert.strictEqual(decision.retryAttempted, false);
-			assert.match(decision.reason, /error/);
+			assert.match(decision.reason, /pending|error/);
 		},
 	);
 });
