@@ -20,6 +20,7 @@ import {
 	validateToolPolicy,
 	type MergePreconditions,
 } from "../src/mcp/tool-policy";
+import { assertMcpToolCallAllowed } from "../src/mcp/validated-tool-call";
 import {
 	assertValidJsonSchema,
 	validateJsonSchema,
@@ -211,9 +212,68 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 				id: 201,
 			} as const;
 
-			assert.deepStrictEqual(validateToolPolicy(call), [
-				"Writer branch must be osint/*",
-			]);
+			assert.throws(
+				() => assertMcpToolCallAllowed(call),
+				/MCP tool call rejected: Writer branch must be osint\/\*/,
+			);
+		},
+	);
+
+	await t.test(
+		"crawler-state.json Git writes are rejected through the production boundary",
+		() => {
+			const call = {
+				jsonrpc: "2.0",
+				method: "tools/call",
+				params: {
+					name: "create_or_update_file",
+					arguments: {
+						owner: "Ningensei848",
+						repo: "kaname-vault",
+						path: "crawler-state.json",
+						content: "{}",
+						branch: "osint/update-crawler-state",
+						message: "[Aegis-Writer] Unsafe crawler state write",
+					},
+				},
+				id: 202,
+			} as const;
+
+			assert.throws(
+				() => assertMcpToolCallAllowed(call),
+				/MCP tool call rejected: .*crawler-state\.json must not be written through Git MCP/,
+			);
+		},
+	);
+
+	await t.test(
+		"merge gate failures throw through the production boundary",
+		() => {
+			const call = {
+				jsonrpc: "2.0",
+				method: "tools/call",
+				params: {
+					name: "merge_pull_request",
+					arguments: {
+						owner: "Ningensei848",
+						repo: "kaname-vault",
+						pull_number: 42,
+						merge_method: "squash",
+						commit_title:
+							"[Aegis-Reviewer] Self-Merge: Intelligence Update Passed Review",
+					},
+				},
+				id: 203,
+			} as const;
+
+			assert.throws(
+				() =>
+					assertMcpToolCallAllowed(call, {
+						...allGreenGates,
+						deterministicContentGuards: "failed",
+					}),
+				/MCP tool call rejected: merge preconditions are not all passed/,
+			);
 		},
 	);
 
