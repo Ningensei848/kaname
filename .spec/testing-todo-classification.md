@@ -41,3 +41,18 @@ Residual `test.todo` entries are not allowed to remain in feature test files wit
 | F003 integration test spawns a real dummy child process and verifies `process.on('SIGTERM')` cleanup over actual OS signals and stdio resources | Integration backlog | `tests/integration/backlog.integration.ts` guarded by `KANAME_RUN_PROCESS_SIGNAL_INTEGRATION` |
 | F004 production notification module uses external state backend family, not Git, for duplicate deployment notification state | Red contract test | `tests/f004-cloudflare-discord.test.ts` injected notification backend tests |
 | F004 integration tests live under `tests/integration/` and may use real Cloudflare/Discord only behind explicit credentials | Integration backlog | `tests/integration/backlog.integration.ts` guarded by Cloudflare / Discord environment variables |
+
+## Production migration TODO policy after Phase 2
+
+Phase 2 completion means the contract evidence is complete; it is not a declaration that Phase 3 production runtime work is complete. TODOs that migrate contract evidence into runtime code must be written at the production boundary where the next implementer can start immediately.
+
+### Required production migration TODO granularity
+
+- **Runtime schema validation:** name the exact external input, canonical `.spec/schemas/*` schema, production `src/` boundary, and fail-closed result expected before downstream logic consumes data.
+- **MCP call validation:** name the exact MCP tool-call shape/policy invariant, the production client or adapter boundary that must enforce it, and the side effect that must be blocked before validation passes.
+- **External API adapters:** name the external service, injected dependency boundary, timeout/malformed/non-2xx behavior, retry or escalation policy, and idempotency/state backend expectation.
+- **Live/integration checks:** keep real credentials, OS signals, and pre-built artifact checks under guarded `tests/integration/` entries with explicit `KANAME_RUN_*` flags.
+
+### Separate coverage-threshold task
+
+Coverage threshold enforcement must remain a separate PR/task from the production bridge TODOs. Do not use coverage thresholds as a substitute for moving fixture contracts into production validation/adapters; add thresholds only after those production modules exist and traceability can distinguish measured runtime coverage from Phase 2 fixture-contract evidence.

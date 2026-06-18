@@ -68,3 +68,45 @@ Phase 2 closes with `src/` as a type/contract boundary only. Runtime oracles liv
 | `internalLinkGuard` | `tests/f002-content-guards.test.ts` | `src/content/guards/internal-links.ts` | `(markdown: string, knownTitles: Set<string>)` | `GuardResult` | sync | Inject known title index; do not read the vault from inside the guard. | None currently; graph scanners should feed `knownTitles` rather than revalidating links differently. |
 | `orphanScoreRegressionGuard` | `tests/f002-content-guards.test.ts` | `src/content/guards/orphan-score.ts` | `(beforeVault: VaultDocument[], afterVault: VaultDocument[], allowedNewHighSeverityOrphans?: number)` | `GuardResult` | sync | Inject before/after vault snapshots; filesystem and graph collection stay outside the guard. | None currently; future graph module should expose snapshots compatible with `VaultDocument[]`. |
 | `reportNoveltyGuard` | `tests/f002-content-guards.test.ts` | `src/content/guards/report-novelty.ts` | `(reportMarkdown: string, existingTopicMarkdown: string, options: { duplicateThreshold: number; createsNewRootTopic?: boolean })` | `GuardResult` | sync | Pure text comparison with threshold options injected by policy. | None currently; avoid one-off duplicate suppression checks in report generation. |
+
+## Phase 3 production bridge TODOs
+
+Phase 2 complete means **contract evidence complete**: the default contract suite now proves the intended fail-closed behavior with local fixtures, shared schemas, and injected fakes. It does **not** mean Phase 3 production runtime work is done. Phase 3 must replace the current test-local/runtime-boundary models with production adapters that call the same contracts before any external side effect.
+
+### Runtime schema validation production migration
+
+- Move the executable schema-validation boundary currently represented by `tests/helpers/schema-validator.ts` into a production module under `src/` before external payloads are trusted.
+- Load and validate the existing canonical schemas from `.spec/schemas/` for MCP tool calls, Cloudflare Pages deployment payloads, Discord webhook payloads, crawler state, SSoT YAML, and topic frontmatter.
+- Keep validation fail-closed: malformed JSON, schema-invalid payloads, missing required fields, and type mismatches must return a typed error or escalation result before orchestration, notification, Writer, or Reviewer logic consumes the data.
+- Preserve deterministic tests by keeping live services out of schema tests; production code should accept injected payloads/clients and expose pure validation functions that can be exercised with existing fixtures.
+- Update this matrix from `fixture-contract`/`type-boundary` to production coverage only after a `src/` validator is imported by runtime code and covered by tests at that boundary.
+
+### MCP call validation boundary production migration
+
+- Promote MCP JSON-RPC/tool-call schema and policy validation into the production MCP client or the narrow adapter immediately before each real GitHub MCP write/merge call.
+- Validate both shape and policy: allowed Writer paths, protected-branch/direct-write rejection, generated-index path denial until explicitly planned, merge preconditions, and required Reviewer gate evidence.
+- Ensure validation runs before spawning or sending side-effecting MCP requests when possible; if a request is already in flight, failures must be converted to safe escalation without retrying unsafe writes.
+- Keep authentication/token exchange separate from call validation: the MCP launcher may provide an installation token, but policy validation must not depend on secret-bearing code paths.
+- Reuse the fixture cases in `tests/f003-mcp-contract-fixtures.test.ts` and the policy expectations in `tests/f003-tool-policy.test.ts` as acceptance criteria for the production bridge.
+
+### External API adapter boundary production migration
+
+- Create production adapters for Cloudflare, Discord, GitHub/MCP, and future storage backends that return typed success/failure results rather than leaking raw HTTP responses into orchestration code.
+- Put timeout, malformed-response, non-2xx, retry, and idempotency handling inside those adapters or immediately adjacent policy modules; orchestration should consume bounded results and choose state transitions.
+- Preserve the current fail-closed contracts: Cloudflare report probes must block notification when latest report evidence is absent, Discord webhook failures must use bounded retry then escalation, and deployment notification state must use an external backend rather than Git commits.
+- Keep live smoke checks opt-in with explicit `KANAME_RUN_*` flags until credentials are intentionally provisioned; default `npm test` remains local contract evidence, not a live production certification.
+- Update the relevant traceability rows only when runtime modules use these adapters and tests import production adapter boundaries with mocked clients/timers.
+
+### Coverage threshold enforcement scope
+
+Coverage threshold enforcement is intentionally **out of scope for this production-bridge PR**. Treat thresholds as a separate PR/task after the Phase 3 bridge has production modules worth measuring; otherwise threshold work can obscure whether runtime validation and adapter boundaries are actually implemented.
+
+### Next implementer start checklist
+
+1. Add a production schema validator module under `src/` that loads `.spec/schemas/*` and returns typed validation results.
+2. Replace test-local schema validation at the external-input seams with calls to the production validator while keeping fixture tests deterministic.
+3. Add a production MCP call-validation wrapper that combines schema validation with `src/mcp/tool-policy.ts` before write/merge calls.
+4. Introduce external API adapter interfaces for Cloudflare, Discord, GitHub/MCP, and state storage with injected HTTP/timer/storage dependencies.
+5. Wire orchestrator/notification code to consume typed adapter results, not raw external responses.
+6. Add production-boundary tests for each bridge while leaving live credential tests guarded and opt-in.
+7. Only after these bridges land, revisit coverage threshold enforcement in a separate change.
