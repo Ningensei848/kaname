@@ -61,6 +61,12 @@ interface NotificationDecision {
 	reportUrlChecked: boolean;
 }
 
+interface ExternalApiFailureDecision extends NotificationDecision {
+	stateTransition: "ready" | "pending" | "error";
+	stateFrozen: boolean;
+	retryAttempted: boolean;
+}
+
 type ShouldNotifyDiscord = (
 	event: CloudflareDeploymentEvent,
 	state: NotificationState,
@@ -74,6 +80,17 @@ interface ContractSchemaValidationError extends Error {
 
 function readJsonSchema(schemaPath: string): JsonSchema {
 	return JSON.parse(fs.readFileSync(schemaPath, "utf8")) as JsonSchema;
+}
+
+function assertValidExternalPayload(schema: JsonSchema, value: unknown): void {
+	const errors = validateJsonSchema(schema, value);
+	if (errors.length === 0) return;
+
+	throw new Error(
+		`external payload schema validation failed: ${errors
+			.map(({ path, message }) => `${path} ${message}`)
+			.join("; ")}`,
+	);
 }
 
 function assertContractSchemaValid(schema: JsonSchema, payload: unknown): void {
@@ -94,12 +111,15 @@ async function evaluateProbeFailureNotificationContract(
 	state: NotificationState,
 	config: NotificationConfig,
 	probeReportUrl: UrlProbe,
-): Promise<NotificationDecision> {
+): Promise<ExternalApiFailureDecision> {
 	if (event.deployment.status !== "success") {
 		return {
 			shouldNotify: false,
 			reason: `deployment status is ${event.deployment.status}; pending/error responses do not notify`,
 			reportUrlChecked: false,
+			stateTransition: "pending",
+			stateFrozen: true,
+			retryAttempted: false,
 		};
 	}
 
@@ -114,6 +134,9 @@ async function evaluateProbeFailureNotificationContract(
 				shouldNotify: false,
 				reason: `report URL probe pending/error: status ${probeResult.status}`,
 				reportUrlChecked: true,
+				stateTransition: "pending",
+				stateFrozen: true,
+				retryAttempted: false,
 			};
 		}
 	} catch (error) {
@@ -121,6 +144,9 @@ async function evaluateProbeFailureNotificationContract(
 			shouldNotify: false,
 			reason: `report URL probe error: ${(error as Error).message}`,
 			reportUrlChecked: true,
+			stateTransition: "error",
+			stateFrozen: true,
+			retryAttempted: false,
 		};
 	}
 
@@ -130,6 +156,9 @@ async function evaluateProbeFailureNotificationContract(
 			!state.notifiedCommitHashes.includes(event.deployment.meta.commit_hash),
 		reason: "report URL is reachable",
 		reportUrlChecked: true,
+		stateTransition: "ready",
+		stateFrozen: false,
+		retryAttempted: false,
 	};
 }
 
@@ -206,6 +235,39 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 			assert.throws(
 				() => assertContractSchemaValid(mcpToolCallSchema, missingJsonRpc),
 				/Contract schema validation failed immediately: .*missing required property jsonrpc/,
+			);
+		},
+	);
+
+	await t.test(
+		"external MCP payload helper fails closed and accepts valid payloads",
+		() => {
+			const mcpToolCallSchema = readJsonSchema(
+				".spec/schemas/mcp-tool-call.schema.json",
+			);
+			const validPayload = {
+				jsonrpc: "2.0",
+				method: "tools/call",
+				params: {
+					name: "create_issue",
+					arguments: { owner: "Ningensei848", repo: "kaname-vault" },
+				},
+				id: 302,
+			};
+			const invalidPayload = {
+				...validPayload,
+				params: {
+					...validPayload.params,
+					name: "delete_repository",
+				},
+			};
+
+			assert.throws(
+				() => assertValidExternalPayload(mcpToolCallSchema, invalidPayload),
+				/schema validation failed/,
+			);
+			assert.doesNotThrow(() =>
+				assertValidExternalPayload(mcpToolCallSchema, validPayload),
 			);
 		},
 	);
@@ -355,6 +417,9 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
+			assert.strictEqual(decision.stateTransition, "pending");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /pending|error/);
 		},
 	);
@@ -384,6 +449,9 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
+			assert.strictEqual(decision.stateTransition, "error");
+			assert.strictEqual(decision.stateFrozen, true);
+			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /error/);
 		},
 	);
