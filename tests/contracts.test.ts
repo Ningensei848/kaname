@@ -16,7 +16,10 @@ import {
 	timeoutRejectionToExternalServiceDecision,
 	type ExternalServiceDecision,
 } from "../src/external/fail-closed-adapter";
-import type { MergePreconditions } from "../src/mcp/tool-policy";
+import {
+	validateToolPolicy,
+	type MergePreconditions,
+} from "../src/mcp/tool-policy";
 import { assertMcpToolCallAllowed } from "../src/mcp/validated-tool-call";
 import {
 	assertValidJsonSchema,
