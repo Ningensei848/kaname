@@ -12,7 +12,6 @@ import { test } from "node:test";
 
 import { transition } from "../src/orchestrator/state-machine";
 import type {
-	DetailedRejectPayload,
 	OrchestratorEvent,
 	TerminalState,
 	TransitionAction,

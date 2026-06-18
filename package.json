@@ -10,6 +10,7 @@
 		"format": "biome format --write package.json tsconfig.json src tests",
 		"lint": "biome lint package.json tsconfig.json src tests",
 		"test": "node --import tsx --test tests/**/*.test.ts",
+		"test:coverage": "node --import tsx --test --experimental-test-coverage tests/**/*.test.ts",
 		"typecheck": "tsc --noEmit",
 		"test:integration:artifacts": "node --import tsx --test tests/integration/**/*.integration.ts"
 	},

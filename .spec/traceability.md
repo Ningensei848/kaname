@@ -4,6 +4,12 @@ This matrix maps high-level specifications to feature specs, implementation targ
 
 Coverage depth values are: `missing` (no executable test), `prototype` (test-local helper/model only), `fixture-contract` (external fixture plus shared schema/policy validation), `type-boundary` (`src/` exposes only type/contract shells and tests import them with `import type`), `src-unit` (legacy production function imported directly; quarantined for the current phase), `src-integration` (multiple production modules combined; quarantined for the current phase), and `ci-gate` (operated as an intentional CI failure gate). A test being run by `pnpm test` in CI does not by itself raise a requirement to `ci-gate`; the depth should describe the deepest meaningful production/contract coverage currently present.
 
+## Phase 2 coverage policy
+
+Phase 2 coverage is tracked as **contract evidence coverage**, not production runtime coverage. The default `npm test` command must prove that contract fixtures, schema validators, and fail-closed negative paths are executable without live GitHub, Cloudflare, Discord, or production runtime side effects. A coverage report can be generated with `npm run test:coverage` to inspect which contract evidence files are exercised, but its report is not a production-runtime completeness metric while `src/` modules remain type/contract boundaries.
+
+Do not add 100% threshold enforcement to the Phase 2 default gate until the production runtime implementation replaces the current fixture-contract and test-local models. Any future threshold policy should be handled as a separate task that first defines whether thresholds apply to contract evidence files, production runtime files, or both.
+
 ## Phase 2 completion evidence
 
 Phase 2 is complete only when the default contract suite proves both successful
