@@ -22,7 +22,7 @@ import {
 	assertValidJsonSchema,
 	validateJsonSchema,
 	type JsonSchema,
-} from "../src/validation/schema-validator";
+} from "./helpers/schema-validator";
 
 type ProbeResult = { ok: boolean; status: number };
 type UrlProbe = (url: string) => Promise<ProbeResult>;
@@ -160,7 +160,6 @@ async function evaluateProbeFailureNotificationContract(
 	};
 }
 
-
 interface GitHubFailureSideEffects {
 	gitWrites: string[];
 	mergeAttempts: number;
@@ -182,7 +181,9 @@ async function evaluateGitHubExternalApiFailureContract(
 	let decision: ExternalServiceDecision;
 
 	try {
-		decision = malformedResponseToExternalServiceDecision(await probeGitHubApi());
+		decision = malformedResponseToExternalServiceDecision(
+			await probeGitHubApi(),
+		);
 	} catch (error) {
 		decision = timeoutRejectionToExternalServiceDecision(error);
 	}
@@ -421,7 +422,6 @@ test("Protected merge and Takumi Guard gates fail closed", async (t) => {
 		},
 	);
 });
-
 
 test("GitHub external API failure contract fails closed before side effects", async (t) => {
 	await t.test(
