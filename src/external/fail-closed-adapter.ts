@@ -34,9 +34,8 @@ export function timeoutRejectionToExternalServiceDecision(
 	error: unknown,
 ): ExternalServiceDecision {
 	const message = error instanceof Error ? error.message : String(error);
-	const timeoutLike = /(?:timeout|timed out|abort|deadline|econnreset|etimedout)/i.test(
-		message,
-	);
+	const timeoutLike =
+		/(?:timeout|timed out|abort|deadline|econnreset|etimedout)/i.test(message);
 
 	return {
 		status: timeoutLike ? "pending" : "error",

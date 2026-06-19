@@ -15,7 +15,8 @@ test("ssot schema validates URI formats deterministically", () => {
 				id: "cisa_kev",
 				name: "CISA KEV",
 				url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-				feed_url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+				feed_url:
+					"https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
 				description: "Known exploited vulnerabilities catalog",
 				meta_url: "https://www.cisa.gov/known-exploited-vulnerabilities",
 			},
@@ -94,7 +95,9 @@ test("topic frontmatter schema validates date format and status enum", () => {
 });
 
 test('discord webhook payload schema rejects username const mismatch for "Aegis-Intelligence"', () => {
-	const schema = readSchema(".spec/schemas/discord-webhook-payload.schema.json");
+	const schema = readSchema(
+		".spec/schemas/discord-webhook-payload.schema.json",
+	);
 	const validPayload = {
 		username: "Aegis-Intelligence",
 		avatar_url: "https://example.com/avatar.png",

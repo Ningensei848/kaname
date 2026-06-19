@@ -28,13 +28,17 @@ test("F004 production Quartz public artifacts contain no graph view UI or script
 	}
 
 	if (!fs.existsSync(publicDir)) {
-		t.skip("Missing localized public artifacts directory (public/). Skipping integration check.");
+		t.skip(
+			"Missing localized public artifacts directory (public/). Skipping integration check.",
+		);
 		return;
 	}
 
 	const htmlArtifacts = listHtmlFiles(publicDir);
 	if (htmlArtifacts.length === 0) {
-		t.skip("public/ directory exists but contains zero HTML artifacts. Skipping.");
+		t.skip(
+			"public/ directory exists but contains zero HTML artifacts. Skipping.",
+		);
 		return;
 	}
 
