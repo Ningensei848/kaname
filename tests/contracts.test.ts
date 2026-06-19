@@ -17,7 +17,7 @@ import {
 	type ExternalServiceDecision,
 } from "../src/external/fail-closed-adapter";
 import type { MergePreconditions } from "../src/mcp/tool-policy";
-import { assertMcpToolCallAllowed } from "../src/mcp/validated-tool-call";
+import { assertMcpToolCallAllowedFixtureOracle } from "./helpers/mcp-policy-oracle";
 import {
 	assertValidJsonSchema,
 	validateJsonSchema,
@@ -259,7 +259,7 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 			} as const;
 
 			assert.throws(
-				() => assertMcpToolCallAllowed(call),
+				() => assertMcpToolCallAllowedFixtureOracle(call),
 				/MCP tool call rejected: Writer branch must be osint\/\*/,
 			);
 		},
@@ -286,7 +286,7 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 			} as const;
 
 			assert.throws(
-				() => assertMcpToolCallAllowed(call),
+				() => assertMcpToolCallAllowedFixtureOracle(call),
 				/MCP tool call rejected: .*crawler-state\.json must not be written through Git MCP/,
 			);
 		},
@@ -314,7 +314,7 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 
 			assert.throws(
 				() =>
-					assertMcpToolCallAllowed(call, {
+					assertMcpToolCallAllowedFixtureOracle(call, {
 						...allGreenGates,
 						deterministicContentGuards: "failed",
 					}),

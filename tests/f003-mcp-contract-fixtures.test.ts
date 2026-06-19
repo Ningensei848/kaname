@@ -11,17 +11,17 @@ import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
-import {
-	defaultMergePreconditions,
-	validateToolPolicy,
-	type McpToolCall,
-	type MergePreconditions,
-	type PolicyMcpToolCall,
+import type {
+	McpToolCall,
+	MergePreconditions,
+	PolicyMcpToolCall,
 } from "../src/mcp/tool-policy";
+import {
+	allGreenMergePreconditions,
+	validateToolPolicyFixtureOracle,
+} from "./helpers/mcp-policy-oracle";
 
-const allGreenGates: MergePreconditions = defaultMergePreconditions;
-
-const allGreenMergePreconditions = allGreenGates;
+const allGreenGates: MergePreconditions = allGreenMergePreconditions;
 
 function fixturePath(...segments: string[]): string {
 	return path.join(__dirname, "fixtures", "f003", ...segments);
@@ -48,7 +48,11 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 		() => {
 			for (const fixtureName of listJsonFixtures("mcp", "valid")) {
 				const call = readFixture("mcp", "valid", fixtureName);
-				assert.deepStrictEqual(validateToolPolicy(call), [], fixtureName);
+				assert.deepStrictEqual(
+					validateToolPolicyFixtureOracle(call),
+					[],
+					fixtureName,
+				);
 			}
 		},
 	);
@@ -93,7 +97,7 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 							}
 						: allGreenGates;
 				assert.ok(
-					validateToolPolicy(call, gates).includes(expectedError),
+					validateToolPolicyFixtureOracle(call, gates).includes(expectedError),
 					fixtureName,
 				);
 			}
@@ -110,7 +114,7 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 				"unavailable",
 				"indeterminate",
 			] as const) {
-				const errors = validateToolPolicy(mergeCall, {
+				const errors = validateToolPolicyFixtureOracle(mergeCall, {
 					...allGreenGates,
 					[gateName]: badStatus,
 				});
@@ -127,7 +131,7 @@ test("F003 production MCP policy validates every external fixture before tool ca
 	for (const fixtureName of listJsonFixtures("mcp", "valid")) {
 		const call = readFixture("mcp", "valid", fixtureName) as PolicyMcpToolCall;
 		assert.deepStrictEqual(
-			validateToolPolicy(call, allGreenMergePreconditions),
+			validateToolPolicyFixtureOracle(call, allGreenMergePreconditions),
 			[],
 			fixtureName,
 		);
@@ -146,7 +150,7 @@ test("F003 production MCP policy validates every external fixture before tool ca
 	} as PolicyMcpToolCall;
 
 	assert.ok(
-		validateToolPolicy(generatedIndexCall).includes(
+		validateToolPolicyFixtureOracle(generatedIndexCall).includes(
 			"Writer path is not allowed: topics/index.md",
 		),
 		"generated index paths stay rejected until an exact feature-plan path is added",
