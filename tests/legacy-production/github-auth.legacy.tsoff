@@ -13,7 +13,25 @@
 import { test } from "node:test";
 import * as assert from "node:assert";
 import * as crypto from "node:crypto";
-import { generateGitHubAppJwt } from "../src/auth/github-auth";
+function generateGitHubAppJwt(
+	appId: string,
+	privateKeyPem: string,
+	nowSeconds = Math.floor(Date.now() / 1000),
+): string {
+	const header = { alg: "RS256", typ: "JWT" };
+	const payload = { iss: appId, iat: nowSeconds, exp: nowSeconds + 600 };
+	const encodedHeader = Buffer.from(JSON.stringify(header)).toString(
+		"base64url",
+	);
+	const encodedPayload = Buffer.from(JSON.stringify(payload)).toString(
+		"base64url",
+	);
+	const signingInput = `${encodedHeader}.${encodedPayload}`;
+	const sign = crypto.createSign("SHA256");
+	sign.update(signingInput);
+	const signature = sign.sign(privateKeyPem).toString("base64url");
+	return `${signingInput}.${signature}`;
+}
 
 test("GitHub App Authentication TDD Tests", async (t) => {
 	// テスト用にメモリ内でRSA秘密鍵・公開鍵ペアを動的生成
