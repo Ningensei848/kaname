@@ -11,11 +11,7 @@ import * as assert from "node:assert";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
-import type {
-	McpToolCall,
-	MergePreconditions,
-	PolicyMcpToolCall,
-} from "../src/mcp/tool-policy";
+import type { McpToolCall, MergePreconditions } from "../src/mcp/tool-policy";
 import {
 	allGreenMergePreconditions,
 	validateToolPolicyFixtureOracle,
@@ -127,9 +123,9 @@ test("F003 external MCP JSON fixtures are executable", async (t) => {
 	});
 });
 
-test("F003 production MCP policy validates every external fixture before tool calls", () => {
+test("F003 deterministic fixture oracle validates every external fixture before tool calls", () => {
 	for (const fixtureName of listJsonFixtures("mcp", "valid")) {
-		const call = readFixture("mcp", "valid", fixtureName) as PolicyMcpToolCall;
+		const call = readFixture("mcp", "valid", fixtureName);
 		assert.deepStrictEqual(
 			validateToolPolicyFixtureOracle(call, allGreenMergePreconditions),
 			[],
@@ -147,7 +143,7 @@ test("F003 production MCP policy validates every external fixture before tool ca
 				path: "topics/index.md",
 			},
 		},
-	} as PolicyMcpToolCall;
+	};
 
 	assert.ok(
 		validateToolPolicyFixtureOracle(generatedIndexCall).includes(
