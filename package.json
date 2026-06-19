@@ -13,7 +13,8 @@
 		"test:coverage": "node --import tsx --test --experimental-test-coverage tests/**/*.test.ts",
 		"check:merge-conflicts": "git fetch origin main && git merge-tree --write-tree origin/main HEAD >/dev/null",
 		"typecheck": "tsc --noEmit",
-		"test:integration:artifacts": "node --import tsx --test tests/integration/**/*.integration.ts"
+		"test:integration:artifacts": "node --import tsx --test tests/integration/f004-quartz-public-artifacts.integration.ts",
+		"test:integration:backlog": "node --import tsx --test tests/integration/backlog.integration.ts"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.5",
