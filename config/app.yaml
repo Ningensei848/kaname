@@ -1,0 +1,28 @@
+http:
+  timeout_seconds: 20
+  retries: 3
+  user_agent: TechKnowledgeCollector/0.1
+  max_response_bytes: 10000000
+llm:
+  model: gemini-3.5-flash-lite
+  thinking_level: minimal
+  max_calls_per_run: 30
+  max_input_chars: 20000
+  max_output_tokens: 2048
+  retries: 3
+storage:
+  bucket: ""  # GCS_BUCKET overrides this value
+  store_raw_html: false
+prompt_file: prompts/enrich.txt
+tracking_parameters: [fbclid, gclid]
+categories:
+  - ai-llm
+  - cloud
+  - cybersecurity
+  - software-development
+  - data
+  - hardware
+  - network
+  - web-platform
+  - standards-policy
+  - other

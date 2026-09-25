@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "techkb"
+version = "0.1.0"
+description = "Deterministic technical news collection with Gemini enrichment"
+requires-python = ">=3.12"
+dependencies = [
+ "feedparser>=6.0.11,<7", "httpx>=0.28,<1", "beautifulsoup4>=4.12,<5",
+ "markitdown>=0.1.2,<1", "google-genai>=1.55,<2", "pydantic>=2.10,<3",
+ "PyYAML>=6,<7", "google-cloud-storage>=3,<4"
+]
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+[project.scripts]
+techkb = "techkb.cli:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
