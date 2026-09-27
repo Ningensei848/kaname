@@ -1,0 +1,31 @@
+# Before enabling a source, review its terms and robots policy.
+sources:
+  - id: google-research
+    name: Google Research
+    enabled: true
+    type: rss
+    feed_url: https://research.google/blog/rss/
+    base_url: https://research.google/
+    request_interval_seconds: 2
+    store_full_text: true
+    tags: [research]
+  - id: github-blog
+    name: GitHub Blog
+    enabled: true
+    type: rss
+    feed_url: https://github.blog/feed/
+    base_url: https://github.blog/
+    request_interval_seconds: 2
+    store_full_text: true
+    tags: [software-development]
+  - id: aws-news
+    name: AWS News Blog
+    # AWS Site Terms prohibit robots/data-extraction tools without express consent.
+    # Keep disabled unless written permission or a separate applicable license is confirmed.
+    enabled: false
+    type: rss
+    feed_url: https://aws.amazon.com/blogs/aws/feed/
+    base_url: https://aws.amazon.com/
+    request_interval_seconds: 2
+    store_full_text: true
+    tags: [cloud]
