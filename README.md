@@ -36,8 +36,8 @@ Windows PowerShellでは ` .venv\Scripts\Activate.ps1 ` で仮想環境を有効
 
 モデルは指定どおり `gemini-3.5-flash-lite`、thinkingは `minimal` です。
 カテゴリはYAMLからSchemaのenumへ反映し、応答後にも検証します。
-sourceの `store_full_text: false` はNoteと復旧receiptへの原文保存を無効化します。
-LLMにはその場合も本文を送信します。`store_raw_html` は別設定で、source指定が全体設定より優先です。
+NoteはAI要約、重要ポイント、検索キーワード、資料の位置づけ、出典情報だけを保存し、記事原文は保存しません。
+LLMには要約・分類のため本文を送信します。`store_raw_html` は別設定で、source指定が全体設定より優先です。
 sourceの削除/無効化後も、既存pendingは消去せず保留します。
 
 ## 実行
@@ -86,7 +86,7 @@ raw/YYYY/MM/<raw-sha256>.html  # opt-in
 保存失敗時は後続の有料処理を停止し、workflowを失敗にします。
 
 `state/receipts/` はLLM結果を再利用してNote/TSVの途中失敗から復旧する補助ファイルです。
-次のrunで未登録receiptのNoteとindexを修復します。原文保存無効の場合はreceiptにも原文を含めません。
+次のrunで未登録receiptのNoteとindexを修復します。receiptには構成済みNoteとindex行だけを保存し、記事原文は含めません。
 成功済みreceiptは保持し、indexにあるhashは読取りを省略します。MVPでは自動削除しません。
 成功indexを安易に削除しないでください。receipt再処理・状態の扱いは[設計上の補足](docs/design-decisions.md)を参照。
 

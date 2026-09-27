@@ -99,7 +99,7 @@ workflowは依存のインストール・テストを認証前に行い、WIF認
 2. app.yamlの `max_calls_per_run` を最初だけ1へ減らしてcommit。
 3. GitHub Actions → Daily TechKB → Run workflow。
 4. logsと `runs/YYYY/MM/*.json` のstatus、失敗stage、usageを確認。
-5. `notes/` の日本語・YAML・原文を確認。月次indexとpendingを確認。
+5. `notes/` の日本語・YAML・要約・重要ポイント・検索キーワード・資料の位置づけ・出典情報を確認。月次indexとpendingを確認。
 6. 同一記事だけを対象に再実行し、LLM呼出ゼロでraw/content duplicateとなることを確認。
 7. 実運用ではfeed更新や残pendingがあるため、再実行で新記事のLLM呼出が発生するのは正常。
 8. 上限を30へ戻し、07:17 JSTのscheduled runを確認してPhase 1受入完了とする。

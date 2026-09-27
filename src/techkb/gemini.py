@@ -54,7 +54,7 @@ class Gemini:
         result = ArticleEnrichment.model_validate_json(response.text or "")
         if result.category not in self.categories:
             raise ValueError("category outside configured vocabulary")
-        for values in (result.key_points, result.technical_insights, result.tags, result.related_concepts):
+        for values in (result.key_points, result.tags, result.related_concepts):
             if any(not value.strip() or len(value) > 2000 for value in values):
                 raise ValueError("empty or oversized enrichment item")
         return result

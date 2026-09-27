@@ -120,9 +120,8 @@ def test_receipt_failure_stops_paid_work(harness):
     r = h.pipeline.run()
     assert r.llm_calls == 1 and r.status == "failed" and r.pending_after == 2
 
-def test_no_full_text_when_disabled(harness):
+def test_note_and_receipt_never_store_full_text(harness):
     h = harness
-    h.source.store_full_text = False
     h.pipeline.run()
     for name in h.store.list("notes/") + h.store.list("state/receipts/"):
         assert b"Original text" not in h.store.read(name)

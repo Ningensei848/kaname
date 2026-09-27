@@ -49,8 +49,8 @@ class FakeSDK:
         self.models = self
         self.calls = []
         self.text = json.dumps(dict(title_ja="技術記事", summary_ja="本文に基づく要約です。",
-            key_points=["要点"], technical_insights=[], category="ai-llm", tags=["AI"],
-            related_concepts=["Model Context Protocol"], source_language="en"))
+            key_points=["要点", "追加要点"], positioning_ja="技術記事の内容を整理した資料です。後から技術判断を確認する際に参照できます。",
+            category="ai-llm", tags=["AI"], related_concepts=["Model Context Protocol", "Structured Output"], source_language="en"))
         self.error = None
     def generate_content(self, **kwargs):
         self.calls.append(kwargs)

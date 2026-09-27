@@ -1,5 +1,6 @@
 import re
 import unicodedata
+from urllib.parse import urlsplit
 import yaml
 
 def plain(value):
@@ -12,6 +13,12 @@ def inline(value):
 def concept(value):
     return re.sub(r"[\[\]#|^<>\\/:*?\"]", " ", plain(value)).strip(" .")[:160]
 
+def word_count(value):
+    return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[ぁ-んァ-ヶ一-龠]+", value))
+
+def code_span(value):
+    return str(value).replace("`", "%60")
+
 def filename(title, day, digest):
     value = unicodedata.normalize("NFC", title)
     value = re.sub(r'[\x00-\x1f\x7f/\\:*?"<>|]', "_", value).strip(" .") or "untitled"
@@ -21,22 +28,34 @@ def filename(title, day, digest):
 
 def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated):
     tags = []
-    for tag in [*source.tags, *enrichment.tags]:
+    for tag in ["clippings", *source.tags, *enrichment.tags]:
         cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
         if cleaned and cleaned not in tags:
             tags.append(cleaned)
-    metadata = dict(title=enrichment.title_ja, title_original=candidate.title, source=source.name,
-                    source_url=candidate.url, canonical_url=canonical, published_at=candidate.published_at or None,
-                    fetched_at=fetched_at, source_language=enrichment.source_language, category=enrichment.category,
-                    tags=tags, ai_model=model, raw_html_sha256=raw_hash, content_sha256=content_hash,
+    metadata = dict(title=enrichment.title_ja, title_original=candidate.title, source=candidate.url,
+                    publisher=source.name, author=[], published=candidate.published_at or None,
+                    created=fetched_at[:10], description=enrichment.summary_ja, tags=tags,
+                    canonical_url=canonical, source_language=enrichment.source_language, category=enrichment.category,
+                    ai_model=model, raw_html_sha256=raw_hash, content_sha256=content_hash,
                     llm_input_truncated=truncated)
     sections = ["---", yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False).rstrip(), "---", "",
                 "# " + inline(enrichment.title_ja), "", "> [!abstract] AI要約"]
     sections.extend("> " + inline(line) for line in enrichment.summary_ja.splitlines())
-    for heading, values in [("重要ポイント", enrichment.key_points), ("技術的インサイト", enrichment.technical_insights)]:
-        sections += ["", "## " + heading, ""] + ["- " + inline(v) for v in values]
+    sections += ["", "## 重要ポイント", ""] + ["- " + inline(v) for v in enrichment.key_points]
     concepts = list(dict.fromkeys(c for v in enrichment.related_concepts if (c := concept(v))))
-    sections += ["", "## 関連概念", ""] + [f"- [[{c}]]" for c in concepts]
-    sections += ["", "## 原文", "", markdown if source.store_full_text else "本文保存はsource設定で無効です。原文URLを参照してください。"]
+    sections += ["", "## 検索キーワード", ""] + [f"- [[{c}]]" for c in concepts]
+    sections += ["", "## 資料の位置づけ", ""]
+    sections.extend(inline(line) for line in enrichment.positioning_ja.splitlines())
+    sections += ["", "---", "", "## 出典情報", "",
+                 "- Title: " + inline(candidate.title or enrichment.title_ja),
+                 "- Publisher/Site: " + inline(source.name),
+                 "- Author: （取得なし）",
+                 "- Published: " + inline(candidate.published_at or "（取得なし）"),
+                 "- Clipped: " + fetched_at[:10],
+                 "- Domain: " + inline(urlsplit(canonical).hostname or ""),
+                 "- Original URL: `" + code_span(candidate.url) + "`",
+                 "- Original language: " + inline(enrichment.source_language),
+                 "- Word count: " + str(word_count(markdown)),
+                 "- AI model: " + inline(model)]
     name = filename(enrichment.title_ja, fetched_at[:10], content_hash)
     return f"notes/{fetched_at[:4]}/{fetched_at[5:7]}/{name}", "\n".join(sections) + "\n"

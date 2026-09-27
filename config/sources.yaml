@@ -7,7 +7,6 @@ sources:
     feed_url: https://research.google/blog/rss/
     base_url: https://research.google/
     request_interval_seconds: 2
-    store_full_text: true
     tags: [research]
   - id: github-blog
     name: GitHub Blog
@@ -16,7 +15,6 @@ sources:
     feed_url: https://github.blog/feed/
     base_url: https://github.blog/
     request_interval_seconds: 2
-    store_full_text: true
     tags: [software-development]
   - id: aws-news
     name: AWS News Blog
@@ -27,5 +25,4 @@ sources:
     feed_url: https://aws.amazon.com/blogs/aws/feed/
     base_url: https://aws.amazon.com/
     request_interval_seconds: 2
-    store_full_text: true
     tags: [cloud]
