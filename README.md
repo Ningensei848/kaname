@@ -5,8 +5,34 @@ RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化
 → GeminiのStructured JSON → Pydantic → Markdown → GCS/月次TSVの順で処理します。
 SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
 
-**実装とローカルテストは完了しています。GCP・Gemini・GitHub Actionsを接続した本番受入は未実施です。**
+**実装、ローカルテスト、GCP/Gemini/GitHub Actionsの接続、上限1件の初回本番runまで完了しています。**
+compact Note形式の本番確認、重複時の実環境確認、上限30への復帰、scheduled run確認が残っているため、
 受入完了まではPhase 1運用開始前として扱ってください。Phase 2/3は[確定バックログ](docs/roadmap.md)です。
+
+## Phase 1本番受入状況（2026-09-27）
+
+- [x] Python 3.12で設定検証と全36テストに成功。
+- [x] `q4rs-project` に非公開GCS bucket、最小custom role、実行用service account、GitHub Actions用WIFを設定。
+- [x] bucketのUniform Bucket-Level Accessを有効化し、Public Access Preventionを`enforced`に設定。公開IAM bindingなし。
+- [x] GitHub Repository Variables 3件とSecret `GEMINI_API_KEY` の存在を確認。
+- [x] [`workflow_dispatch`による初回本番run](https://github.com/Ningensei848/kaname/actions/runs/36312255153)に成功。
+- [x] 初回runで110件を取得し、Geminiを1回呼び出して失敗0。Note、月次index、pending、receipt、run report、usageをGCSへ保存。
+- [x] PR #83でWeb Clipperを参考にしたcompact Note形式へ変更。今後の記事原文はNote/receiptへ保存しない。
+- [x] 誤作成した空bucketとservice accountを削除し、正系の`kaname-*`リソースだけを維持。
+
+初回runの1件はPR #83より前の旧形式で生成され、長い原文を含むNoteとreceiptがGCSに残っています。
+既存objectは状態整合性を守るため自動変更していません。
+
+## 次にやること
+
+- [ ] 上限1件のまま`workflow_dispatch`を実行し、PR #83適用後のcompact Noteを本番GCSで生成する。
+- [ ] 生成Noteの日本語要約、重要ポイント、検索キーワード、資料の位置づけ、出典情報、frontmatterをユーザーが確認する。
+- [ ] 旧形式のNote/receipt 1件を、indexとの整合性と再課金の扱いを決めたうえでcompact形式へ移行する。
+- [ ] 実環境の再実行で、成功済みraw/content hashが重複として扱われ、同じ記事へGeminiを再呼出ししないことを確認する。
+- [ ] Google ResearchとGitHub Blogの取得条件・利用規約をユーザーが最終確認する。AWS Newsは書面許諾等を確認するまで無効のまま維持する。
+- [ ] Note品質確認後、`max_calls_per_run`を1から30へ戻すPRを作成・mergeする。
+- [ ] 07:17 JSTのscheduled runが成功し、件数、失敗、usage、pending推移が想定どおりであることを確認する。
+- [ ] `docs/verification.md`を最終更新してPhase 1受入完了を宣言し、その後にPhase 2へ進む。
 
 ## 開始方法
 
