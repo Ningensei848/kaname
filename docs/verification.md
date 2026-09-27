@@ -33,7 +33,7 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 ## 本番受入で残る項目
 
 - [x] 初回受入用に `max_calls_per_run: 1` を設定。
-- [ ] GCP project / 非公開bucket / custom IAM role / WIFを設定。
+- [x] GCP project / 非公開bucket / custom IAM role / WIFを設定。
 - [ ] GitHub repositoryとVariables/Secretsを設定。
 - [ ] Google Research / GitHub Blogの取得条件・利用規約をユーザーが最終確認。
 - [ ] AWS Newsは書面許諾または別途適用されるライセンスを確認するまで無効を維持。

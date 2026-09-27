@@ -1,27 +1,28 @@
 # GCP・GitHub 初期設定（管理者が一度実行）
 
-以下のplaceholderを実値へ置換して、gcloudを利用できる管理端末で実行してください。
-この納品物からプロジェクト・bucket・GitHub repositoryは作成していません。
+以下は本番受入環境 `q4rs-project` / `Ningensei848/kaname` の確定値です。
+別環境へ展開する場合は、プロジェクト・bucket・GitHub repositoryの値を置換してください。
+この納品物からGitHub repositoryは作成していません。
 実行用サービスアカウントにOwner/Editor/Storage Adminを与えません。
 
 ## 1. 変数とサービス
 
 ```bash
-export TECHKB_PROJECT_ID='YOUR_PROJECT_ID'
-export TECHKB_BUCKET='YOUR_GLOBALLY_UNIQUE_BUCKET'
-export TECHKB_REPO='OWNER/REPOSITORY'
+export TECHKB_PROJECT_ID='q4rs-project'
+export TECHKB_BUCKET='scrapbox-q4rs-project-ningensei848'
+export TECHKB_REPO='Ningensei848/kaname'
 # GitHub API/設定から取得する不変の数値ID。repository移譲時も確認すること。
-export TECHKB_REPO_ID='YOUR_NUMERIC_REPOSITORY_ID'
-export TECHKB_OWNER_ID='YOUR_NUMERIC_OWNER_ID'
+export TECHKB_REPO_ID='1258231039'
+export TECHKB_OWNER_ID='20794309'
 export TECHKB_BRANCH='main'
 export TECHKB_REGION='asia-northeast1'
-export TECHKB_SA="techkb-runner@${TECHKB_PROJECT_ID}.iam.gserviceaccount.com"
+export TECHKB_SA="knowledge-runner@${TECHKB_PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud services enable storage.googleapis.com iam.googleapis.com \
   iamcredentials.googleapis.com sts.googleapis.com --project="$TECHKB_PROJECT_ID"
 
-gcloud iam service-accounts create techkb-runner \
-  --project="$TECHKB_PROJECT_ID" --display-name='TechKB runner'
+gcloud iam service-accounts create knowledge-runner \
+  --project="$TECHKB_PROJECT_ID" --display-name='Kaname knowledge runner'
 
 gcloud storage buckets create "gs://${TECHKB_BUCKET}" \
   --project="$TECHKB_PROJECT_ID" --location="$TECHKB_REGION" \
@@ -39,14 +40,14 @@ gcloud storage buckets update "gs://${TECHKB_BUCKET}" --public-access-prevention
 GCSで既存objectを置換するためにはdelete権限も必要です。
 
 ```bash
-gcloud iam roles create techkbObjectWriter --project="$TECHKB_PROJECT_ID" \
-  --title='TechKB bucket object writer' \
+gcloud iam roles create kanameObjectWriter --project="$TECHKB_PROJECT_ID" \
+  --title='Kaname bucket object writer' \
   --permissions='storage.buckets.get,storage.objects.list,storage.objects.get,storage.objects.create,storage.objects.delete' \
   --stage=GA
 
 gcloud storage buckets add-iam-policy-binding "gs://${TECHKB_BUCKET}" \
   --member="serviceAccount:${TECHKB_SA}" \
-  --role="projects/${TECHKB_PROJECT_ID}/roles/techkbObjectWriter"
+  --role="projects/${TECHKB_PROJECT_ID}/roles/kanameObjectWriter"
 ```
 
 プロジェクト全体へのStorage Object Adminは不要です。
@@ -57,19 +58,19 @@ gcloud storage buckets add-iam-policy-binding "gs://${TECHKB_BUCKET}" \
 ```bash
 TECHKB_PROJECT_NUMBER="$(gcloud projects describe "$TECHKB_PROJECT_ID" --format='value(projectNumber)')"
 
-gcloud iam workload-identity-pools create techkb-github \
-  --project="$TECHKB_PROJECT_ID" --location=global --display-name='TechKB GitHub'
+gcloud iam workload-identity-pools create github-actions \
+  --project="$TECHKB_PROJECT_ID" --location=global --display-name='Kaname GitHub Actions'
 
-gcloud iam workload-identity-pools providers create-oidc techkb-repo \
+gcloud iam workload-identity-pools providers create-oidc github-repo \
   --project="$TECHKB_PROJECT_ID" --location=global \
-  --workload-identity-pool=techkb-github \
+  --workload-identity-pool=github-actions \
   --issuer-uri='https://token.actions.githubusercontent.com' \
   --attribute-mapping='google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.repository_owner_id=assertion.repository_owner_id' \
   --attribute-condition="assertion.repository_id == '${TECHKB_REPO_ID}' && assertion.repository_owner_id == '${TECHKB_OWNER_ID}' && assertion.ref == 'refs/heads/${TECHKB_BRANCH}' && assertion.workflow_ref == '${TECHKB_REPO}/.github/workflows/daily.yml@refs/heads/${TECHKB_BRANCH}'"
 
 gcloud iam service-accounts add-iam-policy-binding "$TECHKB_SA" \
   --project="$TECHKB_PROJECT_ID" --role=roles/iam.workloadIdentityUser \
-  --member="principalSet://iam.googleapis.com/projects/${TECHKB_PROJECT_NUMBER}/locations/global/workloadIdentityPools/techkb-github/attribute.repository_id/${TECHKB_REPO_ID}"
+  --member="principalSet://iam.googleapis.com/projects/${TECHKB_PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-actions/attribute.repository_id/${TECHKB_REPO_ID}"
 ```
 
 repository数値ID、owner数値ID、branch、workflowを制限します。
@@ -81,9 +82,9 @@ repository数値ID、owner数値ID、branch、workflowを制限します。
 
 | 種別 | 名前 | 値 |
 |---|---|---|
-| Variable | `GCP_WORKLOAD_IDENTITY_PROVIDER` | `projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/techkb-github/providers/techkb-repo` |
-| Variable | `GCP_SERVICE_ACCOUNT` | `techkb-runner@PROJECT_ID.iam.gserviceaccount.com` |
-| Variable | `GCS_BUCKET` | bucket名（gs://なし） |
+| Variable | `GCP_WORKLOAD_IDENTITY_PROVIDER` | `projects/137544258857/locations/global/workloadIdentityPools/github-actions/providers/github-repo` |
+| Variable | `GCP_SERVICE_ACCOUNT` | `knowledge-runner@q4rs-project.iam.gserviceaccount.com` |
+| Variable | `GCS_BUCKET` | `scrapbox-q4rs-project-ningensei848`（gs://なし） |
 | Secret | `GEMINI_API_KEY` | Gemini Developer APIキー |
 
 APIキーは該当APIへの制限を設定し、Geminiの対象プロジェクトでモデル利用・請求状態を確認します。
