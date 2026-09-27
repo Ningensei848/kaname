@@ -9,20 +9,20 @@
 
 ```bash
 export TECHKB_PROJECT_ID='q4rs-project'
-export TECHKB_BUCKET='scrapbox-q4rs-project-ningensei848'
+export TECHKB_BUCKET='kaname-q4rs-project-ningensei848'
 export TECHKB_REPO='Ningensei848/kaname'
 # GitHub API/設定から取得する不変の数値ID。repository移譲時も確認すること。
 export TECHKB_REPO_ID='1258231039'
 export TECHKB_OWNER_ID='20794309'
 export TECHKB_BRANCH='main'
 export TECHKB_REGION='asia-northeast1'
-export TECHKB_SA="knowledge-runner@${TECHKB_PROJECT_ID}.iam.gserviceaccount.com"
+export TECHKB_SA="kaname-runner@${TECHKB_PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud services enable storage.googleapis.com iam.googleapis.com \
   iamcredentials.googleapis.com sts.googleapis.com --project="$TECHKB_PROJECT_ID"
 
-gcloud iam service-accounts create knowledge-runner \
-  --project="$TECHKB_PROJECT_ID" --display-name='Kaname knowledge runner'
+gcloud iam service-accounts create kaname-runner \
+  --project="$TECHKB_PROJECT_ID" --display-name='Kaname runner'
 
 gcloud storage buckets create "gs://${TECHKB_BUCKET}" \
   --project="$TECHKB_PROJECT_ID" --location="$TECHKB_REGION" \
@@ -83,8 +83,8 @@ repository数値ID、owner数値ID、branch、workflowを制限します。
 | 種別 | 名前 | 値 |
 |---|---|---|
 | Variable | `GCP_WORKLOAD_IDENTITY_PROVIDER` | `projects/137544258857/locations/global/workloadIdentityPools/github-actions/providers/github-repo` |
-| Variable | `GCP_SERVICE_ACCOUNT` | `knowledge-runner@q4rs-project.iam.gserviceaccount.com` |
-| Variable | `GCS_BUCKET` | `scrapbox-q4rs-project-ningensei848`（gs://なし） |
+| Variable | `GCP_SERVICE_ACCOUNT` | `kaname-runner@q4rs-project.iam.gserviceaccount.com` |
+| Variable | `GCS_BUCKET` | `kaname-q4rs-project-ningensei848`（gs://なし） |
 | Secret | `GEMINI_API_KEY` | Gemini Developer APIキー |
 
 APIキーは該当APIへの制限を設定し、Geminiの対象プロジェクトでモデル利用・請求状態を確認します。
