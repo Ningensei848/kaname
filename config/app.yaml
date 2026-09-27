@@ -6,7 +6,8 @@ http:
 llm:
   model: gemini-3.5-flash-lite
   thinking_level: minimal
-  max_calls_per_run: 30
+  # Initial production acceptance cap. Restore to 30 after reviewing the first saved note.
+  max_calls_per_run: 1
   max_input_chars: 20000
   max_output_tokens: 2048
   retries: 3

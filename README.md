@@ -29,7 +29,7 @@ Windows PowerShellでは ` .venv\Scripts\Activate.ps1 ` で仮想環境を有効
 ## 設定
 
 - `config/app.yaml`: HTTP制限、LLMモデル・上限、カテゴリ、保存設定。
-- `config/sources.yaml`: RSS/Atom情報源。例としてGoogle Research、GitHub Blog、AWS News Blogの3件を登録。
+- `config/sources.yaml`: RSS/Atom情報源。Google Research、GitHub Blogを有効化し、AWS News Blogは利用条件の確認待ちで無効化。
 - `prompts/enrich.txt`: 要約・分類指示。本文は命令として扱わないと明記。
 - `GCS_BUCKET`: 非公開バケット名。設定ファイルの値を上書き。
 - `GEMINI_API_KEY`: Gemini Developer APIのキー。GitHub Secretsか環境変数で指定。
@@ -92,7 +92,8 @@ raw/YYYY/MM/<raw-sha256>.html  # opt-in
 
 ## 費用と使用量
 
-初期上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
+本番受入前の一時上限は **1 runあたり1記事** です。初回Note確認後に30へ戻します。
+通常運用の上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
 30/日という運用想定であり、手動で複数回実行すれば日次30を超えます。
 通信retryは最大3回で、`llm_calls` は論理記事呼出、`llm_http_attempts` はretryを含む通信回数です。
 Schemaエラーは自動修正せず、次のrunに残します。恒常的エラーはログ確認後にsourceを一時無効化してください。

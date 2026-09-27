@@ -1,4 +1,4 @@
-# 検証記録 — 2026-09-25
+# 検証記録 — 2026-09-27
 
 ## 実施結果
 
@@ -18,22 +18,25 @@
 | 全月TSV/TSV内TAB・改行/不正header | 成功 |
 | CLIオフラインdry-run | 成功、GCS書込み・Gemini呼出ゼロ |
 | CLIオフラインE2Eと再実行 | 成功、Note/TSV/pending/report生成、2回目のLLM呼出ゼロ |
-| 実サイトdry-run | **外部DNS名前解決不可（gaierror）により失敗** |
+| 実サイトdry-run | **成功**。3 feeds、130記事を取得・変換、失敗0、Gemini/GCS操作0 |
 | 実Gemini・GCS・WIF・GitHub Actions | **未実施（接続設定・認証情報未提供）** |
 
 テストのHTTP通信にはhttpx.MockTransportを使用します。実際のRSS/Atom解析、HTML cleaner、
 MarkItDown、Pydantic、Composer、状態更新、CLIを通しています。
 Gemini応答とGCSはテスト用オブジェクトです。実課金は発生させていません。
 
-実サイトdry-runでは3 sourceともfeed段階で名前解決エラーになりました。
-発見0、取得0、LLM0、保存0、終了コード1。これは現環境での到達制約であり、
-登録sourceの現時点の可用性や本番環境での取得成功を確認した結果ではありません。
+2026-09-27の実サイトdry-runでは3 sourceのrobots.txt、feed、記事取得に成功しました。
+発見130、取得130、would_enrich 130、失敗0、LLM0、保存0、終了コード0でした。
+この確認後、[AWS Site Terms](https://aws.amazon.com/terms/)がrobots/data extraction toolsを明示的に許諾対象外としているため、
+`aws-news` は書面許諾または別途適用されるライセンスを確認できるまで無効化しました。
 
 ## 本番受入で残る項目
 
+- [x] 初回受入用に `max_calls_per_run: 1` を設定。
 - [ ] GCP project / 非公開bucket / custom IAM role / WIFを設定。
 - [ ] GitHub repositoryとVariables/Secretsを設定。
-- [ ] sourceの取得条件・robots・利用規約を確認。
+- [ ] Google Research / GitHub Blogの取得条件・利用規約をユーザーが最終確認。
+- [ ] AWS Newsは書面許諾または別途適用されるライセンスを確認するまで無効を維持。
 - [ ] 実Gemini `gemini-3.5-flash-lite` + minimal + Structured Outputの成功。
 - [ ] 実GCSへのNote/TSV/pending/report保存。
 - [ ] workflow_dispatchから実行成功。
