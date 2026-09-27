@@ -10,7 +10,7 @@ SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツー�
 
 ## 開始方法
 
-展開した `techkb/` ディレクトリで実行してください。
+checkoutした `kaname/` ディレクトリで実行してください。
 
 ```bash
 python3.12 -m venv .venv
