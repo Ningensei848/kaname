@@ -47,7 +47,6 @@ class Source(StrictModel):
     feed_url: HttpUrl
     base_url: HttpUrl
     request_interval_seconds: float = Field(default=2, ge=0)
-    store_full_text: bool = True
     store_raw_html: bool | None = None
     tags: list[str] = Field(default_factory=list)
 
