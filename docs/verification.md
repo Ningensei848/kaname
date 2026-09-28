@@ -19,7 +19,7 @@
 | CLIオフラインdry-run | 成功、GCS書込み・Gemini呼出ゼロ |
 | CLIオフラインE2Eと再実行 | 成功、Note/TSV/pending/report生成、2回目のLLM呼出ゼロ |
 | 実サイトdry-run | **成功**。3 feeds、130記事を取得・変換、失敗0、Gemini/GCS操作0 |
-| 実Gemini・GCS・WIF・GitHub Actions | **未実施（接続設定・認証情報未提供）** |
+| 実Gemini・GCS・WIF・GitHub Actions | **成功**。run `36312255153`、110件取得、Gemini 1回、失敗0、GCS保存成功 |
 
 テストのHTTP通信にはhttpx.MockTransportを使用します。実際のRSS/Atom解析、HTML cleaner、
 MarkItDown、Pydantic、Composer、状態更新、CLIを通しています。
@@ -34,12 +34,14 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 
 - [x] 初回受入用に `max_calls_per_run: 1` を設定。
 - [x] GCP project / 非公開bucket / custom IAM role / WIFを設定。
-- [ ] GitHub repositoryとVariables/Secretsを設定。
+- [x] GitHub repositoryとVariables/Secretsを設定。
 - [ ] Google Research / GitHub Blogの取得条件・利用規約をユーザーが最終確認。
-- [ ] AWS Newsは書面許諾または別途適用されるライセンスを確認するまで無効を維持。
-- [ ] 実Gemini `gemini-3.5-flash-lite` + minimal + Structured Outputの成功。
-- [ ] 実GCSへのNote/TSV/pending/report保存。
-- [ ] workflow_dispatchから実行成功。
+- [x] AWS Newsは書面許諾または別途適用されるライセンスを確認するまで無効を維持。
+- [x] 実Gemini `gemini-3.5-flash-lite` + minimal + Structured Outputの成功。
+- [x] 実GCSへのNote/TSV/pending/receipt/report保存。
+- [x] workflow_dispatchから実行成功。
+- [ ] PR #83適用後のcompact Noteを実GCSへ保存して品質確認。
+- [ ] 初回runで作成した旧形式Note/receipt 1件を、indexとの整合性を保ってcompact形式へ移行。
 - [ ] 同一記事の実環境再実行でLLMを呼ばないこと。
 - [ ] 07:17 JSTスケジュールによる日次実行成功。
 - [ ] 生成Noteの日本語・要約・重要ポイント・検索キーワード・資料の位置づけ・出典情報・frontmatter品質をユーザーが確認。
@@ -52,5 +54,5 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - API応答後・receipt永続化前の強制終了、および通信timeoutでは厳密なexactly-once課金は保証不可。
 - 30件はrun単位。手動再実行を含む日次hard capではない。
 - 全HTML変換のため、本文外の可視広告・navigation更新によるcontent hash変更があり得る。
-- GCS generation preconditionとbucket設定確認は実GCP未検証。
+- bucket設定と通常書込み時のGCS generation preconditionは実GCPで成功。競合発生時の停止動作は実環境未検証。
 - Obsidianへの正式同期はPhase 2。現状はGCSにObsidian互換Markdownを保存するところまで。
