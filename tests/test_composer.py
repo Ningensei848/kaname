@@ -13,10 +13,13 @@ def test_yaml_and_wikilinks_are_safe(harness):
         positioning_ja='position\n# injected', category='other', tags=['a b'],
         related_concepts=['A]]\n# heading|alias', 'Safe concept'], source_language='en')
     path, note = compose(Candidate('now', 'example', 'https://example.com/', title='Original: x'), harness.source,
-        e, 'Body', 'https://example.com/', '2026-09-25T00:00:00Z', 'a'*64, 'b'*64, 'model', False)
+        e, 'Body', 'https://example.com/', '2026-09-25T00:00:00Z', 'a'*64, 'b'*64, 'model', False,
+        ['Alice Example'])
     front = yaml.safe_load(note.split('---', 2)[1])
     assert front['title'] == e.title_ja
     assert front['source'] == 'https://example.com/'
+    assert front['author'] == ['[[Alice Example]]']
+    assert front['published'] is None
     assert front['tags'][0] == 'clippings'
     assert '\n# injected' not in note
     assert '[[A]]' not in note
@@ -26,3 +29,4 @@ def test_yaml_and_wikilinks_are_safe(harness):
     assert '## 原文' not in note
     assert '\nBody\n' not in note
     assert '- Word count: 1' in note
+    assert '- Author: Alice Example' in note

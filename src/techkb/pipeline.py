@@ -4,7 +4,7 @@ from .composer import compose
 from .dedupe import Dedupe
 from .feeds import parse_feed
 from .hashes import raw_hash, content_hash
-from .html_cleaner import clean_html, canonical_url
+from .html_cleaner import article_authors, clean_html, canonical_url
 from .normalize import normalize_markdown
 from .pending import merge_pending
 from .reporting import RunReport, now
@@ -101,6 +101,7 @@ class Pipeline:
                     if raw_enabled:
                         self.store.write(f"raw/{report.started_at[:4]}/{report.started_at[5:7]}/{rh}.html", fetched.content, "text/html")
                     canon = canonical_url(fetched.content, fetched.url, self.app.tracking_parameters)
+                    authors = article_authors(fetched.content)
                     truncated = len(markdown) > self.app.llm.max_input_chars
                     stage = "llm"
                     report.llm_calls += 1
@@ -108,6 +109,7 @@ class Pipeline:
                     attempts_before = self.gemini.attempts
                     try:
                         enrichment = self.gemini.enrich({"title": candidate.title[:1000], "source": source.name,
+                                                        "authors": authors,
                                                         "published_at": candidate.published_at,
                                                         "llm_input_truncated": truncated}, markdown)
                     finally:
@@ -123,7 +125,7 @@ class Pipeline:
                     stage = "compose"
                     fetched_at = now()
                     note_object, note = compose(candidate, source, enrichment, markdown, canon, fetched_at,
-                                                rh, ch, self.app.llm.model, truncated)
+                                                rh, ch, self.app.llm.model, truncated, authors)
                     row = dict(processed_at=fetched_at, source_id=source.id, source_url=candidate.url,
                                canonical_url=canon, published_at=candidate.published_at, raw_html_sha256=rh,
                                content_sha256=ch, status="success", note_object=note_object,

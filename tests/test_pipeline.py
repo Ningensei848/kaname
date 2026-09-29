@@ -125,3 +125,14 @@ def test_note_and_receipt_never_store_full_text(harness):
     h.pipeline.run()
     for name in h.store.list("notes/") + h.store.list("state/receipts/"):
         assert b"Original text" not in h.store.read(name)
+
+def test_html_author_is_written_to_note(harness):
+    h = harness
+    h.fetcher.pages["https://example.com/a"] = (
+        b'<html><head><meta name="author" content="Alice Example"></head>'
+        b'<body><article><p>Original text</p></article></body></html>'
+    )
+    h.pipeline.run()
+    note = h.store.read(h.store.list("notes/")[0]).decode()
+    assert "author:\n- '[[Alice Example]]'" in note
+    assert "- Author: Alice Example" in note
