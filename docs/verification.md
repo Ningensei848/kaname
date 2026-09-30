@@ -1,4 +1,4 @@
-# 検証記録 — 2026-09-27
+# 検証記録 — 2026-09-29
 
 ## 実施結果
 
@@ -20,6 +20,9 @@
 | CLIオフラインE2Eと再実行 | 成功、Note/TSV/pending/report生成、2回目のLLM呼出ゼロ |
 | 実サイトdry-run | **成功**。3 feeds、130記事を取得・変換、失敗0、Gemini/GCS操作0 |
 | 実Gemini・GCS・WIF・GitHub Actions | **成功**。run `36312255153`、110件取得、Gemini 1回、失敗0、GCS保存成功 |
+| compact Note本番保存 | **成功**。3件を自動生成、旧形式1件を状態整合性を維持して移行、全4件で原文セクションなし |
+| 実環境の重複抑止 | **成功**。raw/content duplicateを確認し、新規記事だけGemini対象 |
+| GitHub Actions schedule | **成功**。2026-09-28、2026-09-29のscheduled runが完了 |
 
 テストのHTTP通信にはhttpx.MockTransportを使用します。実際のRSS/Atom解析、HTML cleaner、
 MarkItDown、Pydantic、Composer、状態更新、CLIを通しています。
@@ -40,11 +43,12 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - [x] 実Gemini `gemini-3.5-flash-lite` + minimal + Structured Outputの成功。
 - [x] 実GCSへのNote/TSV/pending/receipt/report保存。
 - [x] workflow_dispatchから実行成功。
-- [ ] PR #83適用後のcompact Noteを実GCSへ保存して品質確認。
-- [ ] 初回runで作成した旧形式Note/receipt 1件を、indexとの整合性を保ってcompact形式へ移行。
-- [ ] 同一記事の実環境再実行でLLMを呼ばないこと。
-- [ ] 07:17 JSTスケジュールによる日次実行成功。
+- [x] PR #83適用後のcompact Noteを実GCSへ保存。
+- [x] 初回runで作成した旧形式Note/receipt 1件を、indexとの整合性を保ってcompact形式へ移行。
+- [x] 同一記事の実環境再実行でLLMを呼ばないこと。
+- [x] 07:17 JSTスケジュールによる日次実行成功（GitHub側の開始遅延あり）。
 - [ ] 生成Noteの日本語・要約・重要ポイント・検索キーワード・資料の位置づけ・出典情報・frontmatter品質をユーザーが確認。
+- [ ] `max_calls_per_run`を30へ戻し、上限30でscheduled runが成功。
 
 これらが完了するまで「日次運用可能なMVP受入完了」とは判定しません。
 受入後はdocs/roadmap.mdのPhase 2へ着手してください。
