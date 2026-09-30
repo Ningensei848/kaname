@@ -3,6 +3,19 @@ from bs4 import BeautifulSoup
 from .normalize import normalize_url
 
 REMOVE = ("script", "style", "noscript", "svg", "form", "iframe")
+AUTHOR_META_KEYS = {"author", "article:author", "parsely-author"}
+
+def article_authors(raw: bytes) -> list[str]:
+    soup = BeautifulSoup(raw, "html.parser")
+    authors = []
+    for tag in soup.find_all("meta"):
+        key = str(tag.get("name") or tag.get("property") or "").casefold()
+        if key not in AUTHOR_META_KEYS:
+            continue
+        value = " ".join(str(tag.get("content") or "").split())[:300]
+        if value and not value.startswith(("http://", "https://")) and value not in authors:
+            authors.append(value)
+    return authors
 
 def clean_html(raw: bytes) -> bytes:
     soup = BeautifulSoup(raw, "html.parser")

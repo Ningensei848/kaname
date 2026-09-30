@@ -26,14 +26,17 @@ def filename(title, day, digest):
     value = value.encode("utf-8")[:160].decode("utf-8", errors="ignore").rstrip(" .")
     return f"{day}_{value}_{digest[:12]}.md"
 
-def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated):
+def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated,
+            authors=()):
     tags = []
     for tag in ["clippings", *source.tags, *enrichment.tags]:
         cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
         if cleaned and cleaned not in tags:
             tags.append(cleaned)
+    author_names = list(dict.fromkeys(c for value in authors if (c := concept(value))))
+    published = candidate.published_at[:10] if candidate.published_at else None
     metadata = dict(title=enrichment.title_ja, title_original=candidate.title, source=candidate.url,
-                    publisher=source.name, author=[], published=candidate.published_at or None,
+                    publisher=source.name, author=[f"[[{name}]]" for name in author_names], published=published,
                     created=fetched_at[:10], description=enrichment.summary_ja, tags=tags,
                     canonical_url=canonical, source_language=enrichment.source_language, category=enrichment.category,
                     ai_model=model, raw_html_sha256=raw_hash, content_sha256=content_hash,
@@ -49,8 +52,8 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
     sections += ["", "---", "", "## 出典情報", "",
                  "- Title: " + inline(candidate.title or enrichment.title_ja),
                  "- Publisher/Site: " + inline(source.name),
-                 "- Author: （取得なし）",
-                 "- Published: " + inline(candidate.published_at or "（取得なし）"),
+                 "- Author: " + inline(", ".join(author_names) or "（取得なし）"),
+                 "- Published: " + inline(published or "（取得なし）"),
                  "- Clipped: " + fetched_at[:10],
                  "- Domain: " + inline(urlsplit(canonical).hostname or ""),
                  "- Original URL: `" + code_span(candidate.url) + "`",
