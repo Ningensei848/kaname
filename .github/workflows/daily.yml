@@ -36,3 +36,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python -m techkb run
+      - name: Audit saved state
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: python -m techkb audit-state
