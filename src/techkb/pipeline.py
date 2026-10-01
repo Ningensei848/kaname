@@ -125,7 +125,8 @@ class Pipeline:
                     stage = "compose"
                     fetched_at = now()
                     note_object, note = compose(candidate, source, enrichment, markdown, canon, fetched_at,
-                                                rh, ch, self.app.llm.model, truncated, authors)
+                                                rh, ch, self.app.llm.model, truncated, authors,
+                                                input_char_limit=self.app.llm.max_input_chars)
                     row = dict(processed_at=fetched_at, source_id=source.id, source_url=candidate.url,
                                canonical_url=canon, published_at=candidate.published_at, raw_html_sha256=rh,
                                content_sha256=ch, status="success", note_object=note_object,

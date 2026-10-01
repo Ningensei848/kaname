@@ -145,6 +145,17 @@ raw/YYYY/MM/<raw-sha256>.html  # opt-in
 
 本番受入前の一時上限は **1 runあたり1記事** です。初回Note確認後に30へ戻します。
 通常運用の上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
+**Phase 1では、記事Markdownの入力上限20,000文字を維持します。**
+文字数はHTML変換・正規化後のMarkdownに対するPythonの文字数であり、token数ではありません。
+上限を超える記事は先頭20,000文字だけをGeminiへ送り、後半の論点は要約対象に含まれません。
+タイトルに含まれる話題も欠落することがあるため、打切りNoteを記事全体の要約として扱わないでください。
+新規Noteは、打切り時にAI要約の前へ「要約対象の制限」を表示し、frontmatterへ
+`llm_input_truncated` と生成時の `llm_input_max_chars` を記録します。
+既存Noteは自動更新しません。保存済みの打切り件数は `audit-state` の `truncated_rows` で確認できます。
+後から制限を緩める場合は `config/app.yaml` の `llm.max_input_chars` を変更し、
+要約品質とusageを再確認してください。設定変更は既存Noteを再要約しません。
+この値は記事本文部分の上限であり、promptや補助metadataを含むリクエスト全体の上限ではありません。
+
 30/日という運用想定であり、手動で複数回実行すれば日次30を超えます。
 通信retryは最大3回で、`llm_calls` は論理記事呼出、`llm_http_attempts` はretryを含む通信回数です。
 Schemaエラーは自動修正せず、次のrunに残します。恒常的エラーはログ確認後にsourceを一時無効化してください。

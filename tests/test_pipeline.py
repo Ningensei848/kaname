@@ -87,7 +87,12 @@ def test_truncation_and_no_tools(harness):
     assert body["metadata"]["llm_input_truncated"] is True
     assert not call["config"].tools
     assert call["config"].automatic_function_calling.disable is True
-    assert State(h.store).rows[0]["llm_input_truncated"] == "true"
+    row = State(h.store).rows[0]
+    assert row["llm_input_truncated"] == "true"
+    note = h.store.read(row["note_object"]).decode()
+    assert "> [!warning] 要約対象の制限" in note
+    assert "先頭5文字だけを要約" in note
+    assert "llm_input_max_chars: 5" in note
 
 def test_http_failure_stays_pending(harness):
     h = harness

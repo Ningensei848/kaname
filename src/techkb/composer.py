@@ -27,7 +27,7 @@ def filename(title, day, digest):
     return f"{day}_{value}_{digest[:12]}.md"
 
 def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated,
-            authors=()):
+            authors=(), input_char_limit=None):
     tags = []
     for tag in ["clippings", *source.tags, *enrichment.tags]:
         cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
@@ -41,8 +41,16 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
                     canonical_url=canonical, source_language=enrichment.source_language, category=enrichment.category,
                     ai_model=model, raw_html_sha256=raw_hash, content_sha256=content_hash,
                     llm_input_truncated=truncated)
+    if input_char_limit is not None:
+        metadata["llm_input_max_chars"] = input_char_limit
     sections = ["---", yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False).rstrip(), "---", "",
-                "# " + inline(enrichment.title_ja), "", "> [!abstract] AI要約"]
+                "# " + inline(enrichment.title_ja), ""]
+    if truncated:
+        scope = (f"先頭{input_char_limit:,}文字" if input_char_limit is not None else "先頭部分")
+        sections += ["> [!warning] 要約対象の制限",
+                     f"> 入力上限により、変換後の本文の{scope}だけを要約しています。",
+                     "> 記事後半の論点が含まれない場合があります。記事全体の確認には出典URLを参照してください。", ""]
+    sections += ["> [!abstract] AI要約"]
     sections.extend("> " + inline(line) for line in enrichment.summary_ja.splitlines())
     sections += ["", "## 重要ポイント", ""] + ["- " + inline(v) for v in enrichment.key_points]
     concepts = list(dict.fromkeys(c for v in enrichment.related_concepts if (c := concept(v))))

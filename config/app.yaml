@@ -8,6 +8,8 @@ llm:
   thinking_level: minimal
   # Initial production acceptance cap. Restore to 30 after reviewing the first saved note.
   max_calls_per_run: 1
+  # Article Markdown characters sent to the LLM; later content is omitted.
+  # Keep 20,000 for Phase 1. Adjust deliberately when relaxing this constraint.
   max_input_chars: 20000
   max_output_tokens: 2048
   retries: 3
