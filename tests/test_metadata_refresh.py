@@ -91,6 +91,29 @@ def test_inconsistent_receipt_fails_before_writes(harness):
     assert harness.store.writes == writes
 
 
+def test_apply_recovers_interrupted_pair_update(harness):
+    harness.pipeline.run()
+    _add_author_page(harness)
+    note_name = next(name for name in harness.store.data if name.startswith("notes/"))
+    receipt_name = next(name for name in harness.store.data if name.startswith("state/receipts/"))
+    old_note = harness.store.data[note_name].decode()
+    refreshed = refresh_note_metadata(old_note, ["Alice Example"], "")
+    for updated_side in ("note", "receipt"):
+        harness.store.data[note_name] = old_note.encode()
+        receipt = json.loads(harness.store.data[receipt_name])
+        receipt["note"] = old_note
+        harness.store.data[receipt_name] = json.dumps(receipt).encode()
+        if updated_side == "note":
+            harness.store.data[note_name] = refreshed.encode()
+        else:
+            receipt["note"] = refreshed
+            harness.store.data[receipt_name] = json.dumps(receipt).encode()
+        result = MetadataRefresh(harness.store, harness.fetcher, [harness.source]).run(apply=True)
+        assert result["status"] == "success" and result["updated"] == 1
+        assert harness.store.data[note_name].decode() == refreshed
+        assert json.loads(harness.store.data[receipt_name])["note"] == refreshed
+
+
 def test_refresh_cli_does_not_construct_gemini(harness, monkeypatch, capsys):
     harness.pipeline.run()
     _add_author_page(harness)

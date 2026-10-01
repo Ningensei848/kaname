@@ -6,7 +6,7 @@ from pathlib import PurePosixPath
 import yaml
 
 from .composer import concept, inline
-from .html_cleaner import article_authors
+from .html_cleaner import article_authors, canonical_url
 from .state import State
 
 
@@ -36,9 +36,10 @@ def refresh_note_metadata(note, authors, published_at):
 
 
 class MetadataRefresh:
-    def __init__(self, store, fetcher, sources):
+    def __init__(self, store, fetcher, sources, tracking=()):
         self.store, self.fetcher = store, fetcher
         self.sources = {source.id: source for source in sources}
+        self.tracking = tracking
 
     def run(self, apply=False):
         result = {"status": "success", "apply": apply, "success_rows": 0,
@@ -69,37 +70,52 @@ class MetadataRefresh:
                 note = note_data.decode("utf-8")
                 receipt = json.loads(receipt_data)
                 if (not isinstance(receipt, dict) or not isinstance(receipt.get("row"), dict) or
-                        receipt.get("note") != note or receipt["row"].get("content_sha256") != row["content_sha256"]):
+                        not isinstance(receipt.get("note"), str) or
+                        any(str(receipt["row"].get(key, "")) != value for key, value in row.items())):
                     raise ValueError("inconsistent receipt")
                 stage = "fetch"
                 fetched = self.fetcher.get(row["source_url"], source.request_interval_seconds, html=True)
+                if canonical_url(fetched.content, fetched.url, self.tracking) != row["canonical_url"]:
+                    raise ValueError("canonical URL changed")
                 authors = article_authors(fetched.content)
                 if not authors:
                     result["no_authors"] += 1
                 stage = "compose"
                 refreshed = refresh_note_metadata(note, authors, row["published_at"])
-                if refreshed == note:
+                receipt_note = receipt["note"]
+                if refreshed == note and refreshed == receipt_note:
                     result["unchanged"] += 1
                     continue
                 receipt["note"] = refreshed
                 new_note = refreshed.encode("utf-8")
                 new_receipt = json.dumps(receipt, ensure_ascii=False).encode("utf-8")
+                if note == receipt_note:
+                    mode = "both"
+                elif note == refreshed:
+                    mode = "receipt"
+                elif receipt_note == refreshed:
+                    mode = "note"
+                else:
+                    raise ValueError("unrecognized partial update")
                 changes.append((number, note_name, note_data, new_note,
-                                receipt_name, new_receipt))
+                                receipt_name, new_receipt, mode))
                 result["planned"] += 1
             except Exception:
                 result["failures"].append({"row": number, "stage": stage})
         if result["failures"] or not apply:
             result["status"] = "failed" if result["failures"] else "success"
             return result
-        for number, note_name, old_note, new_note, receipt_name, new_receipt in changes:
+        for number, note_name, old_note, new_note, receipt_name, new_receipt, mode in changes:
             try:
-                self.store.write(note_name, new_note, "text/markdown; charset=utf-8")
-                try:
-                    self.store.write(receipt_name, new_receipt, "application/json")
-                except Exception:
-                    self.store.write(note_name, old_note, "text/markdown; charset=utf-8")
-                    raise
+                if mode in {"both", "note"}:
+                    self.store.write(note_name, new_note, "text/markdown; charset=utf-8")
+                if mode in {"both", "receipt"}:
+                    try:
+                        self.store.write(receipt_name, new_receipt, "application/json")
+                    except Exception:
+                        if mode == "both":
+                            self.store.write(note_name, old_note, "text/markdown; charset=utf-8")
+                        raise
                 result["updated"] += 1
             except Exception:
                 result["failures"].append({"row": number, "stage": "write"})

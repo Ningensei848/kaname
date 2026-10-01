@@ -45,7 +45,7 @@ def main(argv=None):
                 raise ValueError("snapshot directory does not exist")
             store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
             fetcher = Fetcher(app.http)
-            result = MetadataRefresh(store, fetcher, sources).run(apply=args.apply)
+            result = MetadataRefresh(store, fetcher, sources, app.tracking_parameters).run(apply=args.apply)
             print(json.dumps(result, ensure_ascii=False))
             return 0 if result["status"] == "success" else 1
         prompt_path = Path(app.prompt_file)
