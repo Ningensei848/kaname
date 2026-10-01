@@ -1,4 +1,49 @@
-# 検証記録 — 2026-10-01
+# 検証記録 — 2026-10-02
+
+## 上限30件の本番受入継続 — 2026-10-02
+
+Note品質資料・利用条件資料と上限30件への復帰を含むPR #90は、ユーザーにより
+2026-10-02 00:00 JSTにmergeされました。merge後に「マージした。続けて。」との指示を受け、
+提示した設定での受入継続の承認として記録します。これは記事の個別許諾取得を証明する記録ではありません。
+mainのmerge commitは `ac4cc22caf5bc02d7cf408a413039a4d0106f095` です。
+入力上限20,000文字、AWS News無効、非公開GCSと原文非保存を維持しています。
+
+本番実行前のauditは成功index 6件、pending 108件、truncated_rows 6件、issues 0件でした。
+同じmainの[workflow_dispatch run](https://github.com/Ningensei848/kaname/actions/runs/36881318035)は成功しました。
+ユーザーからも定期実行を待たずworkflow_dispatchで今すぐ確認する指示を受けています。
+手動runの成功だけではscheduled runの受入項目を完了にしません。
+
+## 上限30件の手動本番run — 2026-10-02
+
+実行時間は00:04:26〜00:09:55 JSTで、CollectとAudit saved stateの両stepが成功しました。
+Actionsログのrun reportとGCSの `runs/2026/10/20261001T150426Z-11478e19.json`、
+Actionsのaudit結果とrun完了後の独立auditが一致することを確認しています。
+run-id、保存先、NoteのcreatedはUTC基準のため、JSTの実行日より前の日付を含みます。
+
+| 項目 | 結果 |
+|---|---|
+| head / event | `ac4cc22` / `workflow_dispatch` |
+| 発見 / 取得 | 110 / 111 |
+| Gemini論理呼出 / HTTP通信 | 30 / 30（retryなし） |
+| Gemini成功 / 失敗 / usage不明 | 30 / 0 / 0 |
+| 保存 / receipt復旧 | 30 / 0 |
+| raw / content duplicate | 0 / 3 |
+| source内訳 | Google Research 26件、GitHub Blog 4件 |
+| 入力 / 出力 / thinking tokens | 176,938 / 18,533 / 0 |
+| 成功index | 6 → 36（増分30 = saved） |
+| pending | 108 → 78（audit = pending_after） |
+| audit | success、truncated_rows 32、issues 0 |
+
+新規30 Noteのfrontmatterはすべて `llm_input_max_chars: 20000` でした。
+打切り26件はすべて要約前の注意表示があり、記事原文セクションはありません。
+Google Research 26件では著者が未取得、GitHub Blog 4件では取得できています。
+Google Researchの代表記事でauthor meta / JSON-LDがなく、役職・所属を含む見出しbylineに
+著者名が記載されていることを確認しました。現行のmetadata抽出の制限として残します。
+
+Google Researchの[ERA](https://research.google/blog/empirical-research-assistance-era-from-nature-publication-to-catalyzing-computational-discovery/)と
+[Gemini Nano MTP](https://research.google/blog/accelerating-gemini-nano-models-on-pixel-with-frozen-multi-token-prediction/)の2 Noteを原記事と照合し、
+中心的な説明・重要ポイント・検索キーワード・資料の位置づけが対応することを確認しました。
+これは30件すべての詳細な事実検証ではありません。打切り時の後半欠落の制約を維持します。
 
 ## 既存Note metadata更新計画 — 2026-10-01
 
@@ -69,6 +114,7 @@ GitHub APIでは同日のmain (`e1d48fd`) のworkflow成功を確認しました
 | 実環境の重複抑止 | **成功**。raw/content duplicateを確認し、新規記事だけGemini対象 |
 | GitHub Actions schedule | **成功**。2026-09-28、2026-09-29のscheduled runが完了 |
 | 本番metadata更新と適用後audit | **成功**。5 Note/receipt更新、成功6件、pending 108件、issues 0件、要約・状態不変 |
+| 上限30件のworkflow_dispatch | **成功**。保存30、失敗0、成功index 36、pending 78、issues 0、ログ/GCS一致 |
 
 テストのHTTP通信にはhttpx.MockTransportを使用します。実際のRSS/Atom解析、HTML cleaner、
 MarkItDown、Pydantic、Composer、状態更新、CLIを通しています。
@@ -84,7 +130,7 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - [x] 初回受入用に `max_calls_per_run: 1` を設定。
 - [x] GCP project / 非公開bucket / custom IAM role / WIFを設定。
 - [x] GitHub repositoryとVariables/Secretsを設定。
-- [ ] Google Research / GitHub Blogの取得条件・利用規約をユーザーが最終確認。
+- [x] Google Research / GitHub Blogの利用条件確認資料を提示し、ユーザーがPR #90をmergeして受入継続を指示。
 - [x] AWS Newsは書面許諾または別途適用されるライセンスを確認するまで無効を維持。
 - [x] 実Gemini `gemini-3.5-flash-lite` + minimal + Structured Outputの成功。
 - [x] 実GCSへのNote/TSV/pending/receipt/report保存。
@@ -93,8 +139,9 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - [x] 初回runで作成した旧形式Note/receipt 1件を、indexとの整合性を保ってcompact形式へ移行。
 - [x] 同一記事の実環境再実行でLLMを呼ばないこと。
 - [x] 07:17 JSTスケジュールによる日次実行成功（GitHub側の開始遅延あり）。
-- [ ] 生成Noteの日本語・要約・重要ポイント・検索キーワード・資料の位置づけ・出典情報・frontmatter品質をユーザーが確認。
-- [ ] `max_calls_per_run`を30へ戻し、上限30でscheduled runが成功。
+- [x] Note品質資料と入力上限による制約を提示し、ユーザーがPR #90をmergeして受入継続を指示。
+- [x] `max_calls_per_run`を30へ戻し、workflow_dispatchで30件の処理・保存と収集後auditに成功。
+- [ ] 上限30でscheduled runが成功し、report / usage / pending / auditを照合。
 
 これらが完了するまで「日次運用可能なMVP受入完了」とは判定しません。
 受入後はdocs/roadmap.mdのPhase 2へ着手してください。
@@ -117,7 +164,7 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 6. run URL、commit、処理/失敗/重複件数、usage、成功indexとpending、audit結果を本書へ追記する。
    全項目を確認してREADMEを受入完了へ更新する。
 
-2026-10-01時点の基準は成功index 6件、pending 108件です。上限30件のscheduled runは未実行です。
+2026-10-02の手動run後の基準は成功index 36件、pending 78件です。上限30件のscheduled runは未実行です。
 
 ## 残余制約
 
@@ -126,3 +173,4 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - 全HTML変換のため、本文外の可視広告・navigation更新によるcontent hash変更があり得る。
 - bucket設定と通常書込み時のGCS generation preconditionは実GCPで成功。競合発生時の停止動作は実環境未検証。
 - Obsidianへの正式同期はPhase 2。現状はGCSにObsidian互換Markdownを保存するところまで。
+- Google Researchのbylineのみの記事では著者metadataを抽出できず、著者は取得なしとして保存。
