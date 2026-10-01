@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import os
 from pathlib import Path
@@ -8,13 +9,14 @@ from .fetcher import Fetcher
 from .gemini import Gemini
 from .pipeline import Pipeline
 from .storage import GCSStore, DirectorySnapshot
+from .audit import audit_state
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
-    parser.add_argument("--state-dir", help="read-only local state snapshot; dry-run only")
+    parser.add_argument("--state-dir", help="read-only local snapshot; dry-run or audit-state only")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     # Vendor debug/request logs can contain secrets and content.
@@ -23,6 +25,15 @@ def main(argv=None):
     fetcher = gemini = None
     try:
         app, sources = load_config(args.config, args.sources)
+        if args.state_dir and args.command not in {"dry-run", "audit-state"}:
+            raise ValueError("--state-dir is only for dry-run or audit-state")
+        if args.command == "audit-state":
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            result = audit_state(store)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0 if result["status"] == "success" else 1
         prompt_path = Path(app.prompt_file)
         if not prompt_path.is_absolute():
             prompt_path = Path(args.config).resolve().parent.parent / prompt_path
@@ -31,8 +42,6 @@ def main(argv=None):
             print(f"Configuration valid: {len(sources)} sources; model={app.llm.model}")
             return 0
         dry = args.command == "dry-run"
-        if args.state_dir and not dry:
-            raise ValueError("--state-dir is only for dry-run")
         if not dry and not os.environ.get("GEMINI_API_KEY"):
             raise ValueError("GEMINI_API_KEY is required")
         store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
