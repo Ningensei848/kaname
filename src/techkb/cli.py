@@ -10,13 +10,15 @@ from .gemini import Gemini
 from .pipeline import Pipeline
 from .storage import GCSStore, DirectorySnapshot
 from .audit import audit_state
+from .metadata_refresh import MetadataRefresh
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "refresh-metadata"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
-    parser.add_argument("--state-dir", help="read-only local snapshot; dry-run or audit-state only")
+    parser.add_argument("--state-dir", help="read-only local snapshot; dry-run, audit-state or refresh-metadata only")
+    parser.add_argument("--apply", action="store_true", help="apply refresh-metadata changes")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     # Vendor debug/request logs can contain secrets and content.
@@ -25,13 +27,25 @@ def main(argv=None):
     fetcher = gemini = None
     try:
         app, sources = load_config(args.config, args.sources)
-        if args.state_dir and args.command not in {"dry-run", "audit-state"}:
-            raise ValueError("--state-dir is only for dry-run or audit-state")
+        if args.state_dir and args.command not in {"dry-run", "audit-state", "refresh-metadata"}:
+            raise ValueError("--state-dir is only for dry-run, audit-state or refresh-metadata")
+        if args.apply and args.command != "refresh-metadata":
+            raise ValueError("--apply is only for refresh-metadata")
+        if args.apply and args.state_dir:
+            raise ValueError("--apply cannot write a local snapshot")
         if args.command == "audit-state":
             if args.state_dir and not Path(args.state_dir).is_dir():
                 raise ValueError("snapshot directory does not exist")
             store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
             result = audit_state(store)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0 if result["status"] == "success" else 1
+        if args.command == "refresh-metadata":
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            fetcher = Fetcher(app.http)
+            result = MetadataRefresh(store, fetcher, sources, app.tracking_parameters).run(apply=args.apply)
             print(json.dumps(result, ensure_ascii=False))
             return 0 if result["status"] == "success" else 1
         prompt_path = Path(app.prompt_file)
