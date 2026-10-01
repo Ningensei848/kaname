@@ -1,4 +1,25 @@
-# 検証記録 — 2026-09-29
+# 検証記録 — 2026-10-01
+
+## 入力上限の明示 — 2026-10-01
+
+ユーザー方針により、Phase 1の記事Markdown入力上限20,000文字を維持します。
+新規Noteでは生成時の `llm_input_max_chars` をfrontmatterへ保存し、打切り時は
+AI要約の前に要約範囲と後半の論点欠落の可能性を表示します。
+既存Noteは変更せず、Gemini呼出し・GCS書込みも行っていません。
+Python 3.12.13で全58テスト、設定検証、git diff --checkに成功しました。
+
+## 読取り専用の受入検査
+
+`audit-state` を追加。Python 3.12.13で全56テストが成功しました。
+pipelineが生成したデータの整合性、書込みなし、Note/receipt欠落、receipt破損、
+hash不一致、原文セクション残存、未登録Note/receipt、重複行、不正パス、
+frontmatter境界、空/存在しないsnapshot、ローカルsnapshotでのCLI終了コードを検証しています。
+入力上限で本文が打ち切られた成功行数も `truncated_rows` として報告します。
+2026-10-01の本番GCS検査は初回にADCの `RefreshError` が発生しましたが、
+認証更新を再確認後の再実行で成功しました（成功index 6件、pending 108件、issues 0件、終了コード0）。
+GCS書込み・Gemini呼出しは行っていません。初回の認証エラーの原因は未特定です。
+GitHub APIでは同日のmain (`e1d48fd`) のworkflow成功を確認しました。
+本番受入の品質確認や利用条件の確認が完了したという意味ではありません。
 
 ## 実施結果
 

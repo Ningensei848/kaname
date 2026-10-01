@@ -30,3 +30,23 @@ def test_yaml_and_wikilinks_are_safe(harness):
     assert '\nBody\n' not in note
     assert '- Word count: 1' in note
     assert '- Author: Alice Example' in note
+
+
+def test_truncation_notice_preserves_summary_and_records_limit(harness):
+    e = ArticleEnrichment(title_ja='Title', summary_ja='要約', key_points=['point', 'point 2'],
+        positioning_ja='position', category='other', tags=['tag'],
+        related_concepts=['Concept', 'Other concept'], source_language='en')
+    args = (Candidate('now', 'example', 'https://example.com/', title='Original'),
+            harness.source, e, 'Body', 'https://example.com/',
+            '2026-09-25T00:00:00Z', 'a'*64, 'b'*64, 'model')
+    for truncated in (False, True):
+        _, note = compose(*args, truncated, input_char_limit=20000)
+        front = yaml.safe_load(note.split('---', 2)[1])
+        assert front['llm_input_max_chars'] == 20000
+        assert front['llm_input_truncated'] is truncated
+        assert front['description'] == '要約'
+        assert ('> [!warning] 要約対象の制限' in note) is truncated
+        if truncated:
+            assert '先頭20,000文字だけを要約' in note
+            assert note.index('[!warning]') < note.index('[!abstract]')
+        assert '> 要約' in note
