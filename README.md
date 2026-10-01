@@ -6,11 +6,13 @@ RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化
 SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
 
 **Phase 1の実装は完了し、通常上限30件/runと、収集後のGCS整合性検査を設定しています。**
-実環境ではcompact Noteの保存、既存Noteのmetadata更新、上限1件でのscheduled runまで確認済みです。
-Note品質と利用条件の最終確認、上限30でのscheduled run確認が残っているため、
+実環境ではcompact Noteの保存、既存Noteのmetadata更新、上限1件でのscheduled run、
+上限30件での手動runと収集後のGCS検査まで確認済みです。
+PR #90のmergeと受入継続指示を受領し、上限30件をmainへ反映しました。
+上限30でのscheduled run確認が残っているため、
 受入完了まではPhase 1運用開始前として扱ってください。Phase 2/3は[確定バックログ](docs/roadmap.md)です。
 
-## Phase 1本番受入状況（2026-10-01）
+## Phase 1本番受入状況（2026-10-02）
 
 - [x] Python 3.12で設定検証と全65テストに成功。31記事中30記事を処理し、残り1記事をpendingへ残すテストも成功。
 - [x] `q4rs-project` に非公開GCS bucket、最小custom role、実行用service account、GitHub Actions用WIFを設定。
@@ -28,11 +30,12 @@ Note品質と利用条件の最終確認、上限30でのscheduled run確認が�
 - [x] PR #88 / #89をmainへ反映。打切りNoteの注意表示、`audit-state`、Gemini不要の`refresh-metadata`を実装。
 - [x] 本番GCSの既存5 Note/receiptへ著者・公開日表記を反映。成功index 6件、pending 108件、整合性問題0件。要約本文・hash・index・pendingの不変を確認。
 - [x] 通常上限30件/runへ設定を復帰。workflowに収集成功後の読取り専用GCS検査を追加。
+- [x] Note品質資料・利用条件資料を提示し、2026-10-02にユーザーがPR #90をmergeして受入継続を指示。
+- [x] [上限30件での本番手動run](https://github.com/Ningensei848/kaname/actions/runs/36881318035)に成功。Google Research 26件・GitHub Blog 4件を保存、失敗0件。成功index 36件、pending 78件、整合性問題0件。
+- [x] 新規Noteの打切り26件すべてに注意表示と上限20,000文字のfrontmatterを確認。ActionsログとGCS report/auditの一致を確認。
 
 ## 次にやること
 
-- [ ] [Note品質確認資料](docs/acceptance-note-quality-2026-10-01.md)で生成Noteの品質をユーザーが最終確認する。入力上限20,000文字を維持する方針は確認済み。
-- [ ] [利用条件の確認資料](docs/source-usage-review-2026-10-01.md)でGoogle ResearchとGitHub Blogの取得・Gemini送信・要約保存をユーザーが最終判断し、上限30件を有効にするPRをmergeする。AWS Newsは無効を維持する。
 - [ ] 上限30で最初のscheduled runを[受入手順](docs/verification.md#上限30件での最終受入手順)に従って確認する。予定は毎日07:17 JST（開始遅延あり）。
 - [ ] `docs/verification.md`を最終更新してPhase 1受入完了を宣言し、その後にPhase 2へ進む。
 
@@ -148,6 +151,10 @@ Note更新後にreceipt更新が失敗した場合は、世代条件付きでNot
 認証更新の再確認と検査の再実行で成功しています。認証エラーが続く場合は
 `gcloud auth application-default login` で認証を更新してから再実行してください。
 
+2026-10-02の上限30件での手動run後は、成功index 36件、pending 78件、打切り32件、整合性問題0件です。
+Google Researchの新規26件では、現行の著者metadata抽出で名前を取得できず、著者は取得なしです。
+記事見出しのbylineからの著者抽出は残余制約として記録しています。
+
 ```text
 notes/YYYY/MM/YYYY-MM-DD_title_hash12.md
 state/index/YYYY-MM.tsv
@@ -170,7 +177,7 @@ raw/YYYY/MM/<raw-sha256>.html  # opt-in
 ## 費用と使用量
 
 設定上の通常運用上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
-上限1件での本番確認を完了し、30件への復帰を実装しました。上限30件での本番受入は未完了です。
+上限30件の手動本番runは成功しました。上限30件のscheduled runの受入確認は未完了です。
 **Phase 1では、記事Markdownの入力上限20,000文字を維持します。**
 文字数はHTML変換・正規化後のMarkdownに対するPythonの文字数であり、token数ではありません。
 上限を超える記事は先頭20,000文字だけをGeminiへ送り、後半の論点は要約対象に含まれません。
@@ -204,6 +211,7 @@ Schema不正でも取得できたusageを加算します。timeoutなどusageを
 - private/loopback/link-local IPは拒否。HTTP redirect先でもrobotsとURLを再確認。
 - raw bytesはHTTPクライアントが取得したresponse bodyであり、HTML整理前にhash化。
 - 全文をsemanticに抽出する処理はPhase 2。本文以外の広告テキスト変化までは現状のhash方式で吸収できません。
+- 著者はHTMLのauthor metadataから取得。Google Researchのように役職・所属を含むbylineだけを表示する記事は、現行実装では著者取得なしになる場合があります。
 - 改行・空白の正規化はコードフェンス内の連続空行を維持します。行末空白除去は要件どおりです。
 - 画像はaltテキストだけを残し、外部画像を埋め込みません。Vision/OCRは実行しません。
 - 本文・APIキー・SDK例外本文はログに出しません。監査URLはquery/fragmentを落としてログ記録します。

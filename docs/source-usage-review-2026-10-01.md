@@ -22,7 +22,8 @@ GitHub Blogは空の `Disallow:` でした。両サイトfooterのTermsリンク
 
 2026-10-01に上記Google/GitHubの規約を参照しました。GitHub Blog記事に適用される
 個別の追加条件と、要約処理を許す具体的な権利根拠の確認は未完了です。
-Google Researchの成功Noteはまだないため、同sourceの生成品質も本番実例では未確認です。
+初回確認ではGoogle Researchの成功Noteはありませんでしたが、2026-10-02の手動runで26 Noteを保存し、
+2 Noteを原記事と照合しました。詳細は[検証記録](verification.md)へ記録しています。
 
 ## 最終受入で記録すること
 
@@ -30,5 +31,7 @@ Google Researchの成功Noteはまだないため、同sourceの生成品質も�
 - 制限するsourceがある場合の `config/sources.yaml` の変更と既存pendingの保留。
 - 上限30件のPRのmerge commitとscheduled runの結果。
 
-本資料は確認対象を整理したもので、利用許諾の取得やユーザーによる最終確認の完了記録ではありません。
+2026-10-02に、ユーザーが本資料を含むPR #90をmergeし、「マージした。続けて。」と指示しました。
+提示したGoogle Research / GitHub Blogの取得・Gemini送信・非公開要約保存の運用について、
+受入継続の承認として記録します。個別の利用許諾取得を証明する記録ではありません。
 Quartz等で公開する場合は、公開対象と再配布条件を別途確認します。
