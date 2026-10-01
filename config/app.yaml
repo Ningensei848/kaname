@@ -6,8 +6,8 @@ http:
 llm:
   model: gemini-3.5-flash-lite
   thinking_level: minimal
-  # Initial production acceptance cap. Restore to 30 after reviewing the first saved note.
-  max_calls_per_run: 1
+  # Normal Phase 1 limit; retries count separately in llm_http_attempts.
+  max_calls_per_run: 30
   # Article Markdown characters sent to the LLM; later content is omitted.
   # Keep 20,000 for Phase 1. Adjust deliberately when relaxing this constraint.
   max_input_chars: 20000

@@ -5,13 +5,14 @@ RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化
 → GeminiのStructured JSON → Pydantic → Markdown → GCS/月次TSVの順で処理します。
 SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
 
-**実装、ローカルテスト、GCP/Gemini/GitHub Actions接続、compact Noteの本番保存、上限1件でのscheduled runまで完了しています。**
-Note品質と利用規約の最終確認、上限30への復帰、上限30でのscheduled run確認が残っているため、
+**Phase 1の実装は完了し、通常上限30件/runと、収集後のGCS整合性検査を設定しています。**
+実環境ではcompact Noteの保存、既存Noteのmetadata更新、上限1件でのscheduled runまで確認済みです。
+Note品質と利用条件の最終確認、上限30でのscheduled run確認が残っているため、
 受入完了まではPhase 1運用開始前として扱ってください。Phase 2/3は[確定バックログ](docs/roadmap.md)です。
 
-## Phase 1本番受入状況（2026-09-29）
+## Phase 1本番受入状況（2026-10-01）
 
-- [x] Python 3.12で設定検証と全36テストに成功。
+- [x] Python 3.12で設定検証と全65テストに成功。31記事中30記事を処理し、残り1記事をpendingへ残すテストも成功。
 - [x] `q4rs-project` に非公開GCS bucket、最小custom role、実行用service account、GitHub Actions用WIFを設定。
 - [x] bucketのUniform Bucket-Level Accessを有効化し、Public Access Preventionを`enforced`に設定。公開IAM bindingなし。
 - [x] GitHub Repository Variables 3件とSecret `GEMINI_API_KEY` の存在を確認。
@@ -24,13 +25,15 @@ Note品質と利用規約の最終確認、上限30への復帰、上限30での
 - [x] 初回runの旧形式Note/receiptをgeneration条件付きでcompact形式へ移行。月次index 4件とpending 108件を維持。
 - [x] 本番GCSの全4 Note/receiptに原文セクションがなく、Noteは約3.9〜5.1KB・63〜66行であることを確認。
 - [x] 誤作成した空bucketとservice accountを削除し、正系の`kaname-*`リソースだけを維持。
+- [x] PR #88 / #89をmainへ反映。打切りNoteの注意表示、`audit-state`、Gemini不要の`refresh-metadata`を実装。
+- [x] 本番GCSの既存5 Note/receiptへ著者・公開日表記を反映。成功index 6件、pending 108件、整合性問題0件。要約本文・hash・index・pendingの不変を確認。
+- [x] 通常上限30件/runへ設定を復帰。workflowに収集成功後の読取り専用GCS検査を追加。
 
 ## 次にやること
 
-- [ ] 生成Noteの日本語要約、重要ポイント、検索キーワード、資料の位置づけ、出典情報、frontmatterをユーザーが確認する。
-- [ ] Google ResearchとGitHub Blogの取得条件・利用規約をユーザーが最終確認する。AWS Newsは書面許諾等を確認するまで無効のまま維持する。
-- [ ] Note品質確認後、`max_calls_per_run`を1から30へ戻すPRを作成・mergeする。
-- [ ] 上限30で最初のscheduled runが成功し、件数、失敗、usage、pending推移が想定どおりであることを確認する。
+- [ ] [Note品質確認資料](docs/acceptance-note-quality-2026-10-01.md)で生成Noteの品質をユーザーが最終確認する。入力上限20,000文字を維持する方針は確認済み。
+- [ ] [利用条件の確認資料](docs/source-usage-review-2026-10-01.md)でGoogle ResearchとGitHub Blogの取得・Gemini送信・要約保存をユーザーが最終判断し、上限30件を有効にするPRをmergeする。AWS Newsは無効を維持する。
+- [ ] 上限30で最初のscheduled runを[受入手順](docs/verification.md#上限30件での最終受入手順)に従って確認する。予定は毎日07:17 JST（開始遅延あり）。
 - [ ] `docs/verification.md`を最終更新してPhase 1受入完了を宣言し、その後にPhase 2へ進む。
 
 ## 開始方法
@@ -90,6 +93,7 @@ dry-runでもRSS/記事へのネットワークアクセスが発生します。
 
 GitHub Actionsは毎日07:17 JST、または `workflow_dispatch` で実行します。
 スケジュールの実際の開始時刻はGitHub側の遅延を受けます。
+収集成功後に `audit-state` を実行し、保存済みNote/receipt/indexの不整合もworkflowを失敗にします。
 1 job / 1 writerとworkflowのconcurrency groupで直列化し、GCS世代条件も併用します。
 **同じバケットを別repository/ローカルから同時運転しないでください。**
 世代条件は競合時に停止しますが、複数writerでのLLM先行呼出までは防止しません。
@@ -137,8 +141,10 @@ Note更新後にreceipt更新が失敗した場合は、世代条件付きでNot
 複数記事を一括更新する処理全体はatomicではないため、定期実行や他のwriterと重ねず、
 適用後に `audit-state` を実行してください。
 
-2026-10-01の最新ローカル検証では全65テストが成功しました。同日の本番GCS検査も成功し、
-成功index 6件、pending 108件、検出問題0件でした。初回はADCの `RefreshError` で失敗しましたが、
+2026-10-01の最新ローカル検証では全65テストが成功しました。同日にmetadata更新を適用し、
+5 Note/receiptを更新、1件は変更なし、失敗0件でした。適用後の本番GCS検査も成功し、
+成功index 6件、pending 108件、検出問題0件でした。要約本文・hash・index・pendingの不変も確認済みです。
+同日の初回検査はADCの `RefreshError` で失敗しましたが、
 認証更新の再確認と検査の再実行で成功しています。認証エラーが続く場合は
 `gcloud auth application-default login` で認証を更新してから再実行してください。
 
@@ -163,8 +169,8 @@ raw/YYYY/MM/<raw-sha256>.html  # opt-in
 
 ## 費用と使用量
 
-本番受入前の一時上限は **1 runあたり1記事** です。初回Note確認後に30へ戻します。
-通常運用の上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
+設定上の通常運用上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
+上限1件での本番確認を完了し、30件への復帰を実装しました。上限30件での本番受入は未完了です。
 **Phase 1では、記事Markdownの入力上限20,000文字を維持します。**
 文字数はHTML変換・正規化後のMarkdownに対するPythonの文字数であり、token数ではありません。
 上限を超える記事は先頭20,000文字だけをGeminiへ送り、後半の論点は要約対象に含まれません。

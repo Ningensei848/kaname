@@ -9,7 +9,19 @@ Geminiを再呼出しせず、成功indexの原記事から著者を再取得し
 
 Python 3.12.13で全65テスト、設定検証、git diff --checkに成功しました。
 本番GCSに計画モードを実行し、成功行6件、更新予定5件、変更なし1件、著者取得不能0件、
-失敗0件を確認しました。`--apply` は未実行で、本番GCSの内容は変更していません。
+失敗0件を確認しました。その後、PR #89をmerge済みのmain (`e510b5d`) で、
+稼働中のworkflowがないことを確認し、本番Note/stateのsnapshotを保存して `--apply` を実行しました。
+更新5件、変更なし1件、著者取得不能0件、失敗0件でした。
+適用後のauditは成功行6件、pending 108件、truncated_rows 6件、issues 0件です。
+snapshotとの差分を確認し、要約本文・著者/公開日以外のfrontmatter・hash・receipt行・index・pendingが
+不変であることを確認しました。Gemini呼出し・workflow実行は行っていません。
+
+## Phase 1実装の完了 — 2026-10-01
+
+`max_calls_per_run` を通常値30へ復帰し、daily workflowの収集成功後に `audit-state` を追加しました。
+全65テストと設定検証に成功しました。30件上限の既存テストは31記事に対して30件を保存し、
+1件をpendingへ残すことを確認しています。入力上限20,000文字、原文非保存、AWS News無効を維持します。
+実装完了と本番受入完了を区別し、下記のユーザー確認と上限30件での定期実行確認を未完了として残します。
 
 ## 入力上限の明示 — 2026-10-01
 
@@ -38,7 +50,7 @@ GitHub APIでは同日のmain (`e1d48fd`) のworkflow成功を確認しました
 |---|---|
 | Python 3.12の独立venvに依存を導入 | 成功 |
 | `python -m techkb validate-config` | 成功。3 sources、指定Geminiモデル |
-| `python -m pytest -q` | **36 passed** |
+| `python -m pytest -q` | **65 passed**（2026-10-01） |
 | raw一致時の変換前skip | 成功 |
 | 動的script差分/content一致時のGemini抑止 | 成功 |
 | 同一URLの本文更新 | 成功、別Note生成 |
@@ -55,6 +67,7 @@ GitHub APIでは同日のmain (`e1d48fd`) のworkflow成功を確認しました
 | compact Note本番保存 | **成功**。3件を自動生成、旧形式1件を状態整合性を維持して移行、全4件で原文セクションなし |
 | 実環境の重複抑止 | **成功**。raw/content duplicateを確認し、新規記事だけGemini対象 |
 | GitHub Actions schedule | **成功**。2026-09-28、2026-09-29のscheduled runが完了 |
+| 本番metadata更新と適用後audit | **成功**。5 Note/receipt更新、成功6件、pending 108件、issues 0件、要約・状態不変 |
 
 テストのHTTP通信にはhttpx.MockTransportを使用します。実際のRSS/Atom解析、HTML cleaner、
 MarkItDown、Pydantic、Composer、状態更新、CLIを通しています。
@@ -84,6 +97,26 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 
 これらが完了するまで「日次運用可能なMVP受入完了」とは判定しません。
 受入後はdocs/roadmap.mdのPhase 2へ着手してください。
+
+## 上限30件での最終受入手順
+
+1. [Note品質](acceptance-note-quality-2026-10-01.md)と[利用条件](source-usage-review-2026-10-01.md)の
+   ユーザー最終確認後、上限30件のPRをmainへmergeする。確認したmerge commitを記録する。
+2. 次回07:17 JSTのrunを待ち、Actionsのeventが `schedule`、headが上限30件を含むcommit、
+   workflow結論が `success` であることを確認する。手動runだけではこの項目を完了にしない。
+3. Collectの `run_report` とGCSの対応する `runs/YYYY/MM/<run-id>.json` を照合する。
+   `status: success`、failures空、`llm_calls <= 30`、`llm_failed: 0`、
+   `llm_processed == llm_calls`、`saved == llm_processed + recovered` を確認する。
+   新規記事が30件未満なら実件数を記録し、30件処理したという表現はしない。
+4. `llm_http_attempts`、入力・出力・thinking tokens、`llm_usage_unavailable` を記録する。
+   retryがある場合、HTTP通信回数は30を超えることがある。usage不明があれば費用確認を残す。
+5. Audit saved stateの `status: success` とissues空を確認する。
+   成功index増分が `saved` と一致し、auditのpending件数がreportの `pending_after` と一致することを確認する。
+   pendingはfeedで増えるため、単純に108−30件になるとは限らない。
+6. run URL、commit、処理/失敗/重複件数、usage、成功indexとpending、audit結果を本書へ追記する。
+   全項目を確認してREADMEを受入完了へ更新する。
+
+2026-10-01時点の基準は成功index 6件、pending 108件です。上限30件のscheduled runは未実行です。
 
 ## 残余制約
 
