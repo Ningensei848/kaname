@@ -73,4 +73,6 @@ def audit_state(store):
     if unindexed_notes:
         issues.append({"code": "unindexed_notes", "count": unindexed_notes})
     return {"status": "failed" if issues else "success", "success_rows": len(rows),
-            "pending": len(state.pending()), "issues": issues}
+            "pending": len(state.pending()),
+            "truncated_rows": sum(row.get("llm_input_truncated", "").casefold() == "true" for row in rows),
+            "issues": issues}

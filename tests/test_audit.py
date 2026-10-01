@@ -12,7 +12,8 @@ def test_audit_pipeline_output_is_read_only(harness):
     before = dict(harness.store.data)
     writes = list(harness.store.writes)
     assert audit_state(harness.store) == {
-        "status": "success", "success_rows": 1, "pending": 0, "issues": []}
+        "status": "success", "success_rows": 1, "pending": 0,
+        "truncated_rows": 0, "issues": []}
     assert harness.store.data == before
     assert harness.store.writes == writes
 
@@ -114,3 +115,16 @@ def test_audit_does_not_construct_article_or_llm_clients(harness, monkeypatch):
     monkeypatch.setattr("techkb.cli.Gemini", forbidden)
     monkeypatch.setattr("techkb.cli.GCSStore", lambda _: harness.store)
     assert main(["audit-state"]) == 0
+
+
+def test_audit_reports_truncated_rows(harness):
+    harness.pipeline.run()
+    index = next(key for key in harness.store.data if key.startswith("state/index/"))
+    rows = decode_tsv(harness.store.data[index], INDEX_COLUMNS)
+    rows[0]["llm_input_truncated"] = "true"
+    harness.store.data[index] = encode_tsv(rows, INDEX_COLUMNS)
+    receipt_path = f"state/receipts/{rows[0]['content_sha256']}.json"
+    receipt = json.loads(harness.store.data[receipt_path])
+    receipt["row"]["llm_input_truncated"] = "true"
+    harness.store.data[receipt_path] = json.dumps(receipt).encode()
+    assert audit_state(harness.store)["truncated_rows"] == 1

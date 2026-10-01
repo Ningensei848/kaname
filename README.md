@@ -109,7 +109,8 @@ python -m techkb audit-state --state-dir local-snapshot
 成功indexを基準に、Note/receiptの存在、frontmatterのraw/content hash、
 receiptとindexの各列・Note本文の一致、content hashの重複、未登録Note/receipt、
 旧形式の `## 原文` セクションを検査します。結果はJSONで、成功行数、pending件数、
-問題のコードと成功行の通し番号（1始まり）を返します。本文・タイトル・URLは出力しません。
+問題のコードと成功行の通し番号（1始まり）、LLM入力が打ち切られた成功行数
+`truncated_rows` を返します。本文・タイトル・URLは出力しません。
 終了コードは整合性に問題がなければ0、問題または読取り失敗なら1です。自動修復はしません。
 成功行数0は `no_success_rows` として失敗にします。存在しないsnapshotディレクトリも失敗します。
 一部だけをコピーしたsnapshotを完全な状態と誤認しないよう、期待する件数も確認してください。
