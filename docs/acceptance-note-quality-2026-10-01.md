@@ -27,6 +27,8 @@ GCS書込み、Gemini呼出し、workflow実行は行っていません。
 9月作成の5件は著者抽出機能の適用前に保存されたため、現在の原記事に著者が明記されていても
 frontmatterは `author: []`、出典情報は `取得なし` です。現行コードを現在の6記事へ適用すると、
 Stephen Toub、Kayla Cinnamon、Tomoko Tanaka、Burke Holland、GPSを取得できることを確認しました。
+`refresh-metadata` の本番計画モードでは更新予定5件、変更なし1件、著者取得不能0件、失敗0件でした。
+本資料更新時点では `--apply` を実行しておらず、保存済みNote/receiptは変更していません。
 
 全6件が `llm_input_truncated: true` です。最新記事の変換後Markdownは30,876文字、
 LLM入力上限は20,000文字でした。`Skills killed MCP` は20,274文字目、`RAG is dead` は
@@ -68,7 +70,7 @@ Google Researchは今回の成功Noteに含まれていないため、Note品質
 
 ## 受入前に決めること
 
-1. 既存5件の著者と日付表記を、LLMを再呼出しせずNote/receiptへ反映するか。
+1. `refresh-metadata` の計画どおり、既存5件の著者と日付表記をNote/receiptへ反映するか。
 2. **2026-10-01のユーザー方針: 入力上限20,000文字を維持する。** 後半の要約欠落はこの制限に伴うもので、打切り時は新規Noteに注意表示と生成時の上限値を残す。既存Noteは自動更新しない。将来の緩和は `llm.max_input_chars` の設定変更と品質・usageの再確認で行う。
 3. GitHub BlogとGoogle Researchについて、取得だけでなくGemini送信と要約保存を含む利用条件をユーザーが最終判断する。
 4. 上記確認後に `max_calls_per_run` を1から30へ戻す。

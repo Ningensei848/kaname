@@ -117,7 +117,26 @@ receiptとindexの各列・Note本文の一致、content hashの重複、未登�
 これは日本語要約の品質や利用条件の確認を代替しません。
 複数objectを順次読むため、定期実行や他のwriterが動いていない時間に実行してください。
 
-2026-10-01のローカル検証では全56テストが成功しました。同日の本番GCS検査も成功し、
+既存Noteの著者と公開日表記は、Geminiを呼び出さず原記事のmetadataから更新できます。
+既定は計画だけを出力し、GCSへ書き込みません。
+
+```bash
+# 原記事を取得して更新対象件数を確認。GCSは読取り専用。
+python -m techkb refresh-metadata
+
+# 計画確認後、Noteと対応receiptだけを世代条件付きで更新。
+python -m techkb refresh-metadata --apply
+```
+
+成功indexのURLだけをrobots.txt・HTTP制限に従って取得し、著者が取得できた場合は
+frontmatterと出典情報へ反映します。公開日はindexの値から日付部分へ正規化します。
+AI要約、重要ポイント、検索キーワード、hash、index、pendingは変更しません。
+適用前に全対象を検証し、欠落・不整合・取得失敗が1件でもあれば書込みを開始しません。
+Note更新後にreceipt更新が失敗した場合は、世代条件付きでNoteを元の内容へ戻すよう試みます。
+複数記事を一括更新する処理全体はatomicではないため、定期実行や他のwriterと重ねず、
+適用後に `audit-state` を実行してください。
+
+2026-10-01の最新ローカル検証では全64テストが成功しました。同日の本番GCS検査も成功し、
 成功index 6件、pending 108件、検出問題0件でした。初回はADCの `RefreshError` で失敗しましたが、
 認証更新の再確認と検査の再実行で成功しています。認証エラーが続く場合は
 `gcloud auth application-default login` で認証を更新してから再実行してください。
