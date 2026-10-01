@@ -116,9 +116,10 @@ receiptとindexの各列・Note本文の一致、content hashの重複、未登�
 これは日本語要約の品質や利用条件の確認を代替しません。
 複数objectを順次読むため、定期実行や他のwriterが動いていない時間に実行してください。
 
-2026-10-01のローカル検証では全56テストが成功しました。本番GCSの検査はADCの
-`RefreshError` で未完了です。必要に応じて `gcloud auth application-default login` で
-認証を更新してから再実行してください。日次workflowの成功と、保存済みデータの検査完了は別です。
+2026-10-01のローカル検証では全56テストが成功しました。同日の本番GCS検査も成功し、
+成功index 6件、pending 108件、検出問題0件でした。初回はADCの `RefreshError` で失敗しましたが、
+認証更新の再確認と検査の再実行で成功しています。認証エラーが続く場合は
+`gcloud auth application-default login` で認証を更新してから再実行してください。
 
 ```text
 notes/YYYY/MM/YYYY-MM-DD_title_hash12.md

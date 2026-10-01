@@ -6,7 +6,9 @@
 pipelineが生成したデータの整合性、書込みなし、Note/receipt欠落、receipt破損、
 hash不一致、原文セクション残存、未登録Note/receipt、重複行、不正パス、
 frontmatter境界、空/存在しないsnapshot、ローカルsnapshotでのCLI終了コードを検証しています。
-2026-10-01に本番GCSの検査を試みましたが、ADCの `RefreshError` により未完了です。
+2026-10-01の本番GCS検査は初回にADCの `RefreshError` が発生しましたが、
+認証更新を再確認後の再実行で成功しました（成功index 6件、pending 108件、issues 0件、終了コード0）。
+GCS書込み・Gemini呼出しは行っていません。初回の認証エラーの原因は未特定です。
 GitHub APIでは同日のmain (`e1d48fd`) のworkflow成功を確認しました。
 本番受入の品質確認や利用条件の確認が完了したという意味ではありません。
 
