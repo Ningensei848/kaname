@@ -15,6 +15,7 @@ Python 3.12.13で全65テスト、設定検証、git diff --checkに成功しま
 適用後のauditは成功行6件、pending 108件、truncated_rows 6件、issues 0件です。
 snapshotとの差分を確認し、要約本文・著者/公開日以外のfrontmatter・hash・receipt行・index・pendingが
 不変であることを確認しました。Gemini呼出し・workflow実行は行っていません。
+適用後に計画モードを再実行し、更新予定0件、変更なし6件、失敗0件も確認しました。
 
 ## Phase 1実装の完了 — 2026-10-01
 
