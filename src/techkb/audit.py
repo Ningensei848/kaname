@@ -8,6 +8,41 @@ import yaml
 from .state import State
 
 
+def audit_run(store, run_id, max_calls=30, expected_success_before=None):
+    """Compare a persisted run with quiescent state without exposing article data."""
+    if not re.fullmatch(r"\d{8}T\d{6}Z-[0-9a-f]{8}", run_id or ""):
+        raise ValueError("invalid run id")
+    if expected_success_before is not None and expected_success_before < 0:
+        raise ValueError("invalid baseline")
+    audit = audit_state(store)
+    issues = []
+    name = f"runs/{run_id[:4]}/{run_id[4:6]}/{run_id}.json"
+    data = store.read(name)
+    if data is None:
+        return {"status": "failed", "audit": audit, "issues": [{"code": "missing_report"}]}
+    try:
+        report = json.loads(data)
+    except (ValueError, UnicodeError):
+        return {"status": "failed", "audit": audit, "issues": [{"code": "invalid_report"}]}
+    fields = ("llm_calls", "llm_http_attempts", "llm_processed", "llm_failed", "saved",
+              "recovered", "pending_before", "pending_after", "total_input_tokens",
+              "total_output_tokens", "total_thinking_tokens", "llm_usage_unavailable")
+    if not isinstance(report, dict) or any(type(report.get(k)) is not int or report[k] < 0 for k in fields):
+        return {"status": "failed", "audit": audit, "issues": [{"code": "invalid_report"}]}
+    if report.get("run_id") != run_id or report.get("status") != "success" or report.get("dry_run") is not False or report.get("failures") != []:
+        issues.append({"code": "unsuccessful_report"})
+    if report["llm_calls"] > max_calls or report["llm_failed"] or report["llm_processed"] != report["llm_calls"]:
+        issues.append({"code": "invalid_llm_counts"})
+    if report["saved"] != report["llm_processed"] + report["recovered"]:
+        issues.append({"code": "invalid_saved_count"})
+    if report["pending_after"] != audit["pending"]:
+        issues.append({"code": "pending_mismatch"})
+    if expected_success_before is not None and audit["success_rows"] - expected_success_before != report["saved"]:
+        issues.append({"code": "index_delta_mismatch"})
+    return {"status": "success" if audit["status"] == "success" and not issues else "failed",
+            "run_id": run_id, "report": {k: report[k] for k in fields}, "audit": audit, "issues": issues}
+
+
 def audit_state(store):
     state = State(store)
     issues = []

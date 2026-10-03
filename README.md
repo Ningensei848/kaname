@@ -111,6 +111,9 @@ python -m techkb audit-state
 
 # notes/ と state/ を同じ構造で保存したローカルsnapshotを検査
 python -m techkb audit-state --state-dir local-snapshot
+
+# 保存済みrunの件数・usage・pendingと現時点の整合性を照合（読取り専用）
+python -m techkb audit-run --run-id RUN_ID --expected-success-before 36
 ```
 
 成功indexを基準に、Note/receiptの存在、frontmatterのraw/content hash、
@@ -122,6 +125,10 @@ receiptとindexの各列・Note本文の一致、content hashの重複、未登�
 成功行数0は `no_success_rows` として失敗にします。存在しないsnapshotディレクトリも失敗します。
 一部だけをコピーしたsnapshotを完全な状態と誤認しないよう、期待する件数も確認してください。
 これは日本語要約の品質や利用条件の確認を代替しません。
+`audit-run` は保存済みreportの成功・上限・保存件数、現在のpendingとindex増分も検査します。
+別run後の状態には一致しないことがあるため、対象runの完了後、次run前に使ってください。
+Actionsの手動実行で `verification_run_id` と `expected_success_before` を指定すると、
+WIFでこの照合だけを実行し、記事取得・Gemini呼出し・GCS書込みは行いません。
 複数objectを順次読むため、定期実行や他のwriterが動いていない時間に実行してください。
 
 既存Noteの著者と公開日表記は、Geminiを呼び出さず原記事のmetadataから更新できます。
