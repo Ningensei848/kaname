@@ -5,16 +5,13 @@ RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化
 → GeminiのStructured JSON → Pydantic → Markdown → GCS/月次TSVの順で処理します。
 SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
 
-**Phase 1の実装は完了し、通常上限30件/runと、収集後のGCS整合性検査を設定しています。**
-実環境ではcompact Noteの保存、既存Noteのmetadata更新、上限1件でのscheduled run、
-上限30件での手動runと収集後のGCS検査まで確認済みです。
-PR #90のmergeと受入継続指示を受領し、上限30件をmainへ反映しました。
-上限30でのscheduled run確認が残っているため、
-受入完了まではPhase 1運用開始前として扱ってください。Phase 2/3は[確定バックログ](docs/roadmap.md)です。
+**Phase 1の実装・本番受入は完了しました。** 上限30件の手動runとscheduled runに成功し、
+Actionsログ・GCS report・Note/receipt/index/pendingの一致を確認しました。
+Phase 2の実装を進めています。Phase 2/3の範囲は[確定バックログ](docs/roadmap.md)を参照してください。
 
-## Phase 1本番受入状況（2026-10-02）
+## Phase 1本番受入状況（2026-10-03）
 
-- [x] Python 3.12で設定検証と全65テストに成功。31記事中30記事を処理し、残り1記事をpendingへ残すテストも成功。
+- [x] Python 3.12で設定検証と全72テストに成功。31記事中30記事を処理し、残り1記事をpendingへ残すテストも成功。
 - [x] `q4rs-project` に非公開GCS bucket、最小custom role、実行用service account、GitHub Actions用WIFを設定。
 - [x] bucketのUniform Bucket-Level Accessを有効化し、Public Access Preventionを`enforced`に設定。公開IAM bindingなし。
 - [x] GitHub Repository Variables 3件とSecret `GEMINI_API_KEY` の存在を確認。
@@ -34,10 +31,13 @@ PR #90のmergeと受入継続指示を受領し、上限30件をmainへ反映し
 - [x] [上限30件での本番手動run](https://github.com/Ningensei848/kaname/actions/runs/36881318035)に成功。Google Research 26件・GitHub Blog 4件を保存、失敗0件。成功index 36件、pending 78件、整合性問題0件。
 - [x] 新規Noteの打切り26件すべてに注意表示と上限20,000文字のfrontmatterを確認。ActionsログとGCS report/auditの一致を確認。
 
+- [x] [上限30件のscheduled run](https://github.com/Ningensei848/kaname/actions/runs/36952132802)で30件保存・失敗0件。成功index 66件、pending 63件、整合性問題0件。
+- [x] [WIFによる読取り専用照合](https://github.com/Ningensei848/kaname/actions/runs/37080742206)で保存済みreportとログの件数・usage一致を確認。Phase 1受入完了。
+
 ## 次にやること
 
-- [ ] 上限30で最初のscheduled runを[受入手順](docs/verification.md#上限30件での最終受入手順)に従って確認する。予定は毎日07:17 JST（開始遅延あり）。
-- [ ] `docs/verification.md`を最終更新してPhase 1受入完了を宣言し、その後にPhase 2へ進む。
+- [x] 上限30のscheduled runを受入手順に従って照合し、検証記録を更新。
+- [ ] [Phase 2実装計画](docs/phase2-implementation-plan.md)に従って8機能を実装・検証する。
 
 ## 開始方法
 
