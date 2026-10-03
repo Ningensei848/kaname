@@ -1,4 +1,30 @@
-# 検証記録 — 2026-10-02
+# 検証記録 — 2026-10-03
+
+
+## Phase 1最終受入完了 — 2026-10-03
+
+[定期run](https://github.com/Ningensei848/kaname/actions/runs/36952132802)はevent `schedule`、
+head `f0fe413d699d7a5232f5b13b2621d6f1882d80c4`、Collect/Auditとも成功でした。
+2026-10-02 10:41 JSTに開始（07:17のcronから遅延）、10:48 JSTにworkflow完了。
+reportは `runs/2026/10/20261002T014150Z-77ab903c.json` です。
+
+| 項目 | 結果 |
+|---|---|
+| 発見 / 取得 | 110 / 110 |
+| Gemini論理呼出 / HTTP通信 | 30 / 30 |
+| Gemini成功 / 失敗 / usage不明 | 30 / 0 / 0 |
+| 保存 / receipt復旧 | 30 / 0 |
+| raw / content duplicate | 2 / 15 |
+| 入力 / 出力 / thinking tokens | 174,952 / 18,915 / 0 |
+| 成功index | 36 → 66（増分30） |
+| pending | 78 → 63 |
+| audit | success、truncated_rows 51、issues 0 |
+
+ローカルADCは再認証を要求したため、同じdaily workflowのWIFを使う読取り専用
+[照合run](https://github.com/Ningensei848/kaname/actions/runs/37080742206)を実行しました。
+head `2b024a6`、全72テスト・WIF・audit-runに成功。Collectはskipされています。
+保存済みreportの上記件数・usageと定期runログが一致し、index増分・pending・Note/receipt整合性も成功。
+照合に記事取得・Gemini呼出し・GCS書込みはありません。Phase 1受入完了です。
 
 ## 上限30件の本番受入継続 — 2026-10-02
 
@@ -141,10 +167,9 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 - [x] 07:17 JSTスケジュールによる日次実行成功（GitHub側の開始遅延あり）。
 - [x] Note品質資料と入力上限による制約を提示し、ユーザーがPR #90をmergeして受入継続を指示。
 - [x] `max_calls_per_run`を30へ戻し、workflow_dispatchで30件の処理・保存と収集後auditに成功。
-- [ ] 上限30でscheduled runが成功し、report / usage / pending / auditを照合。
+- [x] 上限30でscheduled runが成功し、report / usage / pending / auditを照合。
 
-これらが完了するまで「日次運用可能なMVP受入完了」とは判定しません。
-受入後はdocs/roadmap.mdのPhase 2へ着手してください。
+全項目を確認し、2026-10-03にPhase 1の本番受入完了と判定しました。Phase 2へ進みます。
 
 ## 上限30件での最終受入手順
 
@@ -164,7 +189,7 @@ Gemini応答とGCSはテスト用オブジェクトです。実課金は発生�
 6. run URL、commit、処理/失敗/重複件数、usage、成功indexとpending、audit結果を本書へ追記する。
    全項目を確認してREADMEを受入完了へ更新する。
 
-2026-10-02の手動run後の基準は成功index 36件、pending 78件です。上限30件のscheduled runは未実行です。
+2026-10-02の手動run後の基準は成功index 36件、pending 78件です。以下のscheduled runと保存済みreportの照合を完了しました。
 
 ## 残余制約
 
