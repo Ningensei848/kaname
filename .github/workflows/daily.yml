@@ -3,6 +3,15 @@ on:
   schedule:
     - cron: "17 22 * * *"
   workflow_dispatch:
+    inputs:
+      verification_run_id:
+        description: 'Saved run ID to verify without collecting articles (empty = normal run)'
+        type: string
+        default: ''
+      expected_success_before:
+        description: 'Success index count before that saved run (verification only)'
+        type: string
+        default: ''
 permissions:
   contents: read
   id-token: write
@@ -32,11 +41,20 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect
+        if: ${{ inputs.verification_run_id == '' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python -m techkb run
       - name: Audit saved state
+        if: ${{ inputs.verification_run_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python -m techkb audit-state
+      - name: Verify saved run and state
+        if: ${{ inputs.verification_run_id != '' }}
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
+          EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+        run: python -m techkb audit-run --run-id "$VERIFY_RUN_ID" --expected-success-before "$EXPECTED_SUCCESS_BEFORE"

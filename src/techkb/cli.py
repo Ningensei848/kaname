@@ -9,16 +9,18 @@ from .fetcher import Fetcher
 from .gemini import Gemini
 from .pipeline import Pipeline
 from .storage import GCSStore, DirectorySnapshot
-from .audit import audit_state
+from .audit import audit_state, audit_run
 from .metadata_refresh import MetadataRefresh
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "refresh-metadata"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
     parser.add_argument("--state-dir", help="read-only local snapshot; dry-run, audit-state or refresh-metadata only")
     parser.add_argument("--apply", action="store_true", help="apply refresh-metadata changes")
+    parser.add_argument("--run-id", help="persisted report to compare; audit-run only")
+    parser.add_argument("--expected-success-before", type=int, help="success index baseline; audit-run only")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     # Vendor debug/request logs can contain secrets and content.
@@ -27,17 +29,20 @@ def main(argv=None):
     fetcher = gemini = None
     try:
         app, sources = load_config(args.config, args.sources)
-        if args.state_dir and args.command not in {"dry-run", "audit-state", "refresh-metadata"}:
+        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata"}:
             raise ValueError("--state-dir is only for dry-run, audit-state or refresh-metadata")
         if args.apply and args.command != "refresh-metadata":
             raise ValueError("--apply is only for refresh-metadata")
         if args.apply and args.state_dir:
             raise ValueError("--apply cannot write a local snapshot")
-        if args.command == "audit-state":
+        if (args.run_id or args.expected_success_before is not None) and args.command != "audit-run":
+            raise ValueError("report arguments require audit-run")
+        if args.command in {"audit-state", "audit-run"}:
             if args.state_dir and not Path(args.state_dir).is_dir():
                 raise ValueError("snapshot directory does not exist")
             store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
-            result = audit_state(store)
+            result = (audit_state(store) if args.command == "audit-state" else
+                      audit_run(store, args.run_id, app.llm.max_calls_per_run, args.expected_success_before))
             print(json.dumps(result, ensure_ascii=False))
             return 0 if result["status"] == "success" else 1
         if args.command == "refresh-metadata":
