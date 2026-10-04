@@ -1,0 +1,42 @@
+{
+  "name": "kaname-web-preview",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
+  },
+  "scripts": {
+    "setup": "node setup.mjs",
+    "fixture": "python3 make_fixture.py",
+    "build": "python3 build.py",
+    "preview": "python3 serve.py",
+    "audit": "node audit.mjs"
+  },
+  "dependencies": {
+    "@jackyzha0/quartz": "https://codeload.github.com/jackyzha0/quartz/tar.gz/ab346fa66a895e12d63a308e70ce330ba795822a",
+    "@quartz-community/note-properties": "1.0.0",
+    "@quartz-community/created-modified-date": "1.0.1",
+    "@quartz-community/obsidian-flavored-markdown": "1.0.0",
+    "@quartz-community/crawl-links": "1.0.0",
+    "@quartz-community/description": "1.0.0",
+    "@quartz-community/content-page": "1.0.0",
+    "@quartz-community/content-index": "1.0.0",
+    "@quartz-community/tag-page": "1.0.0",
+    "@quartz-community/search": "1.0.0",
+    "@quartz-community/article-title": "1.0.0",
+    "@quartz-community/page-title": "1.0.0",
+    "@quartz-community/darkmode": "1.0.0",
+    "@quartz-community/content-meta": "1.0.0",
+    "esbuild": "0.27.2",
+    "tsx": "4.21.0",
+    "@fontsource/noto-sans-jp": "5.3.0",
+    "@quartz-community/footer": "1.0.0"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.9.12",
+    "sharp": "0.35.5",
+    "toml": "5.0.0"
+  }
+}

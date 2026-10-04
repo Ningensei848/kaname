@@ -20,13 +20,15 @@
 
 ## 2. 共通snapshotからWeb preview
 
-**次に着手する工程です。** Quartzを第一候補に、採用versionとplugin lockを固定し、synthetic Note群からpreviewを作ります。
+**実装・fixture検証済みです。** Quartz 5.0.0とpluginを固定し、synthetic Note群からpreviewを作ります。
 一覧・source/category・検索・本文・出典・AI生成/打切り表示を実装します。
 `/kaname/`配下の安定URL、内部リンク、未存在の概念、危険なHTML/埋込みを確認します。
 manifest外・archive・state・receiptがbuild出力へ入らないことを検証します。
-配布commit/digestを表示し、同じsnapshotを入力に再buildできます。
+dataset digestと指定された配布commitを表示し、同じsnapshotを入力に再buildできます。
+配布commitとcheckoutの一致は工程3〜4で保証します。実際のPages公開はまだ受入していません。
 
-成果物は確認可能なWeb previewと静的build artifactです。この段階で本体Vaultは不要です。
+成果物は確認可能なWeb previewと静的build artifactです。[起動・検証手順](web-preview.md)を参照してください。
+この段階で本体Vaultは不要です。次は工程3のGit配布とsubmodule互換性へ進みます。
 
 ## 3. Git配布とsubmodule互換性
 

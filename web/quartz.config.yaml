@@ -1,0 +1,122 @@
+configuration:
+  pageTitle: kaname
+  pageTitleSuffix: " · kaname"
+  enableSPA: false
+  enablePopovers: false
+  analytics: null
+  locale: ja-JP
+  baseUrl: ningensei848.github.io/kaname
+  ignorePatterns: []
+  defaultDateType: published
+  theme:
+    fontOrigin: local
+    cdnCaching: false
+    typography:
+      header: "system-ui"
+      body: "system-ui"
+      code: "monospace"
+    colors:
+      lightMode:
+        light: "#f7f6f2"
+        lightgray: "#e4e5df"
+        gray: "#969e9b"
+        darkgray: "#505d5d"
+        dark: "#183b3a"
+        secondary: "#14655f"
+        tertiary: "#b18438"
+        highlight: "rgba(20, 101, 95, 0.07)"
+        textHighlight: "#f4e6b5"
+      darkMode:
+        light: "#142525"
+        lightgray: "#2d4140"
+        gray: "#788e8a"
+        darkgray: "#c3d0c9"
+        dark: "#edf2e9"
+        secondary: "#9bd1b8"
+        tertiary: "#d4b46c"
+        highlight: "rgba(155, 209, 184, 0.08)"
+        textHighlight: "#526a38"
+plugins:
+  - source: ./plugins/note-properties
+    enabled: true
+    order: 5
+    options:
+      hidePropertiesView: true
+  - source: ./plugins/created-modified-date
+    enabled: true
+    order: 10
+    options:
+      priority: [frontmatter]
+  - source: ./plugins/obsidian-flavored-markdown
+    enabled: true
+    order: 30
+    options:
+      wikilinks: true
+      callouts: true
+      mermaid: false
+      enableInHtmlEmbed: false
+      enableYouTubeEmbed: false
+      enableTweetEmbed: false
+      enableVideoEmbed: false
+      enableObsidianUri: false
+      parseTags: false
+  - source: ./plugins/crawl-links
+    enabled: true
+    order: 60
+    options:
+      markdownLinkResolution: relative
+      disableBrokenWikilinks: true
+      externalLinkIcon: false
+  - source: ./plugins/description
+    enabled: true
+    order: 70
+  - source: ./plugins/content-page
+    enabled: true
+  - source: ./plugins/tag-page
+    enabled: true
+  - source: ./plugins/content-index
+    enabled: true
+    options:
+      enableSiteMap: false
+      enableRSS: false
+  - source: ./plugins/search
+    enabled: true
+    layout:
+      position: left
+      priority: 20
+  - source: ./plugins/page-title
+    enabled: true
+    layout:
+      position: left
+      priority: 10
+  - source: ./plugins/darkmode
+    enabled: true
+    layout:
+      position: left
+      priority: 30
+  - source: ./plugins/article-title
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 10
+  - source: ./plugins/content-meta
+    enabled: true
+    options:
+      showReadingTime: false
+    layout:
+      position: beforeBody
+      priority: 20
+  - source: ./plugins/footer
+    enabled: true
+    options:
+      links: {}
+layout:
+  byPageType:
+    "404":
+      positions:
+        beforeBody: []
+        right: []
+    content: {}
+    tag:
+      positions:
+        right: []

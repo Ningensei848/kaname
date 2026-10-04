@@ -73,6 +73,8 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 
 人力Vaultのrepo作成・内容の取込み・公開・プラグイン設定、原文の再配布、モデル学習は対象外です。
 DB/Vector DB/複数LLMへの移行を、この構成の前提にはしません。
-PagesのSSGはQuartzを第一候補とし、採用version・plugin lock・表示構成を次工程で検証して固定します。
+PagesのSSGはQuartz 5.0.0と固定pluginでpreviewを実装し、fixtureで検証しています。
+元Markdownは同じbytesで静的artifactに含めます。実NoteのGit/Pages公開は次工程の受入です。
+build・artifact・依存上の制約は[Web preview](web-preview.md)を参照してください。
 公開運用の権限・初回配布・自動更新の具体的なworkflowは実装PRで示します。
 今回の文書改訂では本番の公開、workflow起動、データ変更、権限変更、automation再開は行いません。

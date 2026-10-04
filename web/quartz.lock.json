@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "engine": {
+    "version": "5.0.0",
+    "commit": "ab346fa66a895e12d63a308e70ce330ba795822a",
+    "resolved": "https://codeload.github.com/jackyzha0/quartz/tar.gz/ab346fa66a895e12d63a308e70ce330ba795822a",
+    "integrity": "sha512-2pMBmOwINfCp429rsNJorr0Rk0N6ONyjXtBnuR42ssvWXLzIDZDwqw1R5MH1j3VlqMFx1iLF0O1e31eZiKpXcA=="
+  },
+  "plugins": {
+    "note-properties": {
+      "package": "@quartz-community/note-properties",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/note-properties/-/note-properties-1.0.0.tgz",
+      "integrity": "sha512-SFM7omw04/6vFdQClB9FrbTmBRLUFte/cfHoYAG+HazIy9S75qGgWyjPv0HFSf6WAzfjm+RQPoKYTytUC8anvA=="
+    },
+    "created-modified-date": {
+      "package": "@quartz-community/created-modified-date",
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/@quartz-community/created-modified-date/-/created-modified-date-1.0.1.tgz",
+      "integrity": "sha512-QpIZH+XiWzx8RkVJULaXL4/mE8FWNP6r7sFtYF0/8iE1y0YYh3sIaUZFFOiXedazVVh+L25FaTlLWfFyam1OBA=="
+    },
+    "obsidian-flavored-markdown": {
+      "package": "@quartz-community/obsidian-flavored-markdown",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/obsidian-flavored-markdown/-/obsidian-flavored-markdown-1.0.0.tgz",
+      "integrity": "sha512-ZR5n1/OqXowV7wUIaQNMgZ0Smu0K/QMF+UbcGYIwaowmED+iXduh8iv5ag84hu6MvBUNQecXDv/uKm9r9mwA1w=="
+    },
+    "crawl-links": {
+      "package": "@quartz-community/crawl-links",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/crawl-links/-/crawl-links-1.0.0.tgz",
+      "integrity": "sha512-RsgH3QvOeGQUfykme0w8sscNV3XcOrq8Jco1MkRb3CMIbiCS+/bVt+yqu1uTpuMAtcml8pdcsGyTwWPKk9DyQg=="
+    },
+    "description": {
+      "package": "@quartz-community/description",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/description/-/description-1.0.0.tgz",
+      "integrity": "sha512-8cHKrUmJangHBFLXC9G5nUerSCdoM4+JxYQMcHoH8jhmF0EotxeeAb2nUiVwQBW9TRLT8B1CUwuCODuZQWAYgQ=="
+    },
+    "content-page": {
+      "package": "@quartz-community/content-page",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/content-page/-/content-page-1.0.0.tgz",
+      "integrity": "sha512-Hr4xTSPeVRH5K9HZvcfvZX1KNs+gOwSq8zT2IUBdQAR/g1oD6e0O50Sk7XgJ/tAmmwC0ixPOSJ1I5ZuAp28klQ=="
+    },
+    "content-index": {
+      "package": "@quartz-community/content-index",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/content-index/-/content-index-1.0.0.tgz",
+      "integrity": "sha512-cwhXNFgxecCUr8wiz9EfetwwHCuSmBPpb5RdTrUGOj472FjiNzRQ1VECbOE29n0MrjRyQ++bbFVFCWzpEQCLvA=="
+    },
+    "tag-page": {
+      "package": "@quartz-community/tag-page",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/tag-page/-/tag-page-1.0.0.tgz",
+      "integrity": "sha512-oh2JxFaOT4H3TvE4W4mO96YPhA7uJa0aeLLkNruZDV8ZFmX0gZ8i9V5SB/NsQ3+49LxY0hBDRZ09IWNsx1P0Pw=="
+    },
+    "search": {
+      "package": "@quartz-community/search",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/search/-/search-1.0.0.tgz",
+      "integrity": "sha512-7xLorEeOQg9p2eA5QIRAcj3vh35w6eHlsMehJGP2oe7gXx7Ngqn9SWpORNXB5qHN5Wx1pRfo8ljvilqvbDYhiA=="
+    },
+    "article-title": {
+      "package": "@quartz-community/article-title",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/article-title/-/article-title-1.0.0.tgz",
+      "integrity": "sha512-gcePaGgp9I1tgl74XsFUn0n0z3P580PxnAS3DUdD8HIMbRuq3yMDR4z3nMs9wwQwNavta6j7X2W/xsvNkw/JEA=="
+    },
+    "page-title": {
+      "package": "@quartz-community/page-title",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/page-title/-/page-title-1.0.0.tgz",
+      "integrity": "sha512-JxHO2uWq/jeNAWFQD31+z2Ib90OSwyTekKVqb5mloiEV0kENosnzvQeph0HMiXtvgDpGQGjuaFg7mjs/5acNbw=="
+    },
+    "darkmode": {
+      "package": "@quartz-community/darkmode",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/darkmode/-/darkmode-1.0.0.tgz",
+      "integrity": "sha512-Jlm/vyyC5I8DdNsOs8FzHRzXyikX7ZHPbwVx3whkOhZO+4TGyRr/eZ9AJ4diF44TC373AWRkde6Hsgtn34bR7Q=="
+    },
+    "content-meta": {
+      "package": "@quartz-community/content-meta",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/content-meta/-/content-meta-1.0.0.tgz",
+      "integrity": "sha512-5lJN3hWf+/AQ47rAdSn2aGE9A1UZRjzKjXF6vpd4UiIZapHtLFe7FWDgwVxQfoHl0iq7HvyPaGYf10Qv/wC3gA=="
+    },
+    "footer": {
+      "package": "@quartz-community/footer",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@quartz-community/footer/-/footer-1.0.0.tgz",
+      "integrity": "sha512-ioDRbCu04MMo1Mrhbk4GPwOgQ9LPeQg5tRzNhJTLS0KUl6fiBSssNvTTsP20AL85/ZuVYibtksUEhw6opAa11g=="
+    }
+  }
+}
