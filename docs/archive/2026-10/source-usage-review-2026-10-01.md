@@ -1,3 +1,5 @@
+> 履歴資料：当時の判断・検証・作業記録です。現在の仕様は[仕様書](../../specification.md)、現状は[検証・受入](../../verification.md)を参照してください。本文の過去の状態を現在の実装状況として扱わないでください。
+
 # source利用条件の確認資料 — 2026-10-01
 
 対象は、Google Research / GitHub Blogの公開RSSと公開記事を取得し、変換後Markdownの先頭

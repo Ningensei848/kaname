@@ -1,3 +1,5 @@
+> 履歴資料：当時の判断・検証・作業記録です。現在の仕様は[仕様書](../../specification.md)、現状は[検証・受入](../../verification.md)を参照してください。本文の過去の状態を現在の実装状況として扱わないでください。
+
 # レビュー後の対処計画 — 2026-10-04
 
 レビュー基点はmain `c8e98f87019a54bded7241931d2dc3d40661d564`。
@@ -40,7 +42,7 @@ diagnosticsのない旧outcomeからの復旧も維持します。
 `batch-inspect`はcompleteを含む指定台帳の読取りに対応し、`--remote`ではそこに紐付いた既存jobをGETします。
 記事取得・Batch create/list/bind・費用計上・Note保存・GCS書込みは行いません。
 Actionsの`diagnostic_batch_id`分岐は既存Secretをjob内だけで使用し、通常収集・費用・Issue投稿をskipします。
-詳細は[操作手順](phase2-operations.md#既存batchの読取り診断)を参照してください。
+詳細は[操作手順](../../operations.md#既存batchの読取り診断)を参照してください。
 
 全125テストに成功。固定SDKのMockTransportでは、正常結果の保存/audit、ValidationErrorの診断、
 繰返し決済の費用重複なし、新規提出1回を確認しました。

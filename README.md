@@ -1,68 +1,52 @@
-# TechKB — 技術情報の自動収集・Obsidian蓄積
+# kaname — 公開するLLM生成の技術Note
 
-Python 3.12 / GitHub Actions / Gemini / 非公開GCSによる技術情報収集です。
-RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化 → content SHA-256
-→ GeminiのStructured JSON → Pydantic → Markdown → GCS/月次TSVの順で処理します。
-SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
+kanameは技術情報を収集・要約し、日々更新される生成Noteを独立したリソースとして提供するプロジェクトです。
+**同じ公開Note群を、GitHub Pagesと、人力Vaultからのgit submodule参照で利用します。**
+人力で構成するVaultは別リポジトリで管理し、その公開範囲・編集・コミュニティプラグイン設定は本プロジェクトの対象外です。
 
-**Phase 1の実装・本番受入は完了しました。** 上限30件の手動runとscheduled runに成功し、
-Actionsログ・GCS report・Note/receipt/index/pendingの一致を確認しました。
-Phase 2の8機能の実装とローカル検証を追加しました。実Batch 1件は提出に成功しましたが、結果取り込みが失敗したため本番受入は未完了です。
-2026-10-04に開発を停止し、同日ユーザー指示でレビュー指摘への対処を再開しました。
-[引継書](docs/handoff-review-2026-10-04.md)と[全体レビュー依頼文](docs/review-prompt-2026-10-04.md)は停止時の記録です。
-現在の順序と進捗は[レビュー後の対処計画](docs/review-remediation-2026-10-04.md)を参照してください。
-既存の日次収集は稼働中、Codex heartbeatはPAUSEDのままです。
-操作は[Phase 2手順](docs/phase2-operations.md)、Phase 2/3の範囲は[確定バックログ](docs/roadmap.md)を参照してください。
+この構成は新しく決定した目標です。現在動いているのは収集・非公開GCS保存であり、
+Note配布branch、submodule向け配布、Pagesは次の実装工程です。
+決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
-## Phase 1本番受入状況（2026-10-03）
+```mermaid
+flowchart LR
+    A[収集・LLM要約] --> B[GCS: 非公開の収集・復旧状態]
+    B --> C[成功Noteの版付きexport]
+    C --> D[kaname content branch: 公開Markdownとmanifest]
+    D --> E[GitHub Pages: 独立したWebリソース]
+    D --> F[利用側: git submoduleで特定commitを参照]
+```
 
-- [x] Python 3.12で設定検証と全72テストに成功。31記事中30記事を処理し、残り1記事をpendingへ残すテストも成功。
-- [x] `q4rs-project` に非公開GCS bucket、最小custom role、実行用service account、GitHub Actions用WIFを設定。
-- [x] bucketのUniform Bucket-Level Accessを有効化し、Public Access Preventionを`enforced`に設定。公開IAM bindingなし。
-- [x] GitHub Repository Variables 3件とSecret `GEMINI_API_KEY` の存在を確認。
-- [x] [`workflow_dispatch`による初回本番run](https://github.com/Ningensei848/kaname/actions/runs/36312255153)に成功。
-- [x] 初回runで110件を取得し、Geminiを1回呼び出して失敗0。Note、月次index、pending、receipt、run report、usageをGCSへ保存。
-- [x] PR #83でWeb Clipperを参考にしたcompact Note形式へ変更。今後の記事原文はNote/receiptへ保存しない。
-- [x] [compact形式の手動run](https://github.com/Ningensei848/kaname/actions/runs/36362098438)と[scheduled run](https://github.com/Ningensei848/kaname/actions/runs/36363438710)に成功。
-- [x] 翌日の[scheduled run](https://github.com/Ningensei848/kaname/actions/runs/36510301076)にも成功。GitHub側の開始遅延はあるがschedule triggerは動作。
-- [x] 成功済み記事がraw/content duplicateとして処理され、新規記事1件だけがGemini対象になることを実環境で確認。
-- [x] 初回runの旧形式Note/receiptをgeneration条件付きでcompact形式へ移行。月次index 4件とpending 108件を維持。
-- [x] 本番GCSの全4 Note/receiptに原文セクションがなく、Noteは約3.9〜5.1KB・63〜66行であることを確認。
-- [x] 誤作成した空bucketとservice accountを削除し、正系の`kaname-*`リソースだけを維持。
-- [x] PR #88 / #89をmainへ反映。打切りNoteの注意表示、`audit-state`、Gemini不要の`refresh-metadata`を実装。
-- [x] 本番GCSの既存5 Note/receiptへ著者・公開日表記を反映。成功index 6件、pending 108件、整合性問題0件。要約本文・hash・index・pendingの不変を確認。
-- [x] 通常上限30件/runへ設定を復帰。workflowに収集成功後の読取り専用GCS検査を追加。
-- [x] Note品質資料・利用条件資料を提示し、2026-10-02にユーザーがPR #90をmergeして受入継続を指示。
-- [x] [上限30件での本番手動run](https://github.com/Ningensei848/kaname/actions/runs/36881318035)に成功。Google Research 26件・GitHub Blog 4件を保存、失敗0件。成功index 36件、pending 78件、整合性問題0件。
-- [x] 新規Noteの打切り26件すべてに注意表示と上限20,000文字のfrontmatterを確認。ActionsログとGCS report/auditの一致を確認。
+生成Noteの配布元を独立させることで、Webは新しい公開版へ更新し、人力Vaultは必要な版を参照できます。
+Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待たずに提供します。
 
-- [x] [上限30件のscheduled run](https://github.com/Ningensei848/kaname/actions/runs/36952132802)で30件保存・失敗0件。成功index 66件、pending 63件、整合性問題0件。
-- [x] [WIFによる読取り専用照合](https://github.com/Ningensei848/kaname/actions/runs/37080742206)で保存済みreportとログの件数・usage一致を確認。Phase 1受入完了。
+## 仕様と実装状態
 
-## 次にやること
+| 項目 | 状態 |
+|---|---|
+| RSS/HTTP → Markdown → Gemini Structured JSON → Note/GCS | 実装・Phase 1本番受入済み。既存日次収集は稼働中 |
+| Batch、本文抽出、フィルタ、ブラウザ、費用・通知・lifecycle | 実装済み。Batch成功結果の本番保存と一部のレビュー指摘は未完了 |
+| 既存Vaultへの直接同期 | 互換機能。既存Noteを保持して更新候補を別保存する編集保護を取込済み |
+| 公開NoteのGit配布・独立Pages | 新しい標準経路として採用。未実装・未公開 |
+| 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本セッションでは扱わない |
 
-- [x] 上限30のscheduled runを受入手順に従って照合し、検証記録を更新。
-- [x] [Phase 2実装計画](docs/phase2-implementation-plan.md)の8機能を実装し、互換性・障害復旧・実Chromiumを検証。
-- [x] 全体レビューと既存Batchの読取り診断を実施。保存失敗は必須title_ja欠落とschema外項目によるValidationError（[対処計画](docs/review-remediation-2026-10-04.md)、[Issue #94](https://github.com/Ningensei848/kaname/issues/94)）。
-- [ ] レビュー後に実Batchの結果保存 → audit/costを受け入れ、Phase 2の最終記録を更新する。再実行は改めて指示を受けて進める。
+次に実装するのは、**既存の成功Noteを追加LLM呼出しなしでexportする共通配布snapshot**です。
+そのsnapshotを入力にPagesとGit配布を組み立てます。実Batch受入完了をPages着手の前提にしません。
+実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
 
-## Phase 2
+## 公開するもの
 
-- source設定からHTTP/Playwright、RSS/HTML一覧、本文selector/汎用抽出を選択。
-- keyword/domain/source categoryの決定的フィルタ。LLM呼出し前に除外。
-- Gemini standard/batch切替。非同期job予約・再開・部分失敗・in-flightの二重課金抑止。
-- `sync --vault`でObsidianへ片方向同期。既存Noteを保持し、更新候補を別保存。ローカル編集と未管理ファイルを保護。
-- `cost-report`で実測usageから日次/月次USDを集計。不明usageと待機Batchを明示。
-- `notify`で連続失敗と予算到達を検出。ユーザー承認した日次workflowから必要時だけIssue投稿し、既存Issueと重複抑止。
-- sourceの`raw_retention_days`からGCS lifecycleを計画。適用は管理者が明示実行。
+LLMが生成した有効なcompact Note群を公開します。AI要約、重要ポイント、検索語、資料の位置づけ、
+出典、モデル・入力打切り情報を含みます。記事原文・raw HTML、認証情報、運用のstate/receipt/run reportは配布しません。
+GCS bucketの匿名公開は行わず、公開用NoteをGitへexportする境界を設けます。
 
-既存sourceはHTTP/RSS・standard・従来の変換を維持しています。本文抽出への切替はcontent hashが変わるため明示設定です。
-JS描画には追加runtimeが必要です。各CLI・設定例・復旧方法は[操作手順](docs/phase2-operations.md)を参照してください。
-QuartzによるSSG公開はVault同期後の別課題として残しています。
+公開NoteとPagesは同じsnapshotを使い、Noteの識別子・版・出典を追跡できるようにします。
+生成領域への人手の注釈は人力Vault側に保持する運用を基本にします。
+仕様は[仕様書](docs/specification.md)、配布契約は[公開・配布設計](docs/publication.md)にまとめています。
 
-## 開始方法
+## 現行コレクタを使う
 
-checkoutした `kaname/` ディレクトリで実行してください。
+Python 3.12で、リポジトリrootから実行してください。CLI/パッケージ名は互換性のため`techkb`です。
 
 ```bash
 python3.12 -m venv .venv
@@ -73,192 +57,41 @@ python -m techkb validate-config
 python -m pytest -q
 ```
 
-Windows PowerShellでは ` .venv\Scripts\Activate.ps1 ` で仮想環境を有効化します。
-`requirements.lock` は検証時に解決した依存バージョンを固定します。
-更新時は新しい仮想環境で `pip install -e '.[test]'` → `pip freeze --exclude-editable > requirements.lock`
-→ 全テストを実行してください。Python配布パッケージに実データ・認証情報を含めません。
+ブラウザ機能の検証は[操作手順](docs/operations.md)に従って追加runtimeを導入します。
+Windowsでは対応するvenvのPowerShell activateを使用してください。
+依存更新は隔離環境で解決し、lock更新と必要な検証を行います。
 
-## 設定
+| 設定 | 役割 |
+|---|---|
+| `config/app.yaml` | モデル、呼出し/入力/出力上限、カテゴリ、保存・費用・通知 |
+| `config/sources.yaml` | 情報源と取得方式。Google Research/GitHub Blog有効、AWS News無効 |
+| `prompts/enrich.txt` | 本文を命令として扱わない要約・分類指示 |
+| `GCS_BUCKET` | GCS保存先。認証はローカルADCまたはActions WIF |
+| `GEMINI_API_KEY` | Gemini認証。GCS認証とは別。環境変数またはGitHub Secretで渡す |
 
-- `config/app.yaml`: HTTP制限、LLMモデル・上限、カテゴリ、保存設定。
-- `config/sources.yaml`: RSS/Atom情報源。Google Research、GitHub Blogを有効化し、AWS News Blogは利用条件の確認待ちで無効化。
-- `prompts/enrich.txt`: 要約・分類指示。本文は命令として扱わないと明記。
-- `GCS_BUCKET`: 非公開バケット名。設定ファイルの値を上書き。
-- `GEMINI_API_KEY`: Gemini Developer APIのキー。GitHub Secretsか環境変数で指定。
-
-モデルは指定どおり `gemini-3.5-flash-lite`、thinkingは `minimal` です。
-カテゴリはYAMLからSchemaのenumへ反映し、応答後にも検証します。
-NoteはAI要約、重要ポイント、検索キーワード、資料の位置づけ、出典情報だけを保存し、記事原文は保存しません。
-LLMには要約・分類のため本文を送信します。`store_raw_html` は別設定で、source指定が全体設定より優先です。
-sourceの削除/無効化後も、既存pendingは消去せず保留します。
-
-## 実行
-
-[GCP初期設定](docs/gcp-setup.md)でWIF・バケット・GitHub Variables/Secretsを設定します。
-APIキーをコマンド履歴に直接書かず、シェルの安全な入力またはGitHub Secretsを利用してください。
-`.env.example` は項目例であり、CLIは `.env` を自動読込みしません。
+通常はstandard、30件/run、入力20,000文字、出力2,048 tokens、minimalを維持します。
+入力上限は記事Markdown部分の文字数でありtoken数や記事全体の保証ではありません。
+打切りNoteは制限を表示します。設定変更で既存Noteを自動再要約しません。
+予算は通知閾値で、日次の厳格な課金上限ではありません。
 
 ```bash
-# GCSはADC認証、GeminiはGEMINI_API_KEYを使用
-python -m techkb run
-
-# GCS状態を読み、HTTP取得・変換・重複判定だけ行う。Gemini・GCS書込みなし。
-python -m techkb dry-run
-
-# GCS認証なし。ローカルのstate/index/*.tsvとstate/pending.tsvを読取り専用で使う。
-mkdir -p local-state
-python -m techkb dry-run --state-dir local-state
+python -m techkb run          # 有料生成・GCS更新を伴う通常収集
+python -m techkb audit-state  # GCS読取りだけで整合性を検査
+python -m techkb cost-report  # 保存済みreportから費用推計
 ```
 
-`--state-dir` が空なら既知hashゼロとして扱います。本番履歴の重複確認にはGCS読取りを使ってください。
-dry-runでもRSS/記事へのネットワークアクセスが発生します。返却コードは成功0、障害1です。
-設定ファイルを変える場合は `--config PATH --sources PATH` を使用します。
-相対 `prompt_file` はapp.yamlの親の親（通常リポジトリroot）を基準に解決します。
+`dry-run`にも記事への通信があり、`run --max-calls 0`にも回収・保存があります。
+読取り診断、Batch、互換sync、通知、metadata更新、lifecycleの正確な操作と副作用は
+[操作手順](docs/operations.md)を参照してください。
+現在の定期実行は毎日07:17 JST予定です。GitHub側の遅延があり、同じbucketのwriterは一つに限定します。
 
-GitHub Actionsは毎日07:17 JST、または `workflow_dispatch` で実行します。
-スケジュールの実際の開始時刻はGitHub側の遅延を受けます。
-収集成功後に `audit-state` を実行し、保存済みNote/receipt/indexの不整合もworkflowを失敗にします。
-1 job / 1 writerとworkflowのconcurrency groupで直列化し、GCS世代条件も併用します。
-**同じバケットを別repository/ローカルから同時運転しないでください。**
-世代条件は競合時に停止しますが、複数writerでのLLM先行呼出までは防止しません。
+## 資料
 
-## 保存形式と復旧
+- [文書の入口](docs/README.md)：現在読む資料と履歴の区別
+- [ADR](docs/adr/0001-generated-content-module-and-pages.md)：生成リソースの独立と二つの参照経路
+- [仕様書](docs/specification.md)、[公開・配布](docs/publication.md)、[実装計画](docs/implementation-plan.md)
+- [操作](docs/operations.md)、[設計](docs/design-decisions.md)、[GCP設定](docs/gcp-setup.md)、[source方針](docs/source-policy.md)
+- [検証・受入](docs/verification.md)、[バックログ](docs/roadmap.md)
 
-保存済みデータの受入確認には、読取り専用の整合性検査を使えます。
-
-```bash
-# ADC認証でGCSを検査（Gemini呼出し・記事取得・GCS書込みなし）
-python -m techkb audit-state
-
-# notes/ と state/ を同じ構造で保存したローカルsnapshotを検査
-python -m techkb audit-state --state-dir local-snapshot
-
-# 保存済みrunの件数・usage・pendingと現時点の整合性を照合（読取り専用）
-python -m techkb audit-run --run-id RUN_ID --expected-success-before 36
-```
-
-成功indexを基準に、Note/receiptの存在、frontmatterのraw/content hash、
-receiptとindexの各列・Note本文の一致、content hashの重複、未登録Note/receipt、
-旧形式の `## 原文` セクションを検査します。結果はJSONで、成功行数、pending件数、
-問題のコードと成功行の通し番号（1始まり）、LLM入力が打ち切られた成功行数
-`truncated_rows` を返します。本文・タイトル・URLは出力しません。
-終了コードは整合性に問題がなければ0、問題または読取り失敗なら1です。自動修復はしません。
-成功行数0は `no_success_rows` として失敗にします。存在しないsnapshotディレクトリも失敗します。
-一部だけをコピーしたsnapshotを完全な状態と誤認しないよう、期待する件数も確認してください。
-これは日本語要約の品質や利用条件の確認を代替しません。
-`audit-run` は保存済みreportの成功・上限・保存件数、現在のpendingとindex増分も検査します。
-別run後の状態には一致しないことがあるため、対象runの完了後、次run前に使ってください。
-Actionsの手動実行で `verification_run_id` と `expected_success_before` を指定すると、
-WIFでこの照合だけを実行し、記事取得・Gemini呼出し・GCS書込みは行いません。
-複数objectを順次読むため、定期実行や他のwriterが動いていない時間に実行してください。
-
-既存Noteの著者と公開日表記は、Geminiを呼び出さず原記事のmetadataから更新できます。
-既定は計画だけを出力し、GCSへ書き込みません。
-
-```bash
-# 原記事を取得して更新対象件数を確認。GCSは読取り専用。
-python -m techkb refresh-metadata
-
-# 計画確認後、Noteと対応receiptだけを世代条件付きで更新。
-python -m techkb refresh-metadata --apply
-```
-
-成功indexのURLだけをrobots.txt・HTTP制限に従って取得し、著者が取得できた場合は
-frontmatterと出典情報へ反映します。公開日はindexの値から日付部分へ正規化します。
-AI要約、重要ポイント、検索キーワード、hash、index、pendingは変更しません。
-適用前に全対象を検証し、欠落・不整合・取得失敗が1件でもあれば書込みを開始しません。
-Note更新後にreceipt更新が失敗した場合は、世代条件付きでNoteを元の内容へ戻すよう試みます。
-強制終了で片側だけ更新済みになった場合も、次回実行で目標内容と一致する側を確認して補完します。
-複数記事を一括更新する処理全体はatomicではないため、定期実行や他のwriterと重ねず、
-適用後に `audit-state` を実行してください。
-
-2026-10-01の最新ローカル検証では全65テストが成功しました。同日にmetadata更新を適用し、
-5 Note/receiptを更新、1件は変更なし、失敗0件でした。適用後の本番GCS検査も成功し、
-成功index 6件、pending 108件、検出問題0件でした。要約本文・hash・index・pendingの不変も確認済みです。
-同日の初回検査はADCの `RefreshError` で失敗しましたが、
-認証更新の再確認と検査の再実行で成功しています。認証エラーが続く場合は
-`gcloud auth application-default login` で認証を更新してから再実行してください。
-
-2026-10-02の上限30件での手動run後は、成功index 36件、pending 78件、打切り32件、整合性問題0件です。
-Google Researchの新規26件では、現行の著者metadata抽出で名前を取得できず、著者は取得なしです。
-記事見出しのbylineからの著者抽出は残余制約として記録しています。
-
-```text
-notes/YYYY/MM/YYYY-MM-DD_title_hash12.md
-state/index/YYYY-MM.tsv
-state/pending.tsv
-state/receipts/<content-sha256>.json
-runs/YYYY/MM/<run-id>.json
-raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in; 旧raw/YYYY/MM/は維持
-state/batches/<batch-id>.json  # 原文を含まない予約・compact結果
-```
-
-全月の成功TSVを読み、raw/content hashをメモリ上のsetに展開します。
-同じURLも毎回取得し、本文更新を見逃さないようにします。異なるURLでも完全一致本文は重複です。
-成功TSVだけが通常の重複排除の正本です。LLM失敗、変換失敗、取得失敗はpendingに残ります。
-保存失敗時は後続の有料処理を停止し、workflowを失敗にします。
-
-`state/receipts/` はLLM結果を再利用してNote/TSVの途中失敗から復旧する補助ファイルです。
-次のrunで未登録receiptのNoteとindexを修復します。receiptには構成済みNoteとindex行だけを保存し、記事原文は含めません。
-成功済みreceiptは保持し、indexにあるhashは読取りを省略します。MVPでは自動削除しません。
-成功indexを安易に削除しないでください。receipt再処理・状態の扱いは[設計上の補足](docs/design-decisions.md)を参照。
-
-## 費用と使用量
-
-設定上の通常運用上限は **1 runあたり30記事**、本文20,000文字、出力2,048 tokensです。
-上限30件の手動本番runは成功しました。上限30件のscheduled runの受入確認は未完了です。
-**Phase 1では、記事Markdownの入力上限20,000文字を維持します。**
-文字数はHTML変換・正規化後のMarkdownに対するPythonの文字数であり、token数ではありません。
-上限を超える記事は先頭20,000文字だけをGeminiへ送り、後半の論点は要約対象に含まれません。
-タイトルに含まれる話題も欠落することがあるため、打切りNoteを記事全体の要約として扱わないでください。
-新規Noteは、打切り時にAI要約の前へ「要約対象の制限」を表示し、frontmatterへ
-`llm_input_truncated` と生成時の `llm_input_max_chars` を記録します。
-既存Noteは自動更新しません。保存済みの打切り件数は `audit-state` の `truncated_rows` で確認できます。
-後から制限を緩める場合は `config/app.yaml` の `llm.max_input_chars` を変更し、
-要約品質とusageを再確認してください。設定変更は既存Noteを再要約しません。
-この値は記事本文部分の上限であり、promptや補助metadataを含むリクエスト全体の上限ではありません。
-
-30/日という運用想定であり、手動で複数回実行すれば日次30を超えます。
-通信retryは最大3回で、`llm_calls` は論理記事呼出、`llm_http_attempts` はretryを含む通信回数です。
-Schemaエラーは自動修正せず、次のrunに残します。恒常的エラーはログ確認後にsourceを一時無効化してください。
-
-2026-09-25確認の標準API料金は入力$0.30/100万token、出力$2.50/100万token（thinkingを含む）です。
-計画値5,000入力+600出力なら1記事$0.003、30記事×30日で$2.70です。
-これは上限保証ではなく、GCS・Actions費用は別です。
-usageの `output_tokens` は候補出力、`thinking_tokens` は別列に保持します。
-費用を計算する際は両方を考慮してください。日次/月次USDは`cost-report`で集計できます。
-
-run reportには `total_input_tokens` / `total_output_tokens` / `total_thinking_tokens`、処理・重複・失敗件数を記録します。
-Schema不正でも取得できたusageを加算します。timeoutなどusageを取得できない場合は
-`llm_usage_unavailable` を増やします。通信失敗時の課金をusageだけから完全には復元できません。
-
-## 運用上の注意
-
-- source登録時に利用条件を確認。HTTPはrobots.txtを確認し、拒否・取得不能時はfail closedで停止。
-- CAPTCHA、認証、paywall回避は実装しません。ブロックされたsourceは人が状況確認。
-- HTTPはresponseの展開後bytes上限10MB、ホスト単位の待機、timeout、指数backoffを適用。
-- private/loopback/link-local IPは拒否。HTTP redirect先でもrobotsとURLを再確認。
-- raw bytesはHTTPクライアントが取得したresponse bodyであり、HTML整理前にhash化。
-- 本文抽出はsourceごとにopt-inです。従来設定では本文外の広告更新もcontent hashを変える場合があります。
-- 著者はHTMLのauthor metadataから取得。Google Researchのように役職・所属を含むbylineだけを表示する記事は、現行実装では著者取得なしになる場合があります。
-- 改行・空白の正規化はコードフェンス内の連続空行を維持します。行末空白除去は要件どおりです。
-- 画像はaltテキストだけを残し、外部画像を埋め込みません。Vision/OCRは実行しません。
-- 本文・APIキー・SDK例外本文はログに出しません。監査URLはquery/fragmentを落としてログ記録します。
-- 本番runの中断は極力避けてください。復旧保証の限界は設計補足に明示しています。
-
-## 検証と受入
-
-[検証記録と残る受入項目](docs/verification.md)を参照してください。
-`tests/test_e2e.py` はHTTP transportと外部APIをfixtureへ置換し、実際のCLI・RSS解析・HTML整理・
-MarkItDown・Schema validation・Note/TSV/pending/reportの連携と再実行を確認します。
-本番Gemini/GCSへの到達性とIAMは、このオフラインテストでは保証されません。
-
-## 公式資料
-
-- [Gemini 3.5 Flash-Lite](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite)
-- [Gemini thinking](https://ai.google.dev/gemini-api/docs/thinking)
-- [Gemini料金](https://ai.google.dev/gemini-api/docs/pricing)
-- [Google GenAI Python SDK](https://googleapis.github.io/python-genai/)
-- [Microsoft MarkItDown](https://github.com/microsoft/markitdown)
-- [GCS世代条件](https://docs.cloud.google.com/storage/docs/request-preconditions)
-- [GitHub Actions WIF](https://github.com/google-github-actions/auth)
+日次の実施報告・旧計画・引継ぎ・レビューは[履歴資料](docs/archive/README.md)へ整理しました。
+現行文書には現在の要件・保証・未実装範囲を記載し、過去の件数や作業指示を混在させません。

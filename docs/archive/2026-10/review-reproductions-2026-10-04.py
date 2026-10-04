@@ -1,6 +1,6 @@
 """Offline review reproductions; not part of the normal passing test suite.
 Run from the repository root with the pinned dependencies and Chromium:
-PLAYWRIGHT_BROWSERS_PATH=/tmp/kaname-browsers PYTHONPATH=src:tests python -m pytest -q docs/review-reproductions-2026-10-04.py -k 'not repeated_audit'
+PLAYWRIGHT_BROWSERS_PATH=/tmp/kaname-browsers PYTHONPATH=src:tests python -m pytest -q docs/archive/2026-10/review-reproductions-2026-10-04.py -k 'not repeated_audit'
 On codex/vault-edit-protection: F1/F2 pass; four unresolved findings fail.
 The audit notification case expresses an unconfirmed product requirement.
 Only fixture HTTP, memory storage and a temporary Vault are used.
