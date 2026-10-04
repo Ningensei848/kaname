@@ -10,6 +10,7 @@ from techkb.reporting import RunReport
 from techkb.pending import Candidate
 from techkb.audit import audit_state
 from techkb.operations import cost_report
+from techkb.models import ArticleEnrichment
 
 
 def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
@@ -31,6 +32,11 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         request=captured[0]['batch']['inputConfig']['requests']['requests'][0]
         assert request['metadata']=={'key':'b'*64}
         assert request['request']['generationConfig']['responseJsonSchema']['properties']['category']['enum']==h.app.categories
+        schema = request['request']['generationConfig']['responseJsonSchema']
+        expected_schema = ArticleEnrichment.model_json_schema()
+        expected_schema['properties']['category']['enum'] = h.app.categories
+        assert schema == expected_schema
+        assert 'title_ja' in schema['required'] and schema['additionalProperties'] is False
         thinking=request['request']['generationConfig']['thinkingConfig']
         assert thinking.get('thinkingLevel',thinking.get('thinking_level')).lower()=='minimal'
         response={'candidates':[{'content':{'role':'model','parts':[{'text':h.sdk.text}]}}],
@@ -50,13 +56,15 @@ def test_real_sdk_result_passes_through_settle_and_billing(harness, valid):
     h = harness
     remote = {}
     posts = []
+    mismatched_title = json.loads(h.sdk.text)
+    mismatched_title['PRIVATE_EXTRA_FIELD'] = mismatched_title.pop('title_ja')
     def handler(req):
         if req.method == 'POST':
             body = json.loads(req.content)
             posts.append(body)
             key = body['batch']['inputConfig']['requests']['requests'][0]['metadata']['key']
             response = {'candidates': [{'content': {'role': 'model', 'parts': [
-                {'text': h.sdk.text if valid else '{}'}]}, 'finishReason': 'STOP'}],
+                {'text': h.sdk.text if valid else json.dumps(mismatched_title)}]}, 'finishReason': 'STOP'}],
                 'usageMetadata': {'promptTokenCount': 100, 'candidatesTokenCount': 20, 'thoughtsTokenCount': 5}}
             remote.update(name='batches/mock', metadata={'displayName': body['batch']['displayName'],
                 'model': h.app.llm.model, 'state': 'BATCH_STATE_SUCCEEDED',
@@ -79,6 +87,9 @@ def test_real_sdk_result_passes_through_settle_and_billing(harness, valid):
             assert report.failures[0]['error_type'] == 'ValidationError'
             assert report.failures[0]['diagnostics']['finish_reason'] == 'STOP'
             assert report.failures[0]['diagnostics']['phase'] == 'validation'
+            assert report.failures[0]['diagnostics']['validation_errors'] == [
+                {'field': '$', 'code': 'extra_forbidden'}, {'field': 'title_ja', 'code': 'missing'}]
+            assert 'PRIVATE' not in report.to_bytes().decode()
         billing = [json.loads(h.store.read(name)) for name in h.store.list('runs/')
                    if json.loads(h.store.read(name))['record_kind'] == 'batch_usage']
         assert len(billing) == 1 and billing[0]['total_input_tokens'] == 100

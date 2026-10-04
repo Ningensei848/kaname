@@ -43,7 +43,7 @@ Phase 2の8機能の実装とローカル検証を追加しました。実Batch 
 
 - [x] 上限30のscheduled runを受入手順に従って照合し、検証記録を更新。
 - [x] [Phase 2実装計画](docs/phase2-implementation-plan.md)の8機能を実装し、互換性・障害復旧・実Chromiumを検証。
-- [x] 全体レビューを行い、実Batch台帳の元例外がValidationErrorであることを読取り確認。詳細な原因は未確定（[対処計画](docs/review-remediation-2026-10-04.md)、[Issue #94](https://github.com/Ningensei848/kaname/issues/94)）。
+- [x] 全体レビューと既存Batchの読取り診断を実施。保存失敗は必須title_ja欠落とschema外項目によるValidationError（[対処計画](docs/review-remediation-2026-10-04.md)、[Issue #94](https://github.com/Ningensei848/kaname/issues/94)）。
 - [ ] レビュー後に実Batchの結果保存 → audit/costを受け入れ、Phase 2の最終記録を更新する。再実行は改めて指示を受けて進める。
 
 ## Phase 2
@@ -51,7 +51,7 @@ Phase 2の8機能の実装とローカル検証を追加しました。実Batch 
 - source設定からHTTP/Playwright、RSS/HTML一覧、本文selector/汎用抽出を選択。
 - keyword/domain/source categoryの決定的フィルタ。LLM呼出し前に除外。
 - Gemini standard/batch切替。非同期job予約・再開・部分失敗・in-flightの二重課金抑止。
-- `sync --vault`でObsidianへ片方向同期。ローカル編集と未管理ファイルを保護。
+- `sync --vault`でObsidianへ片方向同期。既存Noteを保持し、更新候補を別保存。ローカル編集と未管理ファイルを保護。
 - `cost-report`で実測usageから日次/月次USDを集計。不明usageと待機Batchを明示。
 - `notify`で連続失敗と予算到達を検出。ユーザー承認した日次workflowから必要時だけIssue投稿し、既存Issueと重複抑止。
 - sourceの`raw_retention_days`からGCS lifecycleを計画。適用は管理者が明示実行。
