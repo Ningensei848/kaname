@@ -1,5 +1,27 @@
 # 検証記録 — 2026-10-04
 
+## 開発停止時の本番確認 — 2026-10-04
+
+ユーザー指示で開発とCodexの自動継続を停止しました。既存の日次workflowは稼働中です。
+mainの実装commitは`f7bbc28f240b94ebf5b85cc72981996b17b19e05`（PR #95）。
+最終修正後は全103テストに成功し、[PR CI](https://github.com/Ningensei848/kaname/actions/runs/37164238148)と
+[main CI](https://github.com/Ningensei848/kaname/actions/runs/37164366370)も成功しました。
+
+| run / 入力 | 結果 | 保存状態・費用 |
+|---|---|---|
+| [37164369505](https://github.com/Ningensei848/kaname/actions/runs/37164369505) / batch、max_calls=1 | success、Batch提出1、標準呼出0、保存0 | audit: index 96、pending 78、issues 0。未決済Batch 1件 |
+| [37164923005](https://github.com/Ningensei848/kaname/actions/runs/37164923005) / max_calls=0 | failed、batch_failed 1、batch_saved 0、標準呼出0 | batch_result/google-research/ValueError。Audit skip。使用量からのBatch費用推計USD 0.0016944、未決済Batch 0件 |
+| [37165511894](https://github.com/Ningensei848/kaname/actions/runs/37165511894) / schedule、standard、上限30 | success、呼出30、保存30、失敗0 | audit: index 126、pending 48、truncated_rows 100、issues 0 |
+
+3 runともheadは上記mainです。最後の日次runは2026-10-04 09:37:28–09:46:44 JSTに実行され、
+費用推計は10月4日UTCでUSD 0.0995463、10月累計USD 0.4013871。unknown usage/未決済Batchは0、
+旧reportのモデル仮定は9件です。通知投稿は各runとも0件。費用は実測tokenと設定単価による推計であり請求額の照合ではありません。
+
+上記はActionsのrun report、audit、cost出力を保存して確認しました。今回の3 runに別の独立GCS照合は追加していません。
+Batch失敗の根本原因は未調査です。後続standard成功はBatch成功の証明ではありません。
+Phase 1受入は完了、Phase 2受入は未完了として[Issue #94](https://github.com/Ningensei848/kaname/issues/94)を開いたままにします。
+再開条件、認証、GCS ledgerと非公開ログの所在は[引継書](handoff-review-2026-10-04.md)を参照してください。
+
 ## Phase 2実装とローカル検証 — 2026-10-04
 
 Python 3.12.13、google-genai 1.75.0、Playwright 1.63.0の実Chromiumで全102テストに成功しました。

@@ -8,7 +8,7 @@ Phase 1の実環境受入完了後にPhase 2、その完了後にPhase 3へ着�
 - [x] Playwright Fetcher — RSSなし/JSサイトをsource設定から選択
 - [x] Main Content Extraction — source selectorと汎用本文抽出
 - [x] Deterministic Relevant Filter — include/exclude keyword・domain・category
-- [ ] Gemini Batch API — standard/batch切替と復旧テストは実装済み。実Batch 1件の受入待ち。
+- [ ] Gemini Batch API — standard/batch切替と復旧テストは実装済み。実Batch提出は成功、結果取り込みは失敗。開発停止時点の状態は[引継書](handoff-review-2026-10-04.md)。
 - [x] Obsidian Sync — `techkb sync --vault`、ローカル編集を保護
 - [x] Cost Management — 実測usageの日次/月次USD費用、予算通知手順
 - [x] Failure Notification — 連続失敗を識別、必要時Issue通知（2026-10-04にworkflow権限の明示承認）

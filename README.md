@@ -7,7 +7,9 @@ SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツー�
 
 **Phase 1の実装・本番受入は完了しました。** 上限30件の手動runとscheduled runに成功し、
 Actionsログ・GCS report・Note/receipt/index/pendingの一致を確認しました。
-Phase 2の8機能の実装とローカル検証を追加しました。実Batch 1件の本番確認を進めています。
+Phase 2の8機能の実装とローカル検証を追加しました。実Batch 1件は提出に成功しましたが、結果取り込みが失敗したため本番受入は未完了です。
+2026-10-04にユーザー指示で開発を停止しました。[引継書](docs/handoff-review-2026-10-04.md)と
+[全体レビュー依頼文](docs/review-prompt-2026-10-04.md)に状態を保存しています。既存の日次収集は稼働を続けています。
 操作は[Phase 2手順](docs/phase2-operations.md)、Phase 2/3の範囲は[確定バックログ](docs/roadmap.md)を参照してください。
 
 ## Phase 1本番受入状況（2026-10-03）
@@ -39,7 +41,8 @@ Phase 2の8機能の実装とローカル検証を追加しました。実Batch 
 
 - [x] 上限30のscheduled runを受入手順に従って照合し、検証記録を更新。
 - [x] [Phase 2実装計画](docs/phase2-implementation-plan.md)の8機能を実装し、互換性・障害復旧・実Chromiumを検証。
-- [ ] 実Batch 1件でAPI submit → 結果保存 → audit/costを確認し、Phase 2の最終記録を更新する。
+- [ ] 別セッションで全体レビューを行い、実Batch結果取り込みの失敗原因を調査する（[Issue #94](https://github.com/Ningensei848/kaname/issues/94)）。
+- [ ] レビュー後に実Batchの結果保存 → audit/costを受け入れ、Phase 2の最終記録を更新する。再実行は改めて指示を受けて進める。
 
 ## Phase 2
 
