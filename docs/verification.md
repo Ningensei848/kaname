@@ -1,5 +1,26 @@
 # 検証記録 — 2026-10-04
 
+## 再開後のBatch診断修正 — 2026-10-04
+
+main `c8e98f87019a54bded7241931d2dc3d40661d564`から`codex/batch-safe-diagnostics`で対処を開始。
+以下は修正branchの検証で、mainへの反映・本番Batch受入とは区別します。
+実Chromiumを含む全125テスト、設定検証、`git diff --check`に成功しました。
+追加22ケースでは型保持、安全なvalidation診断、旧台帳互換、固定SDKから決済/監査/費用への経路、
+既存jobのGETだけを行うCLIを検証。外部Gemini APIや実Issueを使っていません。
+
+ローカルADCによるGCS読取りで、既存Batch `20261004T001622Z-e22604f8`がcomplete、
+outcomeがValidationError、receiptなし、usageあり（入力6,096・出力624・thinking 0）と確認しました。
+対応する`batch_usage` reportはrun ID `20261004T002636Z-f8072d68`、失敗1件で、同じ使用量を記録。
+元例外をValueErrorへ置き換える実装と、この実台帳/reportの相違が一致します。
+新しい`batch-inspect`の既定モードでも上記台帳を読み、complete/1件/ValidationErrorを確認しました。
+GCSへの書込みはありません。ローカルADCの有効性とActions WIFの認証は別です。
+GCS匿名URLのAccessDeniedは非公開設定と整合し、認証済み閲覧とは区別します。
+
+旧台帳にfield/codeがないため、JSON不正・必須field欠落・項目数等の正確な原因はまだ未確定です。
+`--remote`による実job取得は未実施です。APIキーの抽出、新しいworkflow_dispatch、有料提出、
+権限変更、Vault同期、PR merge、automation再開は行っていません。
+Phase 2のBatch受入は未完了です。[対処計画](review-remediation-2026-10-04.md)を参照してください。
+
 ## 開発停止時の本番確認 — 2026-10-04
 
 ユーザー指示で開発とCodexの自動継続を停止しました。既存の日次workflowは稼働中です。
