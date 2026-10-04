@@ -5,10 +5,94 @@ import hashlib
 import re
 from types import SimpleNamespace
 from google.genai import types, errors
+from pydantic import ValidationError
 from .composer import compose, word_count
 from .gemini import response_usage, validate_response
 from .pending import Candidate
+from .models import ArticleEnrichment
 from .reporting import RunReport, now
+
+
+def failure_diagnostics(exc, phase, response):
+    """Only structural error codes; never response text, values or error messages."""
+    details = {"phase": phase}
+    codes = {"category outside configured vocabulary": "category_not_allowed",
+             "empty or oversized enrichment item": "invalid_enrichment_item",
+             "batch item failed or missing": "batch_response_unavailable"}
+    if isinstance(exc, ValueError) and exc.args and isinstance(exc.args[0], str):
+        code = codes.get(exc.args[0])
+        if code:
+            details["code"] = code
+    if isinstance(exc, ValidationError):
+        # Extra-field locations and JSON parser context can contain input data.
+        # Retain only known schema field names and Pydantic's structural codes.
+        issues = set()
+        for error in exc.errors(include_url=False, include_context=False, include_input=False):
+            location = error["loc"]
+            field = location[0] if location and location[0] in ArticleEnrichment.model_fields else "$"
+            code = error["type"]
+            if re.fullmatch(r"[a-z0-9_]{1,80}", code):
+                issues.add((field, code))
+        details["validation_errors"] = [dict(field=field, code=code) for field, code in sorted(issues)]
+    if response is not None:
+        try:
+            details["text_present"] = bool(response.text)
+        except Exception:
+            details["text_present"] = False
+        candidates = getattr(response, "candidates", None) or []
+        if candidates:
+            reason = getattr(candidates[0], "finish_reason", None)
+            reason = getattr(reason, "name", None)
+            if isinstance(reason, str) and re.fullmatch(r"[A-Z_]{1,64}", reason):
+                details["finish_reason"] = reason
+    return details
+
+
+def inspect_batch(store, batch_id, client=None):
+    """Read a completed or active ledger; optionally GET its existing API result."""
+    if not re.fullmatch(r'\d{8}T\d{6}Z-[0-9a-f]{8}', batch_id or ''):
+        raise ValueError('invalid batch ID')
+    data = store.read('state/batches/' + batch_id + '.json')
+    if data is None:
+        raise ValueError('batch ledger missing')
+    job = json.loads(data)
+    if job['id'] != batch_id:
+        raise ValueError('batch ledger identity mismatch')
+    # Keep article metadata, Note text, hashes and API resource names private.
+    result = dict(status='success', batch_id=batch_id, ledger_status=job['status'],
+                  items=len(job['items']), remote_inspected=client is not None,
+                  recorded_errors=[outcome['error'] for outcome in job.get('outcomes', [])])
+    if client is None:
+        return result
+    if not job.get('name'):
+        raise ValueError('batch has no bound job to inspect')
+    remote = client.batches.get(name=job['name'])
+    result['remote_state'] = remote.state.name if remote.state else ''
+    responses = (remote.dest.inlined_responses if remote.dest else None) or []
+    expected = {item['ch'] for item in job['items']}
+    by_key = {}
+    for response in responses:
+        key = (response.metadata or {}).get('key')
+        if key not in expected or key in by_key:
+            raise ValueError('unknown or duplicate batch response key')
+        by_key[key] = response
+    result['returned_items'] = len(responses)
+    result['remote_outcomes'] = []
+    if result['remote_state'] not in {'JOB_STATE_SUCCEEDED', 'JOB_STATE_FAILED', 'JOB_STATE_CANCELLED', 'JOB_STATE_EXPIRED'}:
+        return result
+    for number, item in enumerate(job['items'], 1):
+        response = by_key.get(item['ch'])
+        content = response.response if response and not response.error else None
+        outcome = dict(item=number, error_type=None)
+        try:
+            if content is None:
+                raise ValueError('batch item failed or missing')
+            validate_response(content, job['categories'])
+        except Exception as exc:
+            outcome['error_type'] = type(exc).__name__
+            outcome['diagnostics'] = failure_diagnostics(exc, 'validation' if content is not None else 'response', content)
+        result['remote_outcomes'].append(outcome)
+    return result
 
 
 class BatchManager:
@@ -114,10 +198,13 @@ class BatchManager:
                     response=result.response if result and not result.error else None
                     usage,available=response_usage(response)
                     outcome=dict(ch=item['ch'],usage=asdict(usage),usage_available=available,error=None,receipt=None)
+                    phase = 'response'
                     try:
                         if response is None:
                             raise ValueError('batch item failed or missing')
+                        phase = 'validation'
                         enrichment=validate_response(response,job['categories'])
+                        phase = 'compose'
                         candidate=Candidate(**item['candidate']); source=SimpleNamespace(**item['source'])
                         fetched_at=now()
                         obj,note=compose(candidate,source,enrichment,'',item['canon'],fetched_at,item['rh'],item['ch'],
@@ -131,6 +218,7 @@ class BatchManager:
                         outcome['receipt']={'row':row,'note':note}
                     except Exception as exc:
                         outcome['error']=type(exc).__name__
+                        outcome['diagnostics']=failure_diagnostics(exc, phase, response)
                     outcomes.append(outcome)
                 job['outcomes']=outcomes; job['settled_at']=now()
                 job['billing_run_id']=job['settled_at'][:19].replace('-','').replace(':','')+'Z-'+hashlib.sha256(('batch:'+job['id']).encode()).hexdigest()[:8]
@@ -149,7 +237,8 @@ class BatchManager:
                 billed.llm_usage_unavailable+=not outcome['usage_available']
                 if outcome['error']:
                     billed.llm_failed+=1
-                    billed.fail('batch_result',item['source']['id'],item['candidate']['url'],ValueError())
+                    billed.fail_recorded('batch_result',item['source']['id'],item['candidate']['url'],
+                                         outcome['error'],outcome.get('diagnostics'))
                 else:
                     billed.llm_processed+=1
             billed.finish()
@@ -161,7 +250,8 @@ class BatchManager:
                     continue
                 if outcome['error']:
                     report.batch_failed+=1
-                    report.fail('batch_result',item['source']['id'],item['candidate']['url'],ValueError())
+                    report.fail_recorded('batch_result',item['source']['id'],item['candidate']['url'],
+                                         outcome['error'],outcome.get('diagnostics'))
                 else:
                     if item['ch'] not in dedupe.content:
                         self.store.write('state/receipts/'+item['ch']+'.json',

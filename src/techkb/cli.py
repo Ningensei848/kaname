@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from .config import load_config
 from .converter import Converter
@@ -15,11 +16,11 @@ from .metadata_refresh import MetadataRefresh
 from .sync import sync_vault
 from .operations import cost_report, notification_plan, publish_issues
 from .lifecycle import configure_lifecycle
-from .batch import BatchManager
+from .batch import BatchManager, inspect_batch
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
     parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run and sync")
@@ -29,7 +30,8 @@ def main(argv=None):
     parser.add_argument("--vault", help="Obsidian vault directory; sync only")
     parser.add_argument("--dry-run", action="store_true", help="preview sync without Note writes")
     parser.add_argument("--as-of", help="UTC date for cost-report: YYYY-MM-DD")
-    parser.add_argument("--batch-id", help="reserved batch ID; batch-bind only")
+    parser.add_argument("--batch-id", help="ledger ID; batch-bind or batch-inspect only")
+    parser.add_argument("--remote", action="store_true", help="GET the existing Batch result; batch-inspect only")
     parser.add_argument("--job-name", help="matching Gemini job resource name; batch-bind only")
     parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
     parser.add_argument("--max-calls", type=int, help="reduce run limit (0..configured limit)")
@@ -49,7 +51,7 @@ def main(argv=None):
             if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
                 raise ValueError("--max-calls must reduce the configured limit")
             app.llm.max_calls_per_run=args.max_calls
-        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status"}:
+        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status", "batch-inspect"}:
             raise ValueError("--state-dir is only for dry-run, audit-state or refresh-metadata")
         if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:
             raise ValueError("--apply requires refresh-metadata, notify or raw-lifecycle")
@@ -61,8 +63,27 @@ def main(argv=None):
             raise ValueError("vault arguments require sync")
         if args.as_of and args.command != "cost-report":
             raise ValueError("--as-of requires cost-report")
-        if (args.batch_id or args.job_name) and args.command != "batch-bind":
-            raise ValueError("batch arguments require batch-bind")
+        if args.batch_id and args.command not in {"batch-bind", "batch-inspect"}:
+            raise ValueError("batch ID requires batch-bind or batch-inspect")
+        if args.job_name and args.command != "batch-bind":
+            raise ValueError("job name requires batch-bind")
+        if args.remote and args.command != "batch-inspect":
+            raise ValueError("--remote requires batch-inspect")
+        if args.command == "batch-inspect":
+            if not args.batch_id:
+                raise ValueError("batch-inspect requires --batch-id")
+            if not re.fullmatch(r"\d{8}T\d{6}Z-[0-9a-f]{8}", args.batch_id):
+                raise ValueError("invalid batch ID")
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            if args.remote and not os.environ.get("GEMINI_API_KEY"):
+                raise ValueError("GEMINI_API_KEY is required for remote inspection")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            if args.remote:
+                gemini = Gemini(app.llm, app.categories, "", os.environ["GEMINI_API_KEY"])
+            result = inspect_batch(store, args.batch_id, gemini.client if gemini else None)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0
         if args.command == "batch-status":
             if args.state_dir and not Path(args.state_dir).is_dir():
                 raise ValueError("snapshot directory does not exist")

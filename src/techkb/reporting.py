@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 import json
+import re
 from uuid import uuid4
 from .fetcher import audit_url
 
@@ -46,8 +47,18 @@ class RunReport:
 
     def fail(self, stage, source_id, url, exc):
         # Exception text can contain request bodies, keys or untrusted markup.
-        self.failures.append({"stage": stage, "source_id": source_id,
-                              "url": audit_url(url), "error_type": type(exc).__name__})
+        self.fail_recorded(stage, source_id, url, type(exc).__name__)
+
+    def fail_recorded(self, stage, source_id, url, error_type, diagnostics=None):
+        # Replaying a durable Batch outcome must retain its original type without
+        # reconstructing an exception from untrusted text.
+        if not isinstance(error_type, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,79}", error_type):
+            error_type = "Exception"
+        failure = {"stage": stage, "source_id": source_id,
+                   "url": audit_url(url), "error_type": error_type}
+        if diagnostics is not None:
+            failure["diagnostics"] = diagnostics
+        self.failures.append(failure)
 
     def finish(self):
         self.finished_at = now()

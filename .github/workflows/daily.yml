@@ -12,6 +12,10 @@ on:
         description: 'Success index count before that saved run (verification only)'
         type: string
         default: ''
+      diagnostic_batch_id:
+        description: 'Inspect this existing Batch only: GET result, no collection or writes'
+        type: string
+        default: ''
       collection_mode:
         description: 'LLM mode for this run (configured keeps app.yaml)'
         type: choice
@@ -46,8 +50,17 @@ jobs:
         run: |
           python -m techkb validate-config
           python -m pytest -q
+      - name: Validate execution mode
+        env:
+          VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
+          DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+        run: |
+          if [[ -n "$VERIFY_RUN_ID" && -n "$DIAGNOSTIC_BATCH_ID" ]]; then
+            echo 'Choose either run verification or Batch inspection.'
+            exit 1
+          fi
       - name: Install browser when configured
-        if: ${{ inputs.verification_run_id == '' }}
+        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
         run: |
           if python -c 'from techkb.config import load_config; _, sources = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if any(s.enabled and s.fetcher == "playwright" for s in sources) else 1)'; then
             python -m pip install -r requirements-browser.lock
@@ -59,7 +72,7 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect
-        if: ${{ inputs.verification_run_id == '' }}
+        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
@@ -71,26 +84,33 @@ jobs:
           if [[ -n "$MAX_CALLS" ]]; then args+=(--max-calls "$MAX_CALLS"); fi
           python -m techkb "${args[@]}"
       - name: Audit saved state
-        if: ${{ inputs.verification_run_id == '' }}
+        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python -m techkb audit-state
       - name: Verify saved run and state
-        if: ${{ inputs.verification_run_id != '' }}
+        if: ${{ inputs.verification_run_id != '' && inputs.diagnostic_batch_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
         run: python -m techkb audit-run --run-id "$VERIFY_RUN_ID" --expected-success-before "$EXPECTED_SUCCESS_BEFORE"
+      - name: Inspect existing Batch without writes
+        if: ${{ inputs.diagnostic_batch_id != '' && inputs.verification_run_id == '' }}
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+        run: python -m techkb batch-inspect --batch-id "$DIAGNOSTIC_BATCH_ID" --remote
       - name: Cost and notification plan
-        if: ${{ always() && inputs.verification_run_id == '' && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: |
           python -m techkb cost-report
           python -m techkb notify
       - name: Publish necessary notifications
-        if: ${{ always() && inputs.verification_run_id == '' && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           GITHUB_TOKEN: ${{ github.token }}

@@ -101,6 +101,36 @@ compact結果を先に永続化してから保存し、usageは専用`record_kin
 作成API応答とジョブ完了・Note保存は別で、待機中を完了とみなしません。
 実サービスでのBatch確認は検証記録へ別途記載します。
 
+### 既存Batchの読取り診断
+
+```bash
+# completeを含む指定台帳を読むだけ。Gemini認証は不要
+python -m techkb batch-inspect --batch-id 20261004T001622Z-e22604f8
+# 取得済みsnapshotでも実行可能
+python -m techkb batch-inspect --batch-id 20261004T001622Z-e22604f8 --state-dir local-snapshot
+# 環境変数に正規のGEMINI_API_KEYが設定された環境で、既存job結果をGET
+python -m techkb batch-inspect --batch-id 20261004T001622Z-e22604f8 --remote
+```
+
+`batch-status`と異なり、completeになった失敗も確認できます。`--remote`は台帳に紐付いたjobの
+結果取得と現在のvalidatorによる検査だけを行います。新規提出・記事取得・Note保存・費用計上・
+GCS更新・Issue投稿は行いません。待機中jobは応答欠落の失敗に数えません。
+終了コード0と`status: success`は検査操作の成功であり、Batch保存成功や受入完了を意味しません。
+生成結果の検証状況は`remote_state`と`remote_outcomes[].error_type`を別に確認します。
+組立て・保存経路はこの診断では検証しません。
+
+出力は件数・例外型・処理段階・既知schema field名/Pydantic code・text有無・finish reasonに限定し、
+記事本文、生成文、未知field名、validation input、例外本文、API resource名を表示しません。
+これから決済する失敗はcollection/billing reportにも元の例外型と安全な診断情報を残します。
+旧台帳には型名しかないため、過去の詳細を復元したり既存reportを書き換えたりはしません。
+既存jobの取得が失敗する場合は、その型だけを表示して終了コード1とします。
+
+Actionsでは`diagnostic_batch_id`だけを指定し、`verification_run_id`を空にします。
+このモードは既存のWIFと`GEMINI_API_KEY` Secretをjob内で使用し、通常のCollect/Audit、費用・通知・
+Issue投稿をskipします。両診断入力の同時指定はWIF認証前に拒否します。
+日次scheduleと入力未指定時の通常動作は維持します。Secretの抽出、権限拡張、匿名公開は不要です。
+本番の手動起動は修正の取り込み後に別途指示を確認して行います。
+
 ## 実測usageと予算
 
 ```bash
