@@ -2,7 +2,8 @@
 
 以下は本番受入環境 `q4rs-project` / `Ningensei848/kaname` の確定値です。
 別環境へ展開する場合は、プロジェクト・bucket・GitHub repositoryの値を置換してください。
-この納品物からGitHub repositoryは作成していません。
+この手順は収集基盤の初期設定です。生成Noteの公開は[Git/Pages配布](publication.md)へ分けます。
+本repoがPUBLICでもGCS bucketは非公開のまま維持し、ここでPages設定や追加権限を変更しません。
 実行用サービスアカウントにOwner/Editor/Storage Adminを与えません。
 
 ## 1. 変数とサービス
@@ -78,7 +79,7 @@ repository数値ID、owner数値ID、branch、workflowを制限します。
 
 ## 4. GitHubのVariablesとSecret
 
-新規または既存Private repositoryへコードを登録して、以下を設定します。
+収集コードのrepositoryへ以下を設定します。repositoryの可視性とGCSのアクセス制御は別です。
 
 | 種別 | 名前 | 値 |
 |---|---|---|
@@ -93,7 +94,10 @@ Gemini API Keyの認証とGCS WIFは別経路です。
 workflowは依存のインストール・テストを認証前に行い、WIF認証後に収集を開始します。
 デフォルトブランチにworkflowを置くとscheduleが有効になります。
 
-## 5. 最初の実環境受入
+## 5. 新しい収集環境の受入手順
+
+現環境のPhase 1受入は完了済みです。以下は別の環境を初期受入する場合の手順で、
+完了済みrunの再実行指示ではありません。現在の状態は[検証・受入](verification.md)を参照してください。
 
 1. sourceのrobots・利用条件を確認。
 2. app.yamlの `max_calls_per_run` を最初だけ1へ減らしてcommit。
