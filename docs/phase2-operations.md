@@ -83,6 +83,7 @@ HTTP retry/poll回数や日次hard capではありません。`--max-calls`は�
 次runはstandardモードでも既存Batchをpollし、in-flightのcontent hashを再課金対象から外します。
 API作成がtimeoutした場合は同じdisplay nameのjobを探します。0件/複数件なら停止して予約を維持し、
 自動でsubmitを繰り返しません。API管理画面等でjobを確認後、完全一致するdisplay name/modelを検証して結びつけます。
+400/401/403/404/422の明確な作成拒否は予約を終了し、standard収集を妨げません。
 
 ```bash
 python -m techkb batch-bind --batch-id YYYYMMDDTHHMMSSZ-xxxxxxxx --job-name batches/JOB_ID
@@ -147,6 +148,7 @@ GITHUB_TOKENには対象repositoryのIssues書込み権限が必要。本文に�
 2026-10-04のユーザー明示承認により、daily.ymlへ`issues: write`を追加し、
 通常run後に必要時だけ自動投稿します。対象は`Ningensei848/kaname`。
 `notifications.github_repository`を空にすると自動投稿を無効化できます。
+WIFやGCS読取り自体が失敗するとhistoryを取得できないため、Actions標準の失敗通知から認証/権限を復旧してください。
 
 ## Source単位のRaw HTML削除
 

@@ -4,7 +4,7 @@ import json
 import hashlib
 import re
 from types import SimpleNamespace
-from google.genai import types
+from google.genai import types, errors
 from .composer import compose, word_count
 from .gemini import response_usage, validate_response
 from .pending import Candidate
@@ -56,8 +56,16 @@ class BatchManager:
         # A timeout after this reservation must never trigger blind resubmission.
         self.persist(name,job)
         self.jobs.append((name,job))
-        created=self.gemini.client.batches.create(model=app.llm.model,src=requests,
-                                                config=types.CreateBatchJobConfig(display_name=job['display_name']))
+        try:
+            created=self.gemini.client.batches.create(model=app.llm.model,src=requests,
+                                                    config=types.CreateBatchJobConfig(display_name=job['display_name']))
+        except errors.APIError as exc:
+            if exc.code in {400, 401, 403, 404, 422}:
+                # A definitive request rejection has not created a paid job. Do
+                # not let it freeze standard collection behind an ambiguous lock.
+                job['status']='complete'; job['submission_rejected']=True
+                job['error_type']=type(exc).__name__; self.persist(name,job)
+            raise
         if not created.name:
             raise ValueError('batch job name unavailable')
         job['name']=created.name; job['status']='submitted'

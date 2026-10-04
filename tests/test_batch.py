@@ -1,6 +1,7 @@
 import json
 from types import SimpleNamespace as NS
 import httpx
+from google.genai import errors
 from techkb.operations import cost_report
 from techkb.audit import audit_state, audit_run
 
@@ -10,9 +11,11 @@ class BatchSDK:
         self.batches=self
         self.models=standard
         self.standard=standard
-        self.created=[]; self.jobs={}; self.timeout=False; self.visible=True
+        self.created=[]; self.jobs={}; self.timeout=False; self.visible=True; self.reject=False
     def create(self,**kwargs):
         self.created.append(kwargs)
+        if self.reject:
+            raise errors.ClientError(400,{'error':{'message':'invalid batch'}})
         job=NS(name='batches/'+str(len(self.created)),display_name=kwargs['config'].display_name,
                model=kwargs['model'],state=NS(name='JOB_STATE_PENDING'),dest=None)
         self.jobs[job.name]=job
@@ -105,3 +108,12 @@ def test_duplicate_response_keys_fail_closed(harness):
     result=h.pipeline.run()
     assert result.status=='failed' and result.saved==0
     assert len(sdk.created)==1 and not h.sdk.calls
+
+
+def test_definitive_batch_rejection_does_not_block_standard_collection(harness):
+    h=harness; sdk=setup(h); sdk.reject=True
+    assert h.pipeline.run().status=='failed'
+    assert cost_report(h.store,h.app)['pending_batch_items']==0
+    h.app.llm.mode='standard'
+    assert h.pipeline.run().saved==1
+    assert len(sdk.created)==1 and len(h.sdk.calls)==1

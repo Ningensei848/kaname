@@ -70,7 +70,7 @@ def cost_report(store, app, as_of=None):
     pending_batch_items = 0
     for name in store.list('state/batches/'):
         job = json.loads(store.read(name))
-        if job.get('billing_run_id') not in known:
+        if not job.get('submission_rejected') and job.get('billing_run_id') not in known:
             pending_batch_items += len(job['items'])
     return dict(status='partial' if uncertain or pending_batch_items else 'success',as_of=day.isoformat(),timezone='UTC',
                 daily_usd={k:str(v) for k,v in sorted(daily.items())}, monthly_usd={k:str(v) for k,v in sorted(monthly.items())},
