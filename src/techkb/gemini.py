@@ -25,16 +25,7 @@ class Gemini:
     def enrich(self, metadata, markdown):
         self.last_usage = Usage()
         self.last_usage_available = False
-        schema = ArticleEnrichment.model_json_schema()
-        schema["properties"]["category"]["enum"] = self.categories
-        config = types.GenerateContentConfig(
-            system_instruction=self.prompt + "\nカテゴリ候補: " + ", ".join(self.categories),
-            response_mime_type="application/json", response_json_schema=schema,
-            max_output_tokens=self.config.max_output_tokens,
-            thinking_config=types.ThinkingConfig(thinking_level=self.config.thinking_level),
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
-        )
-        content = json.dumps({"metadata": metadata, "article_markdown": markdown[:self.config.max_input_chars]}, ensure_ascii=False)
+        content, config = self.request(metadata, markdown)
         for attempt in range(self.config.retries + 1):
             self.attempts += 1
             try:
@@ -46,18 +37,36 @@ class Gemini:
                 if not retryable or attempt == self.config.retries:
                     raise
                 self.sleep(min(2**attempt, 30))
-        usage = response.usage_metadata
-        if usage:
-            self.last_usage_available = True
-            self.last_usage = Usage(usage.prompt_token_count or 0, usage.candidates_token_count or 0, usage.thoughts_token_count or 0)
-        # Validation is intentionally outside the retry loop.
-        result = ArticleEnrichment.model_validate_json(response.text or "")
-        if result.category not in self.categories:
-            raise ValueError("category outside configured vocabulary")
-        for values in (result.key_points, result.tags, result.related_concepts):
-            if any(not value.strip() or len(value) > 2000 for value in values):
-                raise ValueError("empty or oversized enrichment item")
-        return result
+        self.last_usage, self.last_usage_available = response_usage(response)
+        return validate_response(response, self.categories)
+
+    def request(self, metadata, markdown):
+        schema = ArticleEnrichment.model_json_schema()
+        schema["properties"]["category"]["enum"] = self.categories
+        config = types.GenerateContentConfig(
+            system_instruction=self.prompt + "\nカテゴリ候補: " + ", ".join(self.categories),
+            response_mime_type="application/json", response_json_schema=schema,
+            max_output_tokens=self.config.max_output_tokens,
+            thinking_config=types.ThinkingConfig(thinking_level=self.config.thinking_level),
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+        )
+        content = json.dumps({"metadata": metadata, "article_markdown": markdown[:self.config.max_input_chars]}, ensure_ascii=False)
+        return content, config
 
     def close(self):
         self.client.close()
+
+
+def response_usage(response):
+    usage = response.usage_metadata if response is not None else None
+    return (Usage(usage.prompt_token_count or 0, usage.candidates_token_count or 0, usage.thoughts_token_count or 0), True) if usage else (Usage(), False)
+
+
+def validate_response(response, categories):
+    result = ArticleEnrichment.model_validate_json(response.text or "")
+    if result.category not in categories:
+        raise ValueError("category outside configured vocabulary")
+    for values in (result.key_points, result.tags, result.related_concepts):
+        if any(not value.strip() or len(value) > 2000 for value in values):
+            raise ValueError("empty or oversized enrichment item")
+    return result

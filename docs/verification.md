@@ -1,4 +1,39 @@
-# 検証記録 — 2026-10-03
+# 検証記録 — 2026-10-04
+
+## Phase 2実装とローカル検証 — 2026-10-04
+
+Python 3.12.13、google-genai 1.75.0、Playwright 1.63.0の実Chromiumで全102テストに成功しました。
+設定検証とgit diff --checkにも成功。以下は実装とfixture検証で、実Batch API/GCSの受入は別項目として残します。
+
+| 機能 | 確認 |
+|---|---|
+| HTML一覧/Playwright | RSSなし発見、実ChromiumのJS描画、外部/private fetchとWebSocket遮断、resource失敗検出 |
+| 本文抽出 | navigation差分で再LLMしない、selector不一致時はpending維持 |
+| 決定的フィルタ | NFKC keyword、domain、source category、除外時LLM/成功登録なし |
+| Batch | submit/poll/standard切替、曖昧な作成の再送禁止と照合、結果順序変更、部分失敗、保存障害からreceipt復旧 |
+| Batch SDK | 固定版SDKをMockTransportで実行し、Structured JSON/category/minimalのwire形式とinline結果解析を確認 |
+| Vault同期 | 再同期、remote更新、ローカル編集/未管理ファイル保護、計画後の編集競合、path traversal/case衝突/symlink拒否 |
+| 費用 | usage/thinking、historical rate snapshot、日月境界、重複report抑止、unknown usage/待機Batch、予算到達 |
+| 通知 | 連続失敗と復旧、同一incident key、closed Issueも重複投稿しない（GitHub MockTransport） |
+| Raw lifecycle | source age/prefix、他のrule保護、metageneration条件、再適用時変更なし |
+
+日次workflowへの永続的`issues: write`追加は自動承認レビューで一度拒否されました。
+2026-10-04に対象`Ningensei848/kaname/.github/workflows/daily.yml`・権限・通常runからの
+連続失敗/予算到達時の自動投稿を明示した確認に、ユーザーが許可しました。その承認後に追加しています。
+Issue #94でPhase 2の受入項目を追跡します。投稿fixtureは実Issueを作りません。
+
+GCS lifecycleは通常writerへbucket更新権限を追加せず、管理者が明示適用する実装です。
+既存sourceのraw保存はfalseのため、本番の削除ruleは適用していません。
+利用者Vaultのパスは未指定のため、正式同期CLIは一時Vaultで検証しています。
+実Chromiumはfixtureのscriptを実行し、未承認の新しい実サイトを巡回していません。
+
+## 翌日の定期実行 — 2026-10-03
+
+[run 37085168871](https://github.com/Ningensei848/kaname/actions/runs/37085168871)はevent `schedule`、
+head `2b024a6`、Collect/Audit成功。ログでは30件処理・保存、失敗0件、
+入力175,931・出力18,717・thinking 0 token、成功index 96件、pending 59件、truncated_rows 75、issues 0。
+report IDは`20261003T011222Z-10250355`。この翌日分はActionsの結果を確認し、独立したGCS再照合は行っていません。
+Phase 1受入は前日の定期runと読取りWIF照合で完了済みです。
 
 
 ## Phase 1最終受入完了 — 2026-10-03

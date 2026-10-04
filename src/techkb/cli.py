@@ -6,37 +6,93 @@ from pathlib import Path
 from .config import load_config
 from .converter import Converter
 from .fetcher import Fetcher
+from .browser_fetcher import SourceFetcher
 from .gemini import Gemini
 from .pipeline import Pipeline
 from .storage import GCSStore, DirectorySnapshot
 from .audit import audit_state, audit_run
 from .metadata_refresh import MetadataRefresh
+from .sync import sync_vault
+from .operations import cost_report, notification_plan, publish_issues
+from .lifecycle import configure_lifecycle
+from .batch import BatchManager
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
-    parser.add_argument("--state-dir", help="read-only local snapshot; dry-run, audit-state or refresh-metadata only")
-    parser.add_argument("--apply", action="store_true", help="apply refresh-metadata changes")
+    parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run and sync")
+    parser.add_argument("--apply", action="store_true", help="apply metadata/lifecycle changes or publish notifications")
     parser.add_argument("--run-id", help="persisted report to compare; audit-run only")
     parser.add_argument("--expected-success-before", type=int, help="success index baseline; audit-run only")
+    parser.add_argument("--vault", help="Obsidian vault directory; sync only")
+    parser.add_argument("--dry-run", action="store_true", help="preview sync without Note writes")
+    parser.add_argument("--as-of", help="UTC date for cost-report: YYYY-MM-DD")
+    parser.add_argument("--batch-id", help="reserved batch ID; batch-bind only")
+    parser.add_argument("--job-name", help="matching Gemini job resource name; batch-bind only")
+    parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
+    parser.add_argument("--max-calls", type=int, help="reduce run limit (0..configured limit)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     # Vendor debug/request logs can contain secrets and content.
-    for name in ("httpx", "httpcore", "google", "markitdown"):
+    for name in ("httpx", "httpcore", "google", "google_genai", "markitdown"):
         logging.getLogger(name).setLevel(logging.CRITICAL)
     fetcher = gemini = None
     try:
         app, sources = load_config(args.config, args.sources)
-        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata"}:
+        if (args.llm_mode or args.max_calls is not None) and args.command not in {"run", "dry-run"}:
+            raise ValueError("LLM overrides require run or dry-run")
+        if args.llm_mode:
+            app.llm.mode=args.llm_mode
+        if args.max_calls is not None:
+            if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
+                raise ValueError("--max-calls must reduce the configured limit")
+            app.llm.max_calls_per_run=args.max_calls
+        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status"}:
             raise ValueError("--state-dir is only for dry-run, audit-state or refresh-metadata")
-        if args.apply and args.command != "refresh-metadata":
-            raise ValueError("--apply is only for refresh-metadata")
-        if args.apply and args.state_dir:
+        if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:
+            raise ValueError("--apply requires refresh-metadata, notify or raw-lifecycle")
+        if args.apply and args.state_dir and args.command != "notify":
             raise ValueError("--apply cannot write a local snapshot")
         if (args.run_id or args.expected_success_before is not None) and args.command != "audit-run":
             raise ValueError("report arguments require audit-run")
+        if (args.vault or args.dry_run) and args.command != "sync":
+            raise ValueError("vault arguments require sync")
+        if args.as_of and args.command != "cost-report":
+            raise ValueError("--as-of requires cost-report")
+        if (args.batch_id or args.job_name) and args.command != "batch-bind":
+            raise ValueError("batch arguments require batch-bind")
+        if args.command == "batch-status":
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            manager = BatchManager(store, None)
+            print(json.dumps(dict(status="success", jobs=[dict(id=j['id'],name=j['name'],status=j['status'],items=len(j['items'])) for _,j in manager.jobs])))
+            return 0
+        if args.command in {"cost-report", "notify", "raw-lifecycle"}:
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            if args.command == "cost-report":
+                result = cost_report(store, app, args.as_of)
+            elif args.command == "raw-lifecycle":
+                result = configure_lifecycle(store, sources, apply=args.apply)
+            else:
+                events = notification_plan(store, app, [s.id for s in sources if s.enabled])
+                result = (publish_issues(events, app.notifications.github_repository, os.environ.get("GITHUB_TOKEN", ""))
+                          if args.apply else dict(status="success", events=events, applied=False))
+            print(json.dumps(result, ensure_ascii=False))
+            return 0
+        if args.command == "sync":
+            if not args.vault:
+                raise ValueError("sync requires --vault")
+            if args.state_dir and not Path(args.state_dir).is_dir():
+                raise ValueError("snapshot directory does not exist")
+            store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            result = sync_vault(store, args.vault, dry_run=args.dry_run)
+            print(json.dumps(result))
+            return 0 if result["status"] == "success" else 1
         if args.command in {"audit-state", "audit-run"}:
             if args.state_dir and not Path(args.state_dir).is_dir():
                 raise ValueError("snapshot directory does not exist")
@@ -64,9 +120,15 @@ def main(argv=None):
         if not dry and not os.environ.get("GEMINI_API_KEY"):
             raise ValueError("GEMINI_API_KEY is required")
         store = DirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
-        fetcher = Fetcher(app.http)
+        fetcher = SourceFetcher(Fetcher(app.http))
         if not dry:
             gemini = Gemini(app.llm, app.categories, prompt, os.environ["GEMINI_API_KEY"])
+        if args.command == "batch-bind":
+            if not args.batch_id or not args.job_name:
+                raise ValueError("batch-bind requires --batch-id and --job-name")
+            BatchManager(store, gemini).bind(args.batch_id, args.job_name)
+            print(json.dumps(dict(status="success",bound=True)))
+            return 0
         report = Pipeline(app, sources, store, fetcher, Converter(), gemini).run(dry_run=dry)
         return 0 if report.status == "success" else 1
     except Exception as exc:

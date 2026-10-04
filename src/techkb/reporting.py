@@ -14,16 +14,27 @@ class RunReport:
     finished_at: str = ""
     status: str = "running"
     dry_run: bool = False
+    record_kind: str = "collection"
+    llm_model: str = ""
+    llm_mode: str = "standard"
+    token_price: dict | None = None
+    source_ids: list[str] = field(default_factory=list)
     discovered: int = 0
     pending_before: int = 0
     fetched: int = 0
     raw_duplicates: int = 0
     content_duplicates: int = 0
+    filtered: int = 0
+    filter_reasons: dict[str, int] = field(default_factory=dict)
     llm_calls: int = 0
     llm_http_attempts: int = 0
     llm_processed: int = 0
     llm_failed: int = 0
     llm_usage_unavailable: int = 0
+    batch_submitted: int = 0
+    batch_saved: int = 0
+    batch_failed: int = 0
+    batch_jobs_pending: int = 0
     would_enrich: int = 0
     saved: int = 0
     recovered: int = 0

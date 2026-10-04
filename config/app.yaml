@@ -16,6 +16,9 @@ llm:
 storage:
   bucket: ""  # GCS_BUCKET overrides this value
   store_raw_html: false
+notifications:
+  consecutive_failures: 3
+  github_repository: Ningensei848/kaname
 prompt_file: prompts/enrich.txt
 tracking_parameters: [fbclid, gclid]
 categories:

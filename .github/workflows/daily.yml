@@ -12,9 +12,19 @@ on:
         description: 'Success index count before that saved run (verification only)'
         type: string
         default: ''
+      collection_mode:
+        description: 'LLM mode for this run (configured keeps app.yaml)'
+        type: choice
+        options: [configured, standard, batch]
+        default: configured
+      max_calls:
+        description: 'Reduce the configured call/request limit (empty keeps app.yaml)'
+        type: string
+        default: ''
 permissions:
   contents: read
   id-token: write
+  issues: write
 concurrency:
   group: techkb-gcs-single-writer
   cancel-in-progress: false
@@ -36,7 +46,15 @@ jobs:
         run: |
           python -m techkb validate-config
           python -m pytest -q
+      - name: Install browser when configured
+        if: ${{ inputs.verification_run_id == '' }}
+        run: |
+          if python -c 'from techkb.config import load_config; _, sources = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if any(s.enabled and s.fetcher == "playwright" for s in sources) else 1)'; then
+            python -m pip install -r requirements-browser.lock
+            python -m playwright install --with-deps chromium
+          fi
       - uses: google-github-actions/auth@v3
+        id: gcp_auth
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
@@ -45,7 +63,13 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
-        run: python -m techkb run
+          COLLECTION_MODE: ${{ inputs.collection_mode }}
+          MAX_CALLS: ${{ inputs.max_calls }}
+        run: |
+          args=(run)
+          if [[ -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ]]; then args+=(--llm-mode "$COLLECTION_MODE"); fi
+          if [[ -n "$MAX_CALLS" ]]; then args+=(--max-calls "$MAX_CALLS"); fi
+          python -m techkb "${args[@]}"
       - name: Audit saved state
         if: ${{ inputs.verification_run_id == '' }}
         env:
@@ -58,3 +82,19 @@ jobs:
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
         run: python -m techkb audit-run --run-id "$VERIFY_RUN_ID" --expected-success-before "$EXPECTED_SUCCESS_BEFORE"
+      - name: Cost and notification plan
+        if: ${{ always() && inputs.verification_run_id == '' && steps.gcp_auth.outcome == 'success' }}
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: |
+          python -m techkb cost-report
+          python -m techkb notify
+      - name: Publish necessary notifications
+        if: ${{ always() && inputs.verification_run_id == '' && steps.gcp_auth.outcome == 'success' }}
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if python -c 'from techkb.config import load_config; app, _ = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if app.notifications.github_repository else 1)'; then
+            python -m techkb notify --apply
+          fi
