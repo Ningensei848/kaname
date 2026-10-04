@@ -54,12 +54,25 @@ python -m techkb sync --state-dir local-snapshot --vault /absolute/path/to/vault
 ```
 
 Vaultの`TechKB/notes/`へ片方向で保存し、`TechKB/.techkb-sync.json`に前回hashを記録します。
-GCSへは書込みません。既存の未管理ファイル・ローカル編集は保護し、競合時は終了コード1と件数を返します。
-競合はローカル変更を別Noteへ退避してから、同期対象ファイルを削除すると次回取得できます。
-リモート削除でローカルNoteは消しません。ファイルをatomicに置換し、manifestは最後に更新。
+GCSへは書込みません。2026-10-04のユーザー選択により、既存Noteは管理対象でも自動置換しません。
+ローカル編集・未管理ファイル・リモート更新は、元Noteを保持して競合（終了コード1）として返します。
+更新候補は`TechKB/incoming/notes/<object-pathのSHA-256>/<remote-contentのSHA-256>.md`へ別保存します。
+結果の`updates`に元Noteと候補の相対path、`created/unchanged/conflict`を表示します。
+同じ候補は再作成せず、候補側に編集があればそのファイルも保持して`conflict`を表示します。
+候補内容を確認して利用者が手動で統合してください。候補が元Noteと一致すれば次回はunchangedです。
+元Noteを削除して再取得する場合は、ローカル変更を先に退避し、編集アプリも停止してから行います。
+manifestは候補保存時に元Noteを更新済みとして扱いません。`written/planned`は元Noteの新規作成、
+`incoming_written/incoming_planned`は候補の保存/計画です。dry-runは候補pathを`planned`として表示します。
+リモート削除でローカルNote・候補は消しません。候補の削除や整理は利用者が明示して行います。
+新規ファイルは同じディレクトリに完成bytesを用意し、hard linkで上書きせずatomicに公開します。
+途中でローカルファイルが作られた場合も置換せず、更新候補へ回します。manifestは最後に更新します。
+hard linkを使えないfilesystemでは安全に失敗し、部分的なNoteや無条件置換へfallbackしません。
+Linuxの実行環境で検証済み。Windows/NTFSや利用者Vaultでの実検証は別の受入項目です。
 中断時は未追跡ファイルが競合として残る場合があり、自動上書きより保護を優先します。
 同一Vaultの同時同期はlockで拒否します。プロセス強制終了後は稼働していないことを確認してlockを手動削除。
 symlinkを含むVaultパスは拒否します。dry-runはlock用のTechKBディレクトリだけ作成し、Note/manifestを更新しません。
+編集アプリとの共通lockはありません。確認後の編集は上書きしませんが、その回のconflict判定に
+間に合わない場合は次の同期で検出します。外部プロセスによる親ディレクトリ差替えまでの隔離は保証しません。
 
 QuartzによるSSGはVault同期後の別課題です。公開対象を明示し、非公開GCSの全Noteをそのまま公開しない構成を決めます。
 

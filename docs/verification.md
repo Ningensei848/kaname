@@ -1,5 +1,52 @@
 # 検証記録 — 2026-10-04
 
+## Vault編集保護の対処branch — 2026-10-04
+
+main `19e456856fbda70cbf32028ca945b32058549b03`から`codex/vault-edit-protection`で対処。
+ユーザーが「既存Noteを残し、更新候補を別保存する」を選択しました。
+既存Noteを自動置換する経路をなくし、新規Note/候補は完成bytesのhard linkで上書きせず作成します。
+候補保存では元Noteのmanifest hashを進めません。候補が編集済みなら候補も保持します。
+
+実Chromiumを含む全135テスト、設定検証、diff checkに成功しました。
+同期の追加10ケースで、in-place編集/atomic rename、確認後の編集、新規同時作成、完成bytesの公開、
+候補編集、dry-run、手動統合後のmanifest更新、hard link非対応、候補symlinkを検証。
+すべてLinux上の一時VaultとMemoryStoreを使い、本番GCS/Vaultへの書込みはありません。
+Windows/NTFSと利用者Vaultは未検証です。非対応filesystemでの無条件置換fallbackはありません。
+
+レビュー再現ケースはF1/F2の2件がpass、未修正F3/F4/F5/F6は期待失敗の4 failed、
+未確定仕様のaudit通知ケースは除外しました。正常系135テストとは区別します。
+既存root `HANDOFF.md`、heartbeat PAUSED、日次収集の設定は維持しています。
+
+## PR #97取り込み後の既存Batch読取り診断 — 2026-10-04
+
+ユーザーがPR #97をmergeし、既存Batchの読取り専用診断の続行を指示しました。
+mainは`19e456856fbda70cbf32028ca945b32058549b03`、
+[main CI](https://github.com/Ningensei848/kaname/actions/runs/37187427902)も成功です。
+この承認は既存jobのGETに対するもので、新規有料提出・GCS書込み・Vault同期・automation再開を含みません。
+
+[診断run 37187493646](https://github.com/Ningensei848/kaname/actions/runs/37187493646)は
+同mainで`diagnostic_batch_id=20261004T001622Z-e22604f8`だけを指定して成功しました。
+WIFと既存Secretをjob内で使用し、Collect/Audit/Verify/Cost/Issue投稿はすべてskip。
+事前テストは123 passed / 1 skipped（ブラウザmodule未導入。full CIの125とは区別）。
+新規Batch作成、記事取得、GCS書込み、使用量の再計上は行っていません。
+
+| 確認項目 | 既存API結果の診断値 |
+|---|---|
+| job状態 / 返却件数 | JOB_STATE_SUCCEEDED / 1 |
+| text / finish reason | あり / STOP |
+| 例外 / 段階 | ValidationError / validation |
+| schema違反 | title_ja: missing、未知field: extra_forbidden（名前・値は非出力） |
+
+保存0件の直接原因は、返却JSONの必須`title_ja`欠落とschema外項目です。認証やNote保存の障害ではありません。
+固定SDKのMockTransportに同じ構造の違反を渡し、同じ診断code、失敗1・保存0・費用1回を再現しました。
+SDKの送信schema全体がPydantic schemaと一致し、`title_ja`がrequired、additionalProperties=falseであることも確認。
+これは同じ実装経路のwire検証であり、当時の実リクエストの保存コピーではありません。
+生成側がschemaを逸脱した理由や未知field名は未確認です。validatorの要件は維持し、自動再生成は追加しません。
+
+ローカルADCのGCS読取りでは、同候補URLの成功indexが10月4日に1行あり、pendingには残っていませんでした。
+そのcontent/raw hashは失敗Batch時と異なります。この後続standard成功を元Batchの保存成功に含めません。
+既存Batchのoutcome/receipt/billing履歴は変更していません。Phase 2の実Batch受入は引き続き未完了です。
+
 ## 再開後のBatch診断修正 — 2026-10-04
 
 main `c8e98f87019a54bded7241931d2dc3d40661d564`から`codex/batch-safe-diagnostics`で対処を開始。

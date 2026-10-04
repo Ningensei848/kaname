@@ -1,4 +1,4 @@
-"""One-way Obsidian export with atomic files and conservative conflict handling."""
+"""One-way export; existing Notes stay editable and updates become candidates."""
 import hashlib
 import json
 import os
@@ -18,6 +18,25 @@ def atomic(path, content):
         with os.fdopen(fd, 'wb') as stream:
             stream.write(content); stream.flush(); os.fsync(stream.fileno())
         os.replace(name, path)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def publish_new(path, content):
+    """Publish complete bytes without replacing a concurrently created file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix='.techkb-', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(content); stream.flush(); os.fsync(stream.fileno())
+        try:
+            # An exclusive open would expose partial bytes to an editor. A hard
+            # link publishes the completed file and fails if the target exists.
+            os.link(name, path)
+            return True
+        except FileExistsError:
+            return False
     finally:
         if os.path.exists(name):
             os.unlink(name)
@@ -59,7 +78,6 @@ def sync_vault(store, vault, dry_run=False):
         for name in manifest:
             safe_destination(root,name)
         plan, conflicts, unchanged, seen = [], 0, 0, set()
-        baselines = {}
         for name in store.list('notes/'):
             path = safe_destination(root,name)
             key = name.casefold()
@@ -71,33 +89,63 @@ def sync_vault(store, vault, dry_run=False):
                 raise ValueError('note disappeared during sync')
             remote.decode('utf-8')
             remote_hash = digest(remote)
-            baselines[name] = None
+            # Separate immutable candidates from editable Notes. Full digests
+            # keep paths short and distinguish both source object and revision.
+            incoming = safe_destination(root / 'incoming',
+                'notes/' + digest(name.encode()) + '/' + remote_hash + '.md')
+            action = 'new'
             if path.exists():
                 local_hash = digest(path.read_bytes())
-                baselines[name] = local_hash
-                if name not in manifest:
-                    conflicts += 1; continue
-                if local_hash != manifest[name] and local_hash != remote_hash:
-                    conflicts += 1; continue
-                if local_hash == remote_hash:
+                if name in manifest and local_hash == remote_hash:
                     unchanged += 1
-                    plan.append((name,path,None,remote_hash)); continue
-            plan.append((name,path,remote,remote_hash))
-        writes = sum(content is not None for _,_,content,_ in plan)
-        actual_writes = 0
-        if not dry_run:
-            for name,path,content,sha in plan:
-                safe_destination(root,name)
-                current = digest(path.read_bytes()) if path.exists() else None
-                if current != baselines[name]:
+                    action = 'unchanged'
+                else:
+                    # A final rehash cannot make os.replace conditional on the
+                    # editor's bytes. Never replace an existing Note at all.
                     conflicts += 1
-                    continue
-                if content is not None:
-                    atomic(path,content)
+                    action = 'incoming'
+            plan.append((name,path,remote,remote_hash,action,incoming))
+        writes = sum(action == 'new' for _,_,_,_,action,_ in plan)
+        incoming_planned = sum(action == 'incoming' for _,_,_,_,action,_ in plan)
+        actual_writes = incoming_written = 0
+        updates = []
+        if not dry_run:
+            for name,path,content,sha,action,incoming in plan:
+                safe_destination(root,name)
+                if action == 'unchanged':
+                    current = digest(path.read_bytes()) if path.exists() else None
+                    if current == sha:
+                        manifest[name]=sha
+                        continue
+                    unchanged -= 1
+                    conflicts += 1
+                    action = 'incoming'
+                if action == 'new' and publish_new(path,content):
                     actual_writes += 1
-                manifest[name]=sha
+                    manifest[name]=sha
+                    continue
+                if action == 'new':
+                    # A local file appeared after planning. Preserve it even if
+                    # its bytes match; do not adopt an untracked file.
+                    conflicts += 1
+                safe_destination(root / 'incoming', incoming.relative_to(root / 'incoming').as_posix())
+                created = publish_new(incoming,content)
+                candidate_status = 'created' if created else 'unchanged'
+                if created:
+                    incoming_written += 1
+                else:
+                    safe_destination(root / 'incoming', incoming.relative_to(root / 'incoming').as_posix())
+                    if digest(incoming.read_bytes()) != sha:
+                        candidate_status = 'conflict'
+                updates.append(dict(note=name, incoming=incoming.relative_to(root).as_posix(),
+                                    status=candidate_status))
             atomic(manifest_path,json.dumps(manifest,sort_keys=True).encode())
+        else:
+            updates = [dict(note=name, incoming=incoming.relative_to(root).as_posix(), status='planned')
+                       for name,_,_,_,action,incoming in plan if action == 'incoming']
         return dict(status='conflict' if conflicts else 'success', dry_run=dry_run,
-                    written=actual_writes, planned=writes, unchanged=unchanged, conflicts=conflicts)
+                    written=actual_writes, planned=writes, unchanged=unchanged, conflicts=conflicts,
+                    incoming_planned=incoming_planned, incoming_written=incoming_written,
+                    updates=updates)
     finally:
         os.close(fd); lock.unlink()

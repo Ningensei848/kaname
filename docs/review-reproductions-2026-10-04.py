@@ -1,7 +1,7 @@
 """Offline review reproductions; not part of the normal passing test suite.
 Run from the repository root with the pinned dependencies and Chromium:
 PLAYWRIGHT_BROWSERS_PATH=/tmp/kaname-browsers PYTHONPATH=src:tests python -m pytest -q docs/review-reproductions-2026-10-04.py -k 'not repeated_audit'
-On codex/batch-safe-diagnostics: F2 passes; the five unresolved findings fail.
+On codex/vault-edit-protection: F1/F2 pass; four unresolved findings fail.
 The audit notification case expresses an unconfirmed product requirement.
 Only fixture HTTP, memory storage and a temporary Vault are used.
 """
@@ -103,13 +103,15 @@ def test_edit_after_last_hash_check_is_not_lost(harness, tmp_path, monkeypatch):
     sync_module.sync_vault(h.store, tmp_path)
     path = tmp_path / "TechKB" / name
     h.store.data[name] = b"remote update"
-    original_atomic = sync_module.atomic
-    def edited_atomic(destination, content):
-        if destination == path:
-            # Runs after sync_vault has checked current == baselines[name].
+    # Inject at the publication boundary in both the old replacement design
+    # and the new candidate design. Existing Note bytes must survive either.
+    boundary = "publish_new" if hasattr(sync_module, "publish_new") else "atomic"
+    original_publish = getattr(sync_module, boundary)
+    def edited_publish(destination, content):
+        if destination != tmp_path / "TechKB/.techkb-sync.json":
             path.write_bytes(b"user edit after final check")
-        original_atomic(destination, content)
-    monkeypatch.setattr(sync_module, "atomic", edited_atomic)
+        return original_publish(destination, content)
+    monkeypatch.setattr(sync_module, boundary, edited_publish)
     sync_module.sync_vault(h.store, tmp_path)
     assert path.read_bytes() == b"user edit after final check"
 

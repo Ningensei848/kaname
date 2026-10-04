@@ -1,5 +1,19 @@
 # 再開後の追記 — 2026-10-04
 
+PR #97はユーザーがmain `19e456856fbda70cbf32028ca945b32058549b03`へmergeしました。
+許可済みの[既存Batch GET診断](https://github.com/Ningensei848/kaname/actions/runs/37187493646)で、
+必須`title_ja`欠落と未知fieldの`extra_forbidden`が直接の保存失敗原因と判明しました。
+textあり、STOPで終了。生成側が逸脱した理由は未確認です。元の失敗履歴とschema要件を維持します。
+Collect/Audit/Cost/Issue投稿はすべてskip、既存jobの読取りのみで、新規提出やGCS更新はありません。
+本文中の「実job GET未実施」「具体的なfield/code未確定」はこの診断により更新します。
+次のF1はユーザー選択に従い既存Noteを残して候補を別保存する方式で対処します。
+詳細は[検証記録](verification.md)と[対処計画](review-remediation-2026-10-04.md)を参照してください。
+
+`codex/vault-edit-protection`では既存Noteの置換をなくし、新規ファイルを完成bytesから
+上書きなしで公開します。候補も編集済みなら保持し、元Noteのmanifest hashを候補保存で更新しません。
+全135テストに成功し、レビュー再現ケースはF1/F2がpass、未修正F3/F4/F5/F6の4件が期待失敗です。
+この変更はmain取込前のbranch検証で、利用者VaultとWindows/NTFSの受入は未完了です。
+
 以下は開発停止中に作成した固定mainのレビュー報告を保存したものです。元の本文は当時の検証範囲を示します。
 再開後にローカル実行環境を復旧し、HEADが`c8e98f87019a54bded7241931d2dc3d40661d564`、
 working treeがuntracked `HANDOFF.md`のみであることを確認しました。ローカルADCでGCSの読取りも成功しました。
@@ -16,7 +30,7 @@ PR merge・heartbeat再開は行っていません。Phase 2受入は未完了�
 実装の現在の状態と順序は[対処計画](review-remediation-2026-10-04.md)、
 実台帳の読取り証拠は[検証記録](verification.md#再開後のbatch診断修正--2026-10-04)を参照してください。
 
-再開後の修正working treeで[オフライン再現ケース](review-reproductions-2026-10-04.py)も実行しました。
+PR #97の修正working treeで[オフライン再現ケース](review-reproductions-2026-10-04.py)も実行しました。
 F2の型保持はpass、未修正のF1/F3/F4/F5/F6は各期待値に対してfailとなり、次を再現しました。
 本番API・実Vault・GCS書込みは使っていません。通知のaudit対象範囲は未確認仕様なので除外しました。
 
