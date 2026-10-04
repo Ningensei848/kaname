@@ -27,13 +27,15 @@ def audit_run(store, run_id, max_calls=30, expected_success_before=None):
     fields = ("llm_calls", "llm_http_attempts", "llm_processed", "llm_failed", "saved",
               "recovered", "pending_before", "pending_after", "total_input_tokens",
               "total_output_tokens", "total_thinking_tokens", "llm_usage_unavailable")
+    if isinstance(report, dict):
+        fields += tuple(k for k in ("batch_submitted", "batch_saved", "batch_failed", "batch_jobs_pending") if k in report)
     if not isinstance(report, dict) or any(type(report.get(k)) is not int or report[k] < 0 for k in fields):
         return {"status": "failed", "audit": audit, "issues": [{"code": "invalid_report"}]}
-    if report.get("run_id") != run_id or report.get("status") != "success" or report.get("dry_run") is not False or report.get("failures") != []:
+    if report.get("run_id") != run_id or report.get("status") != "success" or report.get("dry_run") is not False or report.get("failures") != [] or report.get("record_kind", "collection") != "collection":
         issues.append({"code": "unsuccessful_report"})
-    if report["llm_calls"] > max_calls or report["llm_failed"] or report["llm_processed"] != report["llm_calls"]:
+    if report["llm_calls"] + report.get("batch_submitted", 0) > max_calls or report["llm_failed"] or report.get("batch_failed", 0) or report["llm_processed"] != report["llm_calls"]:
         issues.append({"code": "invalid_llm_counts"})
-    if report["saved"] != report["llm_processed"] + report["recovered"]:
+    if report["saved"] != report["llm_processed"] + report["recovered"] + report.get("batch_saved", 0):
         issues.append({"code": "invalid_saved_count"})
     if report["pending_after"] != audit["pending"]:
         issues.append({"code": "pending_mismatch"})

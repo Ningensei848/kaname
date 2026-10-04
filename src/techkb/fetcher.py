@@ -17,6 +17,7 @@ class FetchResult:
     url: str
     status: int
     content_type: str
+    raw_content: bytes | None = None
 
 class FetchError(RuntimeError):
     pass

@@ -1,13 +1,14 @@
 # TechKB — 技術情報の自動収集・Obsidian蓄積
 
-Python 3.12 / GitHub Actions / Gemini / 非公開GCSによるPhase 1実装です。
+Python 3.12 / GitHub Actions / Gemini / 非公開GCSによる技術情報収集です。
 RSS → HTTP → raw SHA-256 → HTML整理 → MarkItDown → Markdown正規化 → content SHA-256
 → GeminiのStructured JSON → Pydantic → Markdown → GCS/月次TSVの順で処理します。
 SQLite、LLMによるフィルタ、自己修正、画像認識、外部ツールは使用しません。
 
 **Phase 1の実装・本番受入は完了しました。** 上限30件の手動runとscheduled runに成功し、
 Actionsログ・GCS report・Note/receipt/index/pendingの一致を確認しました。
-Phase 2の実装を進めています。Phase 2/3の範囲は[確定バックログ](docs/roadmap.md)を参照してください。
+Phase 2の8機能の実装とローカル検証を追加しました。実Batch 1件の本番確認を進めています。
+操作は[Phase 2手順](docs/phase2-operations.md)、Phase 2/3の範囲は[確定バックログ](docs/roadmap.md)を参照してください。
 
 ## Phase 1本番受入状況（2026-10-03）
 
@@ -37,7 +38,22 @@ Phase 2の実装を進めています。Phase 2/3の範囲は[確定バックロ
 ## 次にやること
 
 - [x] 上限30のscheduled runを受入手順に従って照合し、検証記録を更新。
-- [ ] [Phase 2実装計画](docs/phase2-implementation-plan.md)に従って8機能を実装・検証する。
+- [x] [Phase 2実装計画](docs/phase2-implementation-plan.md)の8機能を実装し、互換性・障害復旧・実Chromiumを検証。
+- [ ] 実Batch 1件でAPI submit → 結果保存 → audit/costを確認し、Phase 2の最終記録を更新する。
+
+## Phase 2
+
+- source設定からHTTP/Playwright、RSS/HTML一覧、本文selector/汎用抽出を選択。
+- keyword/domain/source categoryの決定的フィルタ。LLM呼出し前に除外。
+- Gemini standard/batch切替。非同期job予約・再開・部分失敗・in-flightの二重課金抑止。
+- `sync --vault`でObsidianへ片方向同期。ローカル編集と未管理ファイルを保護。
+- `cost-report`で実測usageから日次/月次USDを集計。不明usageと待機Batchを明示。
+- `notify`で連続失敗と予算到達を検出。ユーザー承認した日次workflowから必要時だけIssue投稿し、既存Issueと重複抑止。
+- sourceの`raw_retention_days`からGCS lifecycleを計画。適用は管理者が明示実行。
+
+既存sourceはHTTP/RSS・standard・従来の変換を維持しています。本文抽出への切替はcontent hashが変わるため明示設定です。
+JS描画には追加runtimeが必要です。各CLI・設定例・復旧方法は[操作手順](docs/phase2-operations.md)を参照してください。
+QuartzによるSSG公開はVault同期後の別課題として残しています。
 
 ## 開始方法
 
@@ -168,7 +184,8 @@ state/index/YYYY-MM.tsv
 state/pending.tsv
 state/receipts/<content-sha256>.json
 runs/YYYY/MM/<run-id>.json
-raw/YYYY/MM/<raw-sha256>.html  # opt-in
+raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in; 旧raw/YYYY/MM/は維持
+state/batches/<batch-id>.json  # 原文を含まない予約・compact結果
 ```
 
 全月の成功TSVを読み、raw/content hashをメモリ上のsetに展開します。
@@ -204,7 +221,7 @@ Schemaエラーは自動修正せず、次のrunに残します。恒常的エ�
 計画値5,000入力+600出力なら1記事$0.003、30記事×30日で$2.70です。
 これは上限保証ではなく、GCS・Actions費用は別です。
 usageの `output_tokens` は候補出力、`thinking_tokens` は別列に保持します。
-費用を計算する際は両方を考慮してください。月次費用集計の正式実装はPhase 2です。
+費用を計算する際は両方を考慮してください。日次/月次USDは`cost-report`で集計できます。
 
 run reportには `total_input_tokens` / `total_output_tokens` / `total_thinking_tokens`、処理・重複・失敗件数を記録します。
 Schema不正でも取得できたusageを加算します。timeoutなどusageを取得できない場合は
@@ -217,7 +234,7 @@ Schema不正でも取得できたusageを加算します。timeoutなどusageを
 - HTTPはresponseの展開後bytes上限10MB、ホスト単位の待機、timeout、指数backoffを適用。
 - private/loopback/link-local IPは拒否。HTTP redirect先でもrobotsとURLを再確認。
 - raw bytesはHTTPクライアントが取得したresponse bodyであり、HTML整理前にhash化。
-- 全文をsemanticに抽出する処理はPhase 2。本文以外の広告テキスト変化までは現状のhash方式で吸収できません。
+- 本文抽出はsourceごとにopt-inです。従来設定では本文外の広告更新もcontent hashを変える場合があります。
 - 著者はHTMLのauthor metadataから取得。Google Researchのように役職・所属を含むbylineだけを表示する記事は、現行実装では著者取得なしになる場合があります。
 - 改行・空白の正規化はコードフェンス内の連続空行を維持します。行末空白除去は要件どおりです。
 - 画像はaltテキストだけを残し、外部画像を埋め込みません。Vision/OCRは実行しません。

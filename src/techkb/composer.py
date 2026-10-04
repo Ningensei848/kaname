@@ -27,7 +27,7 @@ def filename(title, day, digest):
     return f"{day}_{value}_{digest[:12]}.md"
 
 def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated,
-            authors=(), input_char_limit=None):
+            authors=(), input_char_limit=None, source_word_count=None):
     tags = []
     for tag in ["clippings", *source.tags, *enrichment.tags]:
         cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
@@ -66,7 +66,7 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
                  "- Domain: " + inline(urlsplit(canonical).hostname or ""),
                  "- Original URL: `" + code_span(candidate.url) + "`",
                  "- Original language: " + inline(enrichment.source_language),
-                 "- Word count: " + str(word_count(markdown)),
+                 "- Word count: " + str(word_count(markdown) if source_word_count is None else source_word_count),
                  "- AI model: " + inline(model)]
     name = filename(enrichment.title_ja, fetched_at[:10], content_hash)
     return f"notes/{fetched_at[:4]}/{fetched_at[5:7]}/{name}", "\n".join(sections) + "\n"

@@ -49,7 +49,9 @@ HTTPは環境proxyを自動継承しません（`trust_env=False`）。proxyが�
 
 `pipeline.py` は手順の調停のみ、fetch/convert/dedupe/enrich/compose/storeは別moduleです。
 `Store` protocolによりテストではMemoryStoreを注入し、GeminiはSDK clientを注入できます。
-Phase 2のPlaywright・Batch・同期、Phase 3の並列化は未実装です。
+Phase 2のPlaywright・本文/フィルタ・Batch・同期・費用/通知・raw lifecycleを追加しました。
+操作と実環境確認の区別は[Phase 2手順](phase2-operations.md)と[検証記録](verification.md)を参照。
+Phase 3の並列化は未実装です。
 日次/月次の厳格なUSD cap、failureのIssue送信も未実装です。
 
 30記事/runの処理上限は通信retry回数や日次の手動run数を含むhard spend capではありません。

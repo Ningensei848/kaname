@@ -13,6 +13,7 @@ dependencies = [
 ]
 [project.optional-dependencies]
 test = ["pytest>=8,<10"]
+browser = ["playwright>=1.48,<2"]
 [project.scripts]
 techkb = "techkb.cli:main"
 [tool.setuptools.packages.find]

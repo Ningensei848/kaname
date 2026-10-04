@@ -10,6 +10,8 @@ from .pending import merge_pending
 from .reporting import RunReport, now
 from .state import State
 from .fetcher import audit_url
+from .extraction import extract_main, parse_listing, relevance
+from .batch import BatchManager
 
 log = logging.getLogger(__name__)
 
@@ -28,8 +30,12 @@ class Pipeline:
         report.saved += 1
 
     def run(self, dry_run=False):
-        report = RunReport(dry_run=dry_run)
+        price = self.app.costs.prices.get(self.app.llm.model, {}).get(self.app.llm.mode)
+        report = RunReport(dry_run=dry_run, llm_model=self.app.llm.model, llm_mode=self.app.llm.mode,
+                           token_price=price.model_dump() if price else None,
+                           source_ids=[s.id for s in self.sources if s.enabled])
         state, candidates, done = None, None, set()
+        batch, prepared, active = None, [], set()
         try:
             state = State(self.store)
             dedupe = Dedupe(state.rows)
@@ -43,17 +49,24 @@ class Pipeline:
                     receipt = json.loads(self.store.read(name))
                     self._save_receipt(receipt, state, dedupe, report)
                     report.recovered += 1
+                batch = BatchManager(self.store, self.gemini)
+                batch.settle(self._save_receipt, state, dedupe, report, done)
+                active = batch.active_hashes()
             discovered = []
             for source in self.sources:
                 if not source.enabled:
                     continue
                 try:
-                    feed = self.fetcher.get(str(source.feed_url), source.request_interval_seconds)
-                    entries = parse_feed(feed.content, source, report.started_at, self.app.tracking_parameters)
+                    if source.type == "rss":
+                        feed = self.fetcher.get(str(source.feed_url), source.request_interval_seconds)
+                        entries = parse_feed(feed.content, source, report.started_at, self.app.tracking_parameters)
+                    else:
+                        page = self._page(str(source.listing_url), source)
+                        entries = parse_listing(page.content, page.url, source, report.started_at, self.app.tracking_parameters)
                     discovered.extend(entries)
                     report.discovered += len(entries)
                 except Exception as exc:
-                    report.fail("feed", source.id, str(source.feed_url), exc)
+                    report.fail("feed", source.id, str(source.feed_url or source.listing_url), exc)
                     log.error("RSS failed source=%s error=%s", source.id, type(exc).__name__)
             candidates = merge_pending(previous, discovered, self.app.tracking_parameters)
             # Durably retain discovery before any paid work or a runner interruption.
@@ -68,19 +81,28 @@ class Pipeline:
                 stage = "fetch"
                 log.info("article source=%s url=%s", source.id, audit_url(candidate.url))
                 try:
-                    fetched = self.fetcher.get(candidate.url, source.request_interval_seconds, html=True)
+                    fetched = self._page(candidate.url, source)
                     report.fetched += 1
-                    rh = raw_hash(fetched.content)
-                    if rh in dedupe.raw:
+                    raw = fetched.raw_content if fetched.raw_content is not None else fetched.content
+                    rh = raw_hash(raw)
+                    if rh in dedupe.raw and source.fetcher != "playwright":
                         report.raw_duplicates += 1
                         done.add(candidate.url)
                         log.info("raw duplicate")
                         continue
                     log.info("raw new")
                     stage = "convert"
-                    markdown = normalize_markdown(self.converter.convert(clean_html(fetched.content)))
+                    extracted = (extract_main(fetched.content, source.content_selector)
+                                 if source.extract_main or source.content_selector else fetched.content)
+                    markdown = normalize_markdown(self.converter.convert(clean_html(extracted)))
                     if not markdown:
                         raise ValueError("empty converted article")
+                    reason = relevance(source, candidate, markdown)
+                    if reason:
+                        report.filtered += 1
+                        report.filter_reasons[reason] = report.filter_reasons.get(reason, 0) + 1
+                        done.add(candidate.url)
+                        continue
                     ch = content_hash(markdown)
                     if ch in dedupe.content:
                         report.content_duplicates += 1
@@ -88,21 +110,28 @@ class Pipeline:
                         log.info("content duplicate")
                         continue
                     log.info("content new")
+                    if ch in active:
+                        continue
                     if dry_run:
                         report.would_enrich += 1
                         # In-memory deduplication only; no external mutation.
                         dedupe.raw.add(rh)
                         dedupe.content.add(ch)
                         continue
-                    if report.llm_calls >= self.app.llm.max_calls_per_run or ch in attempted_content:
+                    if report.llm_calls + len(prepared) >= self.app.llm.max_calls_per_run or ch in attempted_content:
                         continue
                     stage = "raw_save"
                     raw_enabled = source.store_raw_html if source.store_raw_html is not None else self.app.storage.store_raw_html
                     if raw_enabled:
-                        self.store.write(f"raw/{report.started_at[:4]}/{report.started_at[5:7]}/{rh}.html", fetched.content, "text/html")
+                        self.store.write(f"raw/{source.id}/{report.started_at[:4]}/{report.started_at[5:7]}/{rh}.html", raw, "text/html")
                     canon = canonical_url(fetched.content, fetched.url, self.app.tracking_parameters)
                     authors = article_authors(fetched.content)
                     truncated = len(markdown) > self.app.llm.max_input_chars
+                    if self.app.llm.mode == "batch":
+                        stage = "batch_prepare"
+                        prepared.append(batch.prepare(candidate, source, markdown, canon, rh, ch, authors))
+                        attempted_content.add(ch)
+                        continue
                     stage = "llm"
                     report.llm_calls += 1
                     attempted_content.add(ch)
@@ -146,6 +175,8 @@ class Pipeline:
                     log.error("%s failed source=%s error=%s", stage, source.id, type(exc).__name__)
                     if stage in {"receipt_save", "note_or_index_save", "raw_save"}:
                         break  # Stop paid work if durability is unavailable.
+            if prepared and not dry_run and not any(f["stage"] in {"receipt_save", "note_or_index_save", "raw_save"} for f in report.failures):
+                batch.submit(prepared, self.app, report)
         except Exception as exc:
             report.fail("state_or_recovery", "", "", exc)
             log.error("state/recovery failed error=%s", type(exc).__name__)
@@ -167,3 +198,8 @@ class Pipeline:
                     report.finish()
             log.info("run_report %s", report.to_bytes().decode("utf-8"))
         return report
+
+    def _page(self, url, source):
+        if hasattr(self.fetcher, "page"):
+            return self.fetcher.page(url, source)
+        return self.fetcher.get(url, source.request_interval_seconds, html=True)
