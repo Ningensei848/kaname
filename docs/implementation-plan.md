@@ -6,7 +6,8 @@
 
 ## 1. 共通exportと配布manifest
 
-**次に着手する工程です。** GCSまたは同じ構造の読取りsnapshotから、成功Noteの公開snapshotを作ります。
+**実装・offline検証済みです。実GCSからのexport受入は残っています。**
+`techkb export-notes`が、GCSまたは同じ構造の読取りsnapshotから成功Noteの公開snapshotを作ります。
 
 - Note ID、最新版の選択、Note hash/dataset digest、manifest schemaを実装する。
 - Note/index/receiptと読取り世代を照合し、Note群だけを独立stagingへ出力する。
@@ -14,12 +15,12 @@
 - 順序変更、同URLの更新、title/metadata更新、取り下げ、読取り途中の変化、途中失敗をfixtureで検証する。
 - 同じ入力で同じbytes/digestになり、LLM呼出し・記事取得・GCS書込みが0であることを確認する。
 
-成果物は再現可能なMarkdown snapshot、manifest、export検証結果です。
+成果物は再現可能なMarkdown snapshot、manifest、export検証結果です。操作・schemaは[配布契約](publication.md)にあります。
 全成功Noteを基本とし、Web向けだけの選別や人力Vaultの取込みは追加しません。
 
 ## 2. 共通snapshotからWeb preview
 
-Quartzを第一候補に、採用versionとplugin lockを固定し、synthetic Note群からpreviewを作ります。
+**次に着手する工程です。** Quartzを第一候補に、採用versionとplugin lockを固定し、synthetic Note群からpreviewを作ります。
 一覧・source/category・検索・本文・出典・AI生成/打切り表示を実装します。
 `/kaname/`配下の安定URL、内部リンク、未存在の概念、危険なHTML/埋込みを確認します。
 manifest外・archive・state・receiptがbuild出力へ入らないことを検証します。

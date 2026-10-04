@@ -7,7 +7,8 @@
 ## 今回優先する配布・Web
 
 - [x] 新要求と旧仕様の衝突をADRに記録し、現行文書と履歴を分離。
-- [ ] 成功Noteの決定的export、安定Note ID、manifest、整合性/公開内容検査。
+- [x] 成功Noteの決定的export、安定Note ID、manifest、整合性/公開内容検査。offline検証済み。
+- [ ] 実GCSのexport受入。既存成功Noteのみを読取り、無書込み/追加生成0を照合。
 - [ ] 共通snapshotを使うWeb preview。Quartz version/pluginを検証して固定。
 - [ ] `content`branchの完全snapshot配布、再実行/競合、submodule互換性。
 - [ ] 同じ生成Note群のGit/Pages初回公開とhash/commit/digest照合。
@@ -30,6 +31,7 @@
 
 | 機能 | 状態 |
 |---|---|
+| 公開snapshot export | 読取り専用CLI、39件のoffline検証。実GCSの受入は未完了 |
 | Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。browserのF3と実source受入は残る |
 | 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |
