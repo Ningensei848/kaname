@@ -7,7 +7,10 @@
 ## 現在の状態
 
 確認基点はmain `ff3cb90b4bb49eea033a715bfd1cec7a68d9599b`（PR #98取込後）です。
-PR #98のoffline/full CIは実Chromiumを含む135テスト成功。今回の改訂は文書だけで、実装や本番状態を変更しません。
+PR #98のoffline/full CIは実Chromiumを含む135テスト成功。
+本改訂でexport CLIを追加し、公開境界・決定性・中断・directory置換・既存CLIをoffline検証しました。
+実Chromiumを含む全174テスト成功（既存135件とexport 39件）。
+実GCSからのexport、Git配布、Pages公開はまだ受入していません。
 
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
@@ -15,7 +18,8 @@ PR #98のoffline/full CIは実Chromiumを含む135テスト成功。今回の改
 | Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
-| 共通公開snapshot/Git配布 | ADRで採用 | export/manifest/content branchの実装と配布 |
+| 共通公開snapshot | export/manifest実装、39件のoffline検証 | 実GCSのNoteでのexport受入 |
+| Git配布 | ADRで採用 | content branchの出版処理、再実行・submodule検証 |
 | Pages | 配信先として採用 | SSG、preview、公開、継続更新の受入 |
 
 現在のGitHub APIではPages照会が404、branch一覧に`content`がありませんでした。

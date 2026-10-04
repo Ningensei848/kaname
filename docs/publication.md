@@ -1,7 +1,47 @@
 # 公開NoteのGit配布とPages
 
 この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)を実装するための配布契約です。
-下記のexport、配布branch、Pages pipelineは未実装です。現行CLIに存在するコマンド名ではありません。
+`techkb export-notes`で公開snapshotを作れます。実GCSのexport受入、配布branch、Pages pipelineは未完了です。
+
+## exportの操作と実装範囲
+
+```bash
+# ローカルの読取りsnapshot。出力は入力snapshotの外、新しいディレクトリへ
+python -m techkb export-notes --state-dir /path/to/state-snapshot --output /path/to/public-snapshot
+
+# GCSの既存成功Noteを読む。ADC/WIFを使用し、GEMINI_API_KEYは不要
+python -m techkb export-notes --output /path/to/public-snapshot
+```
+
+HTTP記事取得、Gemini、GCS書込み、Vault操作、Git push、Pages deployは行いません。
+成功indexからだけ選択し、pending、失敗row、未登録receipt、raw、run reportを入力Noteにしません。
+全成功rowのNote/receiptが一致することを確かめ、選ばれた公開版は現行compact構造とfrontmatterの許可fieldで検査します。
+元のNote bytesを保持し、IDや配布情報はmanifestへ書きます。
+既存の12列indexと、thinking/truncation列を持つ現行indexを読み取れます。
+
+exportはLinux/POSIXのdirectory fd、hard link、fsyncを使用します。配布MarkdownはOSに依存しません。
+出力親ディレクトリは先に用意し、出力先自体は新しい名前を指定します。
+全ファイルを一時領域に完成させ、上書きなしで配置し、最後に`manifest.json`を完了印として確定します。
+同じ全ファイルを持つ出力への再実行は`unchanged: true`で、内容・mtimeを変更しません。
+空ディレクトリ、編集済み出力、余計なファイル、symlink、入力snapshot内への出力は拒否します。
+途中失敗でmanifestのない出力が残ったら、そのまま公開せず、新しい出力先で再実行します。自動削除しません。
+
+GCSでは読取った世代とbytes、ローカルではbytesを再照合し、indexの増減も検査します。
+変化を検出した試行は`snapshot_changed`で失敗します。収集/metadata更新が終わってから明示再実行してください。
+この照合はGCSの複数object transactionや、ローカルファイルの外部変更を封じるlockを提供しません。
+公開直前のartifact検証は後続のGit/Pages工程でも必要です。
+
+安全な診断は固定codeのみで、タイトル・URL・Note本文・例外本文を出しません。
+未知frontmatter、余分な本文section、危険なMarkdown/HTML、既知のAPI key/token/署名URL/private keyパターンを拒否します。
+任意の秘密文字列の完全検出や、要約が記事と意味的に同一でないことの証明は行いません。
+
+取り下げはmanifestの安定IDを指定します。未知IDや不正IDは拒否し、そのIDの全版を配布候補から外します。
+除外理由は運用側に記録し、公開manifestへ運用台帳を持ち込まないようにします。
+
+```bash
+python -m techkb export-notes --state-dir /path/to/state-snapshot \
+  --output /path/to/withdrawn-snapshot --exclude-note-id "$NOTE_ID"
+```
 
 ## 配布snapshot
 
@@ -20,8 +60,15 @@ content branch（予定）
 現在のsnapshotからの除外だけでGit履歴から消去したとは扱いません。
 
 Note IDはsource IDと正規化canonical URLから安定して決めます。
-同時刻の版の選択を含め、入力の順序によらない決定的な規則を実装し、衝突/不整合は停止します。
+IDは`[source_id, canonical_url]`をUTF-8/非ASCII維持/空白なしのJSONにしたSHA-256（64桁hex）です。
+URLの正規化は既存の`normalize_url`と設定のtracking parametersを使い、意味のあるqueryの順序は保持します。
+最新版はUTC換算の`processed_at`が大きい版、同時刻なら`content_sha256`の辞書順で大きい版です。
+衝突/不整合は停止します。title・metadata・入力の並び順でIDを変更しません。
 manifestのNote hashは公開Markdown bytesのSHA-256、dataset digestは整列したNote ID/hash集合から計算します。
+manifest schema versionは1、Note一覧はID順です。digestの入力は`[[id, sha256], ...]`を
+`ensure_ascii=False, sort_keys=True, indent=2`でJSON化して末尾改行を付けたUTF-8 bytesです。
+各Note entryにはID/path/hash/source ID/canonical URL/title/category/processed_at/published/truncationを持ちます。
+dataset digestはNote集合の照合用で、manifest全体やGit commitのhashではありません。
 入力本文hash・Note hash・Git commitを混同しません。manifest自身へそのGit commitを書き込む循環も作りません。
 export時の壁時計だけでdataset digestやNoteを変更しません。
 

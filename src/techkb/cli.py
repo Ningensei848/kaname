@@ -17,13 +17,16 @@ from .sync import sync_vault
 from .operations import cost_report, notification_plan, publish_issues
 from .lifecycle import configure_lifecycle
 from .batch import BatchManager, inspect_batch
+from .publication import export_notes, ExportDirectorySnapshot, ExportError
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
-    parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run and sync")
+    parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run, sync and export")
+    parser.add_argument("--output", help="new public snapshot directory; export-notes only")
+    parser.add_argument("--exclude-note-id", action="append", default=[], help="withdraw stable Note ID; export-notes only")
     parser.add_argument("--apply", action="store_true", help="apply metadata/lifecycle changes or publish notifications")
     parser.add_argument("--run-id", help="persisted report to compare; audit-run only")
     parser.add_argument("--expected-success-before", type=int, help="success index baseline; audit-run only")
@@ -51,8 +54,8 @@ def main(argv=None):
             if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
                 raise ValueError("--max-calls must reduce the configured limit")
             app.llm.max_calls_per_run=args.max_calls
-        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status", "batch-inspect"}:
-            raise ValueError("--state-dir is only for dry-run, audit-state or refresh-metadata")
+        if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status", "batch-inspect", "export-notes"}:
+            raise ValueError("--state-dir requires a command supporting read-only snapshots")
         if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:
             raise ValueError("--apply requires refresh-metadata, notify or raw-lifecycle")
         if args.apply and args.state_dir and args.command != "notify":
@@ -69,6 +72,15 @@ def main(argv=None):
             raise ValueError("job name requires batch-bind")
         if args.remote and args.command != "batch-inspect":
             raise ValueError("--remote requires batch-inspect")
+        if (args.output or args.exclude_note_id) and args.command != "export-notes":
+            raise ValueError("export arguments require export-notes")
+        if args.command == "export-notes":
+            if not args.output:
+                raise ValueError("export-notes requires --output")
+            store = ExportDirectorySnapshot(args.state_dir) if args.state_dir else GCSStore(app.storage.bucket)
+            result = export_notes(store, args.output, app.tracking_parameters, app.categories, args.exclude_note_id)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0
         if args.command == "batch-inspect":
             if not args.batch_id:
                 raise ValueError("batch-inspect requires --batch-id")
@@ -152,6 +164,9 @@ def main(argv=None):
             return 0
         report = Pipeline(app, sources, store, fetcher, Converter(), gemini).run(dry_run=dry)
         return 0 if report.status == "success" else 1
+    except ExportError as exc:
+        print(json.dumps(dict(status="failed", code=str(exc))))
+        return 1
     except Exception as exc:
         # Do not print exception text: SDK errors may contain sensitive payloads.
         logging.error("startup/config failure: %s; check configuration, credentials and README", type(exc).__name__)

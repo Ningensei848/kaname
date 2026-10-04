@@ -3,7 +3,7 @@
 - 状態: 採用
 - 決定日: 2026-10-04（JST）
 - 起点: ユーザーの新要求。git submoduleを基本とし、同じ公開Note群をVaultとPagesで参照する選択を確認済み
-- 実装状態: 収集基盤と互換syncは実装済み。Git配布とPagesは未実装
+- 実装状態: 収集基盤・互換sync・公開snapshot exportは実装済み。Git配布とPagesは未実装
 
 ## 背景
 
