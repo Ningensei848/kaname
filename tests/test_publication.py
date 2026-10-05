@@ -118,6 +118,45 @@ def test_truncation_notice_is_preserved(harness, tmp_path):
     assert data == harness.store.data[row["note_object"]]
 
 
+def legacy_truncated(harness, keep_limit=False):
+    row, receipt = add_note(harness, truncated=True)
+    warning = ("> [!warning] 要約対象の制限\n"
+               "> 入力上限により、変換後の本文の先頭20,000文字だけを要約しています。\n"
+               "> 記事後半の論点が含まれない場合があります。記事全体の確認には出典URLを参照してください。\n\n")
+    def old_format(text):
+        if not keep_limit:
+            text = text.replace("llm_input_max_chars: 20000\n", "")
+        return text.replace(warning, "")
+    change_note(harness, row, receipt, old_format)
+    return row, receipt
+
+
+def test_legacy_truncated_bytes_preserved_with_unknown_scope(harness, tmp_path):
+    row, _ = legacy_truncated(harness)
+    export_notes(harness.store, tmp_path / "public")
+    entry = manifest(tmp_path / "public")["notes"][0]
+    assert entry["llm_input_truncated"] is True
+    original = harness.store.data[row["note_object"]]
+    assert (tmp_path / "public" / entry["path"]).read_bytes() == original
+    from techkb.site import load_snapshot, project_content
+    rendered = project_content(*load_snapshot(tmp_path / "public"))[entry["path"]].decode()
+    assert "上限文字数は記録されていません" in rendered
+    assert "20,000" not in rendered
+    assert "上限文字数は記録されていません" not in original.decode()
+
+
+@pytest.mark.parametrize("damage", ["recorded_limit", "unknown_warning", "extra_section"])
+def test_legacy_compatibility_does_not_relax_other_gates(harness, tmp_path, damage):
+    row, receipt = legacy_truncated(harness, keep_limit=damage == "recorded_limit")
+    if damage == "unknown_warning":
+        change_note(harness, row, receipt, lambda text: text.replace("> [!abstract] AI要約", "> [!warning] unknown\n> unknown content\n\n> [!abstract] AI要約"))
+    elif damage == "extra_section":
+        change_note(harness, row, receipt, lambda text: text + "\n## 原文\nprivate original content\n")
+    with pytest.raises(ExportError, match="invalid_compact_body"):
+        export_notes(harness.store, tmp_path / "public")
+    assert not (tmp_path / "public").exists()
+
+
 def test_withdrawal_excludes_all_revisions_and_rejects_unknown_ids(harness, tmp_path):
     add_note(harness)
     add_note(harness, at="2026-10-02T00:00:00Z")

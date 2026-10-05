@@ -18,15 +18,18 @@ from .operations import cost_report, notification_plan, publish_issues
 from .lifecycle import configure_lifecycle
 from .batch import BatchManager, inspect_batch
 from .publication import export_notes, ExportDirectorySnapshot, ExportError
+from .distribution import publish_snapshot
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes", "publish-notes"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
     parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run, sync and export")
     parser.add_argument("--output", help="new public snapshot directory; export-notes only")
     parser.add_argument("--exclude-note-id", action="append", default=[], help="withdraw stable Note ID; export-notes only")
+    parser.add_argument("--public-snapshot", help="validated public snapshot; publish-notes only")
+    parser.add_argument("--distribution-repo", help="local bare repository; publish-notes only (no remote push)")
     parser.add_argument("--apply", action="store_true", help="apply metadata/lifecycle changes or publish notifications")
     parser.add_argument("--run-id", help="persisted report to compare; audit-run only")
     parser.add_argument("--expected-success-before", type=int, help="success index baseline; audit-run only")
@@ -74,6 +77,13 @@ def main(argv=None):
             raise ValueError("--remote requires batch-inspect")
         if (args.output or args.exclude_note_id) and args.command != "export-notes":
             raise ValueError("export arguments require export-notes")
+        if (args.public_snapshot or args.distribution_repo) and args.command != "publish-notes":
+            raise ValueError("distribution arguments require publish-notes")
+        if args.command == "publish-notes":
+            if not args.public_snapshot or not args.distribution_repo:
+                raise ValueError("publish-notes requires public snapshot and local bare repository")
+            print(json.dumps(publish_snapshot(args.public_snapshot, args.distribution_repo), ensure_ascii=False))
+            return 0
         if args.command == "export-notes":
             if not args.output:
                 raise ValueError("export-notes requires --output")

@@ -3,7 +3,7 @@
 - 状態: 採用
 - 決定日: 2026-10-04（JST）
 - 起点: ユーザーの新要求。git submoduleを基本とし、同じ公開Note群をVaultとPagesで参照する選択を確認済み
-- 実装状態: 収集基盤・互換sync・公開snapshot exportは実装済み。Git配布とPagesは未実装
+- 実装状態: 収集基盤・互換sync・公開snapshot export・Git配布・Web buildは実装済み。117件のGit初回公開を受入。Pages deployは未実装
 
 ## 背景
 
@@ -56,7 +56,8 @@ kanameは本体Vaultに対してsubmoduleとして参照でき、同時に独立
 
 本体Vaultの人力編集をkanameの生成更新から切り離し、独立したWeb参照も提供できます。
 生成Noteの版と引用元を追跡し、利用側は取り込む時期を選べます。
-配布branch、export manifest、安定Note識別子、Pages buildの実装が新たに必要です。
+配布branch、export manifest、安定Note識別子、Pages build/deployが新たな責務です。
+Git配布とWeb buildの受入状態は[検証・受入](../verification.md)で管理し、日次の作業履歴をADRへ追加しません。
 公開履歴に載せた情報は、現在版から取り下げてもGit履歴から消えた保証にはなりません。
 公開するのは生成要約であり、元記事の権利がkanameへ移ることを意味しません。
 

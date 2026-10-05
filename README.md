@@ -4,9 +4,9 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 **同じ公開Note群を、GitHub Pagesと、人力Vaultからのgit submodule参照で利用します。**
 人力で構成するVaultは別リポジトリで管理し、その公開範囲・編集・コミュニティプラグイン設定は本プロジェクトの対象外です。
 
-この構成は新しく決定した目標です。現在動いているのは収集・非公開GCS保存であり、
-公開snapshotのexportと架空NoteによるWeb previewは検証済みです。
-Note配布branch、submodule向け配布、実NoteのPages公開は次の実装工程です。
+現在は収集・非公開GCS保存に加え、実GCSからの読取りexportとGit配布を検証しています。
+117件の生成Noteは[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)で参照できます。
+同じ配布commitからのWeb buildも検証済みです。GitHub Pagesのdeployと日次公開の自動化は次工程です。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
 ```mermaid
@@ -28,12 +28,14 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 | RSS/HTTP → Markdown → Gemini Structured JSON → Note/GCS | 実装・Phase 1本番受入済み。既存日次収集は稼働中 |
 | Batch、本文抽出、フィルタ、ブラウザ、費用・通知・lifecycle | 実装済み。Batch成功結果の本番保存と一部のレビュー指摘は未完了 |
 | 既存Vaultへの直接同期 | 互換機能。既存Noteを保持して更新候補を別保存する編集保護を取込済み |
-| 公開Noteのexport | 読取り専用CLIを追加。offline検証済み、実GCSからのexportは未受入 |
-| 公開NoteのGit配布・独立Pages | 新しい標準経路として採用。未実装・未公開 |
+| 公開Noteのexport | 読取り専用CLI、43件のoffline検証。実GCSの117件を追加生成・書込み0で受入 |
+| 公開NoteのGit配布 | content branchへ117件を公開。再実行・競合・一時submodule等の15テストで検証 |
+| 独立Pages | 同じ配布版のWeb buildを検証。Pages deployは未実施 |
 | 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本セッションでは扱わない |
 
-**既存の成功Noteを追加LLM呼出しなしでexportする共通配布snapshot**を実装しました。
-次はそのsnapshotを入力にWeb previewとGit配布を組み立てます。実Batch受入完了をPages着手の前提にしません。
+**既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
+Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distribution.md)を参照してください。
+次は同じ配布commitからPagesを公開します。実Batch受入完了をPages着手の前提にしません。
 実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
 
 ## 公開するもの
@@ -48,7 +50,7 @@ GCS bucketの匿名公開は行わず、公開用NoteをGitへexportする境界
 
 ## Web previewを確認する
 
-Quartz 5.0.0とpluginを固定し、架空Noteで一覧・検索・出典別/カテゴリ別/日付順・Note本文を確認できます。
+Quartz 5.0.0とpluginを固定し、共通公開snapshotで一覧・検索・出典別/カテゴリ別/日付順・Note本文を確認できます。
 元Markdownのbytesとhashを保持します。[起動・検証手順](docs/web-preview.md)を参照してください。
 Checksの`web-preview` jobが静的previewとdesktop/mobile画面をartifactへ保存します。Pages deployはまだ行いません。
 
@@ -97,7 +99,7 @@ python -m techkb cost-report  # 保存済みreportから費用推計
 
 - [文書の入口](docs/README.md)：現在読む資料と履歴の区別
 - [ADR](docs/adr/0001-generated-content-module-and-pages.md)：生成リソースの独立と二つの参照経路
-- [仕様書](docs/specification.md)、[公開・配布](docs/publication.md)、[実装計画](docs/implementation-plan.md)
+- [仕様書](docs/specification.md)、[公開・配布](docs/publication.md)、[Git配布手順](docs/git-distribution.md)、[実装計画](docs/implementation-plan.md)
 - [操作](docs/operations.md)、[設計](docs/design-decisions.md)、[GCP設定](docs/gcp-setup.md)、[source方針](docs/source-policy.md)
 - [検証・受入](docs/verification.md)、[バックログ](docs/roadmap.md)
 

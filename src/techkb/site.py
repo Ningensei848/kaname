@@ -10,7 +10,7 @@ import yaml
 from bs4 import BeautifulSoup
 
 from .composer import inline
-from .publication import (ExportError, ExportDirectorySnapshot, json_bytes, sha256,
+from .publication import (ExportError, ExportDirectorySnapshot, PUBLIC_ATTRIBUTES, json_bytes, sha256,
                           note_frontmatter, validate_note, reject_symlinks, instant)
 from .normalize import normalize_url
 
@@ -39,6 +39,10 @@ def load_snapshot(root, tracking=()):
         if child.name == ".git":
             continue
         reject_symlinks(child)
+        if child.name == ".gitattributes":
+            if reader.read(child.name) != PUBLIC_ATTRIBUTES:
+                raise ExportError("invalid_distribution_attributes")
+            continue
         if child.name not in {"README.md", "manifest.json", "notes"}:
             raise ExportError("unexpected_snapshot_file")
     raw = reader.read("manifest.json")
@@ -156,6 +160,11 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
         _, match, _ = note_frontmatter(files[entry["path"]])
         body = files[entry["path"]].decode()[match.end():]
         body = body.removeprefix("\n# " + inline(meta["title"]) + "\n")
+        if (meta["llm_input_truncated"] and "llm_input_max_chars" not in meta and
+                "> [!warning] 要約対象の制限" not in body):
+            body = ("> [!warning] 要約対象の制限\n"
+                    "> このNoteは入力を打ち切って生成されています。保存時点の上限文字数は記録されていません。\n"
+                    "> 記事全体の確認には出典URLを参照してください。\n\n" + body.lstrip("\n"))
         def wikilink(match):
             title = match[1]
             candidates = titles.get(title, [])

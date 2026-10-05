@@ -2,7 +2,8 @@
 
 この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)を実装するための配布契約です。
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
-実GCSのexport受入、配布branch、Pages deploy pipelineは未完了です。
+実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
+Pages deploy pipelineと日次公開の自動化は未完了です。
 
 ## exportの操作と実装範囲
 
@@ -16,9 +17,13 @@ python -m techkb export-notes --output /path/to/public-snapshot
 
 HTTP記事取得、Gemini、GCS書込み、Vault操作、Git push、Pages deployは行いません。
 成功indexからだけ選択し、pending、失敗row、未登録receipt、raw、run reportを入力Noteにしません。
-全成功rowのNote/receiptが一致することを確かめ、選ばれた公開版は現行compact構造とfrontmatterの許可fieldで検査します。
+全成功rowのNote/receiptが一致することを確かめ、選ばれた公開版はcompact構造とfrontmatterの許可fieldで検査します。
 元のNote bytesを保持し、IDや配布情報はmanifestへ書きます。
 既存の12列indexと、thinking/truncation列を持つ現行indexを読み取れます。
+打切り注意表示の導入前に作られたcompact Noteは、truncation flagがtrue、上限fieldがなく、
+旧形式のheader/AI要約/全sectionが一致する場合だけ受け入れます。実データでは4件が該当しました。
+上限fieldがあるのに注意表示がないNoteや不明な追加本文は拒否します。
+元Markdownは変更せず、Web表示に上限未記録の注意を補います。過去の上限を20,000と推定しません。
 
 exportはLinux/POSIXのdirectory fd、hard link、fsyncを使用します。配布MarkdownはOSに依存しません。
 出力親ディレクトリは先に用意し、出力先自体は新しい名前を指定します。
@@ -50,8 +55,9 @@ python -m techkb export-notes --state-dir /path/to/state-snapshot \
 利用側はこのbranchのcommitをgit submoduleで参照します。コード側の更新はそのまま配布更新にしません。
 
 ```text
-content branch（予定）
+content branch
   README.md                     # 生成Noteの利用方法・AI生成の表示
+  .gitattributes                # 固定のbytes保持設定（変換/filter等を無効化）
   manifest.json                 # schema version、dataset digest、Note ID/hash/path
   notes/<note-id>.md             # ObsidianとWebが共有する公開Note
 ```
@@ -78,6 +84,8 @@ GCSの世代と読取り状態を照合し、収集中の変化があれば混�
 manifestに列挙したファイル以外の混入、秘密、原文セクション、危険な埋込みを検査します。
 GCSのbucket名・世代記録・運用台帳を公開manifestの内容にしません。
 stagingの完全なsnapshotだけをcommitし、現在の配布版を途中生成物へ進めません。
+`publish-notes`はローカルbare repoの`content`refだけを原子的に進めます。
+remoteの公開は明示的なnon-force pushと照合で行い、既存日次workflowへはまだ接続していません。
 
 ## submodule向け契約
 
