@@ -1,0 +1,59 @@
+body { font-family: "Noto Sans JP", system-ui, sans-serif; }
+h1, h2, h3, strong, .page-title { font-family: "Noto Sans JP", system-ui, sans-serif; font-weight: 600; }
+.page-title a { font-size: 1.65rem; letter-spacing: -.06em; }
+.page-title a::before { content: "k"; display: inline-grid; place-content: center; width: 2rem; height: 2rem; margin-right: .55rem; background: var(--secondary); color: var(--light); border-radius: .6rem; font-weight: 600; }
+.fixture-banner { font-size: .72rem; letter-spacing: .04em; text-align: center; padding: .6rem 1rem; background: var(--dark); color: var(--light); }
+.page > #quartz-body { grid-template-columns: 210px minmax(0, 880px) 0; }
+.page { max-width: 1200px; padding: 0 2rem; }
+.sidebar.left { padding-top: 4.5rem; }
+.center { padding-top: 4.5rem; }
+.article-title { font-size: 1.9rem; line-height: 1.5; letter-spacing: -.04em; }
+.content-meta { font-size: .78rem; opacity: .7; }
+article { line-height: 1.95; }
+.eyebrow { color: var(--tertiary); font-size: .64rem; font-weight: 600; letter-spacing: .17em; }
+.home-intro { margin: 2.5rem 0 1.8rem; border-top: 1px solid var(--lightgray); padding-top: 2rem; }
+.home-intro > p { font-size: clamp(1.8rem, 3vw, 2.7rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.55; margin: .8rem 0 1rem; }
+.home-intro > span:last-child { font-size: .86rem; color: var(--darkgray); }
+.library-stats { display: flex; gap: 2.5rem; margin: 2rem 0; }
+.library-stats > div { display: flex; align-items: baseline; gap: .55rem; }
+.library-stats strong { font-size: 1.9rem; font-family: system-ui; letter-spacing: -.04em; }
+.library-stats span { font-size: .7rem; color: var(--gray); }
+.browse-nav { display: flex; gap: .65rem; flex-wrap: wrap; border-bottom: 1px solid var(--lightgray); padding-bottom: 2rem; }
+.browse-nav a { padding: .35rem .95rem; border: 1px solid var(--lightgray); border-radius: 2rem; font-size: .8rem; background: transparent; }
+.note-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; margin: 1.5rem 0 3rem; }
+a.note-card { display: flex; flex-direction: column; gap: .85rem; padding: 1.45rem; background: var(--light); border: 1px solid var(--lightgray); border-radius: .7rem; color: var(--dark); text-decoration: none; transition: transform .15s, border-color .15s; }
+a.note-card:hover { border-color: var(--secondary); transform: translateY(-3px); }
+.note-card-meta { font-size: .65rem; color: var(--secondary); line-height: 1.7; }
+.note-card strong { font-size: 1.15rem; letter-spacing: -.035em; line-height: 1.65; }
+.note-card-summary { font-size: .8rem; line-height: 1.9; font-weight: 400; color: var(--darkgray); }
+.note-card-bottom { display: flex; justify-content: space-between; gap: .4rem; margin-top: auto; padding-top: .8rem; border-top: 1px solid var(--lightgray); font-size: .66rem; font-weight: 400; color: var(--gray); }
+.note-card-bottom span { color: var(--secondary); }
+.edition-link { font-size: .7rem; color: var(--gray); padding: 1.5rem 0; border-top: 1px solid var(--lightgray); }
+.note-context { padding: 1rem 0 1.4rem; margin-bottom: 2rem; border-bottom: 1px solid var(--lightgray); }
+.note-context p { margin: .4rem 0; font-size: .82rem; }
+.source-link { font-size: .85rem; }
+.edition-links { margin-top: 2.5rem; padding: 1rem 0; border-top: 1px solid var(--lightgray); }
+.edition-links h2 { font-size: 1.1rem; }
+.edition-links details { font-size: .75rem; margin-top: 1rem; }
+code { overflow-wrap: anywhere; }
+@media (max-width: 1200px) {
+  .page > #quartz-body { grid-template-columns: 180px minmax(0, 1fr); }
+}
+@media (max-width: 800px) {
+  .page { padding: 0 1.1rem; }
+  .page > #quartz-body { display: block; padding: 0; }
+  .page > #quartz-body .sidebar.left { position: static; height: auto; width: 100%; padding: 1.5rem 0; display: flex; flex-direction: row; align-items: center; gap: .8rem; }
+  .page > #quartz-body .sidebar.right { display: none; }
+  .page > #quartz-body .center { width: 100%; padding-top: .8rem; }
+  .page-title { flex: 1; margin: 0; }
+  .page-title a { font-size: 1.2rem; white-space: nowrap; }
+  .page > #quartz-body .sidebar.left .search { width: auto; min-width: 0; }
+  .page > #quartz-body .sidebar.left .search > .search-button { width: auto; }
+  .article-title { font-size: 1.5rem; }
+  .home-intro { margin-top: 1.5rem; }
+  .note-grid { grid-template-columns: 1fr; }
+  .library-stats { gap: 1.1rem; }
+  .library-stats > div { gap: .35rem; }
+  .library-stats strong { font-size: 1.55rem; }
+  .library-stats span { font-size: .62rem; }
+}

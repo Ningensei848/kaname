@@ -6,10 +6,10 @@
 
 ## 現在の状態
 
-確認基点はmain `ff3cb90b4bb49eea033a715bfd1cec7a68d9599b`（PR #98取込後）です。
-PR #98のoffline/full CIは実Chromiumを含む135テスト成功。
-本改訂でexport CLIを追加し、公開境界・決定性・中断・directory置換・既存CLIをoffline検証しました。
-実Chromiumを含む全174テスト成功（既存135件とexport 39件）。
+Web previewの実装基点はmain `93ab4229acce6453e049357d4d1d30d622b20889`（PR #100取込後）です。
+exportまでの174テストにWeb公開境界24件を追加し、実Chromiumを含む全198件が成功しています。
+架空Note 3件の実Chromium受入で検索、全ローカルリンク、元Markdown hash、375/768/1024/1440px、
+AI/打切り表示、外部resource要求0を確認しています。手順・依存の未解消制約は[Web preview](web-preview.md)にあります。
 実GCSからのexport、Git配布、Pages公開はまだ受入していません。
 
 | 領域 | 実装/検証 | 未完了 |
@@ -20,7 +20,7 @@ PR #98のoffline/full CIは実Chromiumを含む135テスト成功。
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、39件のoffline検証 | 実GCSのNoteでのexport受入 |
 | Git配布 | ADRで採用 | content branchの出版処理、再実行・submodule検証 |
-| Pages | 配信先として採用 | SSG、preview、公開、継続更新の受入 |
+| Web/Pages | Quartz 5.0.0で架空Noteの静的preview、browser検証、Checksのartifact保存 | 実NoteのPages公開、配布commit一致、継続更新の受入 |
 
 現在のGitHub APIではPages照会が404、branch一覧に`content`がありませんでした。
 404だけでは権限による非表示と不在を区別できませんが、公開pipelineを実装済みとする根拠はありません。

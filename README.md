@@ -5,7 +5,8 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 人力で構成するVaultは別リポジトリで管理し、その公開範囲・編集・コミュニティプラグイン設定は本プロジェクトの対象外です。
 
 この構成は新しく決定した目標です。現在動いているのは収集・非公開GCS保存であり、
-公開snapshotのexportはoffline検証済みです。Note配布branch、submodule向け配布、Pagesは次の実装工程です。
+公開snapshotのexportと架空NoteによるWeb previewは検証済みです。
+Note配布branch、submodule向け配布、実NoteのPages公開は次の実装工程です。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
 ```mermaid
@@ -44,6 +45,12 @@ GCS bucketの匿名公開は行わず、公開用NoteをGitへexportする境界
 公開NoteとPagesは同じsnapshotを使い、Noteの識別子・版・出典を追跡できるようにします。
 生成領域への人手の注釈は人力Vault側に保持する運用を基本にします。
 仕様は[仕様書](docs/specification.md)、配布契約は[公開・配布設計](docs/publication.md)にまとめています。
+
+## Web previewを確認する
+
+Quartz 5.0.0とpluginを固定し、架空Noteで一覧・検索・出典別/カテゴリ別/日付順・Note本文を確認できます。
+元Markdownのbytesとhashを保持します。[起動・検証手順](docs/web-preview.md)を参照してください。
+Checksの`web-preview` jobが静的previewとdesktop/mobile画面をartifactへ保存します。Pages deployはまだ行いません。
 
 ## 現行コレクタを使う
 

@@ -8,3 +8,6 @@ build/
 dist/
 local-state/
 gha-creds-*.json
+web/node_modules/
+web/.cache/
+web/public/

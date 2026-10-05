@@ -1,7 +1,8 @@
 # 公開NoteのGit配布とPages
 
 この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)を実装するための配布契約です。
-`techkb export-notes`で公開snapshotを作れます。実GCSのexport受入、配布branch、Pages pipelineは未完了です。
+`techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
+実GCSのexport受入、配布branch、Pages deploy pipelineは未完了です。
 
 ## exportの操作と実装範囲
 
@@ -95,8 +96,9 @@ kanameは第三者プラグインの動作を保証せず、選択した更新�
 ## Pages向け契約
 
 同じ`content`commitを固定入力として、`main`側の固定SSG設定でHTMLをbuildします。
-Quartzを第一候補とし、[Markdown/Obsidian機能](https://quartz.jzhao.xyz/)と
-[Pages配信](https://quartz.jzhao.xyz/hosting#github-pages)をfixtureで確認してからversionとpluginを固定します。
+Quartz 5.0.0の[Markdown/Obsidian機能](https://quartz.jzhao.xyz/)をfixtureで確認し、versionとpluginを固定しました。
+[Pages配信](https://quartz.jzhao.xyz/hosting#github-pages)は後続工程です。
+[Web preview](web-preview.md)に固定方式・実装契約・未解消の依存制約を記載します。
 想定するproject Pagesのbase pathは`/kaname/`です。現在そのURLでの提供は確認できていません。
 
 初期の閲覧要件は一覧、日付/source/category、検索、Note本文、出典、AI生成/入力打切り表示です。
@@ -106,7 +108,8 @@ Pages上に配布commit/dataset digestを表示し、同じ版のMarkdownを追�
 
 SSGはmanifestが許可したNote群だけを入力とし、人力Vault、repo root、archive、state、receiptを探索しません。
 buildはGCS/LLMの認証情報を受け取らず、GCS読取りはexport工程へ限定します。
-配信artifactは生成HTML/CSS/JS等だけを含み、Git管理領域やリンクされた運用データを混ぜません。
+配信artifactは生成HTML/CSS/JS/font、公開manifestと元Note Markdownを含みます。
+Git管理領域やリンクされた運用データを混ぜません。Noteとartifactのhashを完了manifestで再検査します。
 [GitHub公式のcustom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 に従い、build/artifact/deployを分け、失敗したbuildでは前の成功サイトを維持します。
 
