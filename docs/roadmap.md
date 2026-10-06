@@ -8,10 +8,10 @@
 
 - [x] 新要求と旧仕様の衝突をADRに記録し、現行文書と履歴を分離。
 - [x] 成功Noteの決定的export、安定Note ID、manifest、整合性/公開内容検査。offline検証済み。
-- [ ] 実GCSのexport受入。既存成功Noteのみを読取り、無書込み/追加生成0を照合。
+- [x] 実GCSのexport受入。117件、無書込み/追加生成0を照合。
 - [x] 共通snapshotを使うWeb preview。Quartz 5.0.0/plugin固定、架空Noteと実Chromiumで検証。
-- [ ] `content`branchの完全snapshot配布、再実行/競合、submodule互換性。
-- [ ] 同じ生成Note群のGit/Pages初回公開とhash/commit/digest照合。
+- [x] `content`branchの完全snapshot配布、再実行/競合、一時submodule互換性。初回117件を公開。
+- [ ] 同じ生成Note群のPages初回公開。Gitからの実Web build/hash/commit/digest照合は完了。
 - [ ] 成功収集後の日次公開と、収集/配布/deployそれぞれの障害通知。
 
 この順の成果物と完了条件は[実装計画](implementation-plan.md)にあります。
@@ -31,8 +31,9 @@
 
 | 機能 | 状態 |
 |---|---|
-| 公開snapshot export | 読取り専用CLI、39件のoffline検証。実GCSの受入は未完了 |
-| Web preview | 公開境界24テストと架空Noteのbrowser受入。実NoteのPages公開は未完了 |
+| 公開snapshot export | 読取り専用CLI、旧形式互換を含む43件のoffline検証。実GCSの117件を受入 |
+| Git配布 | 公開内容のみのbare出版、15テスト。初回117件をcontent branchへ公開 |
+| Web preview | 公開境界24テスト、架空/実Noteのbrowser受入。実NoteのPages deployは未完了 |
 | Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。browserのF3と実source受入は残る |
 | 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |

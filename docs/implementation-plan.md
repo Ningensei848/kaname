@@ -6,7 +6,7 @@
 
 ## 1. 共通exportと配布manifest
 
-**実装・offline検証済みです。実GCSからのexport受入は残っています。**
+**実装・offline検証・実GCSの117件のexport受入済みです。**
 `techkb export-notes`が、GCSまたは同じ構造の読取りsnapshotから成功Noteの公開snapshotを作ります。
 
 - Note ID、最新版の選択、Note hash/dataset digest、manifest schemaを実装する。
@@ -28,21 +28,26 @@ dataset digestと指定された配布commitを表示し、同じsnapshotを入�
 配布commitとcheckoutの一致は工程3〜4で保証します。実際のPages公開はまだ受入していません。
 
 成果物は確認可能なWeb previewと静的build artifactです。[起動・検証手順](web-preview.md)を参照してください。
-この段階で本体Vaultは不要です。次は工程3のGit配布とsubmodule互換性へ進みます。
+この段階で本体Vaultは不要です。実配布commitの117件からのbuildも検証済みです。
 
 ## 3. Git配布とsubmodule互換性
 
-`content`branchへ完全snapshotを追加する出版処理を実装します。
+**実装・offline検証・初回Git公開済みです。** `publish-notes`がローカルbare repoへ完全snapshotを追加します。
 新しいsnapshotだけをcommitし、変更なし再実行ではcommitを増やしません。
 履歴をforce pushで捨てず、同時publishや途中失敗を検出し、既存公開版を保持します。
 一時親repoでsubmoduleの特定commit参照と明示更新を確認し、dirty/未管理ファイルを強制変更しません。
 実際の人力Vaultの設定やコミュニティプラグインの導入は行いません。
 
 成果物はGit配布方式・利用側へ渡す契約・再実行/競合検証です。
+[Git配布手順](git-distribution.md)に初回117件の配布commitと取得方法を記録しています。
+一時submoduleの参照固定/明示更新は検証済みですが、実Vault・第三者プラグイン・NTFSの保証はしません。
 
 ## 4. 初回公開とPages受入
 
-工程1〜3の成果物を確認したうえで、既存成功Noteを追加生成なしでexportし、Git/Pagesへ配布します。
+**初回Git公開と実NoteのローカルWeb検証は完了、Pages deployは未完了です。**
+次は`content`の固定commitを入力にするPages build/artifact/deploy workflowを実装します。
+checkoutのHEAD/clean treeと指定commit、Note hashを照合し、GCS/Gemini権限なしでbuildします。
+Pagesの現行設定を読取り確認し、設定・deploy権限・公開URLはその実装PRで具体化します。
 公開方針は「生成Note群は公開」で確定済みです。配布内容・workflow権限・出力境界を実装PRで示します。
 GCSの読取りは現行ADC/WIFの範囲で行い、bucket匿名公開やGemini Secret抽出を前提にしません。
 Pages設定、Git書込み、deploy権限は該当工程だけに限定します。

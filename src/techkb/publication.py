@@ -25,6 +25,10 @@ class ExportError(ValueError):
     """Only a fixed code is safe to print; never include Note text or URLs."""
 
 
+# Distribution-only metadata: preserve blob bytes even with core.autocrlf.
+PUBLIC_ATTRIBUTES = b"* -text -filter -ident -working-tree-encoding\n"
+
+
 def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -233,6 +237,15 @@ def validate_note(data, row, tracking, categories):
         prefix += "> [!abstract] AI要約\n" + "".join("> " + inline(line) + "\n" for line in meta["description"].splitlines())
         prefix += "\n## 重要ポイント\n\n"
         body = text[match.end():]
+        # Before the input-scope notice was introduced, compact Notes stored
+        # only the truncation flag. Recognize that exact earlier structure;
+        # never invent a limit or strip arbitrary sections to make it pass.
+        legacy_prefix = ("\n# " + inline(meta["title"]) + "\n\n> [!abstract] AI要約\n" +
+                         "".join("> " + inline(line) + "\n" for line in meta["description"].splitlines()) +
+                         "\n## 重要ポイント\n\n")
+        if (meta["llm_input_truncated"] and "llm_input_max_chars" not in meta and
+                body.startswith(legacy_prefix)):
+            prefix = legacy_prefix
         if not body.startswith(prefix):
             raise ExportError("invalid_compact_body")
         points, sep, rest = body[len(prefix):].partition("\n\n## 検索キーワード\n\n")

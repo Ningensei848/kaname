@@ -6,11 +6,12 @@
 
 ## 現在の状態
 
-Web previewの実装基点はmain `93ab4229acce6453e049357d4d1d30d622b20889`（PR #100取込後）です。
-exportまでの174テストにWeb公開境界24件を追加し、実Chromiumを含む全198件が成功しています。
+Git配布の実装基点はmain `84313ed0542a7a478d7b05636d4eee5279492b0e`（PR #101取込後）です。
+PR #101のChecks run `37209988391`と、取込後のmain run `37316866662`は成功しました。
+既存198件に旧形式Noteの公開互換4件とGit配布15件を追加し、実Chromiumを含む全217件が成功しています。
 架空Note 3件の実Chromium受入で検索、全ローカルリンク、元Markdown hash、375/768/1024/1440px、
 AI/打切り表示、外部resource要求0を確認しています。手順・依存の未解消制約は[Web preview](web-preview.md)にあります。
-実GCSからのexport、Git配布、Pages公開はまだ受入していません。
+実GCSからのexportと初回Git配布は受入済みです。Pages deployは未実施です。
 
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
@@ -18,13 +19,29 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
-| 共通公開snapshot | export/manifest実装、39件のoffline検証 | 実GCSのNoteでのexport受入 |
-| Git配布 | ADRで採用 | content branchの出版処理、再実行・submodule検証 |
-| Web/Pages | Quartz 5.0.0で架空Noteの静的preview、browser検証、Checksのartifact保存 | 実NoteのPages公開、配布commit一致、継続更新の受入 |
+| 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 日次公開への接続 |
+| Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 実NoteのPages deploy、継続更新と切戻しの受入 |
 
-現在のGitHub APIではPages照会が404、branch一覧に`content`がありませんでした。
-404だけでは権限による非表示と不在を区別できませんが、公開pipelineを実装済みとする根拠はありません。
+Pages照会は先の読取り時に404でした。404だけでは権限による非表示と不在を区別できません。
+Git配布は実公開を照合していますが、Pages公開pipelineを稼働済みとする根拠はありません。
 現在の収集成功をGit配布・Pages稼働と混同しません。
+
+## 実Noteの配布受入
+
+- 既存ADCでprivate GCSの成功index/Note/receiptを読取り。117件を選択し、314 objectの世代/bytesとindex一覧を再照合。
+- 成功試行は628 read、2 index list。GCS書込み・追加LLM・記事取得は0。認証情報や本文を受入ログへ出さない。
+- 初回失敗は旧compact形式の打切りNote4件による`invalid_compact_body`。限定的な互換判定で解消し、Note bytesは維持。
+- 配布commitは`62ed7f08ec786e1067cc6eecd9bece5e078b8c5c`、Note数117、rootの配布ファイルは計120件。
+- dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`。
+- 同じsnapshotの再出版は`unchanged: true`で同じcommit。通常clone後のmanifest/全Note bytesも一致。
+- Git checkoutのHEADと指定commitを照合してWeb build。全117件の元Markdown hash、実Chromiumの検索/Note/出典、内部リンク、4画面幅、外部resource要求0を確認。
+- 受入したローカルartifact digestは`72d6acdad03643c2e5aca4dc5fda65fe079270b45761d757c071137758721e40`。
+- 旧形式4件はWebに上限未記録の注意を表示し、元Markdownは保持。Pagesにdeployしたとは扱わない。
+
+[公開Noteと固定版の取得手順](git-distribution.md)に実際のGitHub参照先を記載しています。
+GCS writer/IAM/lifecycle、本体Vault、既存日次workflow、heartbeatは変更していません。
+日次件数の記録ではなく、公開経路の初回受入証拠としてこの状態を保持します。
 
 ## 実Batchの直接原因
 

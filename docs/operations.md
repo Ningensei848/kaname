@@ -1,8 +1,9 @@
 # 現行コレクタと互換syncの操作手順
 
 新しい標準経路は[生成NoteのGit配布とPages](publication.md)です。以下は現在実行できるCLIの説明です。
-公開snapshotの`export-notes`は[配布契約](publication.md)、ローカルWebは[preview手順](web-preview.md)を参照してください。
-Web previewは実装済み、Git配布/Pages deployは未実装です。既存syncをsubmodule更新として使いません。
+公開snapshotの`export-notes`は[配布契約](publication.md)、`publish-notes`は[Git配布手順](git-distribution.md)、
+ローカルWebは[preview手順](web-preview.md)を参照してください。
+Git配布/Web buildは実装・実Note受入済み、Pages deployは未実装です。既存syncをsubmodule更新として使いません。
 設定・副作用を確認して操作し、既存日次writerとGCS更新を重ねないでください。
 
 ## 取得・本文・フィルタ
@@ -261,4 +262,4 @@ raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in
 ```
 
 これらは非公開GCSの収集・復旧形式です。新しい公開Git snapshotへ丸ごとコピーしません。
-公開には[配布契約](publication.md)に従う専用exportを追加します。
+公開には[配布契約](publication.md)に従う専用exportを使います。

@@ -31,6 +31,7 @@ Pages buildは人力Vault、収集state、rootの文書archiveを入力にしま
 compact NoteにはAI要約、重要ポイント、資料の位置づけ、検索語、出典と生成情報を含めます。
 記事原文・raw HTML・認証情報は含めません。AI生成であることと、出典へのリンクを表示します。
 入力を20,000文字で打ち切ったNoteは、提示された部分の要約であることを保持します。
+旧形式で上限値を保存していない打切りNoteは、元bytesとflagを保持し、Webでは上限未記録と表示します。
 schemaを満たさない生成結果は成功Noteにせず、公開snapshotにも入れません。
 公開許容は全生成Noteに適用し、本文の不正・秘密の混入・取り下げ対象は検査失敗/明示除外として扱います。
 品質とsourceの取扱いは[source方針](source-policy.md)に従います。
@@ -74,7 +75,9 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 人力Vaultのrepo作成・内容の取込み・公開・プラグイン設定、原文の再配布、モデル学習は対象外です。
 DB/Vector DB/複数LLMへの移行を、この構成の前提にはしません。
 PagesのSSGはQuartz 5.0.0と固定pluginでpreviewを実装し、fixtureで検証しています。
-元Markdownは同じbytesで静的artifactに含めます。実NoteのGit/Pages公開は次工程の受入です。
+元Markdownは同じbytesで静的artifactに含めます。実Note117件のGit公開と同じ配布commitのWeb buildを受入済みです。
+Pages deployと日次公開の自動化は次工程です。
 build・artifact・依存上の制約は[Web preview](web-preview.md)を参照してください。
 公開運用の権限・初回配布・自動更新の具体的なworkflowは実装PRで示します。
-今回の文書改訂では本番の公開、workflow起動、データ変更、権限変更、automation再開は行いません。
+初回Git配布は既存Noteの読取りだけで行います。GCS/Vault変更、権限変更、有料呼出し、
+本番workflow_dispatch、Issue手動起動、automation再開は行いません。

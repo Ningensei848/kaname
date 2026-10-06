@@ -1,7 +1,8 @@
 # 公開NoteのWeb preview
 
-工程2の静的buildです。架空Note 3件で画面を検証します。実GCSのexport、`content`branch配布、
-GitHub Pagesのdeploy、日次公開は別工程で、まだ受入していません。人力Vaultは入力にしません。
+工程2の静的buildです。CIは架空Note 3件で画面を検証します。
+実GCSのexportと`content`branch配布、同じ配布commitの117件からのローカルWeb受入も完了しています。
+GitHub Pagesのdeploy、日次公開は別工程で未受入です。人力Vaultは入力にしません。
 
 ## ローカルで確認する
 
@@ -45,10 +46,13 @@ python3 build.py --snapshot /path/to/content-checkout --content-commit FULL_40_H
 ```
 
 入力はexportの`manifest.json`と列挙された`notes/<id>.md`です。READMEとGit管理領域は探索・表示しません。
+配布checkoutの固定`.gitattributes`だけは内容を検査し、SSG入力にはしません。
 Note ID/hash、metadata、compact形式、整列順、dataset digest、余計なNote/運用ファイル、symlinkを再検査します。
 Note bytesを捕捉してから表示用Markdownを作り、元Markdownは`markdown/notes/<id>.md`へ同じbytesで格納します。
 各Noteから元Markdownへ移動でき、Note hashと「この公開版について」のdataset digestで照合できます。
-commitの指定は表示用の値です。まだ配布branchのcheckoutとの一致を証明する機能ではありません。
+commitの指定は表示用の値です。build単独では配布branchのcheckoutとの一致を証明しません。
+[Git配布手順](git-distribution.md)に従い出版/deploy側で照合します。初回受入は実checkoutのHEADと指定値を照合済みです。
+旧形式の打切りNoteに上限値・注意表示がない場合は、Webだけに上限未記録の注意を補います。元bytesは変更しません。
 
 buildはcollection CLI、GCS、Gemini、Git pushを呼びません。Quartz子プロセスにAPI/GCS/GitHubの環境変数を継承せず、
 pluginは固定済みのローカル配置だけを使います。OSの隔離sandboxを提供するわけではありません。
@@ -84,11 +88,17 @@ Quartz公式のGit plugin lock形式ではありません。公式の自動plugi
 日本語フォントは`@fontsource/noto-sans-jp` 5.3.0（OFL）をローカル配信し、ライセンスも同梱します。
 Quartz/pluginと主要frontend runtimeのライセンスは`static/licenses/`へ同梱します。
 
-監査で見つかったxmldom/sharp/tomlは、`overrides`で修正版を固定して実buildを検証しています。
+監査で見つかったxmldom/sharp/toml/KaTeXは、`overrides`で修正版を固定して実buildを検証しています。
 一方、[bracesの深いglobによるstack exhaustion](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)には、
 確認時点で公開npm最新版3.0.3にも警告が残ります。braces→micromatch→fast-glob→globbyの4件のhigh表示は
 この1 advisoryの伝播です。解消済み/警告0とは扱いません。
 ここではSSGが使うglobは固定文字列で、ignorePatternsは空、入力filenameは生成したID/slugのみです。
 Note本文・frontmatterからglobを渡す経路を追加しません。Node buildに180秒のtimeoutを設けています。
-`npm run audit`はこのadvisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
+`sprintf-js`にも[精度指定によるDoS](https://github.com/advisories/GHSA-hp3w-g68c-fv3c)の警告があり、確認時点の公開最新版1.1.3にも修正がありません。
+依存経路はQuartz → gray-matter → js-yaml 3.15.2 → argparse 1.0.10 → sprintf-js 1.0.3です。
+js-yamlのライブラリ入口はargparseを読み込まず、argparseを使うのは`bin/js-yaml.js`のCLIだけです。
+このビルドはgray-matterから`safeLoad`を呼び、YAML CLIやsprintfのformat指定にNote本文を渡しません。
+この固定version・配置の警告だけを既知の制約として許可します。YAML CLIの利用や依存経路の変更時には再レビューが必要です。
+KaTeXは修正版0.18.2に固定します。`node --test audit.test.mjs`で未知の警告・配置/version変更を拒否することを検証します。
+`npm run audit`は上記2 advisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
 glob/ignore設定の拡張や依存更新時には、この到達性判断を見直し、修正版が出たら更新してください。
