@@ -13,6 +13,8 @@ git submoduleで参照する」です。人力Vault側の管理・公開は別�
 | [操作手順](operations.md) | 現在動くCLIの設定・副作用・復旧操作 |
 | [設計補足](design-decisions.md) | 現行収集の状態・receipt・課金・通信の保証と限界 |
 | [検証・受入](verification.md) | 現在の実装状態、既知の指摘、受入の判定基準 |
+| [日次公開](daily-publication.md) | 公開pipeline、公開専用runの受入、再実行と障害通知 |
+| [リファクタリング計画](refactoring-plan.md) | 標準経路の受入後に進める保守性改善の順序と互換条件 |
 | [バックログ](roadmap.md) | 新要求と継続する必須項目 |
 | [GCP初期設定](gcp-setup.md) | 収集基盤の非公開GCS/ADC/WIF設定 |
 | [source方針](source-policy.md) | 収集・要約・公開の取り扱い |

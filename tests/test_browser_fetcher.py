@@ -34,3 +34,30 @@ def test_browser_resource_failure_is_not_silent(harness):
     source=harness.source; source.fetcher='playwright'
     with pytest.raises(FetchError):
         SourceFetcher(HTTP()).page('https://example.com/article',source)
+
+
+@pytest.mark.parametrize('redirect_kind', ['resource', 'resource_robots', 'initial_robots'])
+def test_real_browser_gateway_blocks_redirect_before_external_request(harness, monkeypatch, redirect_kind):
+    import httpx
+    from techkb.fetcher import Fetcher
+    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    calls = []
+    def handler(request):
+        calls.append(str(request.url))
+        assert request.url.host != 'blocked.example', 'Forbidden host reached transport'
+        redirect = ((redirect_kind == 'initial_robots' and request.url.host == 'example.com' and request.url.path == '/robots.txt') or
+                    (redirect_kind == 'resource_robots' and request.url.host == 'cdn.example' and request.url.path == '/robots.txt') or
+                    (redirect_kind == 'resource' and request.url.path == '/app.js'))
+        if redirect:
+            return httpx.Response(302, headers={'location': 'https://blocked.example/private'}, request=request)
+        if request.url.path == '/robots.txt':
+            return httpx.Response(404, request=request)
+        if request.url.path == '/article':
+            return httpx.Response(200, content=b'<article>test</article><script src="https://cdn.example/app.js"></script>', headers={'content-type':'text/html'}, request=request)
+        raise AssertionError('Unexpected request')
+    source = harness.source
+    source.fetcher = 'playwright'; source.resource_domains = ['cdn.example']
+    http = Fetcher(harness.app.http, httpx.Client(transport=httpx.MockTransport(handler)), sleep=lambda _: None)
+    with pytest.raises(FetchError):
+        SourceFetcher(http).page('https://example.com/article', source)
+    assert calls and all('blocked.example' not in url for url in calls)

@@ -48,8 +48,8 @@ promptは根拠のない捏造を求めず、本文を指示扱いしません�
 robotsの404/410は指定なし、それ以外の拒否・障害は取得を止めます。
 記事とrobotsのredirectにURL/public IP/robots確認を行い、環境proxyを自動継承しません。
 DNS検査と接続は別で、厳密なネットワーク隔離ではありません。
-browserのresource allowlistはredirect先の取得前に届いていないためF3として対処します。
-この問題を解消する前にbrowser sourceの本番利用を広げません。
+browserは初回document・resource・robotsの各redirect先を、呼出しごとのhost制限でDNS/HTTP通信前に検査します（F3対応済み）。
+許可した転送先でもrobotsを検査します。browser sourceの本番受入は別途行います。
 
 ## 人の編集と生成側の更新
 

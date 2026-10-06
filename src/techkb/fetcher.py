@@ -42,7 +42,9 @@ class Fetcher:
         self.last_request = {}
         self.robots = {}
 
-    def _request(self, url, interval):
+    def _request(self, url, interval, allowed_hosts=None):
+        if allowed_hosts is not None and urlsplit(normalize_url(url)).hostname not in allowed_hosts:
+            raise FetchError("destination outside allowed domains")
         safe_url(url)
         host = urlsplit(url).netloc
         for attempt in range(self.config.retries + 1):
@@ -71,13 +73,13 @@ class Fetcher:
                 self.sleep(min(2**attempt, 30))
         raise FetchError("retries exhausted")
 
-    def _allowed(self, url, interval):
+    def _allowed(self, url, interval, allowed_hosts=None):
         p = urlsplit(url)
         origin = f"{p.scheme}://{p.netloc}"
         if origin not in self.robots:
             robot_url = origin + "/robots.txt"
             for _ in range(6):
-                response, content = self._request(robot_url, interval)
+                response, content = self._request(robot_url, interval, allowed_hosts)
                 if response.status_code in {301, 302, 303, 307, 308}:
                     robot_url = urljoin(robot_url, response.headers.get("location", ""))
                     continue
@@ -95,11 +97,13 @@ class Fetcher:
             raise FetchError("robots disallows URL")
         return max(interval, robot.crawl_delay(self.config.user_agent) or 0)
 
-    def get(self, url, interval=2, *, html=False):
+    def get(self, url, interval=2, *, html=False, allowed_hosts=None):
         for _ in range(6):
             url = normalize_url(url)
-            interval = self._allowed(url, interval)
-            response, content = self._request(url, interval)
+            if allowed_hosts is not None and urlsplit(url).hostname not in allowed_hosts:
+                raise FetchError("destination outside allowed domains")
+            interval = self._allowed(url, interval, allowed_hosts)
+            response, content = self._request(url, interval, allowed_hosts)
             if response.status_code in {301, 302, 303, 307, 308}:
                 if not response.headers.get("location"):
                     raise FetchError("redirect without location")

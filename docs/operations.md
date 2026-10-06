@@ -47,7 +47,7 @@ domainは完全一致、`*.example.com`はsubdomainのみ。categoryはsourceの
 Playwrightには`pip install -r requirements-browser.lock`と`python -m playwright install --with-deps chromium`が必要です。
 daily workflowはenabled sourceで必要な場合だけ導入します。ブラウザ通信は既存HTTP fetcherを通り、
 robots、公開IP確認、間隔、応答サイズを適用。GET/document/script/CSS/xhr/fetchのみで、WebSocket・service workerを遮断します。
-追加resource domainは明示指定。redirect先のallowlist判定が取得後になるF3は未修正です。本番browser利用を広げる前に対処します。JSの本文はcontent hashで比較し、元のHTTP HTMLだけをraw hash/opt-in保存に使います。
+追加resource domainは明示指定。初回document・resource・robotsの各redirect先は、host allowlistをDNS/HTTP通信前に検査します。JSの本文はcontent hashで比較し、元のHTTP HTMLだけをraw hash/opt-in保存に使います。
 HTTPのDNS検査と接続は別処理であり、厳密なネットワーク隔離ではありません。
 
 ## 互換機能: Obsidian Vaultへの直接同期
