@@ -27,7 +27,9 @@ PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はma
 [公開URL](https://ningensei848.github.io/kaname/)から全117件の元Markdownを取得してhashを照合しました。
 収集成功、Git配布、Pages初回公開は確認済みです。日次公開pipelineを接続し、
 F4/F5/F6と公開競合・通知の回帰を含む全264テストをクラウドで確認しました。
-実行受入の最新状態は[日次公開手順](daily-publication.md)を参照してください。
+公開専用run `37434000683`で既存WIFのaudit/export、Git更新、Pages build/deployが成功。
+最新成功版117件の公開manifest bytesと全元Markdown hashをクラウドでも照合しました。
+通常scheduleの初回連続実行は未確認です。[日次公開手順](daily-publication.md)にcommit/digestを記録しています。
 
 ## 実Noteの配布受入
 

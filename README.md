@@ -37,7 +37,7 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
 Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distribution.md)を参照してください。
-同じ配布commitからPagesを公開済みです。日次workflowはaudit/export後に同じ配布commitからPagesを更新します。
+同じ配布commitからPagesを公開済みです。公開専用runで117件の実更新と配信hash照合も確認しました。日次workflowはaudit/export後に同じ配布commitからPagesを更新します。
 実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
 
 ## 公開するもの
