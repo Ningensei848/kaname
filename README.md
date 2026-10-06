@@ -7,7 +7,7 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 現在は収集・非公開GCS保存に加え、実GCSからの読取りexportとGit配布を検証しています。
 117件の生成Noteは[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)で参照できます。
 同じ配布commitの117件を[GitHub Pages](https://ningensei848.github.io/kaname/)へ公開し、公開URLの全元Markdown hashを照合しました。
-次はF4/F5の修正と日次公開の自動化です。
+F4/F5/F6を修正し、収集成功後のGit配布・Pages更新を日次workflowへ接続しました。[日次公開手順](docs/daily-publication.md)を参照してください。
 [Pages手順](docs/pages.md)に権限・公開・切戻しの操作を記載しています。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
@@ -37,7 +37,7 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
 Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distribution.md)を参照してください。
-同じ配布commitからPagesを公開済みです。日次公開の自動化は、F4/F5の修正後に接続します。
+同じ配布commitからPagesを公開済みです。日次workflowはaudit/export後に同じ配布commitからPagesを更新します。
 実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
 
 ## 公開するもの

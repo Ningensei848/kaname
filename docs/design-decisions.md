@@ -25,9 +25,9 @@ APIの応答後からreceipt等の永続化前に停止すると、結果消失�
 API生成とGCS保存を一つのtransactionにできず、timeoutもAPI側の完了を断定できません。
 通信retryを許しながら厳密なexactly-once課金を保証しません。
 
-現行standardではreceipt後にreportが残らない中断でも費用履歴が欠落します（F5）。
-usage metadataの一部欠落を0/完全扱いする問題もあります（F4）。
-これらは「API応答そのものを失う限界」と別の修正対象です。
+standardはAPI呼出し前・usage取得後にprivate usage journalを保存し、receiptに元run IDを記録します（F5）。
+run reportが失われても元の日付・単価で集計し、reportとの二重計上を防ぎます。
+部分欠落usageは既知countを保持してpartialにします（F4）。応答を失った呼出しの費用は不明として残します。
 費用はrunのmodel/mode/価格snapshotと取得できたusageから推計し、invoice・GCS・Actions費用を含みません。
 予算は通知閾値で、日次の厳格なUSD capは未実装です。
 
@@ -65,6 +65,7 @@ export/buildはNoteの再要約を行わず、収集writerと公開writerを分�
 SSG入力は公開manifestで限定し、repo rootや人力Vaultを包括して公開しません。
 収集/監査、export、Git配布、deployの成功を別に扱い、公開失敗を収集成功に隠しません。
 現行の日次Issue通知は連続失敗/予算到達について実装・承認済みです。
-未検証sourceのstreak判定（F6）とaudit/export/deploy通知は別の修正・仕様化対象です。
+sourceは実際に処理を完了したrunだけでstreakをresetします（F6）。
+audit/export/Git/Pagesの障害はrunごとにIssue通知します。[日次公開](daily-publication.md)を参照してください。
 
 未実装項目・残余制約を[検証・受入](verification.md)へ集約し、過去のrunの結果を現在の保証に置き換えません。

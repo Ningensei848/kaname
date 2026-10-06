@@ -14,18 +14,20 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
-| standard収集 | Phase 1本番受入済み。既存日次workflow稼働 | 費用復旧・usage部分欠落・通知判定の指摘 |
+| standard収集 | Phase 1本番受入済み。既存日次workflow稼働 | F4/F5/F6はoffline修正検証済み。invoice照合 |
 | Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
-| 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 日次公開への接続 |
+| 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 通常scheduleの連続実行受入 |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
-| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 日次公開への接続、継続更新と切戻しの実運用受入 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 通常scheduleの連続実行と切戻しの実運用受入 |
 
 PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はmainです。
 [初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)のbuild/deployが成功し、
 [公開URL](https://ningensei848.github.io/kaname/)から全117件の元Markdownを取得してhashを照合しました。
-収集成功、Git配布、Pages初回公開は確認済みですが、日次公開への接続は未完了です。
+収集成功、Git配布、Pages初回公開は確認済みです。日次公開pipelineを接続し、
+F4/F5/F6と公開競合・通知の回帰を含む全264テストをクラウドで確認しました。
+実行受入の最新状態は[日次公開手順](daily-publication.md)を参照してください。
 
 ## 実Noteの配布受入
 
@@ -58,14 +60,15 @@ schema検証で拒否されたことが保存0の直接原因です。生成側�
 | F1: Vault編集消失 | PR #98対応済み。互換syncの契約 | in-place/rename/新規作成/candidate編集を保持。利用側環境は別検証 |
 | F2: Batch元例外の欠落 | PR #97対応済み、実GET診断済み | 型と安全なcodeを保持。原文/秘密/例外本文を出さない |
 | F3: browser redirect先の事後検査 | 未修正 | resource/robotsの各hopを通信前に判定。未許可hostへの要求0 |
-| F4: 部分欠落usageを完全扱い | 未修正 | 既知countを保持し、不明な課金countをpartialとして表示 |
-| F5: receipt後の中断で費用欠落 | 未修正 | 再課金0・usage欠落0・費用重複0、日/月と単価履歴を保持 |
-| F6: 未検証sourceのstreakリセット | 未修正 | 実際の復旧だけでresetし、未処理sourceは維持 |
+| F4: 部分欠落usageを完全扱い | 修正・offline検証済み | 既知countを保持し、不明な課金countをpartialとして表示 |
+| F5: receipt後の中断で費用欠落 | 修正・障害注入検証済み | 再課金0・usage欠落0・費用重複0、日/月と単価履歴を保持 |
+| F6: 未検証sourceのstreakリセット | 修正・offline検証済み | 実際の復旧だけでresetし、未処理sourceは維持 |
 | F7: 文書と実装の不整合 | 今回の改訂で状態/schema/通知の説明を更新 | 現行文書と実装・受入状態を照合し、履歴はarchiveへ分離 |
 
 元のfile/line、条件、影響、再現、最小修正案は[全体レビュー](archive/2026-10/project-review-2026-10-04.md)に保存しました。
 [レビュー再現ケース](archive/2026-10/review-reproductions-2026-10-04.py)は未修正指摘を実証する手動用で、
-通常のpassing test suiteとは別です。audit失敗のIssue対象化は通知仕様として工程5で定義します。
+通常のpassing test suiteとは別です。F4/F5/F6の修正後の検証は現行test suiteを使います。
+audit失敗はstage別Issue通知の対象です。
 
 ## 新しい配布・Webの受入
 
@@ -97,7 +100,7 @@ Pages workflow/Checksの構文はactionlintで検証済みです。
 初回GitHub Pages deploy・公開URL確認はrun `37430216275`で完了しました。
 配布commitは上記117件の初回版、artifact digestは`165b9d3aff24fec0a95ff3acfe71edfcf6ed5584ba6b25746acb3b99b388f7a8`です。
 公開site-manifestのcommit/dataset/artifact digest/fixture判定と、トップ/版表示/manifest/全元Markdown/代表Note HTMLのhashを照合しています。
-日次公開、継続更新と実切戻しの受入は残っています。
+日次公開の受入状態は[日次公開手順](daily-publication.md)で管理します。実切戻しは未検証です。
 追加の公開URLブラウザ検査は、クラウドのsystem Chromiumがproxyの証明書を信頼せず`ERR_CERT_AUTHORITY_INVALID`となり未完了です。
 TLS検証は無効化していません。同一artifactのブラウザ検証はCIで成功し、公開URLのHTTPS/hash照合はrunnerとクラウドの標準HTTPクライアントで成功しています。
 手順と権限は[Pages公開手順](pages.md)を参照してください。

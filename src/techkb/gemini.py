@@ -58,8 +58,21 @@ class Gemini:
 
 
 def response_usage(response):
-    usage = response.usage_metadata if response is not None else None
-    return (Usage(usage.prompt_token_count or 0, usage.candidates_token_count or 0, usage.thoughts_token_count or 0), True) if usage else (Usage(), False)
+    usage = getattr(response, "usage_metadata", None)
+    if usage is None:
+        return Usage(), False
+    counts = [getattr(usage, name, None) for name in
+              ("prompt_token_count", "candidates_token_count", "thoughts_token_count")]
+    # A missing count is unknown, not a measured zero. The SDK defines total
+    # as prompt + candidates + tool-use prompt + thoughts; total equality can
+    # establish zero thoughts without inventing a missing billed quantity.
+    total = getattr(usage, "total_token_count", None)
+    if (counts[2] is None and all(type(v) is int and v >= 0 for v in counts[:2]) and
+            type(total) is int and total == sum(counts[:2])):
+        counts[2] = 0
+    complete = all(type(value) is int and value >= 0 for value in counts)
+    known = [value if type(value) is int and value >= 0 else 0 for value in counts]
+    return Usage(*known), complete
 
 
 def validate_response(response, categories):

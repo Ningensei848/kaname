@@ -12,6 +12,7 @@ from .state import State
 from .fetcher import audit_url
 from .extraction import extract_main, parse_listing, relevance
 from .batch import BatchManager
+from .usage import checkpoint, has_usage_record
 
 log = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ class Pipeline:
                            source_ids=[s.id for s in self.sources if s.enabled])
         state, candidates, done = None, None, set()
         batch, prepared, active = None, [], set()
+        feeds_complete = {}
         try:
             state = State(self.store)
             dedupe = Dedupe(state.rows)
@@ -49,6 +51,10 @@ class Pipeline:
                     receipt = json.loads(self.store.read(name))
                     self._save_receipt(receipt, state, dedupe, report)
                     report.recovered += 1
+                    if not has_usage_record(self.store, receipt.get("usage_run_id")):
+                        # Legacy receipts have no original price/run identity.
+                        # Do not invent a billing date or claim complete costs.
+                        report.llm_usage_unavailable += 1
                 batch = BatchManager(self.store, self.gemini)
                 batch.settle(self._save_receipt, state, dedupe, report, done)
                 active = batch.active_hashes()
@@ -65,6 +71,7 @@ class Pipeline:
                         entries = parse_listing(page.content, page.url, source, report.started_at, self.app.tracking_parameters)
                     discovered.extend(entries)
                     report.discovered += len(entries)
+                    feeds_complete[source.id] = {entry.url for entry in entries}
                 except Exception as exc:
                     report.fail("feed", source.id, str(source.feed_url or source.listing_url), exc)
                     log.error("RSS failed source=%s error=%s", source.id, type(exc).__name__)
@@ -135,6 +142,13 @@ class Pipeline:
                     stage = "llm"
                     report.llm_calls += 1
                     attempted_content.add(ch)
+                    stage = "usage_reserve"
+                    try:
+                        checkpoint(self.store, report, pending=True)
+                    except Exception:
+                        report.llm_calls -= 1  # No API request was made.
+                        raise
+                    stage = "llm"
                     attempts_before = self.gemini.attempts
                     try:
                         enrichment = self.gemini.enrich({"title": candidate.title[:1000], "source": source.name,
@@ -147,8 +161,11 @@ class Pipeline:
                         report.total_output_tokens += usage.output_tokens
                         report.total_thinking_tokens += usage.thinking_tokens
                         report.llm_http_attempts += self.gemini.attempts - attempts_before
-                        if not self.gemini.last_usage_available:
+                        if not self.gemini.last_usage_available or self.gemini.attempts - attempts_before > 1:
                             report.llm_usage_unavailable += 1
+                        stage = "usage_save"
+                        checkpoint(self.store, report, pending=False)
+                        stage = "llm"
                     report.llm_processed += 1
                     log.info("LLM success")
                     stage = "compose"
@@ -162,7 +179,7 @@ class Pipeline:
                                llm_model=self.app.llm.model, input_tokens=usage.input_tokens,
                                output_tokens=usage.output_tokens, thinking_tokens=usage.thinking_tokens,
                                llm_input_truncated=str(truncated).lower())
-                    receipt = {"row": row, "note": note}
+                    receipt = {"row": row, "note": note, "usage_run_id": report.run_id}
                     stage = "receipt_save"
                     self.store.write(f"state/receipts/{ch}.json", json.dumps(receipt, ensure_ascii=False).encode("utf-8"), "application/json")
                     stage = "note_or_index_save"
@@ -173,9 +190,9 @@ class Pipeline:
                     if stage == "llm":
                         report.llm_failed += 1
                     log.error("%s failed source=%s error=%s", stage, source.id, type(exc).__name__)
-                    if stage in {"receipt_save", "note_or_index_save", "raw_save"}:
+                    if stage in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"}:
                         break  # Stop paid work if durability is unavailable.
-            if prepared and not dry_run and not any(f["stage"] in {"receipt_save", "note_or_index_save", "raw_save"} for f in report.failures):
+            if prepared and not dry_run and not any(f["stage"] in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"} for f in report.failures):
                 batch.submit(prepared, self.app, report)
         except Exception as exc:
             report.fail("state_or_recovery", "", "", exc)
@@ -188,6 +205,9 @@ class Pipeline:
                     state.save_pending(remaining)
                 except Exception as exc:
                     report.fail("pending_save", "", "", exc)
+            if candidates is not None:
+                report.source_completed_ids = sorted(sid for sid in feeds_complete
+                    if (feeds_complete[sid] | {c.url for c in candidates if c.source_id == sid}) <= done)
             report.finish()
             if not dry_run:
                 try:

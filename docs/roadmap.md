@@ -12,7 +12,7 @@
 - [x] 共通snapshotを使うWeb preview。Quartz 5.0.0/plugin固定、架空Noteと実Chromiumで検証。
 - [x] `content`branchの完全snapshot配布、再実行/競合、一時submodule互換性。初回117件を公開。
 - [x] 同じ生成Note群のPages初回公開。117件の固定Git版を公開し、公開URLの元Markdown hashを照合。
-- [ ] 成功収集後の日次公開と、収集/配布/deployそれぞれの障害通知。
+- [x] 成功収集後の日次公開と、収集/audit/export/配布/deployの障害通知を実装。実公開受入は[日次公開](daily-publication.md)へ記録。
 
 この順の成果物と完了条件は[実装計画](implementation-plan.md)にあります。
 人力Vaultのrepo/公開/プラグイン設定はこのバックログへ含めません。
@@ -21,8 +21,8 @@
 
 - [x] F1: 互換syncの最終確認後の編集消失を防ぐ。PR #98。
 - [x] F2: Batchの元例外と安全な診断を保持し、既存結果をGETで検査。PR #97。
-- [ ] F4/F5: usage部分欠落と中断後の費用復旧。日次公開の自動化拡張前に優先。
-- [ ] F6: 未処理sourceの失敗streakを維持。
+- [x] F4/F5: usage部分欠落と中断後の費用復旧。元の日付/単価維持と二重計上防止を障害注入で検証。
+- [x] F6: 未処理sourceの失敗streakを維持。明示的完了だけでreset。
 - [ ] F3: browser resource/robots redirectの通信前policy。本番有効化前に対処。
 - [x] F7: 状態/schema/通知に関する現行文書の旧説明を改訂。
 - [ ] 実Batchの成功結果保存、再実行、audit/costの本番受入。後続standard成功と混同しない。
@@ -37,8 +37,8 @@
 | Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。browserのF3と実source受入は残る |
 | 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |
-| Cost management | 推計/予算通知は実装済み。F4/F5とinvoice照合は残る |
-| Failure notification | 日次Issue通知は実装・承認済み。F6と追加通知範囲は残る |
+| Cost management | 推計/予算通知は実装済み。F4/F5は修正・offline検証済み。invoice照合は残る |
+| Failure notification | 日次Issue通知は実装・承認済み。F6修正済み。公開stage通知・重複抑止をoffline検証済み |
 | Raw lifecycle | plan/管理者applyは実装済み。未設定sourceへの本番適用は必須でない |
 
 ## 継続する後続の必須項目

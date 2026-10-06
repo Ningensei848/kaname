@@ -3,7 +3,7 @@
 - 状態: 採用
 - 決定日: 2026-10-04（JST）
 - 起点: ユーザーの新要求。git submoduleを基本とし、同じ公開Note群をVaultとPagesで参照する選択を確認済み
-- 実装状態: 収集基盤・互換sync・公開snapshot export・Git配布・Web buildは実装済み。117件のGit初回公開を受入。同じ配布版の117件をPagesへ初回公開し、公開URLの元Markdown hashを照合済み。日次公開は未接続
+- 実装状態: 収集基盤・互換sync・公開snapshot export・Git配布・Web buildは実装済み。117件のGit初回公開を受入。同じ配布版の117件をPagesへ初回公開し、公開URLの元Markdown hashを照合済み。日次公開pipelineを実装。実行受入は[日次公開手順](../daily-publication.md)で管理
 
 ## 背景
 

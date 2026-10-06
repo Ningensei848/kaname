@@ -10,7 +10,7 @@ from techkb.lifecycle import configure_lifecycle
 def report(h,index,day='2026-10-01',failed=False,**extra):
     data=dict(run_id=f'{day.replace("-","")}T000000Z-{index:08x}',started_at=day+'T00:00:00+00:00',
               status='failed' if failed else 'success',dry_run=False,llm_model=h.app.llm.model,
-              source_ids=[h.source.id],total_input_tokens=1000000,total_output_tokens=1000000,
+              source_ids=[h.source.id],source_completed_ids=[] if failed else [h.source.id],total_input_tokens=1000000,total_output_tokens=1000000,
               total_thinking_tokens=1000000,llm_usage_unavailable=0,
               failures=[dict(source_id=h.source.id)] if failed else [])|extra
     h.store.data['runs/'+data['run_id']+'.json']=json.dumps(data).encode()

@@ -165,8 +165,13 @@ python -m techkb cost-report --as-of YYYY-MM-DD --state-dir local-snapshot
 run reportをIDで重複排除し、入力 + 出力/thinkingの実測トークンから日次/月次USDを計算します。
 時間境界はUTC。Batchは結果を観測した日へ計上。invoiceやGCS/Actions料金、取得不能usageの費用は含みません。
 不明usage・未決済Batchは`partial`と件数を表示し、既知の費用だけを下限として集計します。
-ただしusageの部分欠落を検出できないF4、receipt後の中断でreportが残らないF5は未修正です。
-現行cost-reportのsuccessだけで費用の完全性を保証しません。[現在の指摘](verification.md)を参照してください。
+standardは`state/standard-usage/<元run ID>.json`へ呼出し前の予約と取得後のusageを保存します。
+最終reportを優先し、reportがなければjournalを元のUTC日付・model・価格で集計します。
+receipt後の中断・再回収でも費用を重複計上しません。`incomplete_standard_runs`はreport未保存で応答も不明な予約の件数です。
+部分欠落metadata、応答未保存の予約、複数HTTP試行の不明課金はpartialとなり、既知countを保持します。
+thinking欠落を0とするのは合計countから0を証明できる場合だけです。
+旧receiptで課金記録への参照がなければ、復旧runにusage不明を記録し、過去の単価・日付は推測しません。
+API応答と永続化の間の停止には再課金の可能性が残ります。invoiceとの照合は別途必要です。
 旧Phase 1 reportはmodel記録がないため現在設定model/standard価格を仮定し、仮定件数を表示します。
 新reportはmodel/modeと単価をsnapshotし、後の単価更新で履歴を再評価しません。
 
@@ -195,8 +200,10 @@ python -m techkb notify --apply  # GITHUB_TOKENで設定repositoryへ必要時�
 ```
 
 `notifications.consecutive_failures`（既定3）以上のsource/collector失敗と予算到達を対象にします。
-成功で失敗streakをresetします。collector障害の扱いはありますが、先行sourceの保存障害による打切りで
-未検証sourceをresetするF6は未修正です。実際の復旧と未処理を分ける修正が必要です。
+sourceの失敗streakは明示的な`source_completed_ids`だけでresetします。
+feed取得だけの成功、予算上限で未処理、先行sourceの保存障害による打切りは復旧とみなしません。
+旧reportの`source_ids`も完了の証拠として使いません。無効化sourceの履歴は保持し、通知は有効sourceだけです。
+collectorはrun成功でresetします。
 Batch usage reportは通知回数に含めず、収集run側の失敗だけを数えます。
 同じ失敗streak・同じ日/月予算はbody markerで重複抑止。閉じたIssueも再作成しません。
 復旧後の新しい障害は別Issueです。閉じたIssueの再openやコメント追加は行いません。
@@ -205,7 +212,9 @@ GITHUB_TOKENには対象repositoryのIssues書込み権限が必要。本文に�
 daily.ymlの`issues: write`と通常runからの必要時自動投稿はユーザー承認済みです。
 対象は`Ningensei848/kaname`。承認の過去記録は[履歴](archive/README.md)にあります。
 `notifications.github_repository`を空にすると自動投稿を無効化できます。
-WIFやGCS読取り自体が失敗するとhistoryを取得できないため、Actions標準の失敗通知から認証/権限を復旧してください。
+収集/audit/export/Git配布/Pages失敗は、GCSに依存しない別jobから即時Issue通知します。
+GitHub run IDのmarkerで閉じたIssueも重複抑止し、安全なstage名とrun URLだけを掲載します。
+このworkflow通知はsource/予算通知とは別です。[日次公開手順](daily-publication.md)を参照してください。
 
 ## Source単位のRaw HTML削除
 

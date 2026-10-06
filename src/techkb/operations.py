@@ -7,6 +7,7 @@ import json
 import re
 import httpx
 from .config import TokenPrice
+from .usage import FIELDS
 
 
 def history(store):
@@ -32,7 +33,33 @@ def cost_report(store, app, as_of=None):
     day = date.fromisoformat(as_of) if as_of else datetime.now(timezone.utc).date()
     daily, monthly, uncertain, legacy = defaultdict(Decimal), defaultdict(Decimal), 0, 0
     reports = history(store)
-    for run in reports:
+    billing = {run['run_id']: run for run in reports}
+    incomplete_standard_runs = 0
+    for name in store.list('state/standard-usage/'):
+        record = json.loads(store.read(name))
+        if (set(record) != {*FIELDS, 'schema_version', 'pending'} or type(record['schema_version']) is not int or record['schema_version'] != 1 or
+                type(record['pending']) is not bool or record['llm_mode'] != 'standard' or
+                not re.fullmatch(r'\d{8}T\d{6}Z-[0-9a-f]{8}', record['run_id']) or
+                name != 'state/standard-usage/' + record['run_id'] + '.json'):
+            raise ValueError('invalid standard usage checkpoint')
+        for key in ('llm_calls', 'llm_http_attempts', 'llm_usage_unavailable',
+                    'total_input_tokens', 'total_output_tokens', 'total_thinking_tokens'):
+            if type(record[key]) is not int or record[key] < 0:
+                raise ValueError('invalid standard usage count')
+        existing = billing.get(record['run_id'])
+        if existing and any(existing.get(k) != record[k] for k in ('started_at', 'llm_model', 'llm_mode', 'token_price')):
+            raise ValueError('conflicting usage identity')
+        if existing:
+            if not record['pending'] and any(existing[k] != record[k] for k in
+                    ('total_input_tokens', 'total_output_tokens', 'total_thinking_tokens', 'llm_calls')):
+                raise ValueError('conflicting usage totals')
+            continue  # A final report also covers a failed checkpoint write.
+        if record['pending']:
+            record['llm_usage_unavailable'] += 1
+            incomplete_standard_runs += 1
+        # Original run ID is the common accounting identity, not an extra bill.
+        billing[record['run_id']] = record
+    for run in billing.values():
         if run.get('dry_run'):
             continue
         stamp = datetime.fromisoformat(run['started_at']).astimezone(timezone.utc).date().isoformat()
@@ -74,7 +101,7 @@ def cost_report(store, app, as_of=None):
             pending_batch_items += len(job['items'])
     return dict(status='partial' if uncertain or pending_batch_items else 'success',as_of=day.isoformat(),timezone='UTC',
                 daily_usd={k:str(v) for k,v in sorted(daily.items())}, monthly_usd={k:str(v) for k,v in sorted(monthly.items())},
-                uncertain_runs=uncertain, pending_batch_items=pending_batch_items, legacy_model_assumptions=legacy, alerts=alerts)
+                uncertain_runs=uncertain, incomplete_standard_runs=incomplete_standard_runs, pending_batch_items=pending_batch_items, legacy_model_assumptions=legacy, alerts=alerts)
 
 
 def notification_plan(store,app,source_ids):
@@ -83,16 +110,18 @@ def notification_plan(store,app,source_ids):
         if run.get('dry_run') or run.get('record_kind') == 'batch_usage':
             continue
         failed={f['source_id'] or 'collector' for f in run['failures']}
-        covered=set(run.get('source_ids',source_ids)) | {'collector'} | failed
+        # Legacy reports cannot establish completion of enabled sources.
+        completed = set(run.get('source_completed_ids', []))
+        covered = completed | {'collector'} | failed
         for source_id in covered:
             if source_id in failed:
                 if not streak[source_id]:
                     first[source_id]=run['run_id']
                 streak[source_id]+=1
-            elif run['status']=='success' or (source_id!='collector' and 'collector' not in failed):
+            elif (source_id == 'collector' and run['status'] == 'success') or source_id in completed:
                 streak[source_id]=0
     events=[dict(kind='failure',key='failure-'+sid+'-'+first[sid],source_id=sid,consecutive_failures=count)
-            for sid,count in sorted(streak.items()) if count>=app.notifications.consecutive_failures]
+            for sid,count in sorted(streak.items()) if count>=app.notifications.consecutive_failures and sid in {*source_ids, 'collector'}]
     return events + cost_report(store,app)['alerts']
 
 
@@ -119,7 +148,10 @@ def publish_issues(events,repository,token,client=None):
             marker='<!-- techkb-alert:'+hashlib.sha256(event['key'].encode()).hexdigest()+' -->'
             if any(marker in (item.get('body') or '') for item in existing):
                 continue
-            title=('TechKB: '+event['source_id']+' の連続失敗' if event['kind']=='failure' else 'TechKB: '+event['period']+' 予算到達')
+            if event['kind'] == 'publication':
+                title = 'TechKB: 収集・公開workflowの失敗'
+            else:
+                title=('TechKB: '+event['source_id']+' の連続失敗' if event['kind']=='failure' else 'TechKB: '+event['period']+' 予算到達')
             body=marker+'\n\n'+json.dumps(event,ensure_ascii=False,indent=2)+'\n\nREADMEの復旧・費用確認手順を参照してください。'
             response=client.post(base,headers=headers,json={'title':title,'body':body})
             response.raise_for_status(); existing.append(response.json()); created+=1
