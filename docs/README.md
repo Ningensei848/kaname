@@ -28,3 +28,5 @@ git submoduleで参照する」です。人力Vault側の管理・公開は別�
 
 今後の日次記録は`archive/YYYY-MM/`へ置き、現行文書には状態が変わった場合の要約だけを更新します。
 同じ保証・実装順・受入状態を複数の場所へ複製せず、上表の文書を正本にします。
+
+- [Pages公開手順](pages.md)：固定content commitのbuild/検証/deploy、設定と切戻し。

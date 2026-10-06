@@ -6,7 +6,8 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 
 現在は収集・非公開GCS保存に加え、実GCSからの読取りexportとGit配布を検証しています。
 117件の生成Noteは[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)で参照できます。
-同じ配布commitからのWeb buildも検証済みです。GitHub Pagesのdeployと日次公開の自動化は次工程です。
+同じ配布commitからのWeb buildも検証済みです。GitHub Pagesのdeploy workflowは実装済みで、初回実deployの受入と日次公開の自動化が次の確認事項です。
+[Pages手順](docs/pages.md)に権限・公開・切戻しの操作を記載しています。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
 ```mermaid
@@ -30,7 +31,7 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 | 既存Vaultへの直接同期 | 互換機能。既存Noteを保持して更新候補を別保存する編集保護を取込済み |
 | 公開Noteのexport | 読取り専用CLI、43件のoffline検証。実GCSの117件を追加生成・書込み0で受入 |
 | 公開NoteのGit配布 | content branchへ117件を公開。再実行・競合・一時submodule等の15テストで検証 |
-| 独立Pages | 同じ配布版のWeb buildを検証。Pages deployは未実施 |
+| 独立Pages | 固定Git版のbuild/検証/deploy workflow実装済み。初回実deployの受入は未完了 |
 | 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本セッションでは扱わない |
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**

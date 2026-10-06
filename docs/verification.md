@@ -81,3 +81,19 @@ schema検証で拒否されたことが保存0の直接原因です。生成側�
 
 実際の人力Vaultへの組込みやプラグイン導入を、このセッションの受入条件には含めません。
 公開とBatchとsource別の実取得はそれぞれ独立して判定します。
+
+## Pages workflowの公開前受入
+
+固定Git commitのclean tree/blob照合、公開artifactのcommit/digest/元Markdown照合を実装しました。
+17件のテストでdirty/ignored/untracked/symlink、別commit、非公開tree、fixture/版/digest不一致、
+artifact改変/余計なfile、path重複を拒否することを確認しました。
+配信版確認はHTTP serverを使い、古いcommit/Note数の不一致、配信HTML/Note bytesの改変、404を拒否することも検証しました。
+実content `62ed7f08ec786e1067cc6eecd9bece5e078b8c5c`の117件をPages用artifactへbuildし、
+dataset digest `d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`、
+全元Markdown bytes、全HTMLローカルリンク、検索/出典/画面幅、外部resource要求0を検証しました。
+クラウドでは導入済みsystem Chromium、CIではPlaywright固定Chromiumを使います。
+Pages workflow/Checksの構文はactionlintで検証済みです。
+
+ローカル受入は初回GitHub Pages deploy・公開URL確認を含みません。Pages設定の確認、mainへのmerge、
+手動workflow実行と公開site-manifestの照合が残っています。日次公開は未接続です。
+手順と権限は[Pages公開手順](pages.md)を参照してください。

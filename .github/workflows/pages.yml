@@ -1,0 +1,147 @@
+name: Publish Notes to Pages
+on:
+  workflow_dispatch:
+    inputs:
+      content_commit:
+        description: 'Full content-branch commit to deploy (empty = current content tip)'
+        type: string
+        default: ''
+  workflow_call:
+    inputs:
+      content_commit:
+        description: 'Full content commit, or empty for the current tip'
+        type: string
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: kaname-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      content_commit: ${{ steps.content.outputs.commit }}
+      dataset_digest: ${{ steps.build.outputs.dataset_digest }}
+      notes: ${{ steps.build.outputs.notes }}
+      artifact_digest: ${{ steps.build.outputs.artifact_digest }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v5
+        with:
+          ref: content
+          path: public-content
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin an existing content history commit
+        id: content
+        env:
+          REQUESTED_COMMIT: ${{ inputs.content_commit }}
+        run: |
+          set -euo pipefail
+          tip=$(git -C public-content rev-parse HEAD)
+          commit=${REQUESTED_COMMIT:-$tip}
+          [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid content commit'; exit 1; }
+          git -C public-content cat-file -e "$commit^{commit}"
+          git -C public-content merge-base --is-ancestor "$commit" "$tip"
+          git -C public-content checkout --detach "$commit"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.15.0'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install pinned build dependencies
+        run: |
+          python -m pip install -r requirements.lock -r requirements-browser.lock
+          python -m playwright install --with-deps chromium
+      - name: Build and verify the public artifact
+        id: build
+        working-directory: web
+        env:
+          CONTENT_COMMIT: ${{ steps.content.outputs.commit }}
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          node --test audit.test.mjs
+          npm run audit
+          npm run setup
+          python build_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact > .cache/pages-result.json
+          python check_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = json.loads(Path('.cache/pages-result.json').read_bytes())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              for key in ('dataset_digest', 'artifact_digest', 'notes'):
+                  print(f'{key}={result[key]}', file=stream)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
+              print('### Validated public snapshot\n', file=stream)
+              for key in ('content_commit', 'dataset_digest', 'artifact_digest', 'notes'):
+                  print(f'- {key}: `{result[key]}`', file=stream)
+          PY
+      - uses: actions/configure-pages@v5
+        id: pages
+      - name: Check the configured Pages URL matches the fixed site base
+        env:
+          CONFIGURED_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          python - <<'PY'
+          import os, yaml
+          from pathlib import Path
+          config = yaml.safe_load(Path('web/quartz.config.yaml').read_bytes())
+          expected = 'https://' + config['configuration']['baseUrl'].rstrip('/')
+          assert os.environ['CONFIGURED_BASE_URL'].rstrip('/') == expected, 'Pages URL does not match the fixed site base'
+          PY
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/.cache/pages-artifact
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Deploy the verified artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify the deployed version
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          CONTENT_COMMIT: ${{ needs.build.outputs.content_commit }}
+          DATASET_DIGEST: ${{ needs.build.outputs.dataset_digest }}
+          ARTIFACT_DIGEST: ${{ needs.build.outputs.artifact_digest }}
+          NOTE_COUNT: ${{ needs.build.outputs.notes }}
+        run: |
+          set -euo pipefail
+          # Retry CDN propagation without invoking collection or another build.
+          for attempt in $(seq 1 12); do
+            if python3 web/verify_deployment.py --url "$PAGE_URL" --content-commit "$CONTENT_COMMIT" \
+              --dataset-digest "$DATASET_DIGEST" --artifact-digest "$ARTIFACT_DIGEST" --notes "$NOTE_COUNT"; then
+              echo "Verified Pages commit $CONTENT_COMMIT and $NOTE_COUNT original Notes" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Deployed version could not be confirmed' >&2
+          exit 1
