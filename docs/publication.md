@@ -4,7 +4,7 @@
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
 実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
 固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
-初回実deployの受入と日次公開の自動化は未完了です。[Pages手順](pages.md)を参照してください。
+初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開の自動化は未完了です。[Pages手順](pages.md)を参照してください。
 
 ## exportの操作と実装範囲
 
@@ -108,7 +108,7 @@ kanameは第三者プラグインの動作を保証せず、選択した更新�
 Quartz 5.0.0の[Markdown/Obsidian機能](https://quartz.jzhao.xyz/)をfixtureで確認し、versionとpluginを固定しました。
 [Pages配信](pages.md)は固定Git入力と公開前検証を経て、公式Actionのartifact/deployを分離します。
 [Web preview](web-preview.md)に固定方式・実装契約・未解消の依存制約を記載します。
-想定するproject Pagesのbase pathは`/kaname/`です。現在そのURLでの提供は確認できていません。
+project Pagesのbase pathは`/kaname/`です。[公開URL](https://ningensei848.github.io/kaname/)で初回版の提供を確認済みです。
 
 初期の閲覧要件は一覧、日付/source/category、検索、Note本文、出典、AI生成/入力打切り表示です。
 Note IDに基づく安定URLと内部リンクを使い、未存在の関連概念へ架空のNoteリンクを作りません。

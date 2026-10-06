@@ -6,12 +6,11 @@
 
 ## 現在の状態
 
-Git配布の実装基点はmain `84313ed0542a7a478d7b05636d4eee5279492b0e`（PR #101取込後）です。
-PR #101のChecks run `37209988391`と、取込後のmain run `37316866662`は成功しました。
-既存198件に旧形式Noteの公開互換4件とGit配布15件を追加し、実Chromiumを含む全217件が成功しています。
+Pages実装の基点はmain `c1fc0b2a24277ecc651593d313b4bc669be148cf`（PR #103取込後）です。
+PR #103のChecks run `37429603386`が成功し、実Chromiumを含む全234テストと実contentのWeb受入が通っています。
 架空Note 3件の実Chromium受入で検索、全ローカルリンク、元Markdown hash、375/768/1024/1440px、
 AI/打切り表示、外部resource要求0を確認しています。手順・依存の未解消制約は[Web preview](web-preview.md)にあります。
-実GCSからのexportと初回Git配布は受入済みです。Pages deployは未実施です。
+実GCSからのexportと初回Git配布は受入済みです。117件のPages初回deployと公開URLのhash照合も受入済みです。
 
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
@@ -21,11 +20,12 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 日次公開への接続 |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
-| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 実NoteのPages deploy、継続更新と切戻しの受入 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 日次公開への接続、継続更新と切戻しの実運用受入 |
 
-Pages照会は先の読取り時に404でした。404だけでは権限による非表示と不在を区別できません。
-Git配布は実公開を照合していますが、Pages公開pipelineを稼働済みとする根拠はありません。
-現在の収集成功をGit配布・Pages稼働と混同しません。
+PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はmainです。
+[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)のbuild/deployが成功し、
+[公開URL](https://ningensei848.github.io/kaname/)から全117件の元Markdownを取得してhashを照合しました。
+収集成功、Git配布、Pages初回公開は確認済みですが、日次公開への接続は未完了です。
 
 ## 実Noteの配布受入
 
@@ -94,6 +94,10 @@ dataset digest `d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c
 クラウドでは導入済みsystem Chromium、CIではPlaywright固定Chromiumを使います。
 Pages workflow/Checksの構文はactionlintで検証済みです。
 
-ローカル受入は初回GitHub Pages deploy・公開URL確認を含みません。Pages設定の確認、mainへのmerge、
-手動workflow実行と公開site-manifestの照合が残っています。日次公開は未接続です。
+初回GitHub Pages deploy・公開URL確認はrun `37430216275`で完了しました。
+配布commitは上記117件の初回版、artifact digestは`165b9d3aff24fec0a95ff3acfe71edfcf6ed5584ba6b25746acb3b99b388f7a8`です。
+公開site-manifestのcommit/dataset/artifact digest/fixture判定と、トップ/版表示/manifest/全元Markdown/代表Note HTMLのhashを照合しています。
+日次公開、継続更新と実切戻しの受入は残っています。
+追加の公開URLブラウザ検査は、クラウドのsystem Chromiumがproxyの証明書を信頼せず`ERR_CERT_AUTHORITY_INVALID`となり未完了です。
+TLS検証は無効化していません。同一artifactのブラウザ検証はCIで成功し、公開URLのHTTPS/hash照合はrunnerとクラウドの標準HTTPクライアントで成功しています。
 手順と権限は[Pages公開手順](pages.md)を参照してください。
