@@ -23,7 +23,7 @@
 - [x] F2: Batchの元例外と安全な診断を保持し、既存結果をGETで検査。PR #97。
 - [x] F4/F5: usage部分欠落と中断後の費用復旧。元の日付/単価維持と二重計上防止を障害注入で検証。
 - [x] F6: 未処理sourceの失敗streakを維持。明示的完了だけでreset。
-- [ ] F3: browser resource/robots redirectの通信前policy。本番有効化前に対処。
+- [x] F3: browser resource/robots redirectの各hopを通信前に検査。許可外hostへのDNS/HTTP要求0を検証。
 - [x] F7: 状態/schema/通知に関する現行文書の旧説明を改訂。
 - [ ] 実Batchの成功結果保存、再実行、audit/costの本番受入。後続standard成功と混同しない。
 
@@ -34,7 +34,7 @@
 | 公開snapshot export | 読取り専用CLI、旧形式互換を含む43件のoffline検証。実GCSの117件を受入 |
 | Git配布 | 公開内容のみのbare出版、15テスト。初回117件をcontent branchへ公開 |
 | Web preview | 公開境界24テスト、架空/実Noteのbrowser受入。117件の初回Pages deploy/公開URL hash照合は受入済み |
-| Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。browserのF3と実source受入は残る |
+| Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。F3は修正済み。実source受入は残る |
 | 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |
 | Cost management | 推計/予算通知は実装済み。F4/F5は修正・offline検証済み。invoice照合は残る |
@@ -50,3 +50,7 @@
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
 DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではありません。
+
+## 保守性の改善
+
+公開経路の受入後は[リファクタリング計画](refactoring-plan.md)に沿い、費用/通知の分離から小さいPRで進めます。

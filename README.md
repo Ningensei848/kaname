@@ -4,11 +4,12 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 **同じ公開Note群を、GitHub Pagesと、人力Vaultからのgit submodule参照で利用します。**
 人力で構成するVaultは別リポジトリで管理し、その公開範囲・編集・コミュニティプラグイン設定は本プロジェクトの対象外です。
 
-現在は収集・非公開GCS保存に加え、実GCSからの読取りexportとGit配布を検証しています。
-117件の生成Noteは[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)で参照できます。
-同じ配布commitの117件を[GitHub Pages](https://ningensei848.github.io/kaname/)へ公開し、公開URLの全元Markdown hashを照合しました。
-F4/F5/F6を修正し、収集成功後のGit配布・Pages更新を日次workflowへ接続しました。[日次公開手順](docs/daily-publication.md)を参照してください。
-[Pages手順](docs/pages.md)に権限・公開・切戻しの操作を記載しています。
+標準経路の実装は完了しています。HTTPで収集・Geminiで要約し、非公開GCSの成功NoteをGitとPagesへ公開します。
+117件のNoteを[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)と
+[GitHub Pages](https://ningensei848.github.io/kaname/)で参照できます。
+公開専用runで最新成功版への更新と全元Markdownのhash一致を確認しました。
+毎日07:17 JSTの通常収集後に公開する構成ですが、接続後の初回schedule実行はまだ確認していません。
+[日次公開手順](docs/daily-publication.md)に受入結果と再実行方法、[Pages手順](docs/pages.md)に切戻し方法を記載しています。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
 ```mermaid
@@ -27,18 +28,36 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 
 | 項目 | 状態 |
 |---|---|
-| RSS/HTTP → Markdown → Gemini Structured JSON → Note/GCS | 実装・Phase 1本番受入済み。既存日次収集は稼働中 |
-| Batch、本文抽出、フィルタ、ブラウザ、費用・通知・lifecycle | 実装済み。Batch成功結果の本番保存と一部のレビュー指摘は未完了 |
-| 既存Vaultへの直接同期 | 互換機能。既存Noteを保持して更新候補を別保存する編集保護を取込済み |
-| 公開Noteのexport | 読取り専用CLI、43件のoffline検証。実GCSの117件を追加生成・書込み0で受入 |
-| 公開NoteのGit配布 | content branchへ117件を公開。再実行・競合・一時submodule等の15テストで検証 |
-| 独立Pages | 固定Git版の117件を初回公開済み。公開URLの版・全元Markdown hashを照合 |
-| 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本セッションでは扱わない |
+| RSS/HTTP → Markdown → Gemini → Note/GCS | standard収集の本番受入済み。Google Research/GitHub Blogが有効 |
+| 費用記録・復旧・失敗判定 | F4/F5/F6修正済み。部分usage、元の日付/単価、中断復旧、未処理sourceを検証 |
+| ブラウザ取得 | F3修正済み。document/resource/robotsのredirect先を通信前に検査。本番sourceの利用は未受入 |
+| 非同期Batch | 実装・offline検証済み。成功結果の実Note保存・audit/cost照合は未受入 |
+| 既存Vaultへの直接同期 | 互換機能。既存編集を保持し、更新候補を別保存 |
+| 公開export・Git配布・Pages | 117件の初回公開と最新成功版への実更新を受入。GitとWebの元Markdown hash一致 |
+| 日次公開・障害通知 | 収集→audit→export→Git→Pagesを接続。公開専用run成功。stage別Issue通知はmock検証済み |
+| 検証 | 全270テスト成功（実Chromiumを含む）。CIと公開前検査で継続確認 |
+| 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本プロジェクトの対象外 |
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
 Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distribution.md)を参照してください。
-同じ配布commitからPagesを公開済みです。公開専用runで117件の実更新と配信hash照合も確認しました。日次workflowはaudit/export後に同じ配布commitからPagesを更新します。
-実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
+現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
+
+## 残っている確認と次の作業
+
+標準経路に対する確定済みのレビュー指摘F1〜F6は対応済みです。今回の公開を完成させるための追加実装はありません。
+次は通常scheduleの収集から公開までの初回実行を確認します。実切戻し、実Batchの成功保存、invoice照合、
+browser sourceや利用者Vault/NTFSでの受入は別に残っています。
+並列収集・source health・回帰corpus・graph品質は[バックログ](docs/roadmap.md)の後続機能です。
+
+保守性の改善は[リファクタリング計画](docs/refactoring-plan.md)に沿って、小さいPRで次の順に進めます。
+
+1. 費用集計と通知を分離し、usage journalとreportの統合を整理。
+2. standard/BatchのNote作成を共通化し、課金・永続化の順序を明確にする。
+3. 公開snapshotの検証・整合読取り・原子的保存を分離。
+4. Webの版情報・artifact検査を共通化。
+5. CLIとworkflowの準備処理を、権限境界を保ちながら整理。
+
+CLI/GCS形式・Note bytes/ID・digest・公開URL・復旧順序は維持し、機能追加や依存更新は別PRにします。
 
 ## 公開するもの
 
@@ -54,7 +73,7 @@ GCS bucketの匿名公開は行わず、公開用NoteをGitへexportする境界
 
 Quartz 5.0.0とpluginを固定し、共通公開snapshotで一覧・検索・出典別/カテゴリ別/日付順・Note本文を確認できます。
 元Markdownのbytesとhashを保持します。[起動・検証手順](docs/web-preview.md)を参照してください。
-Checksの`web-preview` jobが静的previewとdesktop/mobile画面をartifactへ保存します。Pages deployはまだ行いません。
+Checksの`web-preview` jobが静的previewとdesktop/mobile画面をartifactへ保存します。Checks jobは検証用です。実deployは日次/Pages workflowが行います。
 
 ## 現行コレクタを使う
 
@@ -89,7 +108,7 @@ Windowsでは対応するvenvのPowerShell activateを使用してください�
 ```bash
 python -m techkb run          # 有料生成・GCS更新を伴う通常収集
 python -m techkb audit-state  # GCS読取りだけで整合性を検査
-python -m techkb cost-report  # 保存済みreportから費用推計
+python -m techkb cost-report  # 保存済みreport/usage journalから費用推計
 ```
 
 `dry-run`にも記事への通信があり、`run --max-calls 0`にも回収・保存があります。

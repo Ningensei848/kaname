@@ -17,7 +17,7 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | standard収集 | Phase 1本番受入済み。既存日次workflow稼働 | F4/F5/F6はoffline修正検証済み。invoice照合 |
 | Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
-| browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | redirect policy修正、必要なsourceの実受入。raw retention未設定は適用不要 |
+| browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 通常scheduleの連続実行受入 |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
 | Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 通常scheduleの連続実行と切戻しの実運用受入 |
@@ -61,7 +61,7 @@ schema検証で拒否されたことが保存0の直接原因です。生成側�
 |---|---|---|
 | F1: Vault編集消失 | PR #98対応済み。互換syncの契約 | in-place/rename/新規作成/candidate編集を保持。利用側環境は別検証 |
 | F2: Batch元例外の欠落 | PR #97対応済み、実GET診断済み | 型と安全なcodeを保持。原文/秘密/例外本文を出さない |
-| F3: browser redirect先の事後検査 | 未修正 | resource/robotsの各hopを通信前に判定。未許可hostへの要求0 |
+| F3: browser redirect先の事後検査 | 修正・HTTP/実Chromiumで検証 | resource/robotsの各hopを通信前に判定。未許可hostへの要求0 |
 | F4: 部分欠落usageを完全扱い | 修正・offline検証済み | 既知countを保持し、不明な課金countをpartialとして表示 |
 | F5: receipt後の中断で費用欠落 | 修正・障害注入検証済み | 再課金0・usage欠落0・費用重複0、日/月と単価履歴を保持 |
 | F6: 未検証sourceのstreakリセット | 修正・offline検証済み | 実際の復旧だけでresetし、未処理sourceは維持 |
@@ -106,3 +106,11 @@ Pages workflow/Checksの構文はactionlintで検証済みです。
 追加の公開URLブラウザ検査は、クラウドのsystem Chromiumがproxyの証明書を信頼せず`ERR_CERT_AUTHORITY_INVALID`となり未完了です。
 TLS検証は無効化していません。同一artifactのブラウザ検証はCIで成功し、公開URLのHTTPS/hash照合はrunnerとクラウドの標準HTTPクライアントで成功しています。
 手順と権限は[Pages公開手順](pages.md)を参照してください。
+
+## Browser redirect policyの修正
+
+HTTP Fetcherに呼出しごとのhost制限を追加し、初回document・resource・robots.txtのredirect先をDNS/HTTP通信前に検査します。
+許可したCDNへのredirectも転送先のrobotsを検査します。実Chromiumとmock transportで許可外hostへの要求0を確認。
+通常HTTP sourceのredirect契約は維持し、本番browser sourceの追加有効化は行いません。
+
+F3修正後のクラウド検証は全270テスト成功（実Chromiumを含む）。依存manifest/lockと本番source設定は変更なし。

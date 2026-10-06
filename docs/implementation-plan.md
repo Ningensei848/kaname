@@ -66,7 +66,7 @@ Web URL、配布commit/digest、Note件数、artifact検査、元Noteとのhash�
 F4（usage部分欠落）、F5（中断後の費用復旧）、F6（未検証sourceの失敗streak）は修正し、
 中断・書込み失敗・元の日付/単価維持・未処理sourceの障害注入テストを追加しました。
 本番受入は追加LLMを呼ばない`publish_only`で先に確認し、通常scheduleの初回連続実行と区別します。
-F3（ブラウザredirectの通信前policy）はブラウザsourceの本番有効化前に対処します。
+F3（ブラウザredirectの通信前policy）も修正し、許可外hostへの要求0を検証しました。browser sourceの実受入は別途必要です。
 audit/export/Git/Pages障害をGitHub run IDごとのIssue通知対象としました。
 
 実Batchの成功保存/audit/cost受入は独立して継続します。必要な有料提出はその受入計画で扱います。

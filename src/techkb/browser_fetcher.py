@@ -14,8 +14,8 @@ class SourceFetcher:
         if source.fetcher == "http":
             return self.http.get(url, source.request_interval_seconds, html=True)
         from playwright.sync_api import sync_playwright
-        initial = self.http.get(url, source.request_interval_seconds, html=True)
-        allowed = {urlsplit(initial.url).hostname, *source.resource_domains}
+        allowed = {urlsplit(url).hostname, *source.resource_domains}
+        initial = self.http.get(url, source.request_interval_seconds, html=True, allowed_hosts=allowed)
         count, size = 0, len(initial.content)
         failure = []
         with sync_playwright() as pw:
@@ -41,7 +41,7 @@ class SourceFetcher:
                         if count > source.max_browser_requests:
                             raise FetchError("browser request limit")
                         fetched = (initial if request.url == initial.url and count == 1 else
-                                   self.http.get(request.url, source.request_interval_seconds))
+                                   self.http.get(request.url, source.request_interval_seconds, allowed_hosts=allowed))
                         if urlsplit(fetched.url).hostname not in allowed:
                             raise FetchError("browser resource redirect outside allowed domains")
                         if fetched is not initial:
