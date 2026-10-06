@@ -11,7 +11,7 @@
 - [x] 実GCSのexport受入。117件、無書込み/追加生成0を照合。
 - [x] 共通snapshotを使うWeb preview。Quartz 5.0.0/plugin固定、架空Noteと実Chromiumで検証。
 - [x] `content`branchの完全snapshot配布、再実行/競合、一時submodule互換性。初回117件を公開。
-- [ ] 同じ生成Note群のPages初回公開。Gitからの実Web build/hash/commit/digest照合は完了。
+- [ ] 同じ生成Note群のPages初回公開。固定GitからのPages workflow/公開前検証は実装済み。初回実deployの受入が残る。
 - [ ] 成功収集後の日次公開と、収集/配布/deployそれぞれの障害通知。
 
 この順の成果物と完了条件は[実装計画](implementation-plan.md)にあります。

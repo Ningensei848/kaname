@@ -76,7 +76,7 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 DB/Vector DB/複数LLMへの移行を、この構成の前提にはしません。
 PagesのSSGはQuartz 5.0.0と固定pluginでpreviewを実装し、fixtureで検証しています。
 元Markdownは同じbytesで静的artifactに含めます。実Note117件のGit公開と同じ配布commitのWeb buildを受入済みです。
-Pages deployと日次公開の自動化は次工程です。
+Pages deploy workflowは実装済みで、初回実deployの受入と日次公開の自動化は未完了です。[Pages手順](pages.md)を参照してください。
 build・artifact・依存上の制約は[Web preview](web-preview.md)を参照してください。
 公開運用の権限・初回配布・自動更新の具体的なworkflowは実装PRで示します。
 初回Git配布は既存Noteの読取りだけで行います。GCS/Vault変更、権限変更、有料呼出し、

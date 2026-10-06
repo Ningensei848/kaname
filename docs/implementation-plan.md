@@ -44,8 +44,9 @@ dataset digestと指定された配布commitを表示し、同じsnapshotを入�
 
 ## 4. 初回公開とPages受入
 
-**初回Git公開と実NoteのローカルWeb検証は完了、Pages deployは未完了です。**
-次は`content`の固定commitを入力にするPages build/artifact/deploy workflowを実装します。
+**初回Git公開、実NoteのローカルWeb検証、Pages workflow実装は完了、初回実deployの受入は未完了です。**
+`content`の固定commitを入力にするPages build/artifact/deploy workflowを実装しました。
+[Pages手順](pages.md)に設定・権限・再実行/切戻しを記載し、次はmainへのmerge後に初回実deployを受け入れます。
 checkoutのHEAD/clean treeと指定commit、Note hashを照合し、GCS/Gemini権限なしでbuildします。
 Pagesの現行設定を読取り確認し、設定・deploy権限・公開URLはその実装PRで具体化します。
 公開方針は「生成Note群は公開」で確定済みです。配布内容・workflow権限・出力境界を実装PRで示します。

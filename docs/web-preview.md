@@ -77,7 +77,8 @@ cacheと出力は同一filesystemに置きます。既存出力やcacheを人が
 preview serverは完了manifestと各hashを検証し、捕捉した配信bytesだけを提供します。
 ファイルが後から増えても公開されません。非公開state、receipt、root文書、source mapは許可出力ではありません。
 現在のChecksでは収集権限なしでfixtureだけをbuild/検証し、静的previewと画面をActions artifactへ保存します。
-deploy workflow、production dispatch、Pages設定、WIF/IAMの変更はこの工程に含めません。
+Pages専用workflowとproduction dispatchの手順は[Pages手順](pages.md)に分離しています。
+Checksでは実contentの公開前検証も行いますが、deploy権限は付けません。WIF/IAMは変更しません。
 
 ## 固定依存と残る制約
 

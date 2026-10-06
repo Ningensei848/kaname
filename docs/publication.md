@@ -3,7 +3,8 @@
 この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)を実装するための配布契約です。
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
 実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
-Pages deploy pipelineと日次公開の自動化は未完了です。
+固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
+初回実deployの受入と日次公開の自動化は未完了です。[Pages手順](pages.md)を参照してください。
 
 ## exportの操作と実装範囲
 
@@ -105,7 +106,7 @@ kanameは第三者プラグインの動作を保証せず、選択した更新�
 
 同じ`content`commitを固定入力として、`main`側の固定SSG設定でHTMLをbuildします。
 Quartz 5.0.0の[Markdown/Obsidian機能](https://quartz.jzhao.xyz/)をfixtureで確認し、versionとpluginを固定しました。
-[Pages配信](https://quartz.jzhao.xyz/hosting#github-pages)は後続工程です。
+[Pages配信](pages.md)は固定Git入力と公開前検証を経て、公式Actionのartifact/deployを分離します。
 [Web preview](web-preview.md)に固定方式・実装契約・未解消の依存制約を記載します。
 想定するproject Pagesのbase pathは`/kaname/`です。現在そのURLでの提供は確認できていません。
 

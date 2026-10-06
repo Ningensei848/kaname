@@ -50,9 +50,21 @@ jobs:
           python make_fixture.py
           python build.py
           python check_preview.py --screenshots ../web/.cache/screenshots
+      - uses: actions/checkout@v5
+        with:
+          ref: content
+          path: public-content
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Validate Pages against the actual public content
+        working-directory: web
+        run: |
+          commit=$(git -C ../public-content rev-parse HEAD)
+          python build_pages.py --content ../public-content --content-commit "$commit" --output .cache/pages-artifact
+          python check_pages.py --content ../public-content --content-commit "$commit" --artifact .cache/pages-artifact
       - uses: actions/upload-artifact@v7
         with:
-          name: kaname-synthetic-web-preview
+          name: kaname-web-validation
           path: web/public/*
           if-no-files-found: error
           retention-days: 7
