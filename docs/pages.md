@@ -1,7 +1,8 @@
 # 固定した公開Note版をGitHub Pagesへ配信する
 
 `pages.yml`は`content`の固定commitからbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。
-実装・ローカル検証済みです。GitHub上での初回deployと公開URLの受入は別に確認します。
+実装・ローカル検証・GitHub上の初回deployと公開URLの受入を完了しました。
+公開URL: [kaname](https://ningensei848.github.io/kaname/)。[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)が成功しています。
 日次収集への接続はまだ行いません。
 
 ## 権限と設定
@@ -69,11 +70,13 @@ python check_pages.py --content "$CONTENT_CHECKOUT" \
 upload先は新しいディレクトリにします。同一artifactの再実行は`unchanged`、別版や編集済み出力は拒否します。
 別版の検証には新しい`--output`を指定してください。成功版や処理中lockを自動削除しません。
 初回Git配布commit `62ed7f08ec786e1067cc6eecd9bece5e078b8c5c`の117件で、元Note bytes/検索/リンク/画面幅を検証済みです。
-公開URLでの初回受入を、このローカル検証だけで完了扱いにしません。
+初回deployでは公開URLの配布commit/dataset/artifact digest、トップ/版表示/manifest/全117件の元Markdown/代表Note HTMLのhashを照合しました。
+配布commitは上記初回版、dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
+継続更新や切戻しの実運用受入は、初回公開とは別です。
 
 ## 次の工程：日次公開
 
-初回Pages受入、F4/F5（usage部分欠落・中断後の費用復旧）の修正を済ませてから接続します。
+初回Pages受入は完了しました。F4/F5（usage部分欠落・中断後の費用復旧）の修正を済ませてから接続します。
 既存`daily.yml`のWIF条件を保ったまま、収集成功/audit成功後だけ読取りexportを行い、
 独立したGit配布jobで`content`への通常non-force pushとremote照合を実行する計画です。
 GITHUB_TOKENでのcontent pushが別workflowを自動起動するとは想定せず、

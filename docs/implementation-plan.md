@@ -25,7 +25,7 @@
 `/kaname/`配下の安定URL、内部リンク、未存在の概念、危険なHTML/埋込みを確認します。
 manifest外・archive・state・receiptがbuild出力へ入らないことを検証します。
 dataset digestと指定された配布commitを表示し、同じsnapshotを入力に再buildできます。
-配布commitとcheckoutの一致は工程3〜4で保証します。実際のPages公開はまだ受入していません。
+配布commitとcheckoutの一致は工程3〜4で保証します。実際のPages初回公開も受入済みです。
 
 成果物は確認可能なWeb previewと静的build artifactです。[起動・検証手順](web-preview.md)を参照してください。
 この段階で本体Vaultは不要です。実配布commitの117件からのbuildも検証済みです。
@@ -44,16 +44,17 @@ dataset digestと指定された配布commitを表示し、同じsnapshotを入�
 
 ## 4. 初回公開とPages受入
 
-**初回Git公開、実NoteのローカルWeb検証、Pages workflow実装は完了、初回実deployの受入は未完了です。**
+**初回Git公開、実NoteのWeb検証、Pages workflow実装と初回実deployの受入は完了しました。**
 `content`の固定commitを入力にするPages build/artifact/deploy workflowを実装しました。
-[Pages手順](pages.md)に設定・権限・再実行/切戻しを記載し、次はmainへのmerge後に初回実deployを受け入れます。
+[Pages手順](pages.md)に設定・権限・再実行/切戻しを記載しています。
+[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)が成功し、公開URLで117件の元Markdown hashを照合しました。
 checkoutのHEAD/clean treeと指定commit、Note hashを照合し、GCS/Gemini権限なしでbuildします。
-Pagesの現行設定を読取り確認し、設定・deploy権限・公開URLはその実装PRで具体化します。
+PagesのSourceはGitHub Actions、deployはmainに限定されています。公開URLは`https://ningensei848.github.io/kaname/`です。
 公開方針は「生成Note群は公開」で確定済みです。配布内容・workflow権限・出力境界を実装PRで示します。
 GCSの読取りは現行ADC/WIFの範囲で行い、bucket匿名公開やGemini Secret抽出を前提にしません。
 Pages設定、Git書込み、deploy権限は該当工程だけに限定します。
 Web URL、配布commit/digest、Note件数、artifact検査、元Noteとのhash一致を記録します。
-失敗したdeployの再実行や切戻しで再課金・GCS更新がないことを確認します。
+再実行/切戻しは収集CLIやGCS/Geminiを呼ばない構成です。実際の切戻しと継続更新の受入は残ります。
 
 成果物は実際に読めるGitのNoteとPages、および同じ配布版を示す受入証拠です。
 人力Vaultへ組み込んだことを、このセッションの完了条件にしません。

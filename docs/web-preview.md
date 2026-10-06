@@ -2,7 +2,7 @@
 
 工程2の静的buildです。CIは架空Note 3件で画面を検証します。
 実GCSのexportと`content`branch配布、同じ配布commitの117件からのローカルWeb受入も完了しています。
-GitHub Pagesのdeploy、日次公開は別工程で未受入です。人力Vaultは入力にしません。
+GitHub Pagesの初回deployは[専用workflow](pages.md)で受入済みです。日次公開は未接続です。人力Vaultは入力にしません。
 
 ## ローカルで確認する
 

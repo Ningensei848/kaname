@@ -6,7 +6,8 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 
 現在は収集・非公開GCS保存に加え、実GCSからの読取りexportとGit配布を検証しています。
 117件の生成Noteは[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)で参照できます。
-同じ配布commitからのWeb buildも検証済みです。GitHub Pagesのdeploy workflowは実装済みで、初回実deployの受入と日次公開の自動化が次の確認事項です。
+同じ配布commitの117件を[GitHub Pages](https://ningensei848.github.io/kaname/)へ公開し、公開URLの全元Markdown hashを照合しました。
+次はF4/F5の修正と日次公開の自動化です。
 [Pages手順](docs/pages.md)に権限・公開・切戻しの操作を記載しています。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
@@ -31,12 +32,12 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 | 既存Vaultへの直接同期 | 互換機能。既存Noteを保持して更新候補を別保存する編集保護を取込済み |
 | 公開Noteのexport | 読取り専用CLI、43件のoffline検証。実GCSの117件を追加生成・書込み0で受入 |
 | 公開NoteのGit配布 | content branchへ117件を公開。再実行・競合・一時submodule等の15テストで検証 |
-| 独立Pages | 固定Git版のbuild/検証/deploy workflow実装済み。初回実deployの受入は未完了 |
+| 独立Pages | 固定Git版の117件を初回公開済み。公開URLの版・全元Markdown hashを照合 |
 | 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本セッションでは扱わない |
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
 Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distribution.md)を参照してください。
-次は同じ配布commitからPagesを公開します。実Batch受入完了をPages着手の前提にしません。
+同じ配布commitからPagesを公開済みです。日次公開の自動化は、F4/F5の修正後に接続します。
 実装順と完了条件は[実装計画](docs/implementation-plan.md)、現在の検証範囲は[検証・受入](docs/verification.md)を参照してください。
 
 ## 公開するもの
