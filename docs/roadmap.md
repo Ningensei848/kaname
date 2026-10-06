@@ -12,7 +12,7 @@
 - [x] 共通snapshotを使うWeb preview。Quartz 5.0.0/plugin固定、架空Noteと実Chromiumで検証。
 - [x] `content`branchの完全snapshot配布、再実行/競合、一時submodule互換性。初回117件を公開。
 - [x] 同じ生成Note群のPages初回公開。117件の固定Git版を公開し、公開URLの元Markdown hashを照合。
-- [x] 成功収集後の日次公開と、収集/audit/export/配布/deployの障害通知を実装。実公開受入は[日次公開](daily-publication.md)へ記録。
+- [x] 成功収集後の日次公開と、収集/audit/export/配布/deployの障害通知を実装。公開専用runで117件の実更新と配信hash照合を受入。[日次公開](daily-publication.md)へ記録。
 
 この順の成果物と完了条件は[実装計画](implementation-plan.md)にあります。
 人力Vaultのrepo/公開/プラグイン設定はこのバックログへ含めません。

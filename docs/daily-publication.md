@@ -42,5 +42,10 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 
 - クラウドの全264テストが成功。receipt/Note/index/report保存時の中断、usage保存失敗、月跨ぎ/価格変更、部分欠落usage、未処理source、remote競合、Issue重複抑止を検証。
 - workflowのactionlintとshell構文を検査。依存manifest/lockは変更なし。
-- main反映後の実`publish_only`受入は未実行。通常scheduleの初回連続実行も未確認。
+- PR #105取込後のmain `2d33e0cf018c4c9986a19252725d4bc7875cfa99`で、2026-10-06の[公開専用run 37434000683](https://github.com/Ningensei848/kaname/actions/runs/37434000683)が成功。
+- 既存WIFの認証、保存状態audit、読取りexport、artifact受渡し、Git配布とremote照合、Pages build/deploy、runnerの配信版照合がすべて成功。Collect・費用/通知state更新はskip、障害通知jobもskip。
+- content commitは`4205590eb588f0e0ddc991ef478c1bb2033746da`、Note数117。初回版から最新成功版へ通常pushで進め、同じcommitからPagesを更新。
+- dataset digestは`7c5b877882e32855634a1706ef3b7f924a915e31750355d545d970bf0001e08f`、公開artifact digestは`0f9e212bbf8861d1667d8e62746a589b854a8d7efd698fd971651a9008e909f2`。
+- クラウドからもHTTPSで公開manifestのbytesと検証済みGit manifestを一致照合し、全117件の元Markdown・トップ・版表示・代表Note HTMLのhashを検証。追加Gemini呼出し/記事取得/GCS書込みなし。
+- 通常scheduleの初回連続実行と実切戻しは未確認。実障害Issue投稿の故意の試験、実Batch/F3 browserの受入は今回行っていない。
 - 初回Pagesの117件公開は[従来の受入](verification.md)で確認済み。今回の実行結果とは区別します。
