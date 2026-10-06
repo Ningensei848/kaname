@@ -88,11 +88,17 @@ Quartz公式のGit plugin lock形式ではありません。公式の自動plugi
 日本語フォントは`@fontsource/noto-sans-jp` 5.3.0（OFL）をローカル配信し、ライセンスも同梱します。
 Quartz/pluginと主要frontend runtimeのライセンスは`static/licenses/`へ同梱します。
 
-監査で見つかったxmldom/sharp/tomlは、`overrides`で修正版を固定して実buildを検証しています。
+監査で見つかったxmldom/sharp/toml/KaTeXは、`overrides`で修正版を固定して実buildを検証しています。
 一方、[bracesの深いglobによるstack exhaustion](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)には、
 確認時点で公開npm最新版3.0.3にも警告が残ります。braces→micromatch→fast-glob→globbyの4件のhigh表示は
 この1 advisoryの伝播です。解消済み/警告0とは扱いません。
 ここではSSGが使うglobは固定文字列で、ignorePatternsは空、入力filenameは生成したID/slugのみです。
 Note本文・frontmatterからglobを渡す経路を追加しません。Node buildに180秒のtimeoutを設けています。
-`npm run audit`はこのadvisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
+`sprintf-js`にも[精度指定によるDoS](https://github.com/advisories/GHSA-hp3w-g68c-fv3c)の警告があり、確認時点の公開最新版1.1.3にも修正がありません。
+依存経路はQuartz → gray-matter → js-yaml 3.15.2 → argparse 1.0.10 → sprintf-js 1.0.3です。
+js-yamlのライブラリ入口はargparseを読み込まず、argparseを使うのは`bin/js-yaml.js`のCLIだけです。
+このビルドはgray-matterから`safeLoad`を呼び、YAML CLIやsprintfのformat指定にNote本文を渡しません。
+この固定version・配置の警告だけを既知の制約として許可します。YAML CLIの利用や依存経路の変更時には再レビューが必要です。
+KaTeXは修正版0.18.2に固定します。`node --test audit.test.mjs`で未知の警告・配置/version変更を拒否することを検証します。
+`npm run audit`は上記2 advisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
 glob/ignore設定の拡張や依存更新時には、この到達性判断を見直し、修正版が出たら更新してください。

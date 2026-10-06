@@ -44,6 +44,7 @@ jobs:
       - working-directory: web
         run: |
           npm ci --ignore-scripts
+          node --test audit.test.mjs
           npm run audit
           npm run setup
           python make_fixture.py
