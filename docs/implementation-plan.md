@@ -61,12 +61,13 @@ Web URL、配布commit/digest、Note件数、artifact検査、元Noteとのhash�
 
 ## 5. 日次公開の自動化と残る品質・復旧課題
 
-初回公開が受け入れられたら、収集の成功/audit後にexport・Git配布・Pages更新を接続します。
+収集の成功/audit後にexport・Git配布・Pages更新を接続しました。
 収集と公開のconcurrency・認証・失敗通知を分け、更新なし/収集失敗/公開失敗を識別します。
-広い自動化の前に、現行standard経路のF4（usage部分欠落）、F5（中断後の費用復旧）、
-F6（未検証sourceの失敗streak）を優先して修正・検証します。
+F4（usage部分欠落）、F5（中断後の費用復旧）、F6（未検証sourceの失敗streak）は修正し、
+中断・書込み失敗・元の日付/単価維持・未処理sourceの障害注入テストを追加しました。
+本番受入は追加LLMを呼ばない`publish_only`で先に確認し、通常scheduleの初回連続実行と区別します。
 F3（ブラウザredirectの通信前policy）はブラウザsourceの本番有効化前に対処します。
-audit/export/deploy障害を通知対象に含める仕様も、この工程で定義します。
+audit/export/Git/Pages障害をGitHub run IDごとのIssue通知対象としました。
 
 実Batchの成功保存/audit/cost受入は独立して継続します。必要な有料提出はその受入計画で扱います。
 後続の並列化・source health・回帰corpus・graph品質は[バックログ](roadmap.md)として維持します。

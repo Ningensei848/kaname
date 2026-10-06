@@ -4,6 +4,10 @@ on:
     - cron: "17 22 * * *"
   workflow_dispatch:
     inputs:
+      publish_only:
+        description: 'Audit/export existing Notes and publish without article collection or Gemini calls'
+        type: boolean
+        default: false
       verification_run_id:
         description: 'Saved run ID to verify without collecting articles (empty = normal run)'
         type: string
@@ -27,13 +31,20 @@ on:
         default: ''
 permissions:
   contents: read
-  id-token: write
-  issues: write
-concurrency:
-  group: techkb-gcs-single-writer
-  cancel-in-progress: false
 jobs:
   collect:
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+    concurrency:
+      group: techkb-gcs-single-writer
+      cancel-in-progress: false
+    outputs:
+      ready: ${{ steps.export.outputs.ready }}
+      collection_outcome: ${{ steps.collection.outcome }}
+      audit_outcome: ${{ steps.audit.outcome }}
+      export_outcome: ${{ steps.export.outcome }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -54,13 +65,21 @@ jobs:
         env:
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
           DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+          PUBLISH_ONLY: ${{ inputs.publish_only }}
+          COLLECTION_MODE: ${{ inputs.collection_mode }}
+          MAX_CALLS: ${{ inputs.max_calls }}
+          EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
         run: |
+          if [[ "$PUBLISH_ONLY" == true && ( -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ) ]]; then
+            echo 'Publish-only cannot be combined with diagnostics or collection overrides.'
+            exit 1
+          fi
           if [[ -n "$VERIFY_RUN_ID" && -n "$DIAGNOSTIC_BATCH_ID" ]]; then
             echo 'Choose either run verification or Batch inspection.'
             exit 1
           fi
       - name: Install browser when configured
-        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
+        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only }}
         run: |
           if python -c 'from techkb.config import load_config; _, sources = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if any(s.enabled and s.fetcher == "playwright" for s in sources) else 1)'; then
             python -m pip install -r requirements-browser.lock
@@ -72,7 +91,8 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect
-        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
+        id: collection
+        if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
@@ -84,6 +104,7 @@ jobs:
           if [[ -n "$MAX_CALLS" ]]; then args+=(--max-calls "$MAX_CALLS"); fi
           python -m techkb "${args[@]}"
       - name: Audit saved state
+        id: audit
         if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
@@ -103,14 +124,14 @@ jobs:
           DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
         run: python -m techkb batch-inspect --batch-id "$DIAGNOSTIC_BATCH_ID" --remote
       - name: Cost and notification plan
-        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: |
           python -m techkb cost-report
           python -m techkb notify
       - name: Publish necessary notifications
-        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -118,3 +139,103 @@ jobs:
           if python -c 'from techkb.config import load_config; app, _ = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if app.notifications.github_repository else 1)'; then
             python -m techkb notify --apply
           fi
+      - name: Export only validated public Notes
+        id: export
+        if: ${{ success() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && steps.audit.outcome == 'success' }}
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: |
+          set -euo pipefail
+          python -m techkb export-notes --output "$RUNNER_TEMP/public-snapshot"
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7
+        if: steps.export.outputs.ready == 'true'
+        with:
+          name: public-note-snapshot
+          path: ${{ runner.temp }}/public-snapshot
+          if-no-files-found: error
+          retention-days: 2
+  publish:
+    needs: collect
+    if: needs.collect.result == 'success' && needs.collect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: kaname-content
+      cancel-in-progress: false
+    outputs:
+      commit: ${{ steps.publish.outputs.commit }}
+      unchanged: ${{ steps.publish.outputs.unchanged }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.lock
+      - uses: actions/download-artifact@v8
+        with:
+          name: public-note-snapshot
+          path: ${{ runner.temp }}/public-snapshot
+      - name: Advance only the content branch and verify remote bytes
+        id: publish
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python scripts/publish_content.py --snapshot "$RUNNER_TEMP/public-snapshot" \
+            --remote "https://github.com/$GITHUB_REPOSITORY.git" --workspace "$RUNNER_TEMP" > "$RUNNER_TEMP/publication.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = json.loads((Path(os.environ['RUNNER_TEMP']) / 'publication.json').read_bytes())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              print('commit=' + result['commit'], file=stream)
+              print('unchanged=' + str(result['unchanged']).lower(), file=stream)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
+              print('### Git distribution\n', file=stream)
+              for key in ('commit', 'dataset_digest', 'notes', 'unchanged'):
+                  print(f'- {key}: `{result[key]}`', file=stream)
+          PY
+  pages:
+    needs: publish
+    if: needs.publish.result == 'success'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
+    with:
+      content_commit: ${{ needs.publish.outputs.commit }}
+      require_tip: true
+  notify-publication:
+    needs: [collect, publish, pages]
+    if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && (needs.collect.result == 'failure' || needs.publish.result == 'failure' || needs.pages.result == 'failure') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.lock
+      - name: Notify the failing publication stage once per run
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          COLLECT_RESULT: ${{ needs.collect.result }}
+          COLLECT_OUTCOME: ${{ needs.collect.outputs.collection_outcome }}
+          AUDIT_OUTCOME: ${{ needs.collect.outputs.audit_outcome }}
+          EXPORT_OUTCOME: ${{ needs.collect.outputs.export_outcome }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
+          PAGES_RESULT: ${{ needs.pages.result }}
+        run: python scripts/notify_publication.py

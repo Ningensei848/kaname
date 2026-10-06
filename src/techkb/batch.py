@@ -222,6 +222,9 @@ class BatchManager:
                     outcomes.append(outcome)
                 job['outcomes']=outcomes; job['settled_at']=now()
                 job['billing_run_id']=job['settled_at'][:19].replace('-','').replace(':','')+'Z-'+hashlib.sha256(('batch:'+job['id']).encode()).hexdigest()[:8]
+                for outcome in outcomes:
+                    if outcome['receipt']:
+                        outcome['receipt']['usage_run_id'] = job['billing_run_id']
                 # Persist compact outcomes before writing cost report or Note/index.
                 self.persist(name,job)
             billed=RunReport(run_id=job['billing_run_id'],started_at=job['settled_at'],llm_model=job['model'],llm_mode='batch',

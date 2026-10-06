@@ -20,6 +20,7 @@ class RunReport:
     llm_mode: str = "standard"
     token_price: dict | None = None
     source_ids: list[str] = field(default_factory=list)
+    source_completed_ids: list[str] = field(default_factory=list)
     discovered: int = 0
     pending_before: int = 0
     fetched: int = 0

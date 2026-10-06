@@ -4,7 +4,7 @@
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
 実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
 固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
-初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開の自動化は未完了です。[Pages手順](pages.md)を参照してください。
+初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開pipelineを実装しました。実行受入の状態は[日次公開手順](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。
 
 ## exportの操作と実装範囲
 
@@ -86,7 +86,7 @@ manifestに列挙したファイル以外の混入、秘密、原文セクショ
 GCSのbucket名・世代記録・運用台帳を公開manifestの内容にしません。
 stagingの完全なsnapshotだけをcommitし、現在の配布版を途中生成物へ進めません。
 `publish-notes`はローカルbare repoの`content`refだけを原子的に進めます。
-remoteの公開は明示的なnon-force pushと照合で行い、既存日次workflowへはまだ接続していません。
+remoteの公開は明示的なnon-force pushと照合で行い、日次workflowの独立jobへ接続しました。
 
 ## submodule向け契約
 

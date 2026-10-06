@@ -74,12 +74,11 @@ upload先は新しいディレクトリにします。同一artifactの再実行
 配布commitは上記初回版、dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
 継続更新や切戻しの実運用受入は、初回公開とは別です。
 
-## 次の工程：日次公開
+## 日次公開
 
-初回Pages受入は完了しました。F4/F5（usage部分欠落・中断後の費用復旧）の修正を済ませてから接続します。
-既存`daily.yml`のWIF条件を保ったまま、収集成功/audit成功後だけ読取りexportを行い、
-独立したGit配布jobで`content`への通常non-force pushとremote照合を実行する計画です。
-GITHUB_TOKENでのcontent pushが別workflowを自動起動するとは想定せず、
-今回のreusable `pages.yml`に検証済みcommitを明示的に渡します。
-収集/配布/deployのconcurrencyとIssue通知を分離し、更新なし、収集失敗、公開失敗を区別します。
-現時点の公開障害はActionsの失敗状態/summaryで確認します。日次Issue通知への連携は未実装です。
+F4/F5/F6を修正し、`daily.yml`の収集成功/audit成功後に読取りexport、
+独立したGit配布jobのnon-force pushとremote照合、reusable Pages workflowを接続しました。
+検証済みcommitを明示的に渡し、日次呼出しの`require_tip: true`で既に後続版へ進んだcommitを拒否します。
+手動deployでは従来どおり履歴上の版へ切戻せます。
+Git更新なしでもPagesを再deployし、前回の公開失敗から回復できます。
+収集/Git/Pagesのconcurrencyとstage別Issue通知、公開だけの再実行は[日次公開手順](daily-publication.md)を参照してください。

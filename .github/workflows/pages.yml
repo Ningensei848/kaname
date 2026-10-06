@@ -12,6 +12,10 @@ on:
         description: 'Full content commit, or empty for the current tip'
         type: string
         default: ''
+      require_tip:
+        description: 'Daily publication must never deploy an already superseded content version'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -44,11 +48,16 @@ jobs:
         id: content
         env:
           REQUESTED_COMMIT: ${{ inputs.content_commit }}
+          REQUIRE_TIP: ${{ inputs.require_tip }}
         run: |
           set -euo pipefail
           tip=$(git -C public-content rev-parse HEAD)
           commit=${REQUESTED_COMMIT:-$tip}
           [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid content commit'; exit 1; }
+          if [[ "$REQUIRE_TIP" == true && "$commit" != "$tip" ]]; then
+            echo 'Content version was superseded; refusing a stale daily deployment.' >&2
+            exit 1
+          fi
           git -C public-content cat-file -e "$commit^{commit}"
           git -C public-content merge-base --is-ancestor "$commit" "$tip"
           git -C public-content checkout --detach "$commit"

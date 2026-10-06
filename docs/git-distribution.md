@@ -82,4 +82,4 @@ Web buildはこのbranchの固定commitをcheckoutし、公開snapshotを再検�
 `--content-commit`の指定だけではGit由来を証明できません。checkoutのHEADと指定値の一致、
 tracked tree、manifest/Note hashを出版・deploy側で照合する必要があります。
 初回版では実際のGit checkoutからbuildし、117件の元Markdownと配布版が同じbytesであることを確認しました。
-Pages deploy workflowと公開前検証を実装しました。同じ117件の初回Pages公開と公開URLのhash照合は完了しました。日次自動公開は未接続です。[Pages手順](pages.md)を参照してください。[Web手順](web-preview.md)と[受入](verification.md)を参照してください。
+Pages deploy workflowと公開前検証を実装しました。同じ117件の初回Pages公開と公開URLのhash照合は完了しました。日次自動公開を接続しました。[実行受入](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。[Web手順](web-preview.md)と[受入](verification.md)を参照してください。
