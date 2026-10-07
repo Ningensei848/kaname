@@ -20,7 +20,7 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexportと通常scheduleの連続実行受入済み | — |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
-| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild。通常schedule受入済み | 切戻しの実運用受入 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild。通常schedule受入済み | 切戻しの実運用受入（[両版の準備済み、個別承認待ち](archive/2026-10/pages-rollback-preparation-2026-10-07.md)） |
 
 PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はmainです。
 [初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)のbuild/deployが成功し、

@@ -66,3 +66,11 @@ T0のローカル検証は完了しました。承認されたコマンド実行
 - 利用者Vault/Windows・NTFSとbrowser source実受入は対象指定後の後続です。並列収集・source health・回帰corpus・graph品質は既存バックログに残します。
 
 実行経路の確認と登録したIssueは[引継ぎ記録](archive/2026-10/refactoring-handoff-2026-10-06.md)にあります。
+
+## 進捗（2026-10-07）
+
+T0、R1〜R5は完了し、各実装PR #118 / #120 / #121 / #122 / #123を取込済みです。
+O1の通常scheduleも受入済みです。次はO2 #115であり、切戻し/復帰の両版を固定して
+ローカルartifact・browser受入と期待配信digestの一致を確認しました。
+[準備記録](archive/2026-10/pages-rollback-preparation-2026-10-07.md)の実公開操作は個別承認待ちです。
+実Batch #94と請求照合O3 #116は引き続き独立した未受入として扱います。

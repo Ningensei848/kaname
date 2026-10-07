@@ -3,7 +3,7 @@
 `pages.yml`は`content`の固定commitからbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。
 実装・ローカル検証・GitHub上の初回deployと公開URLの受入を完了しました。
 公開URL: [kaname](https://ningensei848.github.io/kaname/)。[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)が成功しています。
-日次収集への接続はまだ行いません。
+日次公開経路は接続し、通常scheduleを受入済みです。切戻し・復帰は[両版の準備済み](archive/2026-10/pages-rollback-preparation-2026-10-07.md)で、実公開操作の個別承認を待っています。
 
 ## 権限と設定
 

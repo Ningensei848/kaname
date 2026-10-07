@@ -49,3 +49,4 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 - クラウドからもHTTPSで公開manifestのbytesと検証済みGit manifestを一致照合し、全117件の元Markdown・トップ・版表示・代表Note HTMLのhashを検証。追加Gemini呼出し/記事取得/GCS書込みなし。
 - 通常scheduleの初回連続実行は2026-10-07に受入済み。収集・usage保存・audit・export・Git配布・Pages・全元Markdown配信照合の証拠は[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)に保存。実切戻し、実Batch/F3 browserの受入と実障害Issue投稿の故意の試験は未実施。
 - 初回Pagesの117件公開は[従来の受入](verification.md)で確認済み。今回の実行結果とは区別します。
+- O2の切戻し117件/復帰118件は両版のローカルbuild・artifact/browser受入と期待配信digestの照合まで準備済み。実公開操作は個別承認待ち。固定版と復帰手順は[月別準備記録](archive/2026-10/pages-rollback-preparation-2026-10-07.md)に保存。
