@@ -13,14 +13,14 @@ from serve import server
 from techkb.pages import content_snapshot
 from techkb.site import load_artifact
 from techkb.publication import ExportError
+from techkb._web_validation import public_version_matches, snapshot_matches
 
 
 def check(content, commit, artifact):
     manifest, original, _ = content_snapshot(content, commit)
     marker, files = load_artifact(artifact)
-    if (marker['fixture'] or marker['content_commit'] != commit or
-            marker['dataset_digest'] != manifest['dataset_digest'] or
-            any(files.get('markdown/' + name) != data for name, data in original.items())):
+    if (not public_version_matches(marker, commit) or
+            not snapshot_matches(marker, manifest, files, original)):
         raise ExportError('pages_provenance_mismatch')
     # Resolve every static local navigation/asset link against the same artifact.
     base = 'http://127.0.0.1/kaname/'

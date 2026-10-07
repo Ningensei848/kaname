@@ -136,6 +136,17 @@ def test_deployed_version_and_served_bytes_are_verified(pages):
     args = (url, commit, marker['dataset_digest'], marker['artifact_digest'], result['notes'])
     try:
         assert module.verify(*args)['notes'] == result['notes']
+        # Execute the checkout script without site-packages or PYTHONPATH.
+        # Deployment must work with no renderer or collection dependencies.
+        import subprocess
+        import sys
+        isolated = subprocess.run([sys.executable, '-I', '-S', spec.origin,
+            '--url', url, '--content-commit', commit,
+            '--dataset-digest', marker['dataset_digest'],
+            '--artifact-digest', marker['artifact_digest'], '--notes', str(result['notes'])],
+            capture_output=True, timeout=30)
+        assert isolated.returncode == 0, isolated.stderr.decode()
+        assert json.loads(isolated.stdout) == module.verify(*args)
         with pytest.raises(ValueError, match='version_mismatch'):
             module.verify(url, 'f' * 40, *args[2:])
         with pytest.raises(ValueError, match='snapshot_mismatch'):
