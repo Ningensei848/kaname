@@ -62,19 +62,7 @@ jobs:
           git -C public-content merge-base --is-ancestor "$commit" "$tip"
           git -C public-content checkout --detach "$commit"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: pip
-      - uses: actions/setup-node@v7
-        with:
-          node-version: '24.15.0'
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - name: Install pinned build dependencies
-        run: |
-          python -m pip install -r requirements.lock -r requirements-browser.lock
-          python -m playwright install --with-deps chromium
+      - uses: ./.github/actions/setup-web
       - name: Build and verify the public artifact
         id: build
         working-directory: web
@@ -82,10 +70,6 @@ jobs:
           CONTENT_COMMIT: ${{ steps.content.outputs.commit }}
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts
-          node --test audit.test.mjs
-          npm run audit
-          npm run setup
           python build_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact > .cache/pages-result.json
           python check_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
           python - <<'PY'
