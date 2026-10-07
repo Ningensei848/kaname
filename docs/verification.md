@@ -20,7 +20,7 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexportと通常scheduleの連続実行受入済み | — |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
-| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild。通常schedule受入済み | 切戻しの実運用受入 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild。通常scheduleと[履歴版への実切戻し/現行版復帰](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)を受入済み | — |
 
 PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はmainです。
 [初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)のbuild/deployが成功し、
@@ -103,7 +103,7 @@ Pages workflow/Checksの構文はactionlintで検証済みです。
 初回GitHub Pages deploy・公開URL確認はrun `37430216275`で完了しました。
 配布commitは上記117件の初回版、artifact digestは`165b9d3aff24fec0a95ff3acfe71edfcf6ed5584ba6b25746acb3b99b388f7a8`です。
 公開site-manifestのcommit/dataset/artifact digest/fixture判定と、トップ/版表示/manifest/全元Markdown/代表Note HTMLのhashを照合しています。
-日次公開の受入状態は[日次公開手順](daily-publication.md)で管理します。実切戻しは未検証です。
+日次公開の受入状態は[日次公開手順](daily-publication.md)で管理します。履歴版への実切戻しと現行版復帰は2026-10-07に受入済みです。
 追加の公開URLブラウザ検査は、クラウドのsystem Chromiumがproxyの証明書を信頼せず`ERR_CERT_AUTHORITY_INVALID`となり未完了です。
 TLS検証は無効化していません。同一artifactのブラウザ検証はCIで成功し、公開URLのHTTPS/hash照合はrunnerとクラウドの標準HTTPクライアントで成功しています。
 手順と権限は[Pages公開手順](pages.md)を参照してください。

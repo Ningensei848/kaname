@@ -3,7 +3,7 @@
 `pages.yml`は`content`の固定commitからbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。
 実装・ローカル検証・GitHub上の初回deployと公開URLの受入を完了しました。
 公開URL: [kaname](https://ningensei848.github.io/kaname/)。[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)が成功しています。
-日次収集への接続はまだ行いません。
+日次公開経路は接続し、通常scheduleを受入済みです。[履歴版への実切戻し・現行版復帰](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)も2026-10-07に受入済みです。
 
 ## 権限と設定
 
@@ -72,7 +72,7 @@ upload先は新しいディレクトリにします。同一artifactの再実行
 初回Git配布commit `62ed7f08ec786e1067cc6eecd9bece5e078b8c5c`の117件で、元Note bytes/検索/リンク/画面幅を検証済みです。
 初回deployでは公開URLの配布commit/dataset/artifact digest、トップ/版表示/manifest/全117件の元Markdown/代表Note HTMLのhashを照合しました。
 配布commitは上記初回版、dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
-継続更新や切戻しの実運用受入は、初回公開とは別です。
+継続更新や切戻しの実運用受入は初回公開と別に判定し、通常scheduleと切戻し/復帰もそれぞれ受入済みです。
 
 ## 日次公開
 

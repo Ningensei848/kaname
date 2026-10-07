@@ -47,5 +47,6 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 - content commitは`4205590eb588f0e0ddc991ef478c1bb2033746da`、Note数117。初回版から最新成功版へ通常pushで進め、同じcommitからPagesを更新。
 - dataset digestは`7c5b877882e32855634a1706ef3b7f924a915e31750355d545d970bf0001e08f`、公開artifact digestは`0f9e212bbf8861d1667d8e62746a589b854a8d7efd698fd971651a9008e909f2`。
 - クラウドからもHTTPSで公開manifestのbytesと検証済みGit manifestを一致照合し、全117件の元Markdown・トップ・版表示・代表Note HTMLのhashを検証。追加Gemini呼出し/記事取得/GCS書込みなし。
-- 通常scheduleの初回連続実行は2026-10-07に受入済み。収集・usage保存・audit・export・Git配布・Pages・全元Markdown配信照合の証拠は[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)に保存。実切戻し、実Batch/F3 browserの受入と実障害Issue投稿の故意の試験は未実施。
+- 通常scheduleの初回連続実行は2026-10-07に受入済み。収集・usage保存・audit・export・Git配布・Pages・全元Markdown配信照合の証拠は[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)に保存。実Batch/F3 browserの受入と実障害Issue投稿の故意の試験は未実施。
 - 初回Pagesの117件公開は[従来の受入](verification.md)で確認済み。今回の実行結果とは区別します。
+- O2の切戻し117件/復帰118件は個別承認後、2026-10-07に両版の実deployと全元Markdown配信照合まで受入済み。現行118件版への復帰も確認した。実行runと期待digestの一致は[月別受入記録](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)に保存。
