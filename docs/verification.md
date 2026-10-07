@@ -15,7 +15,7 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
 | standard収集 | Phase 1本番受入済み。既存日次workflow稼働 | F4/F5/F6はoffline修正検証済み。invoice照合 |
-| Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
+| Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み。[事前検査と提出案](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)を準備 | WIF事前検査、新規有料提出の個別承認、成功Note保存・audit/cost・再実行の本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexportと通常scheduleの連続実行受入済み | — |

@@ -122,6 +122,16 @@ compact結果を先に永続化してから保存し、usageは専用`record_kin
 作成API応答とジョブ完了・Note保存は別で、待機中を完了とみなしません。
 実サービスでのBatch確認は検証記録へ別途記載します。
 
+### 実Batch受入の事前検査
+
+手動専用`Batch acceptance preflight`（`batch-preflight.yml`）をmainから実行すると、
+既存WIFと通常収集のwriterロック内で、GCSのaudit・未決済/未計上Batch・未完了standard usageを読み取ります。
+新規提出、Gemini GET、記事取得、GCS書込み、通知、Git更新、Pages deployは行いません。
+出力は件数と判定だけで、本文・台帳ID・object path・費用明細を含みません。
+`ready`でも有料提出の個別承認が必要です。`blocked`/`failed`なら提出せず調査します。
+unknown usageの件数は残り、請求照合完了を意味しません。
+具体的な提出・回収・再実行・費用推計は[#94の準備記録](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)を参照してください。
+
 ### 既存Batchの読取り診断
 
 `BATCH_ID`へ確認対象の台帳ID（`YYYYMMDDTHHMMSSZ-xxxxxxxx`形式）を設定してから使います。
