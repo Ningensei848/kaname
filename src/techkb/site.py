@@ -13,6 +13,8 @@ from .composer import inline
 from .publication import (ExportError, ExportDirectorySnapshot, PUBLIC_ATTRIBUTES, json_bytes, sha256,
                           note_frontmatter, validate_note, reject_symlinks, instant)
 from .normalize import normalize_url
+from ._web_validation import (digest_value, artifact_path, digest_matches, hash_manifest,
+                              valid_site_marker, snapshot_matches)
 
 
 ENTRY_FIELDS = {"id", "path", "sha256", "source_id", "canonical_url", "title", "category",
@@ -26,10 +28,6 @@ def unique_json(pairs):
             raise ExportError("duplicate_json_key")
         result[key] = value
     return result
-
-
-def digest_value(value):
-    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
 def load_snapshot(root, tracking=()):
@@ -72,7 +70,7 @@ def load_snapshot(root, tracking=()):
         if canonical != entry["canonical_url"] or sha256(identity) != entry["id"]:
             raise ExportError("note_identity_mismatch")
         data = reader.read(entry["path"])
-        if data is None or sha256(data) != entry["sha256"]:
+        if data is None or not digest_matches(data, entry["sha256"]):
             raise ExportError("public_note_hash_mismatch")
         _, _, meta = note_frontmatter(data)
         if any(not digest_value(meta.get(k)) for k in ("raw_html_sha256", "content_sha256")):
@@ -258,32 +256,11 @@ def seal_artifact(compiled, manifest, files, fixture=False, content_commit=None)
     for entry in manifest["notes"]:
         if f"notes/{entry['id']}.html" not in hashes or hashes.get("markdown/" + entry["path"]) != entry["sha256"]:
             raise ExportError("missing_rendered_note")
-    artifact_digest = sha256(json_bytes(sorted(hashes.items())))
+    artifact_digest = hash_manifest(hashes)
     marker = dict(schema_version=1, artifact_digest=artifact_digest, dataset_digest=manifest["dataset_digest"],
                   fixture=fixture, content_commit=content_commit, files=hashes)
     (compiled / "site-manifest.json").write_bytes(json_bytes(marker))
     return marker
-
-
-def artifact_path(name):
-    """Finite output types; Markdown/JSON have dedicated public-only locations."""
-    if not isinstance(name, str):
-        return False
-    pure = PurePosixPath(name)
-    if (str(pure) != name or pure.is_absolute() or not pure.parts or
-            any(p.startswith(".") for p in pure.parts) or re.search(r'[\\\x00-\x1f\x7f]', name)):
-        return False
-    if pure.suffix == ".html":
-        return (name in {"index.html", "404.html", "about/snapshot.html", "tags/index.html"} or
-                bool(re.fullmatch(r"notes/[0-9a-f]{64}\.html", name)) or
-                bool(re.fullmatch(r"browse/(sources|categories|dates)\.html", name)) or
-                bool(re.fullmatch(r"browse/(sources|categories)/[0-9a-f]{64}\.html", name)) or
-                name.startswith("tags/"))
-    if name in {"index.css", "prescript.js", "postscript.js", "static/contentIndex.json", "markdown/manifest.json"}:
-        return True
-    if re.fullmatch(r"markdown/notes/[0-9a-f]{64}\.md", name):
-        return True
-    return name.startswith("static/") and pure.suffix in {".woff2", ".png", ".svg", ".ico", ".txt"}
 
 
 def load_artifact(root):
@@ -293,32 +270,24 @@ def load_artifact(root):
         marker = json.loads(raw_marker or b"", object_pairs_hook=unique_json)
     except (ValueError, UnicodeError):
         raise ExportError("missing_or_invalid_site_manifest") from None
-    if (not isinstance(marker, dict) or
-            set(marker) != {"schema_version", "artifact_digest", "dataset_digest", "fixture", "content_commit", "files"} or
-            type(marker["schema_version"]) is not int or marker["schema_version"] != 1 or
-            type(marker["fixture"]) is not bool or not digest_value(marker["dataset_digest"]) or
-            (marker["content_commit"] is not None and
-             (not isinstance(marker["content_commit"], str) or not re.fullmatch(r"[0-9a-f]{40}", marker["content_commit"]))) or
-            not isinstance(marker["files"], dict) or not digest_value(marker["artifact_digest"])):
+    if not valid_site_marker(marker):
         raise ExportError("invalid_site_manifest")
     files = {}
     for name, digest in marker["files"].items():
         if not artifact_path(name) or not digest_value(digest):
             raise ExportError("invalid_artifact_path")
         data = reader.read(name)
-        if data is None or sha256(data) != digest:
+        if data is None or not digest_matches(data, digest):
             raise ExportError("artifact_hash_mismatch")
         files[name] = data
-    if sha256(json_bytes(sorted(marker["files"].items()))) != marker["artifact_digest"]:
+    if hash_manifest(marker["files"]) != marker["artifact_digest"]:
         raise ExportError("artifact_digest_mismatch")
     files["site-manifest.json"] = raw_marker
     if set(reader.list("")) != files.keys():
         raise ExportError("unexpected_artifact_file")
     snapshot, original, _ = load_snapshot(reader.root / "markdown")
     expected_notes = {"notes/" + e["id"] + ".html" for e in snapshot["notes"]}
-    if (snapshot["dataset_digest"] != marker["dataset_digest"] or
-            {name for name in files if name.startswith("notes/")} != expected_notes or
-            any(files.get("markdown/" + name) != data for name, data in original.items())):
+    if not snapshot_matches(marker, snapshot, files, original, expected_notes):
         raise ExportError("artifact_snapshot_mismatch")
     if reader.read("site-manifest.json") != raw_marker:
         raise ExportError("artifact_changed")

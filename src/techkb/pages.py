@@ -11,6 +11,7 @@ import subprocess
 from .distribution import README
 from .publication import ExportError, PUBLIC_README, PUBLIC_ATTRIBUTES, reject_symlinks
 from .site import load_snapshot, load_artifact, install_artifact
+from ._web_validation import public_version_matches, snapshot_matches
 
 
 def content_snapshot(checkout, commit):
@@ -69,10 +70,9 @@ def prepare_pages(checkout, commit, artifact, output):
         raise ExportError("pages_paths_overlap")
     manifest, original, _ = content_snapshot(source, commit)
     marker, files = load_artifact(compiled)
-    if marker["fixture"] or marker["content_commit"] != commit:
+    if not public_version_matches(marker, commit):
         raise ExportError("pages_provenance_mismatch")
-    if (marker["dataset_digest"] != manifest["dataset_digest"] or
-            any(files.get("markdown/" + name) != data for name, data in original.items())):
+    if not snapshot_matches(marker, manifest, files, original):
         raise ExportError("pages_snapshot_mismatch")
     if not {"index.html", "about/snapshot.html"} <= files.keys():
         raise ExportError("missing_pages_entrypoint")
