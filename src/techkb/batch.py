@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from google.genai import types, errors
 from pydantic import ValidationError
 from .composer import compose, word_count
+from ._receipts import build_receipt
 from .gemini import response_usage, validate_response
 from .pending import Candidate
 from .models import ArticleEnrichment
@@ -207,15 +208,10 @@ class BatchManager:
                         phase = 'compose'
                         candidate=Candidate(**item['candidate']); source=SimpleNamespace(**item['source'])
                         fetched_at=now()
-                        obj,note=compose(candidate,source,enrichment,'',item['canon'],fetched_at,item['rh'],item['ch'],
-                                         job['model'],item['truncated'],item['authors'],
-                                         input_char_limit=job['input_char_limit'],source_word_count=item['word_count'])
-                        row=dict(processed_at=fetched_at,source_id=source.id,source_url=candidate.url,
-                                 canonical_url=item['canon'],published_at=candidate.published_at,raw_html_sha256=item['rh'],
-                                 content_sha256=item['ch'],status='success',note_object=obj,llm_model=job['model'],
-                                 input_tokens=usage.input_tokens,output_tokens=usage.output_tokens,
-                                 thinking_tokens=usage.thinking_tokens,llm_input_truncated=str(item['truncated']).lower())
-                        outcome['receipt']={'row':row,'note':note}
+                        outcome['receipt']=build_receipt(candidate,source,enrichment,'',item['canon'],fetched_at,
+                                                         item['rh'],item['ch'],job['model'],item['truncated'],
+                                                         item['authors'],usage,input_char_limit=job['input_char_limit'],
+                                                         source_word_count=item['word_count'],compose_note=compose)
                     except Exception as exc:
                         outcome['error']=type(exc).__name__
                         outcome['diagnostics']=failure_diagnostics(exc, phase, response)
