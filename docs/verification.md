@@ -18,9 +18,9 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み | 成功結果を実Noteへ保存しaudit/costで照合する本番受入 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
-| 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexport受入 | 通常scheduleの連続実行受入 |
+| 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexportと通常scheduleの連続実行受入済み | — |
 | Git配布 | bare出版/再実行/競合等15テスト、初回117件公開。一時submoduleの固定/明示更新を検証 | 利用者の実Vault・プラグイン・NTFSは対象外/未検証 |
-| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild | 通常scheduleの連続実行と切戻しの実運用受入 |
+| Web/Pages | Quartz 5.0.0の公開境界24テストと架空/実Noteのbrowser検証。同じ配布commitからbuild。通常schedule受入済み | 切戻しの実運用受入 |
 
 PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はmainです。
 [初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)のbuild/deployが成功し、
@@ -29,7 +29,8 @@ PagesのSourceはGitHub Actions、`github-pages` environmentのdeploy対象はma
 F4/F5/F6と公開競合・通知の回帰を含む全264テストをクラウドで確認しました。
 公開専用run `37434000683`で既存WIFのaudit/export、Git更新、Pages build/deployが成功。
 最新成功版117件の公開manifest bytesと全元Markdown hashをクラウドでも照合しました。
-通常scheduleの初回連続実行は未確認です。[日次公開手順](daily-publication.md)にcommit/digestを記録しています。
+通常scheduleの初回連続実行は2026-10-07に受入済みです。
+工程別の証拠と固定commit/digestは[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)にあります。
 
 ## 実Noteの配布受入
 
