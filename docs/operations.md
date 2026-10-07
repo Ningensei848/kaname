@@ -124,13 +124,22 @@ compact結果を先に永続化してから保存し、usageは専用`record_kin
 
 ### 実Batch受入の事前検査
 
-手動専用`Batch acceptance preflight`（`batch-preflight.yml`）をmainから実行すると、
+`daily.yml`をmainから`batch_preflight=true`で手動実行すると、
 既存WIFと通常収集のwriterロック内で、GCSのaudit・未決済/未計上Batch・未完了standard usageを読み取ります。
+検査専用jobは`contents: read`と`id-token: write`だけを持ち、通常のcollect/publish/pages/notify jobはskipします。
+他の実行モード、verification/diagnostic ID、baseline、collection mode変更、max_callsとの同時指定は認証前に拒否します。
+既存WIFは`daily.yml@refs/heads/main`だけを許可するため、独立workflowからは実行しません。
+
+```bash
+gh workflow run daily.yml --repo Ningensei848/kaname --ref main -f batch_preflight=true
+```
+
 新規提出、Gemini GET、記事取得、GCS書込み、通知、Git更新、Pages deployは行いません。
 出力は件数と判定だけで、本文・台帳ID・object path・費用明細を含みません。
 `ready`でも有料提出の個別承認が必要です。`blocked`/`failed`なら提出せず調査します。
 unknown usageの件数は残り、請求照合完了を意味しません。
-具体的な提出・回収・再実行・費用推計は[#94の準備記録](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)を参照してください。
+具体的な提出・回収・再実行・費用推計は[#94の準備記録](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
+独立workflowの実WIF拒否と修正は[修正記録](archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
 
 ### 既存Batchの読取り診断
 

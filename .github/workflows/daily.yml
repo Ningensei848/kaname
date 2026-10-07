@@ -4,6 +4,10 @@ on:
     - cron: "17 22 * * *"
   workflow_dispatch:
     inputs:
+      batch_preflight:
+        description: 'Read-only Batch acceptance baseline; no Gemini, collection, writes or publication'
+        type: boolean
+        default: false
       publish_only:
         description: 'Audit/export existing Notes and publish without article collection or Gemini calls'
         type: boolean
@@ -32,7 +36,47 @@ on:
 permissions:
   contents: read
 jobs:
+  batch-preflight:
+    if: ${{ inputs.batch_preflight && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: techkb-gcs-single-writer
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-python
+        with:
+          editable: 'true'
+      - name: Validate preflight inputs before authentication
+        env:
+          VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
+          DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+          PUBLISH_ONLY: ${{ inputs.publish_only }}
+          COLLECTION_MODE: ${{ inputs.collection_mode }}
+          MAX_CALLS: ${{ inputs.max_calls }}
+          EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+        run: |
+          if [[ "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+            echo 'Batch preflight cannot be combined with other execution modes or collection overrides.'
+            exit 1
+          fi
+      - uses: google-github-actions/auth@v3
+        id: gcp_auth
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+      - name: Read Batch acceptance baseline without writes
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: python scripts/batch_preflight.py
   collect:
+    if: ${{ !inputs.batch_preflight }}
     permissions:
       contents: read
       id-token: write
@@ -119,14 +163,14 @@ jobs:
           DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
         run: python -m techkb batch-inspect --batch-id "$DIAGNOSTIC_BATCH_ID" --remote
       - name: Cost and notification plan
-        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && !inputs.batch_preflight && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: |
           python -m techkb cost-report
           python -m techkb notify
       - name: Publish necessary notifications
-        if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
+        if: ${{ always() && !inputs.batch_preflight && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -152,7 +196,7 @@ jobs:
           retention-days: 2
   publish:
     needs: collect
-    if: needs.collect.result == 'success' && needs.collect.outputs.ready == 'true'
+    if: ${{ !inputs.batch_preflight && needs.collect.result == 'success' && needs.collect.outputs.ready == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -194,7 +238,7 @@ jobs:
           PY
   pages:
     needs: publish
-    if: needs.publish.result == 'success'
+    if: ${{ !inputs.batch_preflight && needs.publish.result == 'success' }}
     permissions:
       contents: read
       pages: write
@@ -205,7 +249,7 @@ jobs:
       require_tip: true
   notify-publication:
     needs: [collect, publish, pages]
-    if: ${{ always() && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && (needs.collect.result == 'failure' || needs.publish.result == 'failure' || needs.pages.result == 'failure') }}
+    if: ${{ always() && !inputs.batch_preflight && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && (needs.collect.result == 'failure' || needs.publish.result == 'failure' || needs.pages.result == 'failure') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

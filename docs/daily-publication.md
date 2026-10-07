@@ -16,6 +16,15 @@ Git/Pages jobへGemini/GCSのSecretを渡しません。artifactは検証済み�
 日次Pagesは既に後続版へ進んだcommitのdeployを拒否します。手動の履歴版deployは[Pages手順](pages.md)で行います。
 Git更新なしでもPagesを再deployし、前回の公開失敗を再試行できます。
 
+## Batch受入の事前検査
+
+`daily.yml`の手動入力`batch_preflight=true`は、GCSを読む検査専用jobだけを実行します。
+通常collectと同じwriterロックを使い、既存WIFのmain/daily条件内でauditと未決済/未計上を確認します。
+記事取得、Gemini、GCS書込み、通知、export、Git更新、Pagesは実行しません。
+検査jobの権限は`contents: read`と`id-token: write`だけで、Gemini/GitHub書込み用Secretを渡しません。
+他モードや収集overrideとの同時指定は認証前に拒否します。
+`ready`でも有料提出は個別承認後です。詳細は[操作手順](operations.md#実batch受入の事前検査)を参照してください。
+
 ## 公開だけを再実行
 
 ```bash
