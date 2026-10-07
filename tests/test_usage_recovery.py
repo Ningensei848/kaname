@@ -180,6 +180,7 @@ def test_sources_unprocessed_after_durability_failure_do_not_reset(harness):
 
 def test_checkpoint_failure_after_response_uses_final_report_without_double_count(harness, monkeypatch):
     h = harness
+    h.fetcher.pages['https://example.com/b'] = b'<article>Another paid candidate</article>'
     write = h.store.write
     def fail(name, *args):
         if name.startswith('state/standard-usage/') and json.loads(args[0])['pending'] is False:
@@ -188,9 +189,36 @@ def test_checkpoint_failure_after_response_uses_final_report_without_double_coun
     monkeypatch.setattr(h.store, 'write', fail)
     result = h.pipeline.run()
     assert result.status == 'failed' and len(h.sdk.calls) == 1
+    assert result.failures[0]['stage'] == 'usage_save'
+    assert result.failures[0]['error_type'] == 'OSError'
+    assert result.llm_failed == 0 and result.pending_after == 2
+    assert not h.store.list('state/receipts/')
     costs = cost_report(h.store, h.app)
     assert costs['status'] == 'success' and costs['incomplete_standard_runs'] == 0
     assert any(Decimal(v) > 0 for v in costs['daily_usd'].values())
+
+
+def test_paid_call_is_bracketed_by_usage_before_receipt_note_and_index(harness, monkeypatch):
+    h = harness
+    events = []
+    write, generate = h.store.write, h.sdk.generate_content
+    def observed_write(name, *args):
+        write(name, *args)
+        if name.startswith('state/standard-usage/'):
+            events.append('reserve' if json.loads(args[0])['pending'] else 'usage')
+        elif name.startswith('state/receipts/'):
+            events.append('receipt')
+        elif name.startswith('notes/'):
+            events.append('note')
+        elif name.startswith('state/index/'):
+            events.append('index')
+    def observed_generate(**kwargs):
+        events.append('api')
+        return generate(**kwargs)
+    monkeypatch.setattr(h.store, 'write', observed_write)
+    monkeypatch.setattr(h.sdk, 'generate_content', observed_generate)
+    assert h.pipeline.run().saved == 1
+    assert events == ['reserve', 'api', 'usage', 'receipt', 'note', 'index']
 
 
 def test_invalid_checkpoint_counts_are_rejected(harness):

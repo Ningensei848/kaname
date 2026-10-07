@@ -1,6 +1,8 @@
 import json
 import logging
 from .composer import compose
+from ._receipts import build_receipt
+from ._standard import StandardRequest
 from .dedupe import Dedupe
 from .feeds import parse_feed
 from .hashes import raw_hash, content_hash
@@ -142,44 +144,19 @@ class Pipeline:
                     stage = "llm"
                     report.llm_calls += 1
                     attempted_content.add(ch)
-                    stage = "usage_reserve"
+                    request = StandardRequest(self.store, self.gemini, report)
                     try:
-                        checkpoint(self.store, report, pending=True)
-                    except Exception:
-                        report.llm_calls -= 1  # No API request was made.
-                        raise
-                    stage = "llm"
-                    attempts_before = self.gemini.attempts
-                    try:
-                        enrichment = self.gemini.enrich({"title": candidate.title[:1000], "source": source.name,
-                                                        "authors": authors,
-                                                        "published_at": candidate.published_at,
-                                                        "llm_input_truncated": truncated}, markdown)
+                        enrichment, usage = request.enrich(candidate, source, markdown, truncated, authors)
                     finally:
-                        usage = self.gemini.last_usage
-                        report.total_input_tokens += usage.input_tokens
-                        report.total_output_tokens += usage.output_tokens
-                        report.total_thinking_tokens += usage.thinking_tokens
-                        report.llm_http_attempts += self.gemini.attempts - attempts_before
-                        if not self.gemini.last_usage_available or self.gemini.attempts - attempts_before > 1:
-                            report.llm_usage_unavailable += 1
-                        stage = "usage_save"
-                        checkpoint(self.store, report, pending=False)
-                        stage = "llm"
-                    report.llm_processed += 1
+                        # Keep the original exception type and storage-failure stage.
+                        stage = request.stage
                     log.info("LLM success")
                     stage = "compose"
                     fetched_at = now()
-                    note_object, note = compose(candidate, source, enrichment, markdown, canon, fetched_at,
-                                                rh, ch, self.app.llm.model, truncated, authors,
-                                                input_char_limit=self.app.llm.max_input_chars)
-                    row = dict(processed_at=fetched_at, source_id=source.id, source_url=candidate.url,
-                               canonical_url=canon, published_at=candidate.published_at, raw_html_sha256=rh,
-                               content_sha256=ch, status="success", note_object=note_object,
-                               llm_model=self.app.llm.model, input_tokens=usage.input_tokens,
-                               output_tokens=usage.output_tokens, thinking_tokens=usage.thinking_tokens,
-                               llm_input_truncated=str(truncated).lower())
-                    receipt = {"row": row, "note": note, "usage_run_id": report.run_id}
+                    receipt = build_receipt(candidate, source, enrichment, markdown, canon, fetched_at,
+                                            rh, ch, self.app.llm.model, truncated, authors, usage,
+                                            input_char_limit=self.app.llm.max_input_chars,
+                                            usage_run_id=report.run_id, compose_note=compose)
                     stage = "receipt_save"
                     self.store.write(f"state/receipts/{ch}.json", json.dumps(receipt, ensure_ascii=False).encode("utf-8"), "application/json")
                     stage = "note_or_index_save"

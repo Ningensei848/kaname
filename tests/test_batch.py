@@ -1,6 +1,7 @@
 import json
 from types import SimpleNamespace as NS
 import httpx
+import pytest
 from google.genai import errors
 from techkb.operations import cost_report
 from techkb.audit import audit_state, audit_run
@@ -117,3 +118,39 @@ def test_definitive_batch_rejection_does_not_block_standard_collection(harness):
     h.app.llm.mode='standard'
     assert h.pipeline.run().saved==1
     assert len(sdk.created)==1 and len(h.sdk.calls)==1
+
+
+@pytest.mark.parametrize('limit', [5, 10000])
+def test_standard_and_batch_preserve_note_bytes_and_receipt_schema(harness, monkeypatch, limit):
+    h = harness
+    instant = '2026-09-30T23:59:59+00:00'
+    monkeypatch.setattr('techkb.pipeline.now', lambda: instant)
+    monkeypatch.setattr('techkb.batch.now', lambda: instant)
+    h.app.llm.max_input_chars = limit
+    h.fetcher.pages['https://example.com/a'] = (
+        b'<html><head><meta name="author" content="Alice Example"></head>'
+        b'<body><article><p>Original text with several words</p></article></body></html>'
+    )
+    assert h.pipeline.run().saved == 1
+    standard_receipt = json.loads(h.store.read(h.store.list('state/receipts/')[0]))
+    standard_note = h.store.read(standard_receipt['row']['note_object'])
+    h.store.data.clear()
+    h.store.writes.clear()
+
+    sdk = setup(h)
+    assert h.pipeline.run().batch_submitted == 1
+    sdk.finish()
+    # A polled result must use its submitted model and input limit.
+    h.app.llm.model = 'changed-after-submission'
+    h.app.llm.max_input_chars = 1
+    assert h.pipeline.run().batch_saved == 1
+    batch_receipt = json.loads(h.store.read(h.store.list('state/receipts/')[0]))
+    assert set(standard_receipt) == set(batch_receipt) == {'row', 'note', 'usage_run_id'}
+    assert standard_receipt['row'] == batch_receipt['row']
+    assert standard_receipt['note'] == batch_receipt['note']
+    assert h.store.read(batch_receipt['row']['note_object']) == standard_note
+    assert '- Word count: 5' in batch_receipt['note']
+    billed = [json.loads(h.store.read(name)) for name in h.store.list('runs/')
+              if json.loads(h.store.read(name))['record_kind'] == 'batch_usage']
+    assert len(billed) == 1 and batch_receipt['usage_run_id'] == billed[0]['run_id']
+    assert len(sdk.created) == len(h.sdk.calls) == 1
