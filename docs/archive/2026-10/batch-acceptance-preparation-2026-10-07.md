@@ -1,5 +1,9 @@
 # #94: 実Batch受入の準備
 
+> 追記: この準備時点の独立workflowは、実WIFでdaily/main限定条件に拒否された。
+> [修正記録](batch-preflight-workflow-fix-2026-10-08.md)と[現行操作手順](../../operations.md#実batch受入の事前検査)を参照。
+> 下記の独立workflow起動案は現在の操作手順として使わない。新規有料提出は引き続き未承認・未実施。
+
 基点はR5取込後のmain `73281c78bfe314e64165eb7df632f29a05e87da6`。
 R2 #111とR1〜R5は取込済み。実Batch受入は未完了で、新規有料提出の個別承認はまだ得ていない。
 本記録の作成ではGemini呼出し、GCS書込み、新規提出、deployを行っていない。

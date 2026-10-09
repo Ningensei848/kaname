@@ -10,6 +10,7 @@
 |---|---|
 | [検証記録](2026-10/verification.md) | Phase 1受入、日次/手動run、Batch GET診断、PR #97/#98検証 |
 | [Batch受入の準備](2026-10/batch-acceptance-preparation-2026-10-07.md) | #94の読取り専用事前検査、1件提出案、費用推計、保存/費用/再実行の照合条件 |
+| [Batch事前検査のworkflow修正](2026-10/batch-preflight-workflow-fix-2026-10-08.md) | 実WIFのdaily/main限定拒否、IAMを変えない専用jobへの移設、副作用境界の回帰 |
 | [全体レビュー](2026-10/project-review-2026-10-04.md) | 固定commit、指摘のfile/line、条件、影響、再現、最小修正案 |
 | [レビュー再現ケース](2026-10/review-reproductions-2026-10-04.py) | 手動実行用のoffline再現。通常passing suiteとは別 |
 | [対処計画](2026-10/review-remediation-2026-10-04.md) | 新要求前の修正順と進捗 |
