@@ -1,56 +1,56 @@
 ---
-title: アングルがすべて：写真の構図を再構築する新しい画像編集手法
+title: アングルを変える新しい写真編集：Googleフォトの自動フレーム機能で写真を再構成する
 title_original: 'It''s all about the angle: Your photos, re-composed'
 source: https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/
 publisher: Google Research
 author: []
 published: '2026-04-22'
-created: '2026-10-02'
-description: Google Researchが発表した新しい画像編集手法は、撮影後に写真の視点を変更し、自然な構図に再構築することを可能にします。この手法は、Google
-  Photosの「Auto frame」機能に統合されています。従来の切り抜きやズームとは異なり、単一の2D写真を3Dシーンとして解釈し、3Dポイントマップ推定モデルと生成AIモデル（潜在拡散モデル）を組み合わせることで、カメラの位置や姿勢、焦点距離を調整します。これにより、写っていなかった背景の補完や、広角レンズによる顔の歪みの補正を自動で行い、被写体の比率を自然に保った新しい視点を提供します。本機能はGoogle
-  DeepMindとGoogle Platforms & Devicesの共同チームによって開発されました。
+created: '2026-10-09'
+description: Googleの研究チームは、撮影後の写真の視点やアングルを再構築して再構成する新しい画像編集アプローチを発表し、Googleフォトの自動フレーム（Auto
+  frame）機能に導入した。この手法は、従来のトリミングやズームと異なり、2Dの写真を3Dシーンとして解釈する。まず3Dポイントマップ推定モデルを用いてシーンの幾何学的形状、被写体の顔や身体、元のカメラの焦点距離を推定する。次に、古典的な3Dレンダリングによりカメラの姿勢や焦点距離を調整して新しい視点を生成し、隠れていた背景領域を生成型潜在拡散モデル（Latent
+  Diffusion Model）で補完・修復する。さらに、機械学習モデルによって被写体の顔の位置や向き、広角レンズ特有のパースペクティブ歪みを検出し、自動で自然で魅力的なプロ
+  proporción に補正する。これにより、人物を含む写真をワンアクションで自然に再構成し、撮影後にカメラ位置を引いたような効果を実現している。
 tags:
 - clippings
 - research
 - Google-Photos
 - Generative-AI
-- 3D-Scene-Estimation
-- Latent-Diffusion-Model
+- 3D-Computer-Vision
+- Latent-Diffusion-Models
 - Image-Editing
-- Computer-Vision
+- Camera-Calibration
 canonical_url: https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/
 source_language: en
 category: ai-llm
 ai_model: gemini-3.5-flash-lite
-raw_html_sha256: c15065b5a11441b3b5232ed42d084e1451420fd571961e4dc44292133c8f1475
-content_sha256: 8e567bfac6f1a9e0768dc8927e7c38eabf1709a30e1160a324734fe99d7eab15
+raw_html_sha256: dbe15f9fd55108ee6b9529cf63c2f531687e0389489b83676c7b3957fb6445a5
+content_sha256: 9338686172c67d092ad722b47d6bfb12d775e05aefdf3b761e8fd751da24a397
 llm_input_truncated: false
 llm_input_max_chars: 20000
 ---
 
-# アングルがすべて：写真の構図を再構築する新しい画像編集手法
+# アングルを変える新しい写真編集：Googleフォトの自動フレーム機能で写真を再構成する
 
 > [!abstract] AI要約
-> Google Researchが発表した新しい画像編集手法は、撮影後に写真の視点を変更し、自然な構図に再構築することを可能にします。この手法は、Google Photosの「Auto frame」機能に統合されています。従来の切り抜きやズームとは異なり、単一の2D写真を3Dシーンとして解釈し、3Dポイントマップ推定モデルと生成AIモデル（潜在拡散モデル）を組み合わせることで、カメラの位置や姿勢、焦点距離を調整します。これにより、写っていなかった背景の補完や、広角レンズによる顔の歪みの補正を自動で行い、被写体の比率を自然に保った新しい視点を提供します。本機能はGoogle DeepMindとGoogle Platforms & Devicesの共同チームによって開発されました。
+> Googleの研究チームは、撮影後の写真の視点やアングルを再構築して再構成する新しい画像編集アプローチを発表し、Googleフォトの自動フレーム（Auto frame）機能に導入した。この手法は、従来のトリミングやズームと異なり、2Dの写真を3Dシーンとして解釈する。まず3Dポイントマップ推定モデルを用いてシーンの幾何学的形状、被写体の顔や身体、元のカメラの焦点距離を推定する。次に、古典的な3Dレンダリングによりカメラの姿勢や焦点距離を調整して新しい視点を生成し、隠れていた背景領域を生成型潜在拡散モデル（Latent Diffusion Model）で補完・修復する。さらに、機械学習モデルによって被写体の顔の位置や向き、広角レンズ特有のパースペクティブ歪みを検出し、自動で自然で魅力的なプロ proporción に補正する。これにより、人物を含む写真をワンアクションで自然に再構成し、撮影後にカメラ位置を引いたような効果を実現している。
 
 ## 重要ポイント
 
-- 撮影済みの2D写真を3Dシーンとして解釈し、カメラのパラメータ（位置、姿勢、焦点距離）を動的に変更して視点を修正する。
-- 3Dポイントマップ推定モデルにより、顔や体の形状を正確に再構築し、アイデンティティの保存や歪みの補正を行う。
-- 生成AIの潜在拡散モデルを活用し、視点移動によって生じた背景の欠損部分を自然に補完する。
-- Google Photosの「Auto frame」機能に統合され、ユーザーはワンアクションで最適な構図の写真を得ることができる。
+- Googleフォトの自動フレーム機能に、撮影後の視点やアングルを3Dベースで再構成する新しい画像編集アプローチが導入された
+- 2段階の処理を採用し、第1段階で3Dポイントマップ推定とカメラパラメータの調整を行い、第2段階で生成型潜在拡散モデルを用いて隠れた背景を補完する
+- 広角レンズ特有のパースペクティブ歪みを自動検出し、自然なプロポーションに補正することでポートレートを最適化する
 
 ## 検索キーワード
 
 - [[Google Photos]]
 - [[Google DeepMind]]
-- [[Auto frame]]
 - [[Latent Diffusion Model]]
-- [[3D Point Map Estimation]]
+- [[Camera Resectioning]]
+- [[Auto frame]]
 
 ## 資料の位置づけ
 
-本資料は、Google Researchが開発しGoogle Photosに導入された、3D認識と生成AIを組み合わせた新しい画像編集・再構成技術について解説した公式ブログ記事です。画像編集における従来の2D的な切り抜きやズームの限界を克服し、撮影後のアングル変更や歪み補正を実現する仕組みを技術的に理解したい場面で参照価値があります。
+本資料は、Google ResearchおよびGoogle DeepMindが開発した、Googleフォト向けの3D認識・生成AIを活用した新しい画像編集技術について解説した公式ブログ記事である。従来の切り抜きや拡大では対応できなかった撮影アングルの変更やパースペクティブ歪みの補正を、単一の写真から自動で行う技術的背景とその仕組みを学ぶことができる。画像処理、コンピュータビジョン、および生成AIを活用したコンシュー向け機能の実現に関心のある読者にとって参照価値が高い。
 
 ---
 
@@ -60,9 +60,9 @@ llm_input_max_chars: 20000
 - Publisher/Site: Google Research
 - Author: （取得なし）
 - Published: 2026-04-22
-- Clipped: 2026-10-02
+- Clipped: 2026-10-09
 - Domain: research.google
 - Original URL: `https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/`
 - Original language: en
-- Word count: 2284
+- Word count: 2296
 - AI model: gemini-3.5-flash-lite
