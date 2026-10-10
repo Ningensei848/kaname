@@ -9,7 +9,7 @@ from urllib.parse import urljoin, urlsplit
 from playwright.sync_api import sync_playwright, expect
 
 from serve import WEB, server
-from techkb.site import load_artifact
+from kaname_web.artifact import load_artifact
 from techkb.publication import sha256
 from image_acceptance import approved_images, image_guard, check_images
 

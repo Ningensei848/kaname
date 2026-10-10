@@ -6,6 +6,20 @@
 Git配布/Web buildは実装・実Note受入済み、Pages deploy workflowと初回実deployの受入も完了しています。[Pages手順](pages.md)を参照してください。既存syncをsubmodule更新として使いません。
 設定・副作用を確認して操作し、既存日次writerとGCS更新を重ねないでください。
 
+## GCS障害と公開の復旧
+
+GCSへの認証・読取り・保存・exportに失敗したrunは失敗として扱い、Git/Pagesの新規更新へ進みません。
+保存の耐久性を失った後は追加有料処理を止めます。以前の公開Git版と成功したPagesは維持されます。
+保存失敗を警告だけに変えて新規収集を継続する経路や、ローカル代替保存はありません。
+
+1. Actionsのstageと固定error codeを確認し、GCS認証・通信・世代競合の原因を解消します。同じbucketのwriterを重ねません。
+2. GCS復旧後は`python -m techkb audit-state`で保存状態を確認します。receipt/usageの回収が必要な場合は、通常writerと重ならない時間に`python -m techkb run --max-calls 0`を使います。この操作にはHTTP通信、GCS更新と既存Batchの照合・回収があり、新規の有料提出はありません。
+3. 保存状態が正常になったら[日次公開の公開専用再実行](daily-publication.md#公開だけを再実行)でaudit/export/Git/Pagesへ進めます。これはGCS読取りが必要です。
+4. GCS停止中に公開済みGit版を再build/deployする場合は、[Pages手順](pages.md)の固定`content_commit`を使います。この経路はGCS、記事取得、Geminiを使いません。ローカルbuild/検証と本番deployは別の操作です。
+
+不完全な出力を完成版として再利用せず、新しい出力先で再実行します。成功版や曖昧なBatch予約を自動削除しません。
+Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
+
 ## 取得・本文・フィルタ
 
 既存sourceの既定はRSS/HTTP・全HTML変換です。新機能はsourceごとに選択します。
@@ -125,6 +139,7 @@ compact結果を先に永続化してから保存し、usageは専用`record_kin
 ### 実Batch受入の事前検査
 
 `daily.yml`をmainから`batch_preflight=true`で手動実行すると、
+判定は`techkb.batch.preflight(store, app)`へ集約し、既存スクリプトは薄い入口として使用します。
 既存WIFと通常収集のwriterロック内で、GCSのaudit・未決済/未計上Batch・未完了standard usageを読み取ります。
 検査専用jobは`contents: read`と`id-token: write`だけを持ち、通常のcollect/publish/pages/notify jobはskipします。
 他の実行モード、verification/diagnostic ID、baseline、collection mode変更、max_callsとの同時指定は認証前に拒否します。

@@ -3,10 +3,12 @@ import json
 import pytest
 import yaml
 
-from techkb.images import article_images, image_url, image_block
+from techkb.images import article_images, image_url
+from techkb.composer import image_block
 from techkb.publication import export_notes, ExportError
 from techkb.state import State
-from techkb.site import load_snapshot, finish_html
+from techkb.publication.snapshot import load_snapshot
+from kaname_web.artifact import finish_html
 from bs4 import BeautifulSoup
 from test_batch import setup
 

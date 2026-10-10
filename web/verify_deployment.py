@@ -1,33 +1,15 @@
-"""Verify the served Pages version and original Note bytes; stdlib only."""
+"""CLI for served Pages verification; no package installation is needed."""
 import argparse
-import hashlib
 import json
-import re
 import sys
 from pathlib import Path
-from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
 
 
-# The checkout includes this stdlib-only module; no package install is needed.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from techkb._web_validation import sha256 as digest, valid_deployment_version, verify_pages_bytes
-
-
-def verify(url, commit, dataset, artifact, notes):
-    address = urlsplit(url)
-    if (address.scheme != 'https' and not (address.scheme == 'http' and address.hostname == '127.0.0.1')) or address.username or address.password:
-        raise ValueError('invalid_pages_url')
-    if not valid_deployment_version(commit, dataset, artifact):
-        raise ValueError('invalid_pages_version')
-    def get(name):
-        request = Request(url.rstrip('/') + '/' + name, headers={'Cache-Control': 'no-cache'})
-        with urlopen(request, timeout=20) as response:
-            data = response.read(20 * 1024 * 1024 + 1)
-            if len(data) > 20 * 1024 * 1024:
-                raise ValueError('oversized_pages_response')
-            return data
-    return verify_pages_bytes(get, commit, dataset, artifact, notes)
+# Explicit paths also support python -I -S, without site-packages/PYTHONPATH.
+WEB = Path(__file__).resolve().parent
+sys.path.insert(0, str(WEB.parent / "src"))
+sys.path.insert(0, str(WEB))
+from kaname_web.deployment import verify
 
 
 if __name__ == '__main__':

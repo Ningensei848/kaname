@@ -1,4 +1,4 @@
-"""Article image candidates and deterministic placement; never fetch image bytes."""
+"""Article image candidates and selection validation; never fetch image bytes."""
 import ipaddress
 import re
 from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
@@ -95,35 +95,3 @@ def selected_images(enrichment, candidates):
                            alt=candidate["alt"], after=selection.after))
         seen.add(selection.image_id)
     return result
-
-
-def image_block(image):
-    from .composer import inline
-    return "\n\n![" + inline(image["alt"]) + "](<" + image["url"] + ">)"
-
-
-def place_images(body, images):
-    groups = {}
-    for image in images:
-        groups.setdefault(image["after"], []).append(image_block(image))
-    # Resolve boundaries from compact section markers after every insertion.
-    for after, blocks in reversed(list(groups.items())):
-        if after == "summary":
-            offset = body.index("\n\n## 重要ポイント\n\n")
-        elif after == "positioning":
-            offset = body.index("\n\n---\n\n## 出典情報\n\n")
-        else:
-            start = body.index("## 重要ポイント\n\n") + len("## 重要ポイント\n\n")
-            points = body[start:].split("\n\n## 検索キーワード", 1)[0]
-            count, offset = 0, start
-            for line in points.splitlines(keepends=True):
-                if line.startswith("- "):
-                    count += 1
-                    if count == int(after[-1]):
-                        offset += len(line.rstrip("\n"))
-                        break
-                offset += len(line)
-            else:
-                raise ValueError("invalid_image_selection")
-        body = body[:offset] + "".join(blocks) + body[offset:]
-    return body

@@ -11,7 +11,8 @@ import yaml
 WEB = Path(__file__).resolve().parent
 sys.path.insert(0, str(WEB.parent / "src"))
 from techkb.publication import ExportError, json_bytes, reject_symlinks
-from techkb.site import load_snapshot, project_content, seal_artifact, install_artifact
+from techkb.site import load_snapshot, project_content
+from kaname_web.artifact import seal_artifact, install_artifact
 
 
 def build(snapshot, output=None, fixture=False, content_commit=None):
@@ -76,10 +77,11 @@ if __name__ == "__main__":
     parser.add_argument("--snapshot", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--content-commit")
+    parser.add_argument("--fixture", action="store_true", help="Mark a supplied synthetic snapshot as preview-only")
     args = parser.parse_args()
     try:
         result = build(args.snapshot or WEB / ".cache/fixture-snapshot", args.output,
-            fixture=args.snapshot is None, content_commit=args.content_commit)
+            fixture=args.fixture or args.snapshot is None, content_commit=args.content_commit)
         print(json.dumps(result, ensure_ascii=False))
     except ExportError as exc:
         print(json.dumps(dict(status="failed", error=str(exc))), file=sys.stderr); sys.exit(1)

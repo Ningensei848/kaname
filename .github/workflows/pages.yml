@@ -70,8 +70,8 @@ jobs:
           CONTENT_COMMIT: ${{ steps.content.outputs.commit }}
         run: |
           set -euo pipefail
-          python build_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact > .cache/pages-result.json
-          python check_pages.py --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
+          npm --silent run build:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact > .cache/pages-result.json
+          npm --silent run check:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
           python - <<'PY'
           import json, os
           from pathlib import Path
@@ -115,6 +115,9 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.15.0'
       - name: Deploy the verified artifact
         id: deployment
         uses: actions/deploy-pages@v4
@@ -129,7 +132,7 @@ jobs:
           set -euo pipefail
           # Retry CDN propagation without invoking collection or another build.
           for attempt in $(seq 1 12); do
-            if python3 web/verify_deployment.py --url "$PAGE_URL" --content-commit "$CONTENT_COMMIT" \
+            if npm --prefix web --silent run verify:deployment -- --url "$PAGE_URL" --content-commit "$CONTENT_COMMIT" \
               --dataset-digest "$DATASET_DIGEST" --artifact-digest "$ARTIFACT_DIGEST" --notes "$NOTE_COUNT"; then
               echo "Verified Pages commit $CONTENT_COMMIT and $NOTE_COUNT original Notes" >> "$GITHUB_STEP_SUMMARY"
               exit 0

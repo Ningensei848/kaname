@@ -5,11 +5,11 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 
-from ._publication_common import (ExportError, PUBLIC_README, sha256, json_bytes,
-                                  object_path, reject_symlinks)
-from ._public_note import note_frontmatter, validate_note, instant
-from .normalize import normalize_url
-from .state import INDEX_COLUMNS, decode_tsv
+from .common import (ExportError, PUBLIC_README, sha256, json_bytes,
+                                  object_path, reject_symlinks, PUBLIC_ATTRIBUTES, digest_matches, digest_value)
+from .note import note_frontmatter, validate_note, instant
+from ..normalize import normalize_url
+from ..state import INDEX_COLUMNS, decode_tsv
 
 
 class ExportDirectorySnapshot:
@@ -143,3 +143,86 @@ def snapshot_files(store, tracking=(), categories=None, exclude_ids=()):
     files["manifest.json"] = json_bytes(dict(schema_version=1, dataset_digest=digest, notes=entries))
     reader.verify(names)
     return files, digest
+
+
+ENTRY_FIELDS = {"id", "path", "sha256", "source_id", "canonical_url", "title", "category",
+                "processed_at", "published", "llm_input_truncated"}
+
+
+def unique_json(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ExportError("duplicate_json_key")
+        result[key] = value
+    return result
+
+
+def load_snapshot(root, tracking=()):
+    reader = ExportDirectorySnapshot(root)
+    for child in reader.root.iterdir():
+        # A content checkout's Git metadata is never read or rendered.
+        if child.name == ".git":
+            continue
+        reject_symlinks(child)
+        if child.name == ".gitattributes":
+            if reader.read(child.name) != PUBLIC_ATTRIBUTES:
+                raise ExportError("invalid_distribution_attributes")
+            continue
+        if child.name not in {"README.md", "manifest.json", "notes"}:
+            raise ExportError("unexpected_snapshot_file")
+    raw = reader.read("manifest.json")
+    if raw is None:
+        raise ExportError("missing_manifest")
+    try:
+        manifest = json.loads(raw, object_pairs_hook=unique_json)
+    except (ValueError, UnicodeError):
+        raise ExportError("invalid_manifest") from None
+    if (not isinstance(manifest, dict) or set(manifest) != {"schema_version", "dataset_digest", "notes"} or
+            type(manifest["schema_version"]) is not int or manifest["schema_version"] != 1 or
+            not isinstance(manifest["notes"], list) or not digest_value(manifest["dataset_digest"])):
+        raise ExportError("invalid_manifest")
+    files, metadata, ids = {"manifest.json": raw}, {}, []
+    for entry in manifest["notes"]:
+        if (not isinstance(entry, dict) or set(entry) != ENTRY_FIELDS or
+                not digest_value(entry["id"]) or not digest_value(entry["sha256"]) or
+                entry["path"] != f"notes/{entry['id']}.md" or
+                any(not isinstance(entry[k], str) for k in ("source_id", "canonical_url", "title", "category", "processed_at")) or
+                not re.fullmatch(r"[A-Za-z0-9_-]+", entry["source_id"]) or
+                (entry["published"] is not None and not isinstance(entry["published"], str)) or
+                type(entry["llm_input_truncated"]) is not bool):
+            raise ExportError("invalid_manifest_entry")
+        instant(entry["processed_at"])
+        canonical = normalize_url(entry["canonical_url"], tracking)
+        identity = json.dumps([entry["source_id"], canonical], ensure_ascii=False, separators=(",", ":")).encode()
+        if canonical != entry["canonical_url"] or sha256(identity) != entry["id"]:
+            raise ExportError("note_identity_mismatch")
+        data = reader.read(entry["path"])
+        if data is None or not digest_matches(data, entry["sha256"]):
+            raise ExportError("public_note_hash_mismatch")
+        _, _, meta = note_frontmatter(data)
+        if any(not digest_value(meta.get(k)) for k in ("raw_html_sha256", "content_sha256")):
+            raise ExportError("invalid_note_hash")
+        row = dict(processed_at=entry["processed_at"], source_url=meta.get("source", ""),
+                   canonical_url=entry["canonical_url"], published_at=entry["published"] or "",
+                   raw_html_sha256=meta["raw_html_sha256"], content_sha256=meta["content_sha256"],
+                   llm_model=meta.get("ai_model", ""), llm_input_truncated=str(entry["llm_input_truncated"]).lower())
+        validate_note(data, row, tracking, None)
+        if any(entry[k] != meta[k] for k in ("title", "category", "published", "llm_input_truncated")):
+            raise ExportError("manifest_note_mismatch")
+        ids.append(entry["id"])
+        files[entry["path"]] = data
+        metadata[entry["id"]] = meta
+    if ids != sorted(set(ids)):
+        raise ExportError("unsorted_or_duplicate_note_ids")
+    pairs = [[e["id"], e["sha256"]] for e in manifest["notes"]]
+    if sha256(json_bytes(pairs)) != manifest["dataset_digest"]:
+        raise ExportError("dataset_digest_mismatch")
+    expected = set(files) - {"manifest.json"}
+    if set(reader.list("notes/")) != expected:
+        raise ExportError("unexpected_snapshot_file")
+    if any(reader.read(name) != data for name, data in files.items()):
+        raise ExportError("snapshot_changed")
+    if set(reader.list("notes/")) != expected:
+        raise ExportError("snapshot_changed")
+    return manifest, files, metadata

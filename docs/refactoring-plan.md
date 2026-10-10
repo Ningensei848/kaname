@@ -1,76 +1,50 @@
-# 公開基盤のリファクタリング計画
+# 公開基盤の責務整理
 
-今回の標準経路（HTTP/standard収集→audit→Git配布→Pages）の実装と公開専用受入は完了しています。
-通常scheduleの初回連続実行と履歴版への実切戻し/復帰は運用受入を完了しました。実Batchの成功保存は独立した運用受入として残っています。
-F3も通信前のhost検査へ修正済みです。以下を小さいPRで順に進めます。並列収集・source health・graph品質改善は機能追加であり、この計画とは分けます。
+今回のゴールは、Batch事前検証・画像組立・公開snapshot・Web成果物の責務を分離し、
+既存の保存・復旧・公開契約を維持してローカル実装・検証とレビュー可能な差分の提示まで完了することです。
+実装とローカル回帰検証は完了しました。追加承認に基づき、PR作成・CI確認・マージと
+最新の固定content commitからのPages本番更新・配信版照合へ進みます。
+実環境のBatch preflightは読取り専用で実施し、新規の有料収集・Batch提出は行いません。
+検証済み範囲の正本は[検証・受入](verification.md)です。
 
-## 維持する契約
+## 採用する変更
 
-CLI名・引数、既存GCS object path/receipt/index、Note bytes・安定ID・dataset digest、content履歴とPages URLを維持します。
-API前後のusage保存順序、receipt→Note→indexの復旧順序、non-force push、公開前の世代/bytes検査を維持します。
-リファクタリングで追加のGemini呼出し、依存更新、IAM/Secret変更、本番stateの移行を行いません。
-
-| 順番 | 対象と変更 | 完了条件 |
+| 順序 | 領域 | 変更 |
 |---|---|---|
-| 1 | `operations.py`の費用集計と通知を分離。usage journal読取り・reportとの統合・価格計算を独立した関数へ抽出 | 月跨ぎ、元価格、partial、report優先、二重計上防止、閉じたIssueの重複抑止テストが維持される。既存import/CLI出力は互換 |
-| 2 | `pipeline.py`のstandard呼出し/usage保存とreceipt作成を抽出。Batchでも共通のNote/row作成処理を利用 | 中断・保存失敗の障害注入テストと既存Note bytesが一致。durabilityが失われた後の有料処理0、回収時の追加API0 |
-| 3 | `publication.py`の公開Note検証、整合読取り、snapshotの原子的installを分離 | 旧compact形式を含む同一入力の全Note bytes/manifest/digest一致。不完全読取り・余計なfile・symlinkの拒否を維持 |
-| 4 | `site.py`/`web`の版情報とartifact検査の重複を共通化。network検査と純粋な検証を分離 | 架空Noteと固定実contentの検索/リンク/画面幅検査、公開元Markdown hash一致、外部resource要求0が維持される |
-| 5 | CLIの依存生成と終了コード処理を整理。workflowの同じ準備処理は権限境界を保てるものだけ共通化 | 全CLI回帰、actionlint、同じ公開版のローカルbuildが成功。WIF・Git書込み・Pages・Issueのjob権限を維持 |
+| 1 | Batch | `techkb.batch.preflight(store, app)`へ読取り専用検査を集約。既存スクリプトは設定・クライアント・出力・後始末だけを担当 |
+| 2 | 画像 | URL検査・候補抽出・選択照合は`images`、Markdown画像組立・配置は`composer`へ分離 |
+| 3 | 公開 | `techkb.publication`を共通契約・Note検証・snapshot読取り/配置・Git snapshot照合に分割。従来の公開importを維持 |
+| 4 | Web | HTML後処理・成果物検査/配置・Pages準備・配信後検証を`web/kaname_web`へ集約。npmタスクを共通入口にする |
+| 5 | 文書 | 現行仕様と操作・検証の正本を整理。完了済み計画と受入証拠はarchiveへ保存 |
 
-最初はPR 1だけを実施し、差分が小さくレビューできる単位で進めます。全体を書き直すPRや、改名だけの大規模変更は行いません。
-テストは実装の形ではなく既存の入出力・副作用・復旧を判定し、抽出先をなぞるだけのテストは追加しません。
+Python/Webの境界と受渡しは[仕様書](specification.md#pythonとwebの境界)、
+公開snapshotの正確な契約は[公開・配布](publication.md)を参照してください。
+CLI専用・standard専用の内部モジュールは、その名前だけを理由に移動しません。
 
-## 実施・検証の手順
+## 維持する契約と判断
 
-1. 各PRの対象モジュールと既存の契約テストを列挙し、変更前の結果を記録する。
-2. 処理の順序を変えずに抽出し、既存の公開importには互換入口を残す。
-3. 対象テストと必要な全体回帰を実行。公開コードを変更するPRでは固定contentのartifact受入も行う。
-4. CI成功後に取り込み。追加の実deployは公開挙動に変更がある場合に限る。
+CLI名・既存引数・JSON、GCS object path、index/receipt、Note bytes・安定ID・manifest schema・
+dataset digest、content履歴、Pages URLを維持します。Python/Webの内部関数のimport先は責務に合わせて更新します。
+公開パッケージは重い依存を遅延読込みし、配信後検証の`python -I -S`実行を保ちます。
 
-## 先に確認する運用事項
+画像は出典HTTPS URLの直接表示を続けます。画像取得・キャッシュ・GCS保存・相対パスfallbackは追加しません。
+GCS障害時は公開済みGit/Pagesを維持し、新規公開更新は失敗として扱います。
+usageのAPI前後保存、receiptからの復旧、世代/bytes照合、最後に書く完了manifestを保ちます。
+元記事の再取得を理由に、生成Noteや課金・Batch提出状態の保全を撤去しません。
 
-- 次の通常scheduleで収集・usage保存・audit・Git・Pagesが連続成功すること。失敗時はstageの原因を修正してから次のPRへ進む。
-- 実Batch受入には追加有料提出の計画が必要。今回のリファクタリングで自動実行しない。
-- invoice照合、利用者Vault/NTFS、実切戻しはそれぞれ独立した受入として扱う。
+## 完了条件
 
+全Python回帰、設定、Web依存監査、workflow静的検証、画像付きfixtureと固定実contentの
+Quartz/Chromium受入が成功すること。元Markdown・版/hash照合、検索・内部リンク・画面幅・画像・
+想定外通信の検査、保存失敗後の停止/復旧、GCS/export失敗時の公開停止を維持すること。
+各段階の検証後に次へ進み、現行文書が実装した挙動を説明し、
+レビュー可能な差分とローカル検証結果を提示して完了とします。
+依存更新、有料提出、既存Note再生成、本番state/IAM移行は行いません。
 
-## タスク一覧と実施順
+## 完了済みの旧計画
 
-| ID | Issue | 開始条件 |
-|---|---|---|
-| T0 | #108 | なし |
-| O1 | #109 | #108 |
-| R1 | #110 | #108 |
-| R2 | #111 | #110、#109 |
-| R3 | #112 | #111 |
-| R4 | #113 | #112 |
-| R5 | #114 | #113 |
-| O2 | #115 | #109、個別実行承認 |
-| O3 | #116 | #109、確定請求明細 |
-| Batch受入 | #94 | #111、新規提出の個別承認 |
+T0、R1〜R5、通常scheduleとPages切戻し/復帰は以前に完了しています。
+当時の着手指示と進捗は[旧R1〜R5計画](archive/2026-10/refactoring-plan-r1-r5.md)に保存しました。
+実Batchの成功保存と請求照合などの後続は[次の作業](next-work.md)へ分けます。
 
-実装順: #110 → #111 → #112 → #113 → #114。最初の実装はR1のみ。T0のローカル検証完了をR1着手の前提とする。O1 #109 成功をR2着手の条件とする。
-
-O1はR1の準備と並行可。O2/#94/O3は別々に受入判定する。
-
-## デスクトップ引継ぎの状態（2026-10-06）
-
-計画の9件の新規Issueを登録し、Batch受入は既存#94を更新しました。Issueは完了条件と依存関係を持ちますが、作成だけで実装・受入済みとは扱いません。
-
-T0のローカル検証は完了しました。承認されたコマンド実行経路でWSL内のrepoを確認し、未管理HANDOFF.mdを保持して最新mainを取得しました。Python 3.12の隔離venv・Node 24・既存lockで全270テストと架空/実contentのWeb受入に成功。通常のsandbox実行経路は依然起動できないため、利用できた経路と制約を引継ぎ記録に残します。次の実装対象はR1 #110であり、R2以降は従来の依存条件を維持します。
-
-- 通常scheduleは既存の自然な実行を確認し、新しいautomationや停止済みheartbeatの再開は行いません。
-- O2は両版のローカルbuildを済ませ、切戻し先・復帰先・期待digestを固定してから個別承認を得ます。
-- #94の追加提出は最大1件の具体的な手順と費用見積を準備してから個別承認を得ます。
-- 利用者Vault/Windows・NTFSとbrowser source実受入は対象指定後の後続です。並列収集・source health・回帰corpus・graph品質は既存バックログに残します。
-
-実行経路の確認と登録したIssueは[引継ぎ記録](archive/2026-10/refactoring-handoff-2026-10-06.md)にあります。
-
-## 進捗（2026-10-07）
-
-T0、R1〜R5は完了し、各実装PR #118 / #120 / #121 / #122 / #123を取込済みです。
-O1の通常scheduleも受入済みです。O2 #115は両版の固定とローカル受入後、
-個別承認を受けて実切戻し・現行版復帰と両版の配信照合を完了しました。
-証拠は[切戻し/復帰の受入記録](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)にあります。
-実Batch #94と請求照合O3 #116は引き続き独立した未受入として扱います。
+今回の具体的な件数・固定入力・比較結果は[ローカル検証記録](archive/2026-10/domain-refactoring-2026-10-10.md)に保存しています。

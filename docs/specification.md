@@ -26,6 +26,21 @@
 repoの可視性とGCSの可視性は別です。本repoはPUBLICでもGCSはUBLA/PAPを維持します。
 Pages buildは人力Vault、収集state、rootの文書archiveを入力にしません。
 
+## PythonとWebの境界
+
+Pythonの`techkb`は収集・要約・非公開stateと、公開snapshot検証・Quartz入力Markdownの生成を担います。
+受渡しは[公開・配布契約](publication.md)の`manifest.json`と`notes/<id>.md`です。
+Quartz入力は実行ごとの専用stagingへ生成し、共有の`web/content/`を状態管理に使いません。
+`web/kaname_web`はHTML後処理、成果物のseal/検証/配置、Pages準備、配信後検証を担います。
+Web側の入口はnpmタスクで統一し、Python補助処理とChromiumを併用します。
+依存脆弱性監査とリンク・画面・配信版検査を区別します。実行方法は[Web preview](web-preview.md)と[Pages](pages.md)を参照してください。
+
+GCS障害時に新規保存や公開更新を成功扱いせず、既存の公開済みGit/Pagesを維持します。
+固定公開Git版からの再buildにはGCS/Geminiを使いません。
+元記事を再取得できても、生成Note・usage・Batch提出状態の復旧保証は必要です。
+API前後のusage、receipt、世代/bytes検査、完了manifestを維持します。
+復旧操作の正本は[運用手順](operations.md#gcs障害と公開の復旧)です。
+
 ## 生成Note
 
 compact NoteにはAI要約、重要ポイント、資料の位置づけ、検索語、出典と生成情報を含めます。
@@ -47,7 +62,7 @@ schemaを満たさない生成結果は成功Noteにせず、公開snapshotに�
 
 ## 更新・参照・編集
 
-既存日次収集の成功後に、GCSの成功状態を読み、完全な配布snapshotを作る工程を追加します。
+既存日次収集の成功後に、GCSの成功状態を読み、完全な配布snapshotを作ります。
 変化がないsnapshotの再実行で新しい配布commitや再生成を増やしません。
 配布候補は全件検証してから確定し、途中の書込みや失敗したbuildを最新版として扱いません。
 
@@ -79,14 +94,9 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 直接syncは互換機能として既存Note/候補を保持します。submodule更新の実装として流用しません。
 詳細な現行操作は[操作手順](operations.md)、保証の限界は[設計補足](design-decisions.md)を参照してください。
 
-## 対象外と未確定の実装詳細
+## 対象外と実装状態
 
-人力Vaultのrepo作成・内容の取込み・公開・プラグイン設定、原文の再配布、モデル学習は対象外です。
-DB/Vector DB/複数LLMへの移行を、この構成の前提にはしません。
-PagesのSSGはQuartz 5.0.0と固定pluginでpreviewを実装し、fixtureで検証しています。
-元Markdownは同じbytesで静的artifactに含めます。実Note117件のGit公開と同じ配布commitのWeb buildを受入済みです。
-Pages deploy workflowは実装済みで、初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開pipelineを実装しました。実行受入の状態は[日次公開手順](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。
-build・artifact・依存上の制約は[Web preview](web-preview.md)を参照してください。
-公開運用の権限・初回配布・自動更新の具体的なworkflowは実装PRで示します。
-初回Git配布は既存Noteの読取りだけで行います。GCS/Vault変更、権限変更、有料呼出し、
-本番workflow_dispatch、Issue手動起動、automation再開は行いません。
+人力Vaultの管理・公開・プラグイン設定、原文の再配布、モデル学習は対象外です。
+DB/Vector DB/複数LLMへの移行、画像ファイル保存、GCS停止中の代替保存を前提にしません。
+Quartz 5.0.0と固定pluginを使い、元Markdownを同じbytesで成果物に含めます。
+公開・通常schedule・切戻し/復帰は受入済みです。現在の状態と未受入範囲は[検証・受入](verification.md)を参照してください。

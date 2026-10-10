@@ -2,7 +2,7 @@ import re
 import unicodedata
 from urllib.parse import urlsplit
 import yaml
-from .images import selected_images, place_images
+from .images import selected_images
 
 def plain(value):
     return " ".join(str(value).split())
@@ -26,6 +26,37 @@ def filename(title, day, digest):
     # UTF-8 byte limit, not just a character limit, for cross-platform filenames.
     value = value.encode("utf-8")[:160].decode("utf-8", errors="ignore").rstrip(" .")
     return f"{day}_{value}_{digest[:12]}.md"
+
+def image_block(image):
+    return "\n\n![" + inline(image["alt"]) + "](<" + image["url"] + ">)"
+
+
+def place_images(body, images):
+    groups = {}
+    for image in images:
+        groups.setdefault(image["after"], []).append(image_block(image))
+    # Resolve boundaries from compact section markers after every insertion.
+    for after, blocks in reversed(list(groups.items())):
+        if after == "summary":
+            offset = body.index("\n\n## 重要ポイント\n\n")
+        elif after == "positioning":
+            offset = body.index("\n\n---\n\n## 出典情報\n\n")
+        else:
+            start = body.index("## 重要ポイント\n\n") + len("## 重要ポイント\n\n")
+            points = body[start:].split("\n\n## 検索キーワード", 1)[0]
+            count, offset = 0, start
+            for line in points.splitlines(keepends=True):
+                if line.startswith("- "):
+                    count += 1
+                    if count == int(after[-1]):
+                        offset += len(line.rstrip("\n"))
+                        break
+                offset += len(line)
+            else:
+                raise ValueError("invalid_image_selection")
+        body = body[:offset] + "".join(blocks) + body[offset:]
+    return body
+
 
 def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated,
             authors=(), input_char_limit=None, source_word_count=None, image_candidates=()):

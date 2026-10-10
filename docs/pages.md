@@ -39,7 +39,8 @@ README/attributes、manifest/Note hash、各Git blobと元bytesを照合しま�
 `build_pages.py`はsealed artifactの`fixture: false`、配布commit、dataset digest、全元Markdownを再照合し、
 manifestに許可された公開fileだけをupload用ディレクトリへ配置します。`.git`やrepo rootをuploadしません。
 `check_pages.py`は全HTMLのローカルリンク・全Noteの出典、検索からNoteへの移動、元Markdown取得、
-375/768/1024/1440px表示、版/digest表示、外部resource要求0、私的pathの404を検査します。
+375/768/1024/1440px表示、版/digest表示、想定外の外部resource要求0、私的pathの404を検査します。
+画像付きNoteの検査では許可画像のレスポンスだけをローカルで代用します。
 
 buildのsummaryにcommit/dataset digest/artifact digest/Note数を記録します。
 `upload-pages-artifact`と`deploy-pages`はGitHub公式Actionを使います。
@@ -61,9 +62,9 @@ rootでPython依存を導入し、`web/`で`npm ci --ignore-scripts && npm run s
 ```bash
 # CONTENT_CHECKOUTはcleanなcontentのcheckout。CONTENT_COMMITはそのHEAD。
 cd web
-python build_pages.py --content "$CONTENT_CHECKOUT" \
+npm run build:pages -- --content "$CONTENT_CHECKOUT" \
   --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact
-python check_pages.py --content "$CONTENT_CHECKOUT" \
+npm run check:pages -- --content "$CONTENT_CHECKOUT" \
   --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
 ```
 
@@ -73,6 +74,10 @@ upload先は新しいディレクトリにします。同一artifactの再実行
 初回deployでは公開URLの配布commit/dataset/artifact digest、トップ/版表示/manifest/全117件の元Markdown/代表Note HTMLのhashを照合しました。
 配布commitは上記初回版、dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
 継続更新や切戻しの実運用受入は初回公開と別に判定し、通常scheduleと切戻し/復帰もそれぞれ受入済みです。
+
+ローカルまたは配信済みの版を読取り検証する入口は`npm run verify:deployment --`です。
+`--url`、`--content-commit`、`--dataset-digest`、`--artifact-digest`、`--notes`を指定します。
+配信後検証のPython処理は標準ライブラリだけを使い、`python3 -I -S verify_deployment.py`でも実行できます。
 
 ## 日次公開
 

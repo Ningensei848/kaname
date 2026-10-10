@@ -12,7 +12,47 @@ from ._receipts import build_receipt
 from .gemini import response_usage, validate_response
 from .pending import Candidate
 from .models import ArticleEnrichment
+from .audit import audit_state
+from .costs import cost_report
 from .reporting import RunReport, now
+
+
+class ReadOnlyStore:
+    def __init__(self, store):
+        self._store = store
+
+    def list(self, prefix):
+        return self._store.list(prefix)
+
+    def read(self, name):
+        return self._store.read(name)
+
+    def write(self, *args, **kwargs):
+        raise RuntimeError('Batch preflight is read-only')
+
+
+def preflight(store, app):
+    store = ReadOnlyStore(store)
+    audit = audit_state(store)
+    batches = BatchManager(store, None)
+    costs = cost_report(store, app)
+    blockers = []
+    if audit['status'] != 'success':
+        blockers.append('state_audit_failed')
+    if batches.jobs:
+        blockers.append('active_batch_ledgers')
+    if costs['pending_batch_items']:
+        blockers.append('unbilled_batch_items')
+    if costs['incomplete_standard_runs']:
+        blockers.append('incomplete_standard_usage')
+    # Existing unknown usage remains visible; it is never labelled reconciled.
+    return dict(status='blocked' if blockers else 'ready', checked_at=now(),
+                audit_status=audit['status'], audit_issues=len(audit['issues']),
+                success_rows=audit['success_rows'], pending=audit['pending'],
+                active_batch_ledgers=len(batches.jobs),
+                unbilled_batch_items=costs['pending_batch_items'],
+                incomplete_standard_runs=costs['incomplete_standard_runs'],
+                uncertain_runs=costs['uncertain_runs'], blockers=blockers)
 
 
 def failure_diagnostics(exc, phase, response):

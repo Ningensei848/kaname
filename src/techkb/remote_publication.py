@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 
 from .distribution import publish_snapshot
-from .pages import content_snapshot
+from .publication.git_snapshot import content_snapshot
 from .publication import ExportError
 
 
