@@ -50,8 +50,8 @@ Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distr
 
 1. [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127)：新規Noteへの画像配置とGit/Pagesの検証。画像は出典URLから直接表示する。
 2. 現行文書の整合性：完了済みのschedule・切戻し・リファクタリングを未完了扱いしない。
-3. [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94)：mainの読取り専用事前検査、有料提出の個別承認、最大1件の成功保存・復旧・費用照合。
-4. [#116 請求照合](https://github.com/Ningensei848/kaname/issues/116)：利用可能な確定請求期間と明細を指定して推計と照合する。
+3. [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94)：2026-10-10の読取り専用事前検査はready。次は有料提出の個別承認と、最大1件の成功保存・復旧・費用照合。
+4. [#116 請求照合](https://github.com/Ningensei848/kaname/issues/116)：確定明細がないため今回は待機。利用可能な確定請求期間と明細を指定して推計と照合する。
 5. [バックログ](docs/roadmap.md)：source health、代表サイトの回帰corpus、並列収集、graph品質。browser sourceや利用者Vault/NTFSの受入は対象を指定してから進める。
 
 ## 公開するもの
