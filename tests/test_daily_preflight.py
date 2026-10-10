@@ -13,7 +13,7 @@ def workflow():
     return yaml.load(path.read_text(), Loader=yaml.BaseLoader)
 
 
-def selected(expression, inputs, *, success=True, ref='refs/heads/main'):
+def selected(expression, inputs, *, success=True, ref='refs/heads/main', outcomes=None):
     # Evaluate this workflow's limited boolean expression dialect, including the
     # implicit success guard. actionlint validates the actual Actions syntax.
     text = expression.removeprefix('${{').removesuffix('}}').strip()
@@ -26,6 +26,7 @@ def selected(expression, inputs, *, success=True, ref='refs/heads/main'):
         'needs.collect.result': 'failure', 'needs.collect.outputs.ready': 'true',
         'needs.publish.result': 'failure', 'needs.pages.result': 'failure',
     }
+    values.update(outcomes or {})
     values.update({'inputs.' + key: value for key, value in inputs.items()})
     text = re.sub(r'(?:inputs|github|steps|needs)\.[A-Za-z_.]+',
                   lambda match: repr(values[match[0]]), text)
@@ -107,3 +108,24 @@ def test_preflight_valid_inputs_pass(workflow, collection_mode):
                COLLECTION_MODE=collection_mode, MAX_CALLS='', EXPECTED_SUCCESS_BEFORE='')
     result = subprocess.run(['/bin/bash', '-c', validation['run']], env=env, capture_output=True)
     assert result.returncode == 0
+
+
+@pytest.mark.parametrize('stage', ['gcp_auth', 'collection', 'audit', 'export'])
+def test_storage_or_export_failure_cannot_advance_publication(workflow, stage):
+    config = inputs()
+    steps = workflow['jobs']['collect']['steps']
+    outcomes = {f'steps.{stage}.outcome': 'failure',
+                'steps.export.outputs.ready': '',
+                'needs.collect.result': 'failure',
+                'needs.collect.outputs.ready': '',
+                'needs.publish.result': 'skipped'}
+    export = next(step for step in steps if step.get('id') == 'export')
+    assert not selected(export['if'], config, success=False, outcomes=outcomes)
+    upload = next(step for step in steps if step.get('uses', '').startswith('actions/upload-artifact@'))
+    assert not selected(upload['if'], config, success=False, outcomes=outcomes)
+    for name in ['publish', 'pages']:
+        assert not selected(workflow['jobs'][name]['if'], config, outcomes=outcomes)
+    assert selected(workflow['jobs']['notify-publication']['if'], config, success=False, outcomes=outcomes)
+    for step in steps:
+        if step.get('id') in {'gcp_auth', 'collection', 'audit', 'export'}:
+            assert step.get('continue-on-error', 'false') == 'false'

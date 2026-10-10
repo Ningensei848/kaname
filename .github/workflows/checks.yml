@@ -28,9 +28,9 @@ jobs:
       - uses: ./.github/actions/setup-web
       - working-directory: web
         run: |
-          python make_fixture.py
-          python build.py
-          python check_preview.py --screenshots ../web/.cache/screenshots
+          npm --silent run fixture
+          npm --silent run build
+          npm --silent run check:preview -- --screenshots ../web/.cache/screenshots
       - uses: actions/checkout@v5
         with:
           ref: content
@@ -41,8 +41,8 @@ jobs:
         working-directory: web
         run: |
           commit=$(git -C ../public-content rev-parse HEAD)
-          python build_pages.py --content ../public-content --content-commit "$commit" --output .cache/pages-artifact
-          python check_pages.py --content ../public-content --content-commit "$commit" --artifact .cache/pages-artifact
+          npm --silent run build:pages -- --content ../public-content --content-commit "$commit" --output .cache/pages-artifact
+          npm --silent run check:pages -- --content ../public-content --content-commit "$commit" --artifact .cache/pages-artifact
       - uses: actions/upload-artifact@v7
         with:
           name: kaname-web-validation

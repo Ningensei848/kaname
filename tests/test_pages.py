@@ -4,9 +4,11 @@ from pathlib import Path
 import pytest
 
 from techkb.distribution import publish_snapshot
-from techkb.pages import content_snapshot, prepare_pages
+from techkb.publication.git_snapshot import content_snapshot
+from kaname_web.pages import prepare_pages
 from techkb.publication import ExportError, export_notes
-from techkb.site import load_snapshot, seal_artifact
+from techkb.publication.snapshot import load_snapshot
+from kaname_web.artifact import seal_artifact
 from test_distribution import git, clone
 
 
@@ -115,7 +117,7 @@ def test_deployed_version_and_served_bytes_are_verified(pages):
     import importlib.util
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
     from threading import Thread
-    from techkb.site import load_artifact
+    from kaname_web.artifact import load_artifact
     spec = importlib.util.spec_from_file_location('kaname_verify_deployment', Path(__file__).parents[1] / 'web/verify_deployment.py')
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     checkout, commit, artifact, output = pages

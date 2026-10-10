@@ -12,7 +12,11 @@
     "fixture": "python3 make_fixture.py",
     "build": "python3 build.py",
     "preview": "python3 serve.py",
-    "audit": "node audit.mjs"
+    "audit": "node audit.mjs",
+    "build:pages": "python3 build_pages.py",
+    "check:preview": "python3 check_preview.py",
+    "check:pages": "python3 check_pages.py",
+    "verify:deployment": "python3 verify_deployment.py"
   },
   "dependencies": {
     "@jackyzha0/quartz": "https://codeload.github.com/jackyzha0/quartz/tar.gz/ab346fa66a895e12d63a308e70ce330ba795822a",

@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 WEB = Path(__file__).resolve().parent
 sys.path.insert(0, str(WEB.parent / "src"))
 from techkb.publication import ExportError
-from techkb.site import load_artifact
+from kaname_web.artifact import load_artifact
 
 
 def server(artifact, port=8765):

@@ -284,7 +284,7 @@ def test_rerun_is_unchanged_and_existing_files_are_never_replaced(harness, tmp_p
 
 def test_interrupted_install_has_no_completion_manifest(harness, tmp_path, monkeypatch):
     add_note(harness)
-    import techkb.publication as publication
+    import techkb.publication.install as publication
     real_link = publication.os.link
     calls = 0
     def interrupted(source, target, **kwargs):
@@ -428,7 +428,7 @@ def test_directory_swap_cannot_redirect_note_writes(harness, tmp_path, monkeypat
     add_note(harness)
     output, external = tmp_path / "public", tmp_path / "external"
     external.mkdir()
-    import techkb.publication as publication
+    import techkb.publication.install as publication
     real_link = publication.os.link
     swapped = False
     def swap_directory(source, target, **kwargs):

@@ -5,7 +5,8 @@ from pathlib import Path
 import sys
 
 from build import build
-from techkb.pages import content_snapshot, prepare_pages
+from techkb.publication.git_snapshot import content_snapshot
+from kaname_web.pages import prepare_pages
 from techkb.publication import ExportError
 
 

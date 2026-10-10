@@ -7,11 +7,7 @@ import json
 from pathlib import PurePosixPath
 import re
 
-from ._publication_common import sha256, json_bytes
-
-
-def digest_matches(data, expected):
-    return sha256(data) == expected
+from techkb.publication.common import sha256, json_bytes, digest_matches, digest_value
 
 
 def hash_manifest(hashes):
@@ -42,10 +38,6 @@ def valid_site_marker(marker):
 def valid_deployment_version(commit, dataset, artifact):
     return not (not re.fullmatch(r'[0-9a-f]{40}', commit) or
                 any(not re.fullmatch(r'[0-9a-f]{64}', d) for d in (dataset, artifact)))
-
-
-def digest_value(value):
-    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
 def artifact_path(name):

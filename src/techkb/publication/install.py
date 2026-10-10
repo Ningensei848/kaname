@@ -3,7 +3,7 @@ import os
 from pathlib import Path, PurePosixPath
 import tempfile
 
-from ._publication_common import ExportError, reject_symlinks
+from .common import ExportError, reject_symlinks
 
 
 def existing_matches(root, files):

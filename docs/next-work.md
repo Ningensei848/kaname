@@ -6,6 +6,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
+| 現行 | [責務整理](refactoring-plan.md) | Batch・画像・公開・Web・文書の分離とローカル検証を完了。[検証記録](archive/2026-10/domain-refactoring-2026-10-10.md) | 追加指示に基づきPR/CI/マージ・Pages反映・読取り専用preflightへ進む。画像/Batch成功保存の本番受入は別 |
 | P1 | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | HTML候補抽出・LLM選択・Note配置・公開検査・Web表示をPR #128でmainへ取込済み。マージ後CIもsuccess | 方針は確認済み。画像入り実Noteの本番受入は未完了 |
 | P1 | README・方針・検証手順の整合性 | schedule・切戻し・リファクタリングの完了状態と画像通信の方針をPR #128で取込済み | 受入結果を更新し、未完了の本番受入と区別 |
 | P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | 逸脱原因は未確定。自動通知#129はこの既知の拒否に対応し、schema緩和・再提出は行わない |

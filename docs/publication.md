@@ -1,10 +1,13 @@
 # 公開NoteのGit配布とPages
 
-この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)を実装するための配布契約です。
+この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)に基づく公開snapshot・Git/Web配布契約の正本です。
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
 実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
 固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
 初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開pipelineを実装しました。実行受入の状態は[日次公開手順](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。
+
+公開検証・読取り・配置・Git snapshot照合は`techkb.publication`配下へまとめ、従来の公開importを維持します。
+HTML成果物の処理はWeb側です。責務の境界は[仕様書](specification.md#pythonとwebの境界)を参照してください。
 
 ## exportの操作と実装範囲
 

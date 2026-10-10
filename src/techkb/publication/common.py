@@ -40,3 +40,11 @@ PUBLIC_README = ("# kaname generated Notes\n\n"
                  "manifest.jsonのNote ID・SHA-256・dataset digestで同じ版を照合できます。\n"
                  "Git submoduleではcommitを固定して参照し、更新は利用側で明示してください。\n"
                  "生成領域の変更を強制reset/cleanせず、人の注釈は領域外に保持してください。\n").encode()
+
+
+def digest_matches(data, expected):
+    return sha256(data) == expected
+
+
+def digest_value(value):
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None

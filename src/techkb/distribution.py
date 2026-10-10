@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 
 from .publication import ExportError, PUBLIC_README, PUBLIC_ATTRIBUTES, reject_symlinks
-from .site import load_snapshot
+from .publication.snapshot import load_snapshot
 
 
 REF = "refs/heads/content"

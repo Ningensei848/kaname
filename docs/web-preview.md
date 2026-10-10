@@ -13,9 +13,9 @@ Web用runtimeはNode 24 / npm 11です。Python本体・配布処理の依存loc
 cd web
 npm ci --ignore-scripts
 npm run setup
-python3 make_fixture.py
-python3 build.py
-python3 serve.py
+npm run fixture
+npm run build
+npm run preview
 # http://127.0.0.1:8765/kaname/
 ```
 
@@ -27,7 +27,7 @@ Note一覧、出典別・カテゴリ別・日付順、日本語検索、Note本
 
 ```bash
 python3 -m playwright install chromium
-python3 check_preview.py --screenshots /tmp/kaname-web-preview
+npm run check:preview -- --screenshots /tmp/kaname-web-preview
 npm run audit
 ```
 
@@ -39,12 +39,24 @@ SSGのHTML/検索index/CSS/JS/日本語フォントは同じartifactから配信
 外部embed、動的OG生成は使いません。CSPで外部resource接続とframe/objectを制限します。
 `/kaname/`用のbody属性を補い、Quartz v5.0.0とcommunity searchのbase pathの差を吸収します。
 
+既存fixtureの内容が異なって`output_conflict`になった場合は、既存出力を保持して新しい名前を選びます。
+
+```bash
+npm run fixture -- --output .cache/fixture-new
+npm run build -- --snapshot .cache/fixture-new --fixture
+npm run check:preview -- --screenshots .cache/fixture-new-screenshots
+```
+
+`--fixture`は指定したsynthetic snapshotをpreviewとして表示し、Pages用の公開検査では拒否されます。
+`audit`は依存脆弱性監査、`check:preview`/`check:pages`はリンク・画面・画像・版の受入です。
+HTML後処理と成果物検証は`kaname_web`が担当します。
+
 ## 保存済み公開snapshotを入力にする
 
 ```bash
-python3 build.py --snapshot /path/to/exported-public-snapshot
+npm run build -- --snapshot /path/to/exported-public-snapshot
 # 配布commitが確定した後だけ指定する。指定値のGit由来は後続の出版工程が保証する。
-python3 build.py --snapshot /path/to/content-checkout --content-commit FULL_40_HEX
+npm run build -- --snapshot /path/to/content-checkout --content-commit FULL_40_HEX
 ```
 
 入力はexportの`manifest.json`と列挙された`notes/<id>.md`です。READMEとGit管理領域は探索・表示しません。

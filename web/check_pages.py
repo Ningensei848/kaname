@@ -10,10 +10,10 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, expect
 
 from serve import server
-from techkb.pages import content_snapshot
-from techkb.site import load_artifact
+from techkb.publication.git_snapshot import content_snapshot
+from kaname_web.artifact import load_artifact
 from techkb.publication import ExportError
-from techkb._web_validation import public_version_matches, snapshot_matches
+from kaname_web.validation import public_version_matches, snapshot_matches
 from image_acceptance import approved_images, image_guard, check_images
 
 

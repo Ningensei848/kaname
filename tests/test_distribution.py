@@ -7,7 +7,7 @@ import pytest
 from techkb.cli import main
 from techkb.distribution import publish_snapshot, Git, REF
 from techkb.publication import export_notes, ExportError, PUBLIC_ATTRIBUTES, sha256
-from techkb.site import load_snapshot
+from techkb.publication.snapshot import load_snapshot
 from test_publication import add_note
 
 

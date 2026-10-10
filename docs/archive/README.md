@@ -8,6 +8,10 @@
 
 | 履歴 | 内容 |
 |---|---|
+| [責務整理のローカル検証](2026-10/domain-refactoring-2026-10-10.md) | Batch・画像・公開/Web分離の回帰と固定Git版受入 |
+| [旧R1〜R5計画](2026-10/refactoring-plan-r1-r5.md) | 完了済みの着手順・依存条件・当時の引継ぎ |
+| [旧公開工程計画](2026-10/publication-implementation-plan.md) | 初回export/Git/Pagesの工程別計画 |
+| [責務整理前の検証](2026-10/verification-before-domain-refactoring-2026-10-10.md) | 当時のrun/commit/件数・受入証拠 |
 | [検証記録](2026-10/verification.md) | Phase 1受入、日次/手動run、Batch GET診断、PR #97/#98検証 |
 | [Batch受入の準備](2026-10/batch-acceptance-preparation-2026-10-07.md) | #94の読取り専用事前検査、1件提出案、費用推計、保存/費用/再実行の照合条件 |
 | [Batch事前検査のworkflow修正](2026-10/batch-preflight-workflow-fix-2026-10-08.md) | 実WIFのdaily/main限定拒否、IAMを変えない専用jobへの移設、副作用境界の回帰 |

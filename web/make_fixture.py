@@ -1,4 +1,5 @@
 """Synthetic compact Notes. No network, credentials, or production state."""
+import argparse
 import json
 from pathlib import Path
 import sys
@@ -63,6 +64,8 @@ def make_fixture(output):
 
 
 if __name__ == "__main__":
-    output = Path(__file__).resolve().parent / ".cache/fixture-snapshot"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parent / ".cache/fixture-snapshot")
+    output = parser.parse_args().output
     output.parent.mkdir(parents=True, exist_ok=True)
     print(json.dumps(make_fixture(output), ensure_ascii=False))
