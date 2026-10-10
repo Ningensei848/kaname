@@ -6,6 +6,9 @@ sources:
     type: rss
     feed_url: https://research.google/blog/rss/
     base_url: https://research.google/
+    # Keep all body sections and figures; exclude navigation and related posts.
+    extract_main: true
+    content_selector: .blog-detail-wrapper
     request_interval_seconds: 2
     tags: [research]
   - id: github-blog

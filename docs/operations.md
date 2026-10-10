@@ -22,7 +22,9 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 ## 取得・本文・フィルタ
 
-既存sourceの既定はRSS/HTTP・全HTML変換です。新機能はsourceごとに選択します。
+現行の有効sourceはRSS/HTTPです。Google Researchは`content_selector: .blog-detail-wrapper`で、
+分割された本文・画像・キャプションをまとめて抽出し、ナビゲーション・サイドバー・関連記事を入力から除きます。
+GitHub Blogは全HTML変換を維持します。取得方式・本文抽出はsourceごとに設定します。
 本文抽出を切り替えるとcontent hashが変わるため、再処理・課金の可能性を考慮してください。
 
 ```yaml
