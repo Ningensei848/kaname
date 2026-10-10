@@ -8,6 +8,7 @@
 
 | 履歴 | 内容 |
 |---|---|
+| [Google Researchの本文抽出](2026-10/google-research-body-extraction-2026-10-10.md) | 実記事4件の本文/画像タグ保持、GlucoFMの8図候補、standard/Batch回帰と残る画像候補課題 |
 | [責務整理のPR・本番受入](2026-10/domain-refactoring-production-2026-10-10.md) | PR/CI、固定124件版のPages更新・配信照合、読取り専用preflight ready |
 | [責務整理のローカル検証](2026-10/domain-refactoring-2026-10-10.md) | Batch・画像・公開/Web分離の回帰と固定Git版受入 |
 | [旧R1〜R5計画](2026-10/refactoring-plan-r1-r5.md) | 完了済みの着手順・依存条件・当時の引継ぎ |

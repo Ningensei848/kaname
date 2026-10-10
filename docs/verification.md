@@ -10,6 +10,7 @@
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
 | Batch | 提出・回収・診断・費用照合をoffline検証。読取り専用preflightはライブラリ移設後も実GCSでready | 実提出はschema不適合で成功保存0。成功Note保存の本番受入は未完了 |
+| Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | LLM選択・既存Note補完は別の受入。altエスケープの候補照合は残課題 |
 | 記事画像 | 候補ID/URL/配置、standard/Batch、公開bytes、Chromium表示をoffline検証 | 画像入り実Noteの本番受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
@@ -19,6 +20,8 @@
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
 本番prompt/schemaのSDK送信と不適合応答の拒否は確認済みですが、生成側の逸脱原因は未確定です。
 schemaの緩和や有料再提出を今回の責務整理に含めません。
+
+Google Researchの本文抽出・実HTTP検証と画像候補の残課題は[検証記録](archive/2026-10/google-research-body-extraction-2026-10-10.md)にあります。
 
 ## 責務整理のローカル検証
 
