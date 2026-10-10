@@ -49,8 +49,10 @@
 - [ ] Knowledge Graph Quality — 表記揺れ・同義語・タグ・WikiLink品質評価。
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
-2026-10-10の優先順は[次の作業](next-work.md)に記載しています。まず#127の新規Note画像、現行文書の整合性、
-実Batch #94、確定明細のある請求照合 #116を進め、後続機能はsource health→回帰corpus→並列収集→graph品質の順で検討します。
+2026-10-10のIssue照合により#127の画像実装と回収済み通知#129をCloseしました。Source Healthも実装済みです。
+Openは実Batch成功保存の受入#94と確定明細待ちの照合#116です。未実装機能の具体的な計画と着手順は
+[次の作業](next-work.md)を正本とし、Batch原因切分け、回帰corpus、限定並列化、graph品質の順で進めます。
+画像入り実Noteなどの後続受入は、機能実装とは分けて追跡します。
 DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではありません。
 
 ## 保守性の改善
