@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "683fefd5d52eb94f8caa3940461c2ce67532e9399fa5142d1bdf381c15190cd7",
+  "dataset_digest": "e28d6c2bb9d3d744a3f064fc2738730e70a5cf9e8c002abf4e83076156f5c6e8",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -127,9 +127,9 @@
       "id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
       "llm_input_truncated": true,
       "path": "notes/2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a.md",
-      "processed_at": "2026-10-07T01:33:11.902429+00:00",
+      "processed_at": "2026-10-10T01:48:11.144894+00:00",
       "published": "2026-06-04",
-      "sha256": "d9840e106649915e6677295dd0350206c077201901d7432f569440507356d5be",
+      "sha256": "5115cbf9fdad889b18038447947acc280d59cf85dd636fc76a9b023126aff9d5",
       "source_id": "google-research",
       "title": "スマートフォンカメラを活用した受動的心臓健康モニタリングの実現に向けて"
     },
@@ -151,11 +151,11 @@
       "id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
       "llm_input_truncated": true,
       "path": "notes/2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481.md",
-      "processed_at": "2026-10-07T01:34:05.695102+00:00",
+      "processed_at": "2026-10-10T01:47:04.816211+00:00",
       "published": "2026-05-28",
-      "sha256": "93c4d12ab0dd9f17ec63111bf73bb09716336325757b36e01cfa783f307657cf",
+      "sha256": "a88aa1a683c50b48ef7a4b42f0e9c11ab9552357e0c2dc3ffe5ec891b53523ec",
       "source_id": "google-research",
-      "title": "新たな発見の時代：Google I/O 2026でのGoogleリサーチ"
+      "title": "新たな発見の時代：Google I/O 2026でのGoogle Research"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
@@ -175,11 +175,23 @@
       "id": "26b878a871d0ceffb1f02f58cb0ecdc245c54578dec8d0ee715a3477134e0ad4",
       "llm_input_truncated": true,
       "path": "notes/26b878a871d0ceffb1f02f58cb0ecdc245c54578dec8d0ee715a3477134e0ad4.md",
-      "processed_at": "2026-10-08T01:58:56.992175+00:00",
+      "processed_at": "2026-10-10T01:48:41.419724+00:00",
       "published": "2025-12-10",
-      "sha256": "f18b9c6a3b6f7f594e13d2f9e173fce6ded9ea8886e566aee6deb7bacc39eb82",
+      "sha256": "49c0145cfea313aef8424084a76c4a6d72a303e8496e391531aa695e3b0f1506",
       "source_id": "google-research",
-      "title": "AIチャットボット利用の洞察を得るための差分プライバシーフレームワーク"
+      "title": "AIチャットボット利用状況から洞察を得るための差分プライバシーフレームワーク"
+    },
+    {
+      "canonical_url": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
+      "category": "cybersecurity",
+      "id": "26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498",
+      "llm_input_truncated": true,
+      "path": "notes/26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498.md",
+      "processed_at": "2026-10-10T01:48:29.774738+00:00",
+      "published": "2026-10-08",
+      "sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
+      "source_id": "github-blog",
+      "title": "あるバグハンターが調査する機能を選ぶ基準"
     },
     {
       "canonical_url": "https://research.google/blog/coherent-long-form-video-generation/",
@@ -223,11 +235,11 @@
       "id": "33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a",
       "llm_input_truncated": true,
       "path": "notes/33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a.md",
-      "processed_at": "2026-10-07T01:34:14.658948+00:00",
+      "processed_at": "2026-10-10T01:47:11.968563+00:00",
       "published": "2026-08-11",
-      "sha256": "af07a2bd7fcf644b761437fb7f31bf69368da534120dad1b080b0501c1d7bd73",
+      "sha256": "de5b573bd2bb92026742474f1e38f308140401220493d99d527b2eff64a95473",
       "source_id": "google-research",
-      "title": "AMIEのリアルタイムビデオ臨床相談における専門医レベルへの進化"
+      "title": "リアルタイムビデオ診察に向けた医療AI「AMIE（Video）」の発表"
     },
     {
       "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
@@ -247,11 +259,11 @@
       "id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
       "llm_input_truncated": false,
       "path": "notes/393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314.md",
-      "processed_at": "2026-10-01T15:06:27.190093+00:00",
+      "processed_at": "2026-10-10T01:48:56.926525+00:00",
       "published": "2026-03-31",
-      "sha256": "294eae0348dab27f7c2d6ddfd42d16af9a1d9b1751a019e4592f80ac0e752198",
+      "sha256": "3434f821b47298cdf976487373e04f6c83f3f69c9f99ac9e0a69162e35352dac",
       "source_id": "google-research",
-      "title": "より優れたAIベンチマークの構築：何人の評価者が十分か？"
+      "title": "より良いAIベンチマークの構築：十分な評価者数とは？"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
@@ -259,9 +271,9 @@
       "id": "3dbfb8fd9bf925edda9499852cbcdd991badb1a081dcb65c338acb094c1f8c22",
       "llm_input_truncated": true,
       "path": "notes/3dbfb8fd9bf925edda9499852cbcdd991badb1a081dcb65c338acb094c1f8c22.md",
-      "processed_at": "2026-10-07T01:33:46.144997+00:00",
+      "processed_at": "2026-10-10T01:46:45.332667+00:00",
       "published": "2026-09-25",
-      "sha256": "103c848d6928268f880fccf088e0433e2c4bb1f9ea2cf4703dda53b017cf4ca7",
+      "sha256": "123d1351c995fc8b551f63b022d3a267a32832dfca07ae60444fca6209237ad3",
       "source_id": "github-blog",
       "title": "初心者向けGitHub Copilotアプリ：キャンバスを使ったカスタムワークフローの構築方法"
     },
@@ -386,6 +398,18 @@
       "title": "最適化のための新しい量子ツールキット"
     },
     {
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/secret-protection-must-scale-with-software/",
+      "category": "cybersecurity",
+      "id": "56dfd89a7acbe98a2df3dada963dc9524ec09fe391cfdd7f3a6569d53359f8ae",
+      "llm_input_truncated": true,
+      "path": "notes/56dfd89a7acbe98a2df3dada963dc9524ec09fe391cfdd7f3a6569d53359f8ae.md",
+      "processed_at": "2026-10-10T01:46:58.453517+00:00",
+      "published": "2026-10-07",
+      "sha256": "0a2d1d44113d4a0c993cdfd3476c9ebb851d203ac202535b5cc54507f9ea39d6",
+      "source_id": "github-blog",
+      "title": "シークレット保護はソフトウェアのスケールに合わせて進化しなければならない"
+    },
+    {
       "canonical_url": "https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/",
       "category": "ai-llm",
       "id": "5703fac0b9890a3dd1dbeda85bd4f5ba8a2e6608b461f4c308198c9c93442d12",
@@ -411,15 +435,15 @@
     },
     {
       "canonical_url": "https://research.google/blog/scheduling-in-a-changing-world-maximizing-throughput-with-time-varying-capacity/",
-      "category": "cloud",
+      "category": "software-development",
       "id": "5f2af8f50c620b167e81b7d6cd98e8c08bcd42f17e864781483b44930dfecb49",
       "llm_input_truncated": false,
       "path": "notes/5f2af8f50c620b167e81b7d6cd98e8c08bcd42f17e864781483b44930dfecb49.md",
-      "processed_at": "2026-10-05T00:59:07.245159+00:00",
+      "processed_at": "2026-10-10T01:47:54.534727+00:00",
       "published": "2026-02-11",
-      "sha256": "45b4d48863f8a23c43fd42d0855d8aa25fa32a81d31a3294f9a181f64ba43f20",
+      "sha256": "0d86846cf71b06d90caa40391277ad0724010cbb7a86ba652aeea631ddb1d562",
       "source_id": "google-research",
-      "title": "変動するキャパシティにおけるスループットの最大化：変化する世界でのスケジューリング"
+      "title": "変化する世界におけるスケジューリング：変動容量を用いたスループットの最大化"
     },
     {
       "canonical_url": "https://research.google/blog/towards-demystifying-the-creativity-of-diffusion-models/",
@@ -427,11 +451,11 @@
       "id": "60dfb1cd275c09ada3589ec5d0798d47e2a3635985b2926536b2d3dd9196e434",
       "llm_input_truncated": true,
       "path": "notes/60dfb1cd275c09ada3589ec5d0798d47e2a3635985b2926536b2d3dd9196e434.md",
-      "processed_at": "2026-10-07T01:32:58.970733+00:00",
+      "processed_at": "2026-10-10T01:48:04.215252+00:00",
       "published": "2026-07-15",
-      "sha256": "120ee0ea65fbb65fe2835290cf66473f5fb4b556cacecbba2600dfef82fc52bf",
+      "sha256": "ecc5246cfabd4d76177a6044a8989f0c6144e2f2d2d95cd9dc29e221d65b4a72",
       "source_id": "google-research",
-      "title": "拡散モデルの「創造性」の解明に向けて"
+      "title": "拡散モデルの「創造性」の仕組みを解き明かす：スコア平滑化と補間効果"
     },
     {
       "canonical_url": "https://research.google/blog/google-earth-ai-unlocking-geospatial-insights-with-foundation-models-and-cross-modal-reasoning/",
@@ -567,15 +591,15 @@
     },
     {
       "canonical_url": "https://research.google/blog/toward-provably-private-insights-into-ai-use/",
-      "category": "ai-llm",
+      "category": "cybersecurity",
       "id": "7d6ff350c6fe84317f88374360bd71637d004069a1ae1c765adc3f8415887035",
       "llm_input_truncated": true,
       "path": "notes/7d6ff350c6fe84317f88374360bd71637d004069a1ae1c765adc3f8415887035.md",
-      "processed_at": "2026-10-04T00:38:16.622892+00:00",
+      "processed_at": "2026-10-10T01:46:19.282843+00:00",
       "published": "2025-10-30",
-      "sha256": "c1f608624ba05bd25313de1bb0158991b1c9c0157893d62738343c15d6f0ac11",
+      "sha256": "1558ac1b869ef8fa11a0fd707eaea6e3a8a28d30abeaa604bedb825783598cca",
       "source_id": "google-research",
-      "title": "AI利用状況の検証可能なプライベートインサイトに向けた取り組み"
+      "title": "AI利用状況における検証可能なプライバシー保護インサイトの実現に向けて"
     },
     {
       "canonical_url": "https://research.google/blog/expanding-our-heat-resilience-data-to-50-global-cities/",
@@ -619,11 +643,11 @@
       "id": "823f1395b6b4e60ea7d5a65e621234193f09bc7dc935dd9069cda143eebb5c82",
       "llm_input_truncated": true,
       "path": "notes/823f1395b6b4e60ea7d5a65e621234193f09bc7dc935dd9069cda143eebb5c82.md",
-      "processed_at": "2026-10-04T00:40:20.688323+00:00",
+      "processed_at": "2026-10-10T01:48:51.314955+00:00",
       "published": "2026-02-10",
-      "sha256": "f463fa02aecda61fe03528469964295b10b9b3099c852a033faac6ca073efca3",
+      "sha256": "87d0cdbd2e3d0778fd8c93f5e8ff2629954ba54d52f03058b9cce86ef5c47c22",
       "source_id": "google-research",
-      "title": "1対1の対話を超えて：動的な人間とAIによるグループ会話のオーサリング、シミュレーション、テスト"
+      "title": "1対1を超えて：動的な人間とAIのグループ会話のオーサリング、シミュレーション、テスト"
     },
     {
       "canonical_url": "https://research.google/blog/hard-braking-events-as-indicators-of-road-segment-crash-risk/",
@@ -687,13 +711,13 @@
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/ai-is-rewriting-the-developer-career-ladder-heres-how-to-stand-out/",
-      "category": "ai-llm",
+      "category": "software-development",
       "id": "86bc1d25b9e78c2adb247b7a6b40b4256e2ae0f4c191dd2c453432f5360fb41b",
       "llm_input_truncated": true,
       "path": "notes/86bc1d25b9e78c2adb247b7a6b40b4256e2ae0f4c191dd2c453432f5360fb41b.md",
-      "processed_at": "2026-10-07T01:33:41.061575+00:00",
+      "processed_at": "2026-10-10T01:46:38.966397+00:00",
       "published": "2026-10-02",
-      "sha256": "d8636daf222263576f4ec07ca7d167faf808b8683493a538a03321141236e15b",
+      "sha256": "b7cd020227adf47191ee5ca8f9e64277439162de5de7e4ffbb2fe14849f03008",
       "source_id": "github-blog",
       "title": "AIが変える開発者の仕事：強化すべき3つのスキル"
     },
@@ -715,11 +739,11 @@
       "id": "89277b7bd991a9ffae8cf7293641e66407090d9bd7e4ffec163009a597f02a73",
       "llm_input_truncated": true,
       "path": "notes/89277b7bd991a9ffae8cf7293641e66407090d9bd7e4ffec163009a597f02a73.md",
-      "processed_at": "2026-10-07T01:33:36.233921+00:00",
+      "processed_at": "2026-10-10T01:48:25.437835+00:00",
       "published": "2026-03-06",
-      "sha256": "75e59479f53f9cc256a41c94314f44542000a657f5e219de7d26d5137469962c",
+      "sha256": "ab50482c9e384affe183b8a005bc231d11da0a7e111b16367a1256ae91ec6577",
       "source_id": "google-research",
-      "title": "野生動物を保護・追跡するオープンソースAIモデル「SpeciesNet」の1年の歩み"
+      "title": "野生動物の特定と保護を支援するオープンソースAIツール「SpeciesNet」の1年"
     },
     {
       "canonical_url": "https://research.google/blog/science-one-framework-a-verifiable-autonomous-research-framework-via-chain-of-evidence/",
@@ -763,11 +787,11 @@
       "id": "93660db7fdcb735e9b654de876949da1a1708ebe52d5886bfb2b60272b078f7c",
       "llm_input_truncated": false,
       "path": "notes/93660db7fdcb735e9b654de876949da1a1708ebe52d5886bfb2b60272b078f7c.md",
-      "processed_at": "2026-10-04T00:39:05.821589+00:00",
+      "processed_at": "2026-10-10T01:46:32.440425+00:00",
       "published": "2026-01-15",
-      "sha256": "1a54ab1f2656ea9ba97ab6d49acce2d1ada66252ca57438f8d809f9260777123",
+      "sha256": "edae1226c4ec071f39850ec2d8cb76be2fd5cc730f9b003b2e6a9aef91bc11fb",
       "source_id": "google-research",
-      "title": "スマートウォッチを用いた高度な歩行指標（歩行解析）の推定：健康インサイトの解放"
+      "title": "スマートウォッチを用いた高度な歩行指標（歩行解析）の推定に関する研究"
     },
     {
       "canonical_url": "https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/",
@@ -775,11 +799,11 @@
       "id": "959950fb3112cd31dd7cc62f904fcbda55358305e62277e3c32418ed9ecac0f6",
       "llm_input_truncated": true,
       "path": "notes/959950fb3112cd31dd7cc62f904fcbda55358305e62277e3c32418ed9ecac0f6.md",
-      "processed_at": "2026-10-07T01:35:27.885271+00:00",
+      "processed_at": "2026-10-10T01:47:45.672402+00:00",
       "published": "2025-11-18",
-      "sha256": "89bac80fe8ecdc52f5a978b901ea691e42a50b13f86f2b8e37b8aa8a1b94d1eb",
+      "sha256": "4ea00be1bc476cf827bdc3500a4726fde0277c18b317f766dd31d225b2888928",
       "source_id": "google-research",
-      "title": "Generative UI: 任意のプロンプトに対してリッチでカスタムなビジュアル対話型のユーザー体験を提供"
+      "title": "Generative UI: 任意のプロンプトに対してリッチでカスタムなビジュアルインタラクティブユーザー体験を実現"
     },
     {
       "canonical_url": "https://research.google/blog/introducing-gist-the-next-stage-in-smart-sampling/",
@@ -828,6 +852,18 @@
       "sha256": "d6c351bf3665a19ea8e0a3cc0ebcaf7c7c38fc66acc78f13a049d786697fee61",
       "source_id": "google-research",
       "title": "小さなモデルで大きな成果を：タスクの分解による優れた意図抽出の実現"
+    },
+    {
+      "canonical_url": "https://research.google/blog/does-better-work-always-mean-better-workers/",
+      "category": "ai-llm",
+      "id": "9aedd3694bfff0e09dcbb41c7d63f37c7844ba9e965b610cab92e76c6090ef78",
+      "llm_input_truncated": true,
+      "path": "notes/9aedd3694bfff0e09dcbb41c7d63f37c7844ba9e965b610cab92e76c6090ef78.md",
+      "processed_at": "2026-10-10T01:47:28.866186+00:00",
+      "published": "2026-10-07",
+      "sha256": "d17f4a33a41a66c4817e5d6b2a14d53c7ad7057005432edd247761f9bc9d57c7",
+      "source_id": "google-research",
+      "title": "より良い仕事は、より優れた労働者を育てるのか？"
     },
     {
       "canonical_url": "https://research.google/blog/a-low-carbon-computing-platform-from-your-retired-phones/",
@@ -907,11 +943,11 @@
       "id": "a6acd7eed5eea81bdac7ca0ba1e69dab0a6c2ac238a77da25807f9eb7496d920",
       "llm_input_truncated": true,
       "path": "notes/a6acd7eed5eea81bdac7ca0ba1e69dab0a6c2ac238a77da25807f9eb7496d920.md",
-      "processed_at": "2026-10-07T01:33:50.917381+00:00",
+      "processed_at": "2026-10-10T01:46:51.771080+00:00",
       "published": "2026-10-05",
-      "sha256": "b7a3f33f5c50db2f5202e0648caa2cb2b227b8f36158e2f9adbc059acf964c67",
+      "sha256": "bff80af574b50c21517106fdb170a0eb1c8916ea24c00f44efe027609bc9e2c0",
       "source_id": "github-blog",
-      "title": "ReviewBench: AIコードレビューのためのオープンベンチマーク"
+      "title": "ReviewBench: AIコードレビューのためのオープンなベンチマーク"
     },
     {
       "canonical_url": "https://research.google/blog/reasoningbank-enabling-agents-to-learn-from-experience/",
@@ -1003,11 +1039,11 @@
       "id": "b43f44332a29c2ae866f418a9996bb3f9030b46d88e7376ea8007f42658931a6",
       "llm_input_truncated": true,
       "path": "notes/b43f44332a29c2ae866f418a9996bb3f9030b46d88e7376ea8007f42658931a6.md",
-      "processed_at": "2026-10-07T01:35:07.333408+00:00",
+      "processed_at": "2026-10-10T01:49:02.409136+00:00",
       "published": "2026-08-12",
-      "sha256": "66d729d9d94c6dfb7752aa80525cfa6eeadf1d0248009fe108a30d0ec14d3811",
+      "sha256": "e66dd11967f9c361b434f9c99e7a5cc31afa5d6fdc02137d35237623a4b084e4",
       "source_id": "google-research",
-      "title": "空の棚か失くした鍵か：パラメータ的事実性におけるボトルネックは「思い出し（リコール）」である"
+      "title": "空の棚か失くした鍵か：パラメータ的事実性におけるボトルネックは「思い出し」にある"
     },
     {
       "canonical_url": "https://research.google/blog/exploring-a-space-based-scalable-ai-infrastructure-system-design/",
@@ -1063,11 +1099,11 @@
       "id": "b8eddf3f31195b49a8b9ad847fff69fbedca9eb41df43680050d836637ad32cf",
       "llm_input_truncated": true,
       "path": "notes/b8eddf3f31195b49a8b9ad847fff69fbedca9eb41df43680050d836637ad32cf.md",
-      "processed_at": "2026-10-07T01:33:18.145794+00:00",
+      "processed_at": "2026-10-10T01:48:16.022273+00:00",
       "published": "2026-09-03",
-      "sha256": "cf5f65e01b984be8adacae49052a650c2699f56810281d78566efc818533d302",
+      "sha256": "0e4a0a39ec1e121bddf82b5bf91bcddf80b219b2903dc1ea64d0ed5b68b403f2",
       "source_id": "google-research",
-      "title": "表現人口の少ない集団におけるゲノム予測の転移学習"
+      "title": "過小評価されている集団におけるゲノム予測のための転移学習"
     },
     {
       "canonical_url": "https://research.google/blog/new-framework-for-auditing-machine-unlearning/",
@@ -1147,9 +1183,9 @@
       "id": "c32c28e7e68da9c486e1f03d0ca3e17c4eafd0f38779022461438800d9dd6e49",
       "llm_input_truncated": true,
       "path": "notes/c32c28e7e68da9c486e1f03d0ca3e17c4eafd0f38779022461438800d9dd6e49.md",
-      "processed_at": "2026-10-04T00:39:32.470836+00:00",
+      "processed_at": "2026-10-10T01:48:34.336052+00:00",
       "published": "2026-09-28",
-      "sha256": "ad16b372a5c6bfb7525ebbbc7ba96d62f212db46738d1a773e0b8d3343e2aec2",
+      "sha256": "d2f32f811c3a8b1d3961eebee4a783cd0b5571f6e245ee185ccdc5f0c18d0839",
       "source_id": "github-blog",
       "title": "オープンソースのAIセキュリティエージェントを使用して24件のAndroid脆弱性を発見した方法"
     },
@@ -1171,11 +1207,11 @@
       "id": "cae5ea92fa95fb2eb02f2873745ac18969259aafe0acaf16fad72dc0a307bc04",
       "llm_input_truncated": true,
       "path": "notes/cae5ea92fa95fb2eb02f2873745ac18969259aafe0acaf16fad72dc0a307bc04.md",
-      "processed_at": "2026-10-06T02:21:44.432626+00:00",
+      "processed_at": "2026-10-10T01:46:12.421734+00:00",
       "published": "2026-09-10",
-      "sha256": "354f777af12dc094c49d028bafa1bd06ae1836671f1e7ae5fd52e7aa0cf878f6",
+      "sha256": "ba501ca763181588c27408428aefcc158d09a574143a49ecc9aa92aaee29dc43",
       "source_id": "google-research",
-      "title": "ToolGrad：テキスト「勾配」を活用した効率的なツール利用データセット生成"
+      "title": "ToolGrad：テキスト「勾配」を活用した効率的なツール利用データセット生成フレームワーク"
     },
     {
       "canonical_url": "https://research.google/blog/an-ai-tool-for-prioritizing-candidate-biomarkers-from-wearable-sensor-data/",
@@ -1183,11 +1219,11 @@
       "id": "d421d6273f8206a0a52463f792b4fbb84bc2be92cf6e19578b272bc9a4b28f94",
       "llm_input_truncated": true,
       "path": "notes/d421d6273f8206a0a52463f792b4fbb84bc2be92cf6e19578b272bc9a4b28f94.md",
-      "processed_at": "2026-10-07T01:34:23.962161+00:00",
+      "processed_at": "2026-10-10T01:47:19.316214+00:00",
       "published": "2026-08-21",
-      "sha256": "4d8bf3d7aa19e02be06254e1d541d629532cfe8ae8334e357919f2538ee0ec27",
+      "sha256": "57040ddc31c6df3858e78e15eec4be88b35c2c3bfc11297d61a1f3a71c07d6da",
       "source_id": "google-research",
-      "title": "ウェアラブルセンサーデータからの候補バイオマーカー優先順位付けのためのAIツール"
+      "title": "ウェアラブルセンサーデータからの候補バイオマーカーの優先順位付けを行うAIツール"
     },
     {
       "canonical_url": "https://research.google/blog/neuralgcm-harnesses-ai-to-better-simulate-long-range-global-precipitation/",
@@ -1267,11 +1303,11 @@
       "id": "e94b933fd023ad7b9fc7fbc0c35b50d4d3e91d2b5333c411c867e497ab4d6e02",
       "llm_input_truncated": true,
       "path": "notes/e94b933fd023ad7b9fc7fbc0c35b50d4d3e91d2b5333c411c867e497ab4d6e02.md",
-      "processed_at": "2026-10-07T01:35:12.535614+00:00",
+      "processed_at": "2026-10-10T01:47:35.507356+00:00",
       "published": "2026-04-03",
-      "sha256": "a59c9f79883f6fdc7c3a750fb2877eedffc7c08fc6d4179522771036e3f8a32e",
+      "sha256": "5317045ac0c268254c8fc094645eebb3378ff001bcec3f139f3c9c11b8271b5a",
       "source_id": "google-research",
-      "title": "大規模言語モデルにおける行動特性の整合性評価"
+      "title": "大規模言語モデル（LLM）における行動的気質の整合性評価"
     },
     {
       "canonical_url": "https://research.google/blog/research-into-how-ai-can-help-users-understand-skin-conditions/",
@@ -1291,11 +1327,11 @@
       "id": "eda8d99988c8e455a30f746ad5e6f7dd080d471605abce77ca672fa975f94137",
       "llm_input_truncated": false,
       "path": "notes/eda8d99988c8e455a30f746ad5e6f7dd080d471605abce77ca672fa975f94137.md",
-      "processed_at": "2026-10-07T01:32:52.779150+00:00",
+      "processed_at": "2026-10-10T01:47:59.678401+00:00",
       "published": "2026-01-28",
-      "sha256": "93a3e1099e1de66dea428013f01073ec6a70144a6121c97296579cdd570c9c91",
+      "sha256": "5e030a564d9ac0755a22b22ac0c3b60589ce16bb45715f701b64d69d7421b16a",
       "source_id": "google-research",
-      "title": "AIエージェントシステムのスケーリング科学に向けて：エージェントシステムが機能する条件とその理由"
+      "title": "エージェントシステムのスケーリングに関する科学に向けて：エージェントシステムはいつ、なぜ機能するのか"
     },
     {
       "canonical_url": "https://research.google/blog/toward-provably-private-learning-from-federated-data/",
@@ -1303,9 +1339,9 @@
       "id": "edecf53bbb5ee9a2b59b59c4bfe1722346cdd54432b5a8d1c7db312293453f1d",
       "llm_input_truncated": true,
       "path": "notes/edecf53bbb5ee9a2b59b59c4bfe1722346cdd54432b5a8d1c7db312293453f1d.md",
-      "processed_at": "2026-10-05T00:58:17.786785+00:00",
+      "processed_at": "2026-10-10T01:46:26.012799+00:00",
       "published": "2026-10-02",
-      "sha256": "b98dcc3326016fc76270a39960772489d0d2018335eca605bf0afe9b4b6e86ce",
+      "sha256": "2c9f634e4e52bf50783a60374744473c6a68b4678fe6617b1b90e25bf7772b34",
       "source_id": "google-research",
       "title": "連合データからの証明可能なプライベート学習に向けて"
     },
@@ -1327,9 +1363,9 @@
       "id": "efd6cd0a24df8801a81a02ad6b0f8f34580165a750feb52462c3e8abba3ca757",
       "llm_input_truncated": true,
       "path": "notes/efd6cd0a24df8801a81a02ad6b0f8f34580165a750feb52462c3e8abba3ca757.md",
-      "processed_at": "2026-10-07T01:35:19.556386+00:00",
+      "processed_at": "2026-10-10T01:47:41.205542+00:00",
       "published": "2026-03-11",
-      "sha256": "c8f43533ceb51aaae24641416e2e8d50de49553fc1a35b47826efd65c8e4d9e7",
+      "sha256": "be8f78bca1cbe935660dbbd14a0aa520a39a3cc765c6eebf4072cb92c9e7d547",
       "source_id": "google-research",
       "title": "実際の臨床研究における対話型診断AIの実現可能性の検証"
     },
@@ -1339,11 +1375,11 @@
       "id": "eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419",
       "llm_input_truncated": true,
       "path": "notes/eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419.md",
-      "processed_at": "2026-10-08T01:56:17.696020+00:00",
+      "processed_at": "2026-10-10T01:49:08.101544+00:00",
       "published": "2026-08-26",
-      "sha256": "962004b88359a3c611e30cc12bb441f6840e175eba0a539562509535e08ada89",
+      "sha256": "ce271417b252a109d5af1fc036af261bed3de5a8c56a738283d180c505723c8f",
       "source_id": "google-research",
-      "title": "GlucoFM：持続血糖測定（CGM）のための基盤モデル"
+      "title": "GlucoFM：持続血糖測定（CGM）向け基盤モデル"
     },
     {
       "canonical_url": "https://research.google/blog/collaborating-on-a-nationwide-randomized-study-of-ai-in-real-world-virtual-care/",
@@ -1363,11 +1399,11 @@
       "id": "f4a65d3696ddee23531e2ed23c7ea45f957f5d5cceb24c08f18188e392c93368",
       "llm_input_truncated": true,
       "path": "notes/f4a65d3696ddee23531e2ed23c7ea45f957f5d5cceb24c08f18188e392c93368.md",
-      "processed_at": "2026-10-07T01:33:24.136308+00:00",
+      "processed_at": "2026-10-10T01:48:20.786581+00:00",
       "published": "2026-03-24",
-      "sha256": "903cceb0889e5ac9af954018e7b6cb5c231896db64ce81b02f4e16547f5fd86d",
+      "sha256": "a5320f7e499698ed54fd9f09b9bba57df98b328b3fa7bea5b6a088b1ee80f8f2",
       "source_id": "google-research",
-      "title": "TurboQuant：極端な圧縮によるAI効率の再定義"
+      "title": "TurboQuant: 極限圧縮によるAI効率の再定義"
     },
     {
       "canonical_url": "https://research.google/blog/ds-star-a-state-of-the-art-versatile-data-science-agent/",
@@ -1423,9 +1459,9 @@
       "id": "fb1990a1c9b60b7b00c0e248cb0290c5653afb4bbe77eeda42081a8d0bf71198",
       "llm_input_truncated": true,
       "path": "notes/fb1990a1c9b60b7b00c0e248cb0290c5653afb4bbe77eeda42081a8d0bf71198.md",
-      "processed_at": "2026-10-08T01:59:16.595711+00:00",
+      "processed_at": "2026-10-10T01:48:46.461114+00:00",
       "published": "2026-01-27",
-      "sha256": "cbd1f4e9776d5c9cde472464fed9265741e8ad72f50864eb882f5f4d2b3debab",
+      "sha256": "13bbccc40c89b247d97d25e89fc127222c89b87fbc930906c08fa143d383c064",
       "source_id": "google-research",
       "title": "ATLAS：多言語モデルのための実践的スケーリング則"
     },
