@@ -2,9 +2,10 @@
 
 今回のゴールは、Batch事前検証・画像組立・公開snapshot・Web成果物の責務を分離し、
 既存の保存・復旧・公開契約を維持してローカル実装・検証とレビュー可能な差分の提示まで完了することです。
-実装とローカル回帰検証は完了しました。追加承認に基づき、PR作成・CI確認・マージと
-最新の固定content commitからのPages本番更新・配信版照合へ進みます。
-実環境のBatch preflightは読取り専用で実施し、新規の有料収集・Batch提出は行いません。
+実装とローカル回帰検証は完了しました。追加承認に基づき[PR #131](https://github.com/Ningensei848/kaname/pull/131)を
+CI成功後に取り込み、最新の固定content commit 124件からのPages本番更新・全元Markdown配信照合と、
+読取り専用Batch preflightのready判定まで完了しました。新規の有料収集・Batch提出は行っていません。
+本番操作の証拠は[PR・本番受入記録](archive/2026-10/domain-refactoring-production-2026-10-10.md)にあります。
 検証済み範囲の正本は[検証・受入](verification.md)です。
 
 ## 採用する変更

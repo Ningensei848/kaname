@@ -8,6 +8,7 @@
 
 | 履歴 | 内容 |
 |---|---|
+| [責務整理のPR・本番受入](2026-10/domain-refactoring-production-2026-10-10.md) | PR/CI、固定124件版のPages更新・配信照合、読取り専用preflight ready |
 | [責務整理のローカル検証](2026-10/domain-refactoring-2026-10-10.md) | Batch・画像・公開/Web分離の回帰と固定Git版受入 |
 | [旧R1〜R5計画](2026-10/refactoring-plan-r1-r5.md) | 完了済みの着手順・依存条件・当時の引継ぎ |
 | [旧公開工程計画](2026-10/publication-implementation-plan.md) | 初回export/Git/Pagesの工程別計画 |
