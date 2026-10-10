@@ -5,7 +5,7 @@ import argparse
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes", "publish-notes"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes", "publish-notes"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
     parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run, sync and export")
@@ -36,7 +36,7 @@ def validate_args(args, app):
         if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
             raise ValueError("--max-calls must reduce the configured limit")
         app.llm.max_calls_per_run=args.max_calls
-    if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "notify", "batch-status", "batch-inspect", "export-notes"}:
+    if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "export-notes"}:
         raise ValueError("--state-dir requires a command supporting read-only snapshots")
     if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:
         raise ValueError("--apply requires refresh-metadata, notify or raw-lifecycle")

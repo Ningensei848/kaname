@@ -141,6 +141,32 @@ unknown usageの件数は残り、請求照合完了を意味しません。
 具体的な提出・回収・再実行・費用推計は[#94の準備記録](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
 独立workflowの実WIF拒否と修正は[修正記録](archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
 
+### Source Healthの読取り
+
+```bash
+python -m techkb source-health
+python -m techkb source-health --state-dir /path/to/private-snapshot
+```
+
+source設定、保存済みrun、index、pendingからJSONを返します。GCSまたはローカルsnapshotの読取りだけを行い、
+記事取得・Gemini呼出し・状態更新・通知・公開は行いません。Gemini API keyは不要です。
+出力はsource ID、状態、UTC時刻、件数だけで、記事URL・本文・run/台帳ID・認証情報を含みません。
+`status=success`と終了コード0は読取りの成功で、収集元の状態は`health`で判定します。
+
+- 全体の`health`は`healthy`、`degraded`、`unverified`、全source無効時の`disabled`。
+- 各sourceは`healthy`、`failing`、`incomplete`、`unverified`、`disabled`。
+  連続失敗はsourceの明示的な完了でresetし、全体のsuccessや上限到達による未完了では維持します。
+- `last_success_at`は当該sourceが明示的に全処理を完了したrunの開始時刻です。
+  `last_note_saved_at`は成功index行の最新保存時刻で、部分的な成功も確認できます。
+- `success_rows`は当該sourceの全成功index行数（過去版を含む）、`pending_candidates`は現在の保留候補数です。
+- `latest_run_counts`は当該sourceの最新収集runにある`discovered`、`saved`、`recovered`、
+  `batch_submitted`、`batch_saved`。発見はfeed/listing解析後、pendingとの重複整理前の件数です。
+  `recovered`と`batch_saved`は`saved`の内数です。発見0と発見記録不明を区別し、
+  source別の件数がない過去runは`null`を返します。全体件数を各sourceへ割り当てません。
+
+無効化したsourceの過去記録も表示します。dry-runとBatch課金専用runはhealth履歴から除外します。
+このCLIはNote/receiptの整合性auditと確定請求照合とは別の、source運用状態の表示です。
+
 ### 既存Batchの読取り診断
 
 `BATCH_ID`へ確認対象の台帳ID（`YYYYMMDDTHHMMSSZ-xxxxxxxx`形式）を設定してから使います。

@@ -161,6 +161,8 @@ class BatchManager:
         job['name']=created.name; job['status']='submitted'
         self.persist(name,job)
         report.batch_submitted+=len(prepared)
+        for item, _ in prepared:
+            report.count_source(item['source']['id'], 'batch_submitted')
 
     def bind(self,ledger_id,job_name):
         if not re.fullmatch(r'\d{8}T\d{6}Z-[0-9a-f]{8}',ledger_id):
@@ -263,6 +265,7 @@ class BatchManager:
                                          json.dumps(outcome['receipt'],ensure_ascii=False).encode(),'application/json')
                         save_receipt(outcome['receipt'],state,dedupe,report)
                         report.batch_saved+=1
+                        report.count_source(item['source']['id'], 'batch_saved')
                     done.add(item['candidate']['url'])
                 item['status']='done'
                 self.persist(name,job)

@@ -48,11 +48,14 @@ Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distr
 標準経路のレビュー指摘F1〜F6、通常schedule、実切戻し・復帰、[リファクタリング計画](docs/refactoring-plan.md)のR1〜R5は完了しています。
 未完了の作業は次の順で進めます。詳細な開始条件と判断事項は[次の作業](docs/next-work.md)にあります。
 
-1. [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127)：新規Noteへの画像配置とGit/Pagesの検証。画像は出典URLから直接表示する。
-2. 現行文書の整合性：完了済みのschedule・切戻し・リファクタリングを未完了扱いしない。
-3. [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94)：2026-10-10の読取り専用事前検査はready。次は有料提出の個別承認と、最大1件の成功保存・復旧・費用照合。
+1. [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127)：実装とGit/Pagesの回帰検証はPR #128で取込済み。画像入り実Noteの本番受入が残る。画像は出典URLから直接表示する。
+2. 現行文書の整合性：PR #128で更新済み。実行開始・実装完了・本番受入を区別して記録する。
+3. [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94)：個別承認した最大1件を提出したがschema不適合で保存0。失敗usage回収・台帳完了化・auditは完了し、成功保存の本番受入は未完了。[実行記録](docs/archive/2026-10/batch-acceptance-2026-10-10.md)を参照。
 4. [#116 請求照合](https://github.com/Ningensei848/kaname/issues/116)：確定明細がないため今回は待機。利用可能な確定請求期間と明細を指定して推計と照合する。
-5. [バックログ](docs/roadmap.md)：source health、代表サイトの回帰corpus、並列収集、graph品質。browser sourceや利用者Vault/NTFSの受入は対象を指定してから進める。
+5. [バックログ](docs/roadmap.md)：source healthは読取り専用CLIを追加。代表サイトの回帰corpus、並列収集、graph品質へ続く。browser sourceや利用者Vault/NTFSの受入は対象を指定してから進める。
+
+収集元の状態は`python -m techkb source-health`でJSON表示できます。
+最終成功・連続失敗・source別の発見/保存件数・pendingを確認します。詳細は[運用手順](docs/operations.md#source-healthの読取り)へ。
 
 ## 公開するもの
 

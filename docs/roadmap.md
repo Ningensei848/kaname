@@ -44,7 +44,7 @@
 ## 継続する後続の必須項目
 
 - [ ] Parallel Processing — parallel fetch/convert + single state writer。
-- [ ] Source Health Check — 最終成功・連続失敗・発見/処理件数。
+- [x] Source Health Check — 読取り専用`source-health` CLIのJSONで最終成功・連続失敗・source別発見/保存件数・pendingを表示。旧runの件数不明はnull。運用手順を参照。
 - [ ] Regression Corpus — 代表サイトfixtureと変換差分検出。
 - [ ] Knowledge Graph Quality — 表記揺れ・同義語・タグ・WikiLink品質評価。
 

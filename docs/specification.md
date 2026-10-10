@@ -69,6 +69,11 @@ Pagesの表示中のcommit/digestを確認でき、利用側も同じ版を取�
 成功TSVを通常の重複排除の正本にし、失敗hashを成功登録しません。
 receiptで保存途中から復旧し、記事ごとにindexをcheckpointします。
 
+Source Healthは非公開state/runを読むCLIのJSONとして提供します。
+sourceの明示的完了を最終成功とstreak resetの根拠とし、未完了・dry-run・Batch課金runを区別します。
+新しい収集runはsource別の発見・保存・復旧・Batch提出/保存件数も記録します。
+旧runのsource別件数不明はnullで表示し、記事取得・LLM呼出し・状態更新・通知・公開は行いません。
+
 export・Git配布・Pages buildは既存成功Noteを使い、記事再取得・追加LLM呼出し・GCS更新を行いません。
 配布やWebの失敗は収集の成功状態を巻き戻しません。再試行は同じsnapshotを再利用します。
 直接syncは互換機能として既存Note/候補を保持します。submodule更新の実装として流用しません。
