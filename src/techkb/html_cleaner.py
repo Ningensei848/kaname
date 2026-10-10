@@ -21,7 +21,7 @@ def clean_html(raw: bytes) -> bytes:
     soup = BeautifulSoup(raw, "html.parser")
     for tag in soup.find_all(REMOVE):
         tag.decompose()
-    # Keep image alt text, but no external image requests in Obsidian.
+    # Keep alt text for conversion; image candidates are handled separately.
     for image in soup.find_all("img"):
         image.replace_with(image.get("alt", ""))
     return str(soup).encode("utf-8")

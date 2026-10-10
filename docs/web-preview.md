@@ -32,7 +32,9 @@ npm run audit
 ```
 
 ブラウザ検証はfixture専用です。desktop/mobileの幅、検索結果からの移動、全ローカルリンク、
-Note本文・出典・打切り表示、元Markdownのhash、外部resource要求0を検証します。
+Note本文・出典・打切り表示、元Markdownのhash、許可していない外部resource要求0を検証します。
+画像付きNoteでは、公開Noteにある画像URLのレスポンスだけを検証内で代用して実Chromiumの表示を確認します。
+検証は出典サイトへ画像を取得しに行きません。本番閲覧では当該Noteの画像hostへの画像通信が発生します。
 SSGのHTML/検索index/CSS/JS/日本語フォントは同じartifactから配信します。CDN、analytics、コメント、
 外部embed、動的OG生成は使いません。CSPで外部resource接続とframe/objectを制限します。
 `/kaname/`用のbody属性を補い、Quartz v5.0.0とcommunity searchのbase pathの差を吸収します。

@@ -20,6 +20,9 @@ HTTP記事取得、Gemini、GCS書込み、Vault操作、Git push、Pages deploy
 成功indexからだけ選択し、pending、失敗row、未登録receipt、raw、run reportを入力Noteにしません。
 全成功rowのNote/receiptが一致することを確かめ、選ばれた公開版はcompact構造とfrontmatterの許可fieldで検査します。
 元のNote bytesを保持し、IDや配布情報はmanifestへ書きます。
+新規Noteの任意field `article_images` は、選んだ画像の候補ID・HTTPS URL・alt・配置を保持します。
+最大6件の画像Markdownと指定位置の一致を検査し、未登録の画像・認証/署名付きURLは拒否します。
+画像ファイルはsnapshotに含めません。旧Noteの構造とbytesは変更しません。
 既存の12列indexと、thinking/truncation列を持つ現行indexを読み取れます。
 打切り注意表示の導入前に作られたcompact Noteは、truncation flagがtrue、上限fieldがなく、
 旧形式のheader/AI要約/全sectionが一致する場合だけ受け入れます。実データでは4件が該当しました。

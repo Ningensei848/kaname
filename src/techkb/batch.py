@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from google.genai import types, errors
 from pydantic import ValidationError
 from .composer import compose, word_count
+from .images import image_context
 from ._receipts import build_receipt
 from .gemini import response_usage, validate_response
 from .pending import Candidate
@@ -114,15 +115,19 @@ class BatchManager:
     def persist(self, name, job):
         self.store.write(name,json.dumps(job,ensure_ascii=False).encode(),'application/json')
 
-    def prepare(self,candidate,source,markdown,canon,rh,ch,authors):
+    def prepare(self,candidate,source,markdown,canon,rh,ch,authors,image_candidates=()):
         metadata=dict(title=candidate.title[:1000],source=source.name,authors=authors,
-                      published_at=candidate.published_at,llm_input_truncated=len(markdown)>self.gemini.config.max_input_chars)
+                      published_at=candidate.published_at,image_candidates=image_context(image_candidates),
+                      llm_input_truncated=len(markdown)>self.gemini.config.max_input_chars)
         content,config=self.gemini.request(metadata,markdown)
         request=types.InlinedRequest(contents=[types.Content(role='user',parts=[types.Part(text=content)])],
                                      config=config,metadata={'key':ch})
         item=dict(candidate=candidate.row(),source=dict(id=source.id,name=source.name,tags=source.tags),
                   canon=canon,rh=rh,ch=ch,authors=authors,word_count=word_count(markdown),
                   truncated=metadata['llm_input_truncated'],status='pending')
+        if image_candidates:
+            item['image_candidates'] = [{key: image[key] for key in ('image_id', 'url', 'alt')}
+                                        for image in image_candidates]
         return item,request
 
     def submit(self, prepared, app, report):
@@ -211,7 +216,8 @@ class BatchManager:
                         outcome['receipt']=build_receipt(candidate,source,enrichment,'',item['canon'],fetched_at,
                                                          item['rh'],item['ch'],job['model'],item['truncated'],
                                                          item['authors'],usage,input_char_limit=job['input_char_limit'],
-                                                         source_word_count=item['word_count'],compose_note=compose)
+                                                         source_word_count=item['word_count'],compose_note=compose,
+                                                         image_candidates=item.get('image_candidates', ()))
                     except Exception as exc:
                         outcome['error']=type(exc).__name__
                         outcome['diagnostics']=failure_diagnostics(exc, phase, response)

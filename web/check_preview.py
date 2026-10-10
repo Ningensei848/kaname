@@ -11,6 +11,7 @@ from playwright.sync_api import sync_playwright, expect
 from serve import WEB, server
 from techkb.site import load_artifact
 from techkb.publication import sha256
+from image_acceptance import approved_images, image_guard, check_images
 
 
 def check(artifact, screenshots=None):
@@ -18,20 +19,20 @@ def check(artifact, screenshots=None):
     if marker["fixture"] is not True:
         raise ValueError("fixture_required")
     manifest = json.loads(files["markdown/manifest.json"])
+    note_files = {name.removeprefix('markdown/'): data for name, data in files.items() if name.startswith('markdown/')}
+    image_entries = approved_images(manifest, note_files)
+    approved = {image['url'] for images in image_entries.values() for image in images}
     httpd = server(artifact, 0)
     thread = Thread(target=httpd.serve_forever, daemon=True); thread.start()
     origin = f"http://127.0.0.1:{httpd.server_port}"
     home = origin + "/kaname/"
-    errors, external = [], []
+    errors, external, image_requests = [], [], []
     try:
         with sync_playwright() as runtime:
             browser = runtime.chromium.launch()
             context = browser.new_context(viewport={"width": 1440, "height": 1000})
             def guard(route):
-                if route.request.url.startswith(origin + "/"):
-                    route.continue_()
-                else:
-                    external.append(route.request.url); route.abort()
+                image_guard(route, origin, approved, external, image_requests)
             context.route("**/*", guard)
             page = context.new_page()
             page.on("pageerror", lambda error: errors.append(str(error)))
@@ -62,6 +63,7 @@ def check(artifact, screenshots=None):
                 page.goto(home + "notes/" + entry["id"])
                 expect(page.locator("h1.article-title")).to_have_text(entry["title"])
                 expect(page.locator(".source-link")).to_have_attribute("href", entry["canonical_url"])
+                check_images(page, image_entries[entry['id']])
                 link = page.get_by_role("link", name="Markdownを取得 ↗")
                 response = context.request.get(urljoin(page.url, link.get_attribute("href")))
                 assert response.ok and sha256(response.body()) == entry["sha256"]
@@ -95,6 +97,7 @@ def check(artifact, screenshots=None):
     finally:
         httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status="passed", notes=len(manifest["notes"]), browser="chromium", external_requests=0,
+                approved_image_requests=len(image_requests),
                 dataset_digest=marker["dataset_digest"])
 
 

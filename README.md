@@ -5,10 +5,10 @@ kanameは技術情報を収集・要約し、日々更新される生成Noteを�
 人力で構成するVaultは別リポジトリで管理し、その公開範囲・編集・コミュニティプラグイン設定は本プロジェクトの対象外です。
 
 標準経路の実装は完了しています。HTTPで収集・Geminiで要約し、非公開GCSの成功NoteをGitとPagesへ公開します。
-117件のNoteを[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)と
+生成Noteを[公開Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)と
 [GitHub Pages](https://ningensei848.github.io/kaname/)で参照できます。
 公開専用runで最新成功版への更新と全元Markdownのhash一致を確認しました。
-毎日07:17 JSTの通常収集後に公開する構成ですが、接続後の初回schedule実行はまだ確認していません。
+毎日07:17 JSTの通常収集後に公開します。通常scheduleの連続実行と履歴版への切戻し・復帰は2026-10-07に受入済みです。
 [日次公開手順](docs/daily-publication.md)に受入結果と再実行方法、[Pages手順](docs/pages.md)に切戻し方法を記載しています。
 決定の背景と旧仕様との差は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)に記録しています。
 
@@ -34,8 +34,9 @@ Pagesの構築に人力Vaultを読み込まず、本体の編集や公開を待�
 | 非同期Batch | 実装・offline検証済み。成功結果の実Note保存・audit/cost照合は未受入 |
 | 既存Vaultへの直接同期 | 互換機能。既存編集を保持し、更新候補を別保存 |
 | 公開export・Git配布・Pages | 117件の初回公開と最新成功版への実更新を受入。GitとWebの元Markdown hash一致 |
-| 日次公開・障害通知 | 収集→audit→export→Git→Pagesを接続。公開専用run成功。stage別Issue通知はmock検証済み |
-| 検証 | 全270テスト成功（実Chromiumを含む）。CIと公開前検査で継続確認 |
+| 日次公開・障害通知 | 通常scheduleの収集→audit→export→Git→Pagesを受入。stage別Issue通知はmock検証済み |
+| 記事画像 | 新規Noteで本文画像の候補ID・配置を選択し、出典のHTTPS画像を直接表示。既存Noteの再生成は行わない |
+| 検証 | 実Chromiumを含む全回帰と公開前検査を継続。実施ごとの結果は検証記録を参照 |
 | 人力Vaultのリポジトリ・プラグイン・公開設定 | 利用側で決定。本プロジェクトの対象外 |
 
 **既存の成功Noteを追加LLM呼出しなしでexportし、GitとWebで同じbytesを参照できます。**
@@ -44,25 +45,21 @@ Git取得・出版・利用側の編集保護は[Git配布手順](docs/git-distr
 
 ## 残っている確認と次の作業
 
-標準経路に対する確定済みのレビュー指摘F1〜F6は対応済みです。今回の公開を完成させるための追加実装はありません。
-次は通常scheduleの収集から公開までの初回実行を確認します。実切戻し、実Batchの成功保存、invoice照合、
-browser sourceや利用者Vault/NTFSでの受入は別に残っています。
-並列収集・source health・回帰corpus・graph品質は[バックログ](docs/roadmap.md)の後続機能です。
+標準経路のレビュー指摘F1〜F6、通常schedule、実切戻し・復帰、[リファクタリング計画](docs/refactoring-plan.md)のR1〜R5は完了しています。
+未完了の作業は次の順で進めます。詳細な開始条件と判断事項は[次の作業](docs/next-work.md)にあります。
 
-保守性の改善は[リファクタリング計画](docs/refactoring-plan.md)に沿って、小さいPRで次の順に進めます。
-
-1. 費用集計と通知を分離し、usage journalとreportの統合を整理。
-2. standard/BatchのNote作成を共通化し、課金・永続化の順序を明確にする。
-3. 公開snapshotの検証・整合読取り・原子的保存を分離。
-4. Webの版情報・artifact検査を共通化。
-5. CLIとworkflowの準備処理を、権限境界を保ちながら整理。
-
-CLI/GCS形式・Note bytes/ID・digest・公開URL・復旧順序は維持し、機能追加や依存更新は別PRにします。
+1. [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127)：新規Noteへの画像配置とGit/Pagesの検証。画像は出典URLから直接表示する。
+2. 現行文書の整合性：完了済みのschedule・切戻し・リファクタリングを未完了扱いしない。
+3. [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94)：mainの読取り専用事前検査、有料提出の個別承認、最大1件の成功保存・復旧・費用照合。
+4. [#116 請求照合](https://github.com/Ningensei848/kaname/issues/116)：利用可能な確定請求期間と明細を指定して推計と照合する。
+5. [バックログ](docs/roadmap.md)：source health、代表サイトの回帰corpus、並列収集、graph品質。browser sourceや利用者Vault/NTFSの受入は対象を指定してから進める。
 
 ## 公開するもの
 
 LLMが生成した有効なcompact Note群を公開します。AI要約、重要ポイント、検索語、資料の位置づけ、
 出典、モデル・入力打切り情報を含みます。記事原文・raw HTML、認証情報、運用のstate/receipt/run reportは配布しません。
+画像は記事のalt・キャプション・周辺テキストを根拠に選び、AI要約または関連する重要ポイント等の直後へ配置します。
+要約の300〜500字に画像指定を含めず、元記事の語数にも画像URLを加えません。閲覧時に出典サイトへの外部通信が発生します。
 GCS bucketの匿名公開は行わず、公開用NoteをGitへexportする境界を設けます。
 
 公開NoteとPagesは同じsnapshotを使い、Noteの識別子・版・出典を追跡できるようにします。

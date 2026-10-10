@@ -5,11 +5,12 @@ from .composer import compose
 def build_receipt(candidate, source, enrichment, markdown, canonical, fetched_at,
                   raw_hash, content_hash, model, truncated, authors, usage, *,
                   input_char_limit, source_word_count=None, usage_run_id=None,
-                  compose_note=compose):
+                  compose_note=compose, image_candidates=()):
+    image_kwargs = {"image_candidates": image_candidates} if image_candidates else {}
     note_object, note = compose_note(candidate, source, enrichment, markdown, canonical,
                                      fetched_at, raw_hash, content_hash, model, truncated, authors,
                                      input_char_limit=input_char_limit,
-                                     source_word_count=source_word_count)
+                                     source_word_count=source_word_count, **image_kwargs)
     row = dict(processed_at=fetched_at, source_id=source.id, source_url=candidate.url,
                canonical_url=canonical, published_at=candidate.published_at,
                raw_html_sha256=raw_hash, content_sha256=content_hash, status="success",

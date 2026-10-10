@@ -1,6 +1,7 @@
 import json
 import logging
 from .composer import compose
+from .images import article_images
 from ._receipts import build_receipt
 from ._standard import StandardRequest
 from .dedupe import Dedupe
@@ -136,9 +137,10 @@ class Pipeline:
                     canon = canonical_url(fetched.content, fetched.url, self.app.tracking_parameters)
                     authors = article_authors(fetched.content)
                     truncated = len(markdown) > self.app.llm.max_input_chars
+                    images = article_images(extracted, fetched.url, markdown[:self.app.llm.max_input_chars])
                     if self.app.llm.mode == "batch":
                         stage = "batch_prepare"
-                        prepared.append(batch.prepare(candidate, source, markdown, canon, rh, ch, authors))
+                        prepared.append(batch.prepare(candidate, source, markdown, canon, rh, ch, authors, images))
                         attempted_content.add(ch)
                         continue
                     stage = "llm"
@@ -146,7 +148,7 @@ class Pipeline:
                     attempted_content.add(ch)
                     request = StandardRequest(self.store, self.gemini, report)
                     try:
-                        enrichment, usage = request.enrich(candidate, source, markdown, truncated, authors)
+                        enrichment, usage = request.enrich(candidate, source, markdown, truncated, authors, images)
                     finally:
                         # Keep the original exception type and storage-failure stage.
                         stage = request.stage
@@ -156,7 +158,8 @@ class Pipeline:
                     receipt = build_receipt(candidate, source, enrichment, markdown, canon, fetched_at,
                                             rh, ch, self.app.llm.model, truncated, authors, usage,
                                             input_char_limit=self.app.llm.max_input_chars,
-                                            usage_run_id=report.run_id, compose_note=compose)
+                                            usage_run_id=report.run_id, compose_note=compose,
+                                            image_candidates=images)
                     stage = "receipt_save"
                     self.store.write(f"state/receipts/{ch}.json", json.dumps(receipt, ensure_ascii=False).encode("utf-8"), "application/json")
                     stage = "note_or_index_save"
