@@ -32,6 +32,7 @@ class Pipeline:
         state.append(row)
         dedupe.add(row)
         report.saved += 1
+        report.count_source(row['source_id'], 'saved')
 
     def run(self, dry_run=False):
         price = self.app.costs.prices.get(self.app.llm.model, {}).get(self.app.llm.mode)
@@ -54,6 +55,7 @@ class Pipeline:
                     receipt = json.loads(self.store.read(name))
                     self._save_receipt(receipt, state, dedupe, report)
                     report.recovered += 1
+                    report.count_source(receipt['row']['source_id'], 'recovered')
                     if not has_usage_record(self.store, receipt.get("usage_run_id")):
                         # Legacy receipts have no original price/run identity.
                         # Do not invent a billing date or claim complete costs.
@@ -74,6 +76,7 @@ class Pipeline:
                         entries = parse_listing(page.content, page.url, source, report.started_at, self.app.tracking_parameters)
                     discovered.extend(entries)
                     report.discovered += len(entries)
+                    report.count_source(source.id, 'discovered', len(entries))
                     feeds_complete[source.id] = {entry.url for entry in entries}
                 except Exception as exc:
                     report.fail("feed", source.id, str(source.feed_url or source.listing_url), exc)

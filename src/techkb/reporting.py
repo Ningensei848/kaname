@@ -5,6 +5,8 @@ import re
 from uuid import uuid4
 from .fetcher import audit_url
 
+SOURCE_COUNTERS = ('discovered', 'saved', 'recovered', 'batch_submitted', 'batch_saved')
+
 def now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -44,7 +46,14 @@ class RunReport:
     total_input_tokens: int = 0
     total_output_tokens: int = 0
     total_thinking_tokens: int = 0
+    source_counts: dict[str, dict[str, int]] = field(default_factory=dict)
     failures: list[dict] = field(default_factory=list)
+
+    def count_source(self, source_id, counter, count=1):
+        if counter not in SOURCE_COUNTERS or type(count) is not int or count < 0:
+            raise ValueError('invalid source counter')
+        counters = self.source_counts.setdefault(source_id, dict.fromkeys(SOURCE_COUNTERS, 0))
+        counters[counter] += count
 
     def fail(self, stage, source_id, url, exc):
         # Exception text can contain request bodies, keys or untrusted markup.

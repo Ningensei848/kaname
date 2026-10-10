@@ -19,6 +19,7 @@ from .batch import BatchManager, inspect_batch
 from .publication import export_notes, ExportDirectorySnapshot, ExportError
 from .distribution import publish_snapshot
 from ._cli_arguments import parse_args, validate_args
+from .source_health import source_health
 
 
 class _Dependencies:
@@ -103,6 +104,8 @@ def main(argv=None):
             store = dependencies.store()
             manager = BatchManager(store, None)
             return _json_result(dict(status="success", jobs=[dict(id=j['id'],name=j['name'],status=j['status'],items=len(j['items'])) for _,j in manager.jobs]), ensure_ascii=True)
+        if args.command == 'source-health':
+            return _json_result(source_health(dependencies.store(), sources))
         if args.command in {"cost-report", "notify", "raw-lifecycle"}:
             store = dependencies.store()
             if args.command == "cost-report":

@@ -65,6 +65,21 @@ schema検証で拒否されたことが保存0の直接原因です。生成側�
 後続standardで同候補が保存されても、元Batchの保存成功を意味しません。
 元の台帳/billingと読取りrunの証拠は[履歴の検証記録](archive/2026-10/verification.md)にあります。
 
+2026-10-10の個別承認後の最大1件提出も、必須`title_ja`欠落・未知field・`images`型不一致で拒否されました。
+API/診断workflowがsuccessでも、成功Note保存とBatch受入の完了を意味しません。
+本番prompt・完全schema・画像候補のSDK送信と不適合応答の拒否をローカルで確認しています。
+失敗後の追加提出0のusage回収・台帳完了化・auditを別途承認後に完了しました。
+実結果と未確定の原因は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
+
+## Source Healthの検証範囲
+
+ユーザー指定の読取り専用CLI JSONを追加しました。source別の最終完了・最新保存・連続失敗・
+発見/保存/復旧/Batch提出/Batch保存件数・pendingを表示します。旧runの件数不明はnullです。
+sourceの明示的完了だけでstreakをresetし、未完了・全体success・dry-run・Batch課金runを区別します。
+UTCに正規化した時刻順、無効source、部分失敗・復旧、秘密を含まない出力、CLIでHTTP/LLM clientを生成せず
+snapshotを変更しないことを確認しました。新しいsource別計数を加えた全Python回帰は**378 passed**。
+本番GCSで新しいCLIを実行したとは扱わず、使い方と各件数の意味は[運用手順](operations.md#source-healthの読取り)を参照してください。
+
 ## 継続する確定指摘
 
 | 指摘 | 状態 | 完了条件 |
