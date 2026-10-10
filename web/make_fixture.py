@@ -42,9 +42,15 @@ def make_fixture(output):
             positioning_ja="このNoteは画面検証のための架空データです。実在の記事の要約ではありません。",
             category=category, tags=[category, "preview"],
             related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方"], source_language="ja")
+        images = []
+        if n == 0:
+            from techkb.models import ImageSelection
+            enrichment.images = [ImageSelection(image_id='img-1', after='key_point_1')]
+            images = [dict(image_id='img-1', url='https://images.example.com/evaluation.png', alt='評価の流れ')]
         digest, raw = sha256(title.encode()), sha256(("synthetic:" + title).encode())
         name, note = compose(Candidate(at, source_id, url, title=title), source, enrichment,
-            "Synthetic fixture only.", url, at, raw, digest, "fixture-model", truncated, input_char_limit=20000)
+            "Synthetic fixture only.", url, at, raw, digest, "fixture-model", truncated, input_char_limit=20000,
+            image_candidates=images)
         row = dict(processed_at=at, source_id=source_id, source_url=url, canonical_url=url, published_at="",
             raw_html_sha256=raw, content_sha256=digest, status="success", note_object=name,
             llm_model="fixture-model", input_tokens=0, output_tokens=0, thinking_tokens=0,

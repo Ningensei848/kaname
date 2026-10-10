@@ -4,6 +4,15 @@
 日次の作業記録・run別の件数・旧受入手順は[履歴](archive/README.md)へ整理しました。
 この文書は現在の実装状態と完了の判定基準を示します。
 
+## 記事画像の検証範囲
+
+#127は今後収集するNoteに本文画像の候補選択・配置を追加します。方針と未完了の本番受入は[次の作業](next-work.md)にあります。
+standard/Batchの候補ID照合・画像URLを含めない語数・保存後のbytes一致・再実行/二重計上防止をofflineで検証します。
+公開検査は登録した画像Markdownと位置の一致を必須とし、未登録・移動・認証付き画像は拒否します。
+実Chromiumの画像表示は許可されたレスポンスだけを代用し、実際の外部画像取得は行いません。
+2026-10-10の全368テスト・画像付きfixture・固定公開content124件の検証は[画像対応の受入記録](archive/2026-10/article-images-2026-10-10.md)にあります。
+以下の過去の「外部resource要求0」は画像がない版の証拠です。画像付き版は承認された画像通信のみを例外とします。
+
 ## 現在の状態
 
 Pages実装の基点はmain `c1fc0b2a24277ecc651593d313b4bc669be148cf`（PR #103取込後）です。
@@ -15,7 +24,7 @@ AI/打切り表示、外部resource要求0を確認しています。手順・�
 | 領域 | 実装/検証 | 未完了 |
 |---|---|---|
 | standard収集 | Phase 1本番受入済み。既存日次workflow稼働 | F4/F5/F6はoffline修正検証済み。invoice照合 |
-| Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み。[事前検査と提出案](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)を準備。実WIFの認証拒否を受け[入口を修正](archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md) | main取込後のWIF事前検査、新規有料提出の個別承認、成功Note保存・audit/cost・再実行の本番受入 |
+| Batch | submit/復旧/安全な診断、固定SDKのoffline検証済み。[事前検査と提出案](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)を準備。実WIFの認証拒否を受け[入口を修正](archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)。2026-10-10のmainで[WIF/GCS読取り専用事前検査](archive/2026-10/batch-preflight-acceptance-2026-10-10.md)はready | 新規有料提出の個別承認、成功Note保存・audit/cost・再実行の本番受入。請求照合は確定明細がなく待機 |
 | 互換sync | PR #98取込済み。既存Note・候補・同時作成の保護を一時Vaultで検証 | Windows/NTFS、利用者環境。新しい標準経路の受入とは別 |
 | browser/抽出/フィルタ/lifecycle | 実装とfixture検証済み | 必要なbrowser sourceの実受入。raw retention未設定は適用不要 |
 | 共通公開snapshot | export/manifest実装、43件のoffline検証。実GCS117件のexportと通常scheduleの連続実行受入済み | — |

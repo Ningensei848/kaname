@@ -14,11 +14,14 @@ from techkb.pages import content_snapshot
 from techkb.site import load_artifact
 from techkb.publication import ExportError
 from techkb._web_validation import public_version_matches, snapshot_matches
+from image_acceptance import approved_images, image_guard, check_images
 
 
 def check(content, commit, artifact):
     manifest, original, _ = content_snapshot(content, commit)
     marker, files = load_artifact(artifact)
+    image_entries = approved_images(manifest, original)
+    approved = {image['url'] for images in image_entries.values() for image in images}
     if (not public_version_matches(marker, commit) or
             not snapshot_matches(marker, manifest, files, original)):
         raise ExportError('pages_provenance_mismatch')
@@ -52,16 +55,13 @@ def check(content, commit, artifact):
     thread = Thread(target=httpd.serve_forever, daemon=True); thread.start()
     origin = f'http://127.0.0.1:{httpd.server_port}'
     home = origin + '/kaname/'
-    errors, external = [], []
+    errors, external, image_requests = [], [], []
     try:
         with sync_playwright() as runtime:
             browser = runtime.chromium.launch()
             context = browser.new_context(viewport={'width': 1440, 'height': 1000})
             def guard(route):
-                if route.request.url.startswith(origin + '/'):
-                    route.continue_()
-                else:
-                    external.append(route.request.url); route.abort()
+                image_guard(route, origin, approved, external, image_requests)
             context.route('**/*', guard)
             page = context.new_page()
             page.on('pageerror', lambda error: errors.append(str(error)))
@@ -79,6 +79,10 @@ def check(content, commit, artifact):
                 expect(page.locator('.source-link')).to_have_attribute('href', entry['canonical_url'])
                 response = context.request.get(home + 'markdown/' + entry['path'])
                 assert response.ok and response.body() == original[entry['path']], 'pages_note_bytes_mismatch'
+            for entry in manifest['notes']:
+                if image_entries[entry['id']]:
+                    page.goto(home + 'notes/' + entry['id'])
+                    check_images(page, image_entries[entry['id']])
             page.goto(home + 'about/snapshot')
             expect(page.locator('article')).to_contain_text(commit)
             expect(page.locator('article')).to_contain_text(manifest['dataset_digest'])
@@ -94,7 +98,8 @@ def check(content, commit, artifact):
     finally:
         httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status='passed', notes=len(manifest['notes']), content_commit=commit,
-                dataset_digest=manifest['dataset_digest'], external_requests=0)
+                dataset_digest=manifest['dataset_digest'], external_requests=0,
+                approved_image_requests=len(image_requests))
 
 
 if __name__ == '__main__':

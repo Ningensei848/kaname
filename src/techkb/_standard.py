@@ -1,5 +1,6 @@
 """One standard request, with durable usage and its current failure stage."""
 from .usage import checkpoint
+from .images import image_context
 
 
 class StandardRequest:
@@ -7,7 +8,7 @@ class StandardRequest:
         self.store, self.gemini, self.report = store, gemini, report
         self.stage = "usage_reserve"
 
-    def enrich(self, candidate, source, markdown, truncated, authors):
+    def enrich(self, candidate, source, markdown, truncated, authors, image_candidates=()):
         report, gemini = self.report, self.gemini
         try:
             checkpoint(self.store, report, pending=True)
@@ -20,6 +21,7 @@ class StandardRequest:
             enrichment = gemini.enrich({"title": candidate.title[:1000], "source": source.name,
                                        "authors": authors,
                                        "published_at": candidate.published_at,
+                                       "image_candidates": image_context(image_candidates),
                                        "llm_input_truncated": truncated}, markdown)
         finally:
             usage = gemini.last_usage

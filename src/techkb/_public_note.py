@@ -8,6 +8,8 @@ import yaml
 from .composer import concept, inline, code_span
 from .normalize import normalize_url
 from ._publication_common import ExportError
+from .images import image_url, image_block, place_images
+from .models import ImageSelection
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -86,7 +88,7 @@ def validate_note(data, row, tracking, categories):
         reject_secrets(text)
         if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", text):
             raise ExportError("invalid_note")
-        if not FIELDS <= meta.keys() or meta.keys() - FIELDS - {"llm_input_max_chars"}:
+        if not FIELDS <= meta.keys() or meta.keys() - FIELDS - {"llm_input_max_chars", "article_images"}:
             raise ExportError("invalid_frontmatter")
         for value in meta.values():
             for part in value if isinstance(value, list) else [value]:
@@ -135,6 +137,37 @@ def validate_note(data, row, tracking, categories):
         prefix += "> [!abstract] AI要約\n" + "".join("> " + inline(line) + "\n" for line in meta["description"].splitlines())
         prefix += "\n## 重要ポイント\n\n"
         body = text[match.end():]
+        images = meta.get("article_images", [])
+        if not isinstance(images, list) or not 0 <= len(images) <= 6:
+            raise ExportError("invalid_article_images")
+        ids, urls = set(), set()
+        original_body = body
+        for image in images:
+            if (not isinstance(image, dict) or set(image) != {"image_id", "url", "alt", "after"} or
+                    any(not isinstance(v, str) for v in image.values())):
+                raise ExportError("invalid_article_images")
+            try:
+                ImageSelection.model_validate({k: image[k] for k in ("image_id", "after")})
+                if image_url(image["url"]) != image["url"]:
+                    raise ValueError("noncanonical_image_url")
+            except ValueError:
+                raise ExportError("invalid_article_images") from None
+            if (image["image_id"] in ids or image["url"] in urls or
+                    not image["alt"].strip() or len(image["alt"]) > 300 or UNSAFE.search(image["alt"])):
+                raise ExportError("invalid_article_images")
+            for value in image.values():
+                reject_secrets(value)
+            ids.add(image["image_id"]); urls.add(image["url"])
+            block = image_block(image)
+            if body.count(block) != 1:
+                raise ExportError("invalid_article_images")
+            body = body.replace(block, "", 1)
+        if images:
+            try:
+                if place_images(body, images) != original_body:
+                    raise ExportError("invalid_article_images")
+            except (ValueError, IndexError):
+                raise ExportError("invalid_article_images") from None
         # Before the input-scope notice was introduced, compact Notes stored
         # only the truncation flag. Recognize that exact earlier structure;
         # never invent a limit or strip arbitrary sections to make it pass.

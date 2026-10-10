@@ -5,6 +5,7 @@ import os
 from pathlib import Path, PurePosixPath
 import posixpath
 import re
+from urllib.parse import urlsplit
 
 import yaml
 from bs4 import BeautifulSoup
@@ -172,6 +173,8 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
                 f'<p>{html.escape(meta["publisher"])} · {html.escape(entry["category"])}</p>'
                 f'<a class="source-link" href="{html.escape(entry["canonical_url"], quote=True)}" '
                 'rel="noopener noreferrer">原典を読む ↗</a></div>\n\n')
+        if meta.get("article_images"):
+            lead += '> 画像は出典サイトから直接表示します。閲覧時に外部通信が発生し、画像の変更・削除により表示できなくなる場合があります。\n\n'
         front = dict(title=meta["title"], description=meta["description"], tags=meta["tags"],
                      created=entry["processed_at"], modified=entry["processed_at"],
                      published=entry["published"] or entry["processed_at"])
@@ -198,7 +201,7 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
     return projected
 
 
-def finish_html(compiled, manifest, fixture=False):
+def finish_html(compiled, manifest, fixture=False, files=None):
     entries = {e["id"]: e for e in manifest["notes"]}
     for path in compiled.rglob("*.html"):
         soup = BeautifulSoup(path.read_bytes(), "html.parser")
@@ -209,8 +212,26 @@ def finish_html(compiled, manifest, fixture=False):
         soup.body["data-basepath"] = "/kaname"
         for tag in soup.select('link[rel="preconnect"], link[rel="dns-prefetch"]'):
             tag.decompose()
+        entry = entries.get(path.stem) if path.parent.name == "notes" else None
+        images = []
+        if entry and files is not None:
+            images = note_frontmatter(files[entry['path']])[2].get('article_images', [])
+        approved = {image['url'] for image in images}
+        found = []
+        for tag in soup.select('img'):
+            url = tag.get('src', '')
+            if urlsplit(url).scheme in ('http', 'https'):
+                if url not in approved or tag.get('srcset'):
+                    raise ExportError('unexpected_article_image')
+                found.append(url)
+                tag['referrerpolicy'] = 'no-referrer'
+                tag['loading'] = 'lazy'
+        if sorted(found) != sorted(approved):
+            raise ExportError('missing_article_image')
+        origins = sorted({f'https://{urlsplit(url).netloc}' for url in approved})
+        image_policy = "img-src 'self' data:" + (" " + " ".join(origins) if origins else "") + "; "
         policy = ("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-                  "font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; "
+                  "font-src 'self'; " + image_policy + "connect-src 'self'; object-src 'none'; "
                   "frame-src 'none'; base-uri 'self'")
         soup.head.insert(0, soup.new_tag("meta", attrs={"http-equiv": "Content-Security-Policy", "content": policy}))
         if fixture:
@@ -219,7 +240,6 @@ def finish_html(compiled, manifest, fixture=False):
             banner = soup.new_tag("div", attrs={"class": "fixture-banner"})
             banner.string = "PREVIEW · 架空のNoteで表示を検証しています"
             soup.body.insert(0, banner)
-        entry = entries.get(path.stem) if path.parent.name == "notes" else None
         if entry:
             article = soup.find("article")
             if article is None:
@@ -240,7 +260,7 @@ def seal_artifact(compiled, manifest, files, fixture=False, content_commit=None)
         reject_symlinks(path)
         if path.is_file() and not artifact_path(path.relative_to(compiled).as_posix()):
             raise ExportError("unexpected_artifact_file")
-    finish_html(compiled, manifest, fixture)
+    finish_html(compiled, manifest, fixture, files)
     for name, data in files.items():
         destination = compiled / "markdown" / name
         destination.parent.mkdir(parents=True, exist_ok=True)

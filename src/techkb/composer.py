@@ -2,6 +2,7 @@ import re
 import unicodedata
 from urllib.parse import urlsplit
 import yaml
+from .images import selected_images, place_images
 
 def plain(value):
     return " ".join(str(value).split())
@@ -27,7 +28,7 @@ def filename(title, day, digest):
     return f"{day}_{value}_{digest[:12]}.md"
 
 def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_hash, content_hash, model, truncated,
-            authors=(), input_char_limit=None, source_word_count=None):
+            authors=(), input_char_limit=None, source_word_count=None, image_candidates=()):
     tags = []
     for tag in ["clippings", *source.tags, *enrichment.tags]:
         cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
@@ -43,6 +44,9 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
                     llm_input_truncated=truncated)
     if input_char_limit is not None:
         metadata["llm_input_max_chars"] = input_char_limit
+    images = selected_images(enrichment, image_candidates)
+    if images:
+        metadata["article_images"] = images
     sections = ["---", yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False).rstrip(), "---", "",
                 "# " + inline(enrichment.title_ja), ""]
     if truncated:
@@ -69,4 +73,8 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
                  "- Word count: " + str(word_count(markdown) if source_word_count is None else source_word_count),
                  "- AI model: " + inline(model)]
     name = filename(enrichment.title_ja, fetched_at[:10], content_hash)
-    return f"notes/{fetched_at[:4]}/{fetched_at[5:7]}/{name}", "\n".join(sections) + "\n"
+    note = "\n".join(sections) + "\n"
+    if images:
+        front, delimiter, body = note.partition("\n---\n")
+        note = front + delimiter + place_images(body, images)
+    return f"notes/{fetched_at[:4]}/{fetched_at[5:7]}/{name}", note
