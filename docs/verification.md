@@ -12,7 +12,7 @@
 | Batch | 提出・回収・診断・費用照合をoffline検証。読取り専用preflightの本番受入済み | 実提出はschema不適合で成功保存0。成功Note保存の本番受入は未完了 |
 | 記事画像 | 候補ID/URL/配置、standard/Batch、公開bytes、Chromium表示をoffline検証 | 画像入り実Noteの本番受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
-| Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰は受入済み | 責務整理のローカル検証は完了。本番反映は別途承認後 |
+| Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰は受入済み | 責務整理のローカル検証は完了。追加承認に基づき本番反映を確認する |
 | Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 新CLIの本番GCS読取りを実施したとは扱わない |
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
