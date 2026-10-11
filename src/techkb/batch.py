@@ -55,6 +55,32 @@ def preflight(store, app):
                 uncertain_runs=costs['uncertain_runs'], blockers=blockers)
 
 
+def image_response_shape(response):
+    """Describe only JSON types of the known image fields, never input values."""
+    try:
+        payload = json.loads(response.text or "")
+    except (ValueError, TypeError, AttributeError):
+        return None
+    if not isinstance(payload, dict) or "images" not in payload:
+        return None
+    def kind(value):
+        return {dict: "object", list: "array", str: "string", bool: "boolean",
+                int: "number", float: "number", type(None): "null"}[type(value)]
+    images = payload["images"]
+    shape = {"type": kind(images)}
+    if isinstance(images, list):
+        shape["count"] = len(images)
+        shape["items"] = []
+        for item in images[:6]:
+            detail = {"type": kind(item)}
+            if isinstance(item, dict):
+                detail["fields"] = {key: kind(item[key]) for key in ("image_id", "after") if key in item}
+                detail["unknown_fields"] = len(item.keys() - {"image_id", "after"})
+            shape["items"].append(detail)
+        shape["omitted_items"] = max(0, len(images) - 6)
+    return shape
+
+
 def failure_diagnostics(exc, phase, response):
     """Only structural error codes; never response text, values or error messages."""
     details = {"phase": phase}
@@ -77,6 +103,9 @@ def failure_diagnostics(exc, phase, response):
                 issues.add((field, code))
         details["validation_errors"] = [dict(field=field, code=code) for field, code in sorted(issues)]
     if response is not None:
+        shape = image_response_shape(response)
+        if shape is not None:
+            details["images_shape"] = shape
         try:
             details["text_present"] = bool(response.text)
         except Exception:
