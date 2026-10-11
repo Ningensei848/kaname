@@ -10,8 +10,8 @@
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
 | Batch | 提出・回収・診断・費用照合をoffline検証。読取り専用preflightはライブラリ移設後も実GCSでready | 実提出はschema不適合で成功保存0。成功Note保存の本番受入は未完了 |
-| Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | LLM選択・既存Note補完は別の受入。alt escape・media captionは実HTML再生とoffline回帰で検証済み |
-| 記事画像 | 候補ID/URL/配置、standard/Batch、公開bytes、Chromium表示をoffline検証 | 画像入り実Noteの本番受入。外部画像の内容・存続はGit版で固定できない |
+| Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規LLMの実選択は別の受入 |
+| 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
 | Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 新CLIの本番GCS読取りを実施したとは扱わない |
