@@ -189,6 +189,10 @@ class BatchManager:
                       published_at=candidate.published_at,image_candidates=image_context(image_candidates),
                       llm_input_truncated=len(markdown)>self.gemini.config.max_input_chars)
         content,config=self.gemini.request(metadata,markdown)
+        # Use the structured-output route documented for inline Batch requests.
+        # Keep the same image object definition and strict local validation.
+        config.response_schema = config.response_json_schema
+        config.response_json_schema = None
         request=types.InlinedRequest(contents=[types.Content(role='user',parts=[types.Part(text=content)])],
                                      config=config,metadata={'key':ch})
         item=dict(candidate=candidate.row(),source=dict(id=source.id,name=source.name,tags=source.tags),
