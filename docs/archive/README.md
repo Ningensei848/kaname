@@ -8,6 +8,7 @@
 
 | 履歴 | 内容 |
 |---|---|
+| [GlucoFMの限定画像補完](2026-10/glucofm-image-repair-2026-10-11.md) | 要約bytes・安定ID・課金情報を維持する2図補完、片側保存失敗の復旧と本番受入 |
 | [画像候補のMarkdown照合](2026-10/image-candidate-text-matching-2026-10-11.md) | altのescape・inline emphasis・Google Research caption、ConvApparelの5図候補と入力打切り回帰 |
 | [Google Researchの本文抽出](2026-10/google-research-body-extraction-2026-10-10.md) | 実記事4件の本文/画像タグ保持、GlucoFMの8図候補、standard/Batch回帰と残る画像候補課題 |
 | [責務整理のPR・本番受入](2026-10/domain-refactoring-production-2026-10-10.md) | PR/CI、固定124件版のPages更新・配信照合、読取り専用preflight ready |

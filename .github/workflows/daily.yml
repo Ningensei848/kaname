@@ -8,6 +8,14 @@ on:
         description: 'Read-only Batch acceptance baseline; no Gemini, collection, writes or publication'
         type: boolean
         default: false
+      image_repair_plan:
+        description: 'Reviewed config/image-repairs/<Note ID>.json; preview by default, no Gemini'
+        type: string
+        default: ''
+      image_repair_apply:
+        description: 'Apply the reviewed image repair to Note/receipt without regenerating the summary'
+        type: boolean
+        default: false
       publish_only:
         description: 'Audit/export existing Notes and publish without article collection or Gemini calls'
         type: boolean
@@ -36,6 +44,63 @@ on:
 permissions:
   contents: read
 jobs:
+  image-repair:
+    if: ${{ (inputs.image_repair_plan != '' || inputs.image_repair_apply) && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: techkb-gcs-single-writer
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-python
+        with:
+          editable: 'true'
+      - name: Validate image repair inputs before authentication
+        env:
+          IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
+          BATCH_PREFLIGHT: ${{ inputs.batch_preflight }}
+          VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
+          DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+          PUBLISH_ONLY: ${{ inputs.publish_only }}
+          COLLECTION_MODE: ${{ inputs.collection_mode }}
+          MAX_CALLS: ${{ inputs.max_calls }}
+          EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+        run: |
+          if [[ ! "$IMAGE_REPAIR_PLAN" =~ ^config/image-repairs/[0-9a-f]{64}\.json$ || ! -f "$IMAGE_REPAIR_PLAN" || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+            echo 'Image repair requires a reviewed plan and cannot be combined with other execution modes.'
+            exit 1
+          fi
+      - uses: google-github-actions/auth@v3
+        id: gcp_auth
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+      - name: Prepare or apply the reviewed image repair without Gemini
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
+          IMAGE_REPAIR_APPLY: ${{ inputs.image_repair_apply }}
+        run: |
+          set -euo pipefail
+          args=(--plan "$IMAGE_REPAIR_PLAN" --output "$RUNNER_TEMP/image-repair-preview")
+          if [[ "$IMAGE_REPAIR_APPLY" == true ]]; then args+=(--apply); fi
+          python scripts/repair_note_images.py "${args[@]}"
+      - name: Audit saved state after image repair
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: python -m techkb audit-state
+      - uses: actions/upload-artifact@v7
+        with:
+          name: image-repair-preview
+          path: ${{ runner.temp }}/image-repair-preview
+          if-no-files-found: error
+          retention-days: 7
   batch-preflight:
     if: ${{ inputs.batch_preflight && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -61,8 +126,10 @@ jobs:
           COLLECTION_MODE: ${{ inputs.collection_mode }}
           MAX_CALLS: ${{ inputs.max_calls }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+          IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
+          IMAGE_REPAIR_APPLY: ${{ inputs.image_repair_apply }}
         run: |
-          if [[ "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+          if [[ -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
             echo 'Batch preflight cannot be combined with other execution modes or collection overrides.'
             exit 1
           fi
@@ -76,7 +143,7 @@ jobs:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python scripts/batch_preflight.py
   collect:
-    if: ${{ !inputs.batch_preflight }}
+    if: ${{ !inputs.batch_preflight && inputs.image_repair_plan == '' && !inputs.image_repair_apply }}
     permissions:
       contents: read
       id-token: write

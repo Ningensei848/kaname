@@ -53,6 +53,9 @@ schemaを満たさない生成結果は成功Noteにせず、公開snapshotに�
 候補の説明はMarkdown変換のescape・inline emphasisを考慮して入力範囲と照合します。Google Researchのcaptionは各画像のmedia block内から取得します。
 画像自体の解析・ダウンロード・同梱・既存Noteの再生成は行いません。閲覧時に画像hostへ外部通信します。
 公開検査はNoteに記録した画像と位置が一致するものだけを許可し、画像以外の外部resourceは許可しません。
+既存Noteの画像補完は、hashを固定したレビュー済み計画による別の操作です。
+要約・生成情報・index・usageを維持し、Geminiを呼ばずNoteとreceiptへ画像だけを追加します。
+操作と片側保存失敗からの復旧は[運用手順](operations.md#既存noteへの画像補完)を参照してください。
 公開許容は全生成Noteに適用し、本文の不正・秘密の混入・取り下げ対象は検査失敗/明示除外として扱います。
 品質とsourceの取扱いは[source方針](source-policy.md)に従います。
 
