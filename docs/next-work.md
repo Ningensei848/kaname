@@ -1,18 +1,19 @@
 # 次の作業と優先順位
 
-2026-10-11に未解決Issueを再照会した着手順です。
+2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。以下は完了状態と後続の着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
 P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
+2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
 費用推定とBatch切分けの根拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)にあります。
 READMEの古い未完了記載を理由に再実装しません。進捗は[検証・受入](verification.md)と各Issueで区別します。
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | 新規LLMの実選択は別受入。旧Noteへの一括適用はしない |
+| 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | Google Researchの新規Batch Noteでも3画像の実選択・保存/公開を受入。旧Noteへの一括適用はしない |
 | 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141のPython全460件・Web検査も成功 |
-| P2・成功保存未受入 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | PR #153後の実返却は画像object 5件で型検証成功。候補4件を超える選択は厳格拒否、成功保存0。usage回収/台帳complete/欠損0、費用推計約0.26円 | 候補制約修正PR #156・86件・PR/main CI成功。後処理/GET完了後の別枠1job/1記事を個別承認済み、再拒否時停止。成功保存は未受入 |
+| 完了（実Batch本番受入） | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | PR #153/#156後の限定1job/1記事で厳格検証に適合し、3画像入りNoteを保存・公開。index336/pending71、receipt/Note/indexと公開bytes一致、課金record1・欠損0。費用推計約0.23円 | 追加生成0の再実行も全工程success。保存/課金bytes・世代・費用不変、課金1回を受入。#94はClose、新しい有料枠は残り0 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
-| 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
+| 完了（本番読取り受入） | Source Health Checkの実環境受入 | 2026-10-11に実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
 | 完了（実装・実CI検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
 | 完了（実装・実CI検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
 | 観測済み・別途対応 | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 原因の修正・受入は別途対応。今回の無課金runを有料生成の復旧と混同しない |
@@ -26,11 +27,11 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 責務整理はPR #131の取込み、main CI、固定124件版のPages更新・配信照合、読取り専用Batch preflightまで完了しました。
 証拠は[PR・本番受入記録](archive/2026-10/domain-refactoring-production-2026-10-10.md)に保存しています。
 GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-2026-10-11.md)で完了を確認できます。
-新規LLMの画像選択・実Batch成功保存などの未完了受入は上表で個別に扱います。
+新規LLMの実画像選択3件と実Batch成功保存/公開・追加生成0の再実行は受入完了です。
 
-## 未完了Issueの実装・受入計画
+## 実装・受入計画と完了状態
 
-#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94と#116はOpenを維持します。#135は実CI受入完了で、本体PR #141はmain取込済みで、#135はCloseしました。
+#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94は成功保存・公開・再実行の受入完了でClose。#116は確定請求明細待ちでOpenを維持します。#135は実CI受入完了で、本体PR #141はmain取込済みで、#135はCloseしました。
 
 ### #135: PR検証の対象選択 — 実CI受入完了
 
@@ -41,23 +42,21 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 本体PR #141はmain取込済みで、Python全460件/Web双方・取込後CIも成功しています。
 文書のみPR #144でも必要なscope/既存checkは成功、Python/Webの重い検査はskipを実CIで受入済みです。
 
-### #94: images型不適合は解消・画像選択不整合で成功保存が未受入
+### #94: 画像型/候補外IDを解消・実保存/公開/再実行まで完了
 
-PR #149/#151/#153の修正後、追加承認枠の実APIが1生成job/1記事を受付し、imagesは必須2キーを持つobject 5件で型検証に成功しました。images:model_typeは解消済みです。ただし画像候補4件に対して5件の選択を返し、候補外または重複IDの厳格検証で拒否、成功保存0でした。usage回収・台帳complete・課金record1・欠損usage0、費用推計USD 0.00161835（約0.26円）。生成結果拒否後の有料再提出を停止し、追加生成0の再実行を進めています。記事ごとの候補ID.enum・候補数以内のmaxItemsと安全な選択診断をPR #156で取込み、関連86件・PR/main CI成功済みです。後処理と既存結果GET確認後の新しい最大1生成job/1記事を個別承認済み、再拒否・曖昧な提出では止めます。実Batch成功保存は未受入で#94をOpen維持。詳細は[切分け記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)で追跡します。
+PR #153でAPI対応のresponseSchemaに画像object定義を直接送り、画像文字列配列による型不適合を解消しました。
+その後の候補4件に対する5件選択は、GET診断で候補外ID 1件と確定しました。
+PR #156で記事ごとの候補ID.enumと候補数以内のmaxItemsを追加し、関連86件・全Python476件/Web・PR/main CI成功後にmainへ取込みました。
+画像文字列の変換や候補外画像の削除で成功扱いにせず、型・候補・重複・配置の厳格検証を維持しています。
 
-- [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致しました。
-- [x] 本番promptに正確な出力キー・title_ja・imagesのオブジェクト配列形式を明示したPR #145を、追加操作の個別承認後にmainへ取込み。既存回帰59件・PR/mainのPython全460件/Web検証は成功しました。
-- [x] 最新preflight ready・監査/課金欠損0・他writer不在を確認し、追加枠の最大1 job/1 requestを一度だけ提出しました。
-- [x] APIはSUCCEEDED・返却1件ですが、厳格検証はimagesのmodel_typeで拒否。今回の返却にはtitle_ja欠落/未知fieldの診断はありません。成功保存は0で、有料再提出を停止しました。
-- [x] 追加提出0で失敗usage回収・台帳complete・課金record1・欠損usage0を確認。入力3,514/output717/thinking0、費用推計USD 0.00142335（約0.2円）。receipt/成功indexは作られていません。
-- [x] 追加提出0の再実行の収集後、Note/receipt世代・index・台帳/課金bytes不変と課金record1を照合。二重計上0です。
-- [x] この再実行のcollection・audit・cost・Git/Pagesすべてsuccess。提出/生成/保存/復旧/失敗0、成功index335・pending72、日次/月次費用は回収時と同一。公開125件版も不変です。
-- [x] PR #148の実GET診断でimagesは文字列3個の配列と確認。PR #149の直接object定義送信は実SDK/保存/厳格拒否/課金回帰76件・PR CIで成功し、mainへ取込み。新規有料提出0。
-- [ ] 適合応答のNote/receipt/index・公開bytes、audit/costの成功保存受入。API逸脱理由は未確定で#94はOpenを維持します。
+- [x] 事前条件ready・他writer不在・未決済/不明usage0を確認し、個別承認した新しい最大1job/1記事を一度だけ提出。受付・workflow全体success。
+- [x] 追加生成0の回収で適合Note 1件/画像3件を保存。成功index335→336・pending72→71、Note/receipt/index一致・公開ポリシー適合を確認。
+- [x] 台帳complete・課金record1・usage欠損0。input3553/output729/thinking0、費用推計USD 0.0014442（約0.23円）。
+- [x] collection/audit/cost/Git/Pages・配信版/元Markdown照合すべてsuccess。公開125件の最新版に今回のNoteを含み、artifact/Git/GCSのNote bytes一致を確認。
+- [x] 追加生成0の再実行で台帳/課金bytes・index・Note/receipt世代不変、課金record1、日次/月次費用同一、公開manifest/content commit不変を照合。collection/audit/cost/Git/Pages・配信照合すべてsuccess。#94をClose。
 
-最新の根拠は[出力形式明示後の受入記録](archive/2026-10/batch-prompt-contract-acceptance-2026-10-11.md)にあります。
-前回のtitle_ja欠落・未知field・images型不一致の拒否と回収/再実行は[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#許可後の最大1件batch再受入)に残しています。
-追加の有料試行やmodel/schemaの切替は、原因と操作範囲を再評価する別判断です。
+実行URL・commit・費用・以前の拒否と回収は[画像型と候補制約の受入記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ集約しました。
+今回の有料2試行合計はUSD 0.00306255（約0.49円）。新規提出の残り枠は0、通常scheduleのstandard設定を維持します。
 
 ### #116: 費用推定完了・確定請求照合は明細待ち
 
