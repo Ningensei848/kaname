@@ -118,3 +118,32 @@ def test_validation_details_drop_unknown_field_names_and_parser_input():
     assert {"field": "$", "code": "extra_forbidden"} in details["validation_errors"]
     assert details["finish_reason"] == "MAX_TOKENS" and details["text_present"] is True
     assert "PRIVATE" not in json.dumps(details)
+
+
+
+def test_submission_rejection_keeps_safe_api_fields_without_values(harness):
+    from google.genai import errors
+    from techkb.batch import inspect_batch
+    h = harness
+    sdk = setup(h)
+    def reject(**kwargs):
+        sdk.created.append(kwargs)
+        raise errors.ClientError(400, {'error': {'status': 'INVALID_ARGUMENT', 'message':
+            'Unknown name "additional_properties" at PRIVATE_PATH: Cannot find field. '
+            'Unknown name "PRIVATE_FIELD" at PRIVATE_VALUE: Cannot find field.'}})
+    sdk.create = reject
+    report = h.pipeline.run()
+    assert report.status == 'failed' and report.batch_submitted == 0 and report.saved == 0
+    ledger = json.loads(h.store.read(h.store.list('state/batches/')[0]))
+    assert ledger['status'] == 'complete' and ledger['submission_rejected'] and ledger['name'] is None
+    expected = {'phase': 'submission', 'http_status': 400, 'api_status': 'INVALID_ARGUMENT',
+                'code': 'unknown_api_field', 'schema_fields': ['additionalProperties'], 'unknown_field_count': 1}
+    assert ledger['submission_diagnostics'] == expected
+    result = inspect_batch(h.store, ledger['id'])
+    assert result['submission_diagnostics'] == expected and result['submission_rejected']
+    assert 'PRIVATE' not in json.dumps(result) + json.dumps(ledger)
+    h.app.llm.max_calls_per_run = 0
+    assert h.pipeline.run().status == 'success'
+    assert len(sdk.created) == 1
+    assert h.store.list('state/receipts/') == []
+    assert cost_report(h.store, h.app)['pending_batch_items'] == 0

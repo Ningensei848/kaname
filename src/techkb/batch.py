@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from .composer import compose, word_count
 from .images import image_context
 from ._receipts import build_receipt
-from .gemini import response_usage, validate_response
+from .gemini import batch_response_schema, response_usage, validate_response
 from .pending import Candidate
 from .models import ArticleEnrichment
 from .audit import audit_state
@@ -84,6 +84,22 @@ def image_response_shape(response):
 def failure_diagnostics(exc, phase, response):
     """Only structural error codes; never response text, values or error messages."""
     details = {"phase": phase}
+    if isinstance(exc, errors.APIError):
+        if type(exc.code) is int and 100 <= exc.code <= 599:
+            details["http_status"] = exc.code
+        if isinstance(exc.status, str) and exc.status in {"INVALID_ARGUMENT", "UNAUTHENTICATED", "PERMISSION_DENIED", "NOT_FOUND",
+                          "RESOURCE_EXHAUSTED", "FAILED_PRECONDITION", "INTERNAL", "UNAVAILABLE"}:
+            details["api_status"] = exc.status
+        # Never retain API messages: field paths may contain request data.
+        message = exc.message if isinstance(exc.message, str) else ""
+        names = re.findall(r'Unknown name "([A-Za-z_][A-Za-z0-9_]*)"', message)
+        if names:
+            details["code"] = "unknown_api_field"
+            known = {"additionalProperties", "minProperties", "maxProperties", "minLength", "maxLength",
+                     "minItems", "maxItems", "propertyOrdering", "pattern", "default", "title", "type"}
+            canonical = [re.sub(r"_([a-z])", lambda match: match[1].upper(), name) for name in names]
+            details["schema_fields"] = sorted(set(canonical) & known)
+            details["unknown_field_count"] = sum(name not in known for name in canonical)
     codes = {"category outside configured vocabulary": "category_not_allowed",
              "empty or oversized enrichment item": "invalid_enrichment_item",
              "batch item failed or missing": "batch_response_unavailable"}
@@ -133,6 +149,10 @@ def inspect_batch(store, batch_id, client=None):
     result = dict(status='success', batch_id=batch_id, ledger_status=job['status'],
                   items=len(job['items']), remote_inspected=client is not None,
                   recorded_errors=[outcome['error'] for outcome in job.get('outcomes', [])])
+    if job.get('submission_rejected'):
+        result['submission_rejected'] = True
+        if job.get('submission_diagnostics'):
+            result['submission_diagnostics'] = job['submission_diagnostics']
     if client is None:
         return result
     if not job.get('name'):
@@ -191,7 +211,7 @@ class BatchManager:
         content,config=self.gemini.request(metadata,markdown)
         # Use the structured-output route documented for inline Batch requests.
         # Keep the same image object definition and strict local validation.
-        config.response_schema = config.response_json_schema
+        config.response_schema = batch_response_schema(config.response_json_schema)
         config.response_json_schema = None
         request=types.InlinedRequest(contents=[types.Content(role='user',parts=[types.Part(text=content)])],
                                      config=config,metadata={'key':ch})
@@ -227,7 +247,9 @@ class BatchManager:
                 # A definitive request rejection has not created a paid job. Do
                 # not let it freeze standard collection behind an ambiguous lock.
                 job['status']='complete'; job['submission_rejected']=True
-                job['error_type']=type(exc).__name__; self.persist(name,job)
+                job['error_type']=type(exc).__name__
+                job['submission_diagnostics']=failure_diagnostics(exc, 'submission', None)
+                self.persist(name,job)
             raise
         if not created.name:
             raise ValueError('batch job name unavailable')

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from copy import deepcopy
 import json
 import time
 import httpx
@@ -61,6 +62,30 @@ class Gemini:
 
     def close(self):
         self.client.close()
+
+
+def batch_response_schema(schema):
+    """Express closed objects using the Developer API's Schema field subset.
+
+    responseSchema has no additionalProperties. Requiring every known property
+    and bounding the property count closes the object without that unsupported
+    field. In Batch, images is therefore required (use [] for no selection).
+    Local ArticleEnrichment validation remains the final acceptance boundary.
+    """
+    result = deepcopy(schema)
+    def close_objects(node):
+        if "additionalProperties" in node:
+            if node.pop("additionalProperties") is not False:
+                raise ValueError("batch schema requires closed objects")
+            properties = node["properties"]
+            node["required"] = list(properties)
+            node["minProperties"] = node["maxProperties"] = len(properties)
+        for child in node.get("properties", {}).values():
+            close_objects(child)
+        if "items" in node:
+            close_objects(node["items"])
+    close_objects(result)
+    return result
 
 
 def response_usage(response):
