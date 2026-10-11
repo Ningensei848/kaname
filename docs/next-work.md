@@ -43,7 +43,7 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 ### #94: images型不適合で成功保存が未受入
 
-現在の作業はimages型不適合の解消に集中しています。既存結果のGET診断を拡張し、値や未知field名を出さずにimages/要素/既知fieldのJSON型を確認します。追加生成は行わず、保存時の厳格検証を維持します。
+現在の作業はimages型不適合の解消に集中しています。PR #148のGET診断で、実返却はオブジェクトでなく文字列3個の配列と確認しました（新規生成/状態更新0）。画像要素のschema参照を等価な直接定義へ展開する修正候補を実装・検証中です。詳細は[画像型不適合の切分け](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ記録し、成功保存の実受入は未完了として維持します。
 
 - [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致しました。
 - [x] 本番promptに正確な出力キー・title_ja・imagesのオブジェクト配列形式を明示したPR #145を、追加操作の個別承認後にmainへ取込み。既存回帰59件・PR/mainのPython全460件/Web検証は成功しました。
