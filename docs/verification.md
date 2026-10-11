@@ -25,6 +25,8 @@ Google Researchの本文抽出・実HTTP検証と画像候補の残課題は[検
 
 altエスケープとmedia captionの修正・実HTML再生は[検証記録](archive/2026-10/image-candidate-text-matching-2026-10-11.md)を参照してください。
 
+既存Noteの限定補完の実装・障害復旧・本番受入は[記録](archive/2026-10/glucofm-image-repair-2026-10-11.md)で追跡します。
+
 ## 責務整理のローカル検証
 
 変更前はPython 378件、Web依存監査4件、設定検証が成功しました。

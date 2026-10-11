@@ -39,7 +39,7 @@ def selected(expression, inputs, *, success=True, ref='refs/heads/main', outcome
 def inputs(**overrides):
     return dict(batch_preflight=False, publish_only=False, verification_run_id='',
                 diagnostic_batch_id='', expected_success_before='',
-                collection_mode='configured', max_calls='') | overrides
+                collection_mode='configured', max_calls='', image_repair_plan='', image_repair_apply=False) | overrides
 
 
 @pytest.mark.parametrize('success', [True, False])

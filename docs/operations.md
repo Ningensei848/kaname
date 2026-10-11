@@ -20,6 +20,33 @@ GCSへの認証・読取り・保存・exportに失敗したrunは失敗とし�
 不完全な出力を完成版として再利用せず、新しい出力先で再実行します。成功版や曖昧なBatch予約を自動削除しません。
 Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
+## 既存Noteへの画像補完
+
+要約を再生成せず、レビュー済みの画像URLと配置だけを追加できます。現在の対象はGlucoFM 1件です。
+`config/image-repairs/<Note ID>.json`に対象Note・取得した本文MarkdownのSHA256、画像URLと配置を固定します。
+対象は最新の公開revisionで、Noteとreceiptが一致し、既存画像がないことを確認します。
+本文はsourceの通常取得・抽出経路を使い、候補に存在するHTTPS画像だけを採用します。
+Gemini呼出し、画像バイナリ取得、index・usage・生成日・モデル・元本文hashの変更はありません。
+画像追加を取り除くと元Noteの全bytesへ戻ることも検査します。古い要約の入力打切り表示は維持します。
+
+```bash
+# GCS読取りと記事本文の取得のみ。出力先は新しいディレクトリを指定
+python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json --output /tmp/image-preview
+# 検証した計画をNoteと対応receiptへ適用
+python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json --output /tmp/image-apply --apply
+```
+
+ActionsではDaily TechKBの`image_repair_plan`に上記パスを指定します。
+`image_repair_apply=false`がプレビュー、`true`が適用です。他の実行mode・上限指定とは併用しません。
+mainのレビュー済み計画だけを許可し、日次writerと同じconcurrencyで直列化します。
+収集・公開jobは実行せず、検証済みNoteと判定JSONを7日間のartifactへ保存し、最後に`audit-state`を実行します。
+
+適用は世代条件を付けてreceipt、Noteの順で保存します。Note保存に失敗した場合は新しいreceiptに復旧用bytesが残ります。
+同じ計画を専用スクリプトで再実行すると、記事再取得・Gemini呼出しなしで再開します。
+通常の収集は登録済みNoteをskipするため、この片側更新を通常収集で修復しようとしません。
+競合・hash不一致・異なる計画は停止し、既存公開版を維持します。
+適用とauditが成功した後、別のDaily実行で`publish_only=true`を指定してGit/Pagesを更新します。
+
 ## 取得・本文・フィルタ
 
 現行の有効sourceはRSS/HTTPです。Google Researchは`content_selector: .blog-detail-wrapper`で、
