@@ -14,6 +14,21 @@ from techkb.operations import cost_report
 from techkb.models import ArticleEnrichment
 
 
+def normalized_schema(schema):
+    """Compare JSON schema constraints across SDK/protobuf field spellings."""
+    if isinstance(schema, list):
+        return [normalized_schema(item) for item in schema]
+    if not isinstance(schema, dict):
+        return schema
+    names = {'additional_properties': 'additionalProperties', 'max_items': 'maxItems',
+             'min_items': 'minItems', 'max_length': 'maxLength', 'min_length': 'minLength'}
+    result = {names.get(key, key): normalized_schema(value) for key, value in schema.items()
+              if key not in {'default', 'property_ordering', 'propertyOrdering'}}
+    if isinstance(result.get('type'), str):
+        result['type'] = result['type'].lower()
+    return result
+
+
 def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
     h=harness; captured=[]; remote={}
     def handler(req):
@@ -35,13 +50,14 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         manager.submit([item],h.app,RunReport())
         request=captured[0]['batch']['inputConfig']['requests']['requests'][0]
         assert request['metadata']=={'key':'b'*64}
-        assert request['request']['generationConfig']['responseJsonSchema']['properties']['category']['enum']==h.app.categories
-        schema = request['request']['generationConfig']['responseJsonSchema']
+        assert 'responseJsonSchema' not in request['request']['generationConfig']
+        assert request['request']['generationConfig']['responseSchema']['properties']['category']['enum']==h.app.categories
+        schema = normalized_schema(request['request']['generationConfig']['responseSchema'])
         expected_schema = ArticleEnrichment.model_json_schema()
         image_definition = expected_schema.pop('$defs')['ImageSelection']
         expected_schema['properties']['images']['items'] = image_definition
         expected_schema['properties']['category']['enum'] = h.app.categories
-        assert schema == expected_schema
+        assert schema == normalized_schema(expected_schema)
         assert 'title_ja' in schema['required'] and schema['additionalProperties'] is False
         assert schema['properties']['images']['type'] == 'array'
         image_schema = schema['properties']['images']['items']
@@ -138,7 +154,7 @@ def test_real_sdk_result_passes_through_settle_and_billing(harness, failure):
 
 
 @pytest.mark.parametrize('with_images', [False, True])
-def test_standard_and_batch_wire_payload_are_identical(harness, with_images):
+def test_standard_and_batch_wire_payload_preserve_same_content_and_schema_constraints(harness, with_images):
     """Compare both real SDK serializers with the same article and metadata."""
     h = harness
     sent = {}
@@ -165,6 +181,12 @@ def test_standard_and_batch_wire_payload_are_identical(harness, with_images):
         request = StandardRequest(h.store, gemini, RunReport(llm_calls=1))
         request.enrich(candidate, h.source, markdown, False, authors, image_candidates=images)
         manager.submit([item], h.app, RunReport())
+        standard_config = sent['standard']['generationConfig']
+        batch_config = sent['batch']['generationConfig']
+        standard_schema = standard_config.pop('responseJsonSchema')
+        batch_schema = batch_config.pop('responseSchema')
+        assert 'responseSchema' not in standard_config and 'responseJsonSchema' not in batch_config
+        assert normalized_schema(standard_schema) == normalized_schema(batch_schema)
         assert sent['standard'] == sent['batch']
     finally:
         client.close()

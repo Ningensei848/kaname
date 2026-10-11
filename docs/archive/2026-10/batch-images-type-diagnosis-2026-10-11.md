@@ -16,7 +16,19 @@ API内部でこの逸脱が発生する理由は未確定です。既存SDK実HT
 参照展開でAPI逸脱が解消するかは実試行前の仮説であり、コード/fixtureテストの成功を実Batch成功保存と扱いません。
 
 [Googleのstructured output説明](https://ai.google.dev/gemini-api/docs/generate-content/structured-output)ではarrayのitems、objectのproperties/required/additionalPropertiesがサポート対象です。最終出力はアプリ側でも検証するよう案内されています。
-response_schema経路は固定SDKでadditionalProperties falseが消えたため、今回の候補はresponse_json_schemaを維持します。画像文字列を後から変換したり、不正画像を削除して成功扱いにしたりしません。
+response_schema経路の未知キー禁止が消えるという以前の判定を訂正します。固定SDKの実送信にはadditional_properties falseがあり、standard/Batch・Pydanticモデル/辞書の4通りすべてで親/画像objectの禁止制約を保持していました。画像文字列を後から変換したり、不正画像を削除して成功扱いにしたりしません。
 
 以前の最大1 job/1 requestの追加枠は使用済みです。今回のGET診断・修正候補作成では有料提出を行いません。
 候補のCI成功後、ユーザーから「追加1件と回収・受入を許可する」と新しい最大1 job/1 requestの個別承認を受領しました。提出前検査後に一度だけ試行し、再拒否なら有料再提出を止めます。
+
+
+## 提出前の送信経路の追加検証
+
+[公式Batch APIのstructured output例](https://ai.google.dev/gemini-api/docs/batch-api)は、inline requestのresponse_schema/responseSchemaを使っています。responseJsonSchemaが非対応であることをこの例だけから断定しません。
+有料提出前に、この公式例の経路へBatchのみを合わせます。PR #149の直接画像object定義は維持し、通常standardはresponse_json_schemaを維持します。モデル・prompt・本文・usage/保存処理は維持します。
+
+- [x] 実SDKのresponseSchema送信とstandardのresponseJsonSchemaを比較し、JSON/protobufのフィールド表記、propertyOrdering、default注釈を除いた制約がすべて一致。本文/metadata・他generation設定も一致。
+- [x] 親/画像objectの未知キー禁止、画像型・必須キー・ID pattern・配置enum・最大6件を保持すること、文字列3件を厳格拒否して保存0/usage1/再課金0になることを含む関連76件が成功。
+- [ ] 送信経路変更のPR/main CIと今回許可された最大1 job/1 requestの実受入。
+
+今回の追加送信経路検証も新規生成0です。許可された新しい1件枠はまだ使用せず、上記検証後に一度だけ使います。

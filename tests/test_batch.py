@@ -49,7 +49,8 @@ def test_batch_submit_poll_save_and_standard_switch_without_double_charge(harnes
     submitted=sdk.created[0]['src'][0]
     assert 'Original text' in submitted.contents[0].parts[0].text
     assert submitted.config.thinking_config.thinking_level.name=='MINIMAL'
-    assert submitted.config.response_json_schema['properties']['category']['enum']==h.app.categories
+    assert submitted.config.response_json_schema is None
+    assert submitted.config.response_schema['properties']['category']['enum']==h.app.categories
     assert cost_report(h.store,h.app)['pending_batch_items']==1
     h.app.llm.mode='standard'
     waiting=h.pipeline.run()
