@@ -2,19 +2,22 @@
 
 2026-10-11に未解決Issueを再照会した着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
+P1、P3のcorpus、P4のParallelは実装/ローカル検証完了、P3のSource Healthは実GCS読取り受入済みです。
+費用推定とBatch切分けの根拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)にあります。
 READMEの古い未完了記載を理由に再実装しません。進捗は[検証・受入](verification.md)と各Issueで区別します。
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | 新規LLMの実選択は別受入。旧Noteへの一括適用はしない |
-| P1 | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | Checksは設定だけの変更でも全Python/Web検証を実行する。対象別の選択は未実装 | 必要な設定検査を維持してjobを選択する |
-| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | 逸脱原因は未確定。自動通知#129はこの既知の拒否に対応し、schema緩和・再提出は行わない |
-| P2 | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | 費用推計と請求実額の差を説明する。2026-10-10にユーザーから確定明細がないことを確認したため、今回は待機 | 確定明細が利用できる時点で対象期間と非公開明細を指定 |
-| P3 | Source Health Checkの実環境受入 | 読取り専用CLI・source別計数・時刻順・旧runのnullは実装/回帰済み | 新CLIの実GCS読取りを別途受入する |
-| P3 | Regression Corpus | 代表サイトの本文・画像抽出の変化を継続検出する | 代表sourceとfixtureの扱いを設計時に確認 |
-| P4 | Parallel Processing | fetch/convertだけを並列化し、状態更新と課金処理の順序を維持する | 必要な処理時間・並列数を設計時に確認 |
+| 完了（実装・ローカル検証） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功 | PR上の実job選択は取込時のCIで確認 |
+| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後の最大1件の再受入判断待ち |
+| 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
+| 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
+| 完了（実装・ローカル検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
+| 完了（実装・ローカル検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
 | P4 | Knowledge Graph Quality | 表記揺れ・同義語・tags/WikiLinkの品質を評価する | 良否の評価例を確認 |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
+| NextStep（既存計画完了後） | [NS1: 検索キーワード・本文のGoogle検索フォールバック](#ns1-google-search-fallback) | 2026-10-11の追加要望。上記の既存作業の完了・受入後に着手する未実装項目 | 既存Noteへのリンクを優先し、未解決WikiLinkをGoogle検索へつなぐ |
 
 読取り専用事前検査の承認範囲と実結果は[Batch事前検査の受入記録](archive/2026-10/batch-preflight-acceptance-2026-10-10.md)にあります。
 個別承認後の提出・schema拒否・失敗usage回収とローカル切分けは[実Batchの実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)にあります。
@@ -28,18 +31,12 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 #127と#129は実装・失敗回収の証拠に基づきClose済みです。#94、#116、追加された#135はOpenを維持します。
 
-### #135: PR検証の対象を選ぶ
+### #135: PR検証の対象選択 — 実装・ローカル検証完了
 
-設定はPythonの入力なので、設定変更時のPython検証をすべてなくす案は採りません。
-不要な全件回帰とWeb buildを減らし、変更による影響に対応した検査を残します。
-
-1. `checks.yml`に変更ファイルの分類を追加する。比較base/headを固定し、分類不能な変更は全検査へ戻す。
-2. `config/sources.yaml`だけなら設定と本文/画像抽出、`config/app.yaml`なら設定・生成・公開契約、画像補完計画なら計画schemaの検査を選ぶ。
-   Python/依存/共通契約/検証workflowの変更は全Python回帰を維持する。Webと公開契約に影響する変更はWeb受入を残す。
-3. 文書のみ、設定のみ、Pythonのみ、Webのみ、混在、削除/rename、分類不能のケースでjob選択を検証する。
-   required checkがskipで待ち続けないよう、従来のcheck名と結果集約を保つ。
-4. 完了条件は、設定だけのPRで必要な検査が成功し、不要なjobが省略され、混在PRで必要な検査が欠落しないこと。
-   この文書更新でworkflowの選択機能を実装済みとは扱わない。
+`checks.yml`と`scripts/check_scope.py`で比較base/headを固定し、削除・renameの両側を分類します。
+文書のみ、source設定、app設定、画像補完計画、Python、Web、混在を選択し、未知path・比較失敗は全検査へ戻します。
+設定検証と対象別回帰、実計画のschema検査を維持し、既存`test`/`web-preview`で成功・省略を集約します。
+分類/実Git比較15件、設定混在233件、actionlintが成功。実PR上の選択はCI受入として別記します。
 
 ### #94: 実Batchの成功保存
 
@@ -50,13 +47,16 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 適合Note/receipt/index、audit/cost、再実行時の重複保存・二重計上0を確認してCloseする。
 詳細は[Issue #94](https://github.com/Ningensei848/kaname/issues/94)の更新済み計画を参照する。
 
-### #116: 確定請求の照合
+### #116: 費用推定完了・確定請求照合は明細待ち
 
-確定明細が利用可能になった時点で対象期間・時間帯・通貨・集約粒度を決める。
-保存済みrun/usageと元価格を読取り専用で対応付け、partial/unknown、調整、推計対象外のGCS/Actions費用を分ける。
-必要な場合だけ実明細に合わせた小さな照合スクリプトを追加し、月跨ぎ・重複ID・欠損usageを検査する。
-非公開明細を公開せず、差額と未照合範囲を説明して判定する。明細待ちの現在はOpenを維持する。
-詳細は[Issue #116](https://github.com/Ningensei848/kaname/issues/116)の更新済み計画を参照する。
+今回のユーザー指定に従い、AI Studioの175円/800円表示とActionsのDaily全33回、収集report21回、
+standard336呼出し・別Batch2 requestを照合し、月500〜550円、25%増で625〜690円を推定しました。
+計算、反映遅延・期間/時間帯の不一致、推計対象外のGCS/Actions、50%増なら800円を越える可能性は
+[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#p2-費用推定とbatch切分け)に記録しています。
+
+確定明細がないため実請求との差額はまだ算定できず、#116のinvoice照合はOpenを維持します。
+明細提供時に対象期間/通貨/時間帯/調整項目を決め、保存済みusageと元価格を読取り専用で対応付けます。
+推定完了を確定照合の完了と扱いません。
 
 ## #127の実装範囲
 
@@ -75,3 +75,79 @@ HTTP、data URL、認証付きURL、IP/ローカルhost、署名・token付きUR
 standard/Batchのmock実行、復旧と二重計上防止、公開snapshotのbytes一致、実Chromiumの画像表示を検証します。
 Web検証では許可された画像レスポンスをローカルで代用し、出典サイトへ実通信せず、ほかの外部resourceは拒否します。
 本番のGemini/GCS更新・workflow手動実行・Pages deployと画像入りの実Note受入は別に判定します。
+
+<a id="ns1-google-search-fallback"></a>
+
+## NS1: 検索キーワード・本文のGoogle検索フォールバック
+
+2026-10-11のユーザー要望を記録した、未着手のNextStepです。
+上表の既存作業の完了・受入後に着手します。請求明細待ちなどの未完了項目を、この追加計画によって完了扱いにはしません。
+この節を後続実装の要求・着手条件・完了条件の正本とし、ロードマップから参照します。
+
+### 要求と現行との差
+
+検索キーワードとNote本文の固有語彙を、クリックだけで調べられるようにします。
+対応する公開Noteがあれば内部リンクを優先し、なければその語句のGoogle検索を開きます。
+
+現在、`composer.py`は`related_concepts`を「検索キーワード」の`[[語句]]`として出力します。
+`site.py`の`project_content`は、公開manifest内で同じタイトルが一意に見つかった語句だけを内部リンクにし、
+一致なし・同名複数の場合はプレーンテキストにしています。本文の固有語彙を自動でWikiLinkにする処理はありません。
+このため、未解決リンクの変換と本文へのWikiLink付与の両方が実装対象です。
+
+Google検索のリンクは`https://www.google.com/search?q=<URLエンコードした語句>`とします。
+`q`が検索語句のパラメータであることは[Googleの説明](https://support.google.com/analytics/answer/1012264?hl=en)で確認できます。
+API呼出しやAPIキーは不要で、利用者がリンクをクリックした際に検索ページへ遷移します。
+
+| 入力と公開先の状態 | 生成するリンク |
+|---|---|
+| 検索キーワード`[[GlucoFM]]`、対応するNoteなし | `GlucoFM`をクエリにしたGoogle検索 |
+| 本文中の`[[GlucoFM]]`、対応するNoteなし | 同じGoogle検索 |
+| 対応する公開Noteが一意に存在 | 既存の安定Note IDへの内部リンク |
+| 同名Noteが複数、または公開対象から除外されている | Google検索。任意のNoteを選ばない |
+| 別名表示`[[語句\|表示名]]` | 内部リンクの解決対象・検索語句は「語句」、表示は「表示名」 |
+| コード内・エスケープ済みの`[[語句]]` | 記述を保持し、検索リンクへ変換しない |
+
+### 実装順序と責務
+
+1. **公開Noteの解決と未解決時のリンク生成を共通化する。**
+   `src/techkb/site.py`のQuartz入力への投影を主な変更箇所とし、検索キーワードと本文に同じ規則を適用します。
+   判定には固定された公開snapshotのmanifestを使います。先行するGraph Qualityで別名・正規化規則を整備した場合は、その一意解決規則に合わせます。
+   ブラウザで404を検出してから遷移させる方式ではなく、SSG入力を生成する時点でリンク先を確定します。
+   任意の壊れたHTTPリンクや画像URLまで検索へ変換せず、対象はWikiLinkとします。
+   アンカー付きWikiLinkはNote部分と見出し部分を分離し、解決できる内部リンクと見出し指定を保ちます。
+   Noteが未解決ならNote部分の語句を検索し、見出しだけが不正な場合はGoogle検索へ変換せず、Web側のリンク監査で検出できることを確認します。
+
+2. **本文の固有語彙にWikiLinkを付与する。**
+   初期実装では既存の構造化された`related_concepts`を候補として使い、新規NoteのAI要約・重要ポイント・資料の位置づけに現れる語句を共通composerで`[[語句]]`にします。
+   候補は製品名・技術名などユニーク性の高い語句に限定し、一般語を無差別にリンク化しません。
+   重なる候補は長い語句を優先し、英単語の一部への一致、URL・コード・既存リンク・画像alt/captionへの重複挿入を避けます。
+   安全なテキストのエスケープとリンク記法の組立を分け、`inline()`全体の保護を弱めません。
+   LLMには現在どおり記法なしの概念名を返させ、追加LLM呼出し・Batch schema変更を伴わせません。
+   要約の字数判定は記法を付ける前の要約文で行い、WikiLinkの括弧やGoogle検索URLを字数に加えません。
+
+3. **公開Note検証とWeb表示を合わせる。**
+   standard/Batchが同じ本文を生成し、公開Noteの組立検証も同じ規則で受け入れるようにします。
+   旧生成形式の検証経路を保持し、本文にWikiLinkを追加していない既存Noteも引き続き公開できるようにします。
+   Markdownのコードブロック・コードspan・エスケープ・別名表示を区別し、単純な全置換で記述を壊さないようにします。
+   Google検索URLは固定のHTTPS originと`urlencode({"q": 語句})`等で組み立て、日本語・空白・`C++`・`&`を別パラメータに解釈させません。
+   外部検索と分かる表示・アクセシブルな説明を付け、Google検索は別タブで開き、`rel="noopener noreferrer"`を適用します。
+   内部リンクは既存の遷移・検索・graphの挙動を維持し、外部検索リンクをNote間のgraph edgeに数えません。
+   外部検索はクリック時のナビゲーションとし、ページ表示時やビルド時のGoogleへのresource取得・script追加・CSP通信許可の拡張を伴わせません。
+
+4. **既存Noteへの適用と受入を確認する。**
+   既存の保存Note・公開元Markdown bytes・Note ID・manifest schemaを維持します。
+   既存Noteの明示的なWikiLinkは次のWebビルドからフォールバックの対象になります。
+   本文への自動WikiLink付与は新規生成Noteから適用し、旧Noteの一括書換え・要約の再生成はこのNextStepへ含めません。
+   投影だけの変更では元snapshotのdataset digestを変えず、Web成果物の検証情報は再ビルドに合わせて更新します。
+
+### 完了条件
+
+- 検索キーワードと本文のWikiLinkを、それぞれクリック一回で内部Noteまたは対応語句のGoogle検索へ移動できる。
+- 一意の内部Noteがある場合は内部リンクを優先し、未解決・同名複数・公開除外ではGoogle検索になる。
+- 日本語、空白、`C++`、`&`、引用符、別名表示を含むクエリが正しく復号でき、クエリへの別パラメータ混入やHTML/Markdownの破損がない。
+- コード・エスケープ・URL・画像記述を保持し、部分一致や候補の重複で本文を壊さない。
+- standard/Batchの共通生成、公開Noteの組立検証、Quartz投影、内部リンク監査を対象回帰で確認する。
+- fixtureと固定実contentでビルドし、Chromiumでクリック先・別タブ・表示幅・外部リンクの識別・想定外resource通信なしを確認する。
+  CIではGoogleへ実検索せず、生成href・復号したクエリ・クリック時のナビゲーション先で判定する。
+- 既存Noteの元Markdown hashとIDが維持され、新規Noteの要約本文の字数・画像配置・公開検証が従来の制約を満たす。
+- 仕様・運用・検証の正本に実装後の挙動と受入結果を記録してから、NS1を完了とする。

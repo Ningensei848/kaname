@@ -19,6 +19,14 @@ indexを安易に消すと再処理の判断が変わります。
 Batchはcreate前の予約、曖昧createの照合、compact outcome、安定したbilling IDを使います。
 結果keyの未知/重複、世代競合、durability障害は停止します。
 
+## fetch/convertの並列処理
+
+`processing.workers`の最大件数だけ取得・本文変換を先行し、結果は入力candidate順で主threadへ戻します。
+workersは1〜8、運用設定は2です。発見・重複/関連性判定・報告・課金・状態更新には並列workerを使いません。
+保存障害後の新規課金を止め、未開始futureをcancelし、実行中の取得終了後にHTTP clientを閉じます。
+HTTPはhost単位の排他でrobotsと間隔/retryを維持し、MarkItDown engineはthreadごとに分離します。
+同じhostへのHTTPとLLMは逐次なので、全run時間の短縮率は通信条件に依存します。
+
 ## 課金と中断の限界
 
 APIの応答後からreceipt等の永続化前に停止すると、結果消失と再課金の可能性があります。

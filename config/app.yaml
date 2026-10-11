@@ -3,6 +3,9 @@ http:
   retries: 3
   user_agent: TechKnowledgeCollector/0.1
   max_response_bytes: 10000000
+processing:
+  # Only article fetch/convert runs concurrently; paid work and state have one writer.
+  workers: 2
 llm:
   model: gemini-3.5-flash-lite
   thinking_level: minimal

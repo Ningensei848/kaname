@@ -14,7 +14,7 @@
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
-| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 新CLIの本番GCS読取りを実施したとは扱わない |
+| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。全体degradedはGoogle Researchの既知失敗・pendingを反映 |
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
@@ -26,6 +26,14 @@ Google Researchの本文抽出・実HTTP検証と画像候補の残課題は[検
 altエスケープとmedia captionの修正・実HTML再生は[検証記録](archive/2026-10/image-candidate-text-matching-2026-10-11.md)を参照してください。
 
 既存Noteの限定補完の実装・障害復旧・本番受入は[記録](archive/2026-10/glucofm-image-repair-2026-10-11.md)で追跡します。
+
+## P1〜P4の今回の検証
+
+CI対象分類・実Git比較15件、設定混在233件、Regression Corpus3件、Parallel10件、
+standard/Batchの実HTTP payload比較（画像あり/なし）を追加しました。
+Source Healthの実GCS読取りと最新preflight readyを確認しています。
+費用はスクショと全Daily履歴から推定し、確定請求照合とBatch成功保存は別の未完了受入です。
+実装・計数・限界は[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で追跡します。
 
 ## 責務整理のローカル検証
 

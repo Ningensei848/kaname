@@ -43,17 +43,24 @@
 
 ## 継続する後続の必須項目
 
-- [ ] Parallel Processing — parallel fetch/convert + single state writer。
+- [x] Parallel Processing — 最大2件のfetch/convert先行処理、入力順の課金・状態更新、host間隔/robotsの排他を回帰検証。
 - [x] Source Health Check — 読取り専用`source-health` CLIのJSONで最終成功・連続失敗・source別発見/保存件数・pendingを表示。旧runの件数不明はnull。運用手順を参照。
-- [ ] Regression Corpus — 代表サイトfixtureと変換差分検出。
+- [x] Regression Corpus — 有効2 sourceの合成fixture・本文/画像goldenと差分検出CLI、offline回帰。
 - [ ] Knowledge Graph Quality — 表記揺れ・同義語・タグ・WikiLink品質評価。
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
-2026-10-10の優先順は[次の作業](next-work.md)に記載しています。まず#127の新規Note画像、現行文書の整合性、
-実Batch #94、確定明細のある請求照合 #116を進め、後続機能はsource health→回帰corpus→並列収集→graph品質の順で検討します。
+最新の着手順・未完了Issueの計画・個別の受入状態は[次の作業](next-work.md)を正本とします。
 DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではありません。
 
 ## 保守性の改善
 
 [リファクタリング計画](refactoring-plan.md)のR1〜R5は2026-10-07に完了・取込済みです。
 実Batchと請求照合はそれぞれ独立した未受入項目です。
+
+## 既存計画完了後のNextStep
+
+- [ ] NS1: 検索キーワード・Note本文の固有語彙のWikiLinkについて、対応する公開Noteを優先し、未解決の場合はGoogle検索へつなぐ。
+
+2026-10-11の追加要望です。既存の「次の作業」の完了・受入後に着手します。
+本文へのWikiLink付与、SSG時の解決、既存Noteの互換性、検証と完了条件は
+[NS1の実装計画](next-work.md#ns1-google-search-fallback)に記録しています。現時点では未実装です。

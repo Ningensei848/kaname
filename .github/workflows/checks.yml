@@ -6,19 +6,39 @@ on:
 permissions:
   contents: read
 jobs:
-  test:
+  scope:
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.select.outputs.python }}
+      web: ${{ steps.select.outputs.web }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - id: select
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/check_scope.py --base "$BASE_SHA" --head "$HEAD_SHA"
+  python-checks:
+    needs: scope
+    if: needs.scope.outputs.python != 'none'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-python
         with:
-          browser: 'true'
+          browser: ${{ needs.scope.outputs.python == 'full' }}
           editable: 'true'
-      - run: |
-          python -m techkb validate-config
-          python -m pytest -q
-  web-preview:
+      - env:
+          CHECK_SCOPE: ${{ needs.scope.outputs.python }}
+        run: python scripts/check_scope.py --run "$CHECK_SCOPE"
+  web-checks:
+    needs: scope
+    if: needs.scope.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -56,3 +76,35 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+  test:
+    needs: [scope, python-checks]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          SCOPE_RESULT: ${{ needs.scope.result }}
+          CHECK_RESULT: ${{ needs.python-checks.result }}
+          SELECTED: ${{ needs.scope.outputs.python }}
+        run: |
+          test "$SCOPE_RESULT" = success
+          if [[ "$SELECTED" == none ]]; then
+            test "$CHECK_RESULT" = skipped
+          else
+            test "$CHECK_RESULT" = success
+          fi
+  web-preview:
+    needs: [scope, web-checks]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          SCOPE_RESULT: ${{ needs.scope.result }}
+          CHECK_RESULT: ${{ needs.web-checks.result }}
+          SELECTED: ${{ needs.scope.outputs.web }}
+        run: |
+          test "$SCOPE_RESULT" = success
+          if [[ "$SELECTED" == false ]]; then
+            test "$CHECK_RESULT" = skipped
+          else
+            test "$CHECK_RESULT" = success
+          fi
