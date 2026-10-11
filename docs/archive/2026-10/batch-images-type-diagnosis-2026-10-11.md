@@ -82,8 +82,15 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 - [x] 次の修正を無料で実装: standard/Batch共通で記事の実候補IDをimage_id.enumに設定し、maxItemsをmin(6, 候補数)に制限。候補0はmaxItems 0で空配列。重複・候補外・存在しない重要ポイントへの配置を引き続き拒否する。
 - [x] 候補数/選択数/候補外数/重複数/不存在ポイント数だけの診断を追加し、既存jobのGET検査にも選択検証を適用。ID/本文/値は表示しない。
 - [x] 候補制約修正の関連86件成功。実SDK送信で候補0/1/4/12のenum/件数制約を照合し、候補外/重複/不存在ポイントの厳格拒否、4画像保存、GET検査の無書込み、課金record1・再課金0を検証。
-- [ ] 候補制約修正のPR/main CI。
+- [x] [PR #156](https://github.com/Ningensei848/kaname/pull/156)の[PR CI38141460679](https://github.com/Ningensei848/kaname/actions/runs/38141460679)がPython/Webとも成功、main a0f89a97add180eeee644b5d181d8846843d04cfへ取込み。[main CI38141620406](https://github.com/Ningensei848/kaname/actions/runs/38141620406)も成功。
 - [ ] [追加生成0の再実行38141105876](https://github.com/Ningensei848/kaname/actions/runs/38141105876)のaudit/cost/Git/Pagesと課金/保存状態不変の確認。
 - [ ] 候補制約修正後の実Batch成功保存。今回の生成結果拒否後は新しい個別承認が必要。
 
 maxItemsとenumは候補外と過剰件数を制限しますが、同じIDの別配置や返却key_points数との不整合までAPIのSchemaでは保証しません。保存時の厳格検証を維持し、不正な返却を変換・削除して成功扱いにしません。
+
+
+## 候補制約修正後の新しい承認枠
+
+ユーザーから「この追加1件と受入まで許可する」と個別承認を受領しました。最大1生成job/1記事を一度だけ提出し、回収・保存/公開・監査/費用・追加生成0の再実行までを行います。目安約1円、生成結果の再拒否・曖昧な提出失敗では再提出しません。先の後処理完了・既存結果のGET選択診断・main CI成功の確認後に使います。
+
+先の拒否分の費用処理はsuccess、2026-10月USD 1.09653085、未計上/不明/未完了usage0。再実行途中の照合で台帳/課金bytes・index・Note/receipt世代は不変、課金record1です。全工程完了後に改めて照合します。新しい枠は未使用です。
