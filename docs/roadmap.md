@@ -46,7 +46,7 @@
 - [x] Parallel Processing — 最大2件のfetch/convert先行処理、入力順の課金・状態更新、host間隔/robotsの排他を回帰検証。
 - [x] Source Health Check — 読取り専用`source-health` CLIのJSONで最終成功・連続失敗・source別発見/保存件数・pendingを表示。旧runの件数不明はnull。運用手順を参照。
 - [x] Regression Corpus — 有効2 sourceの合成fixture・本文/画像goldenと差分検出CLI、offline回帰。
-- [ ] Knowledge Graph Quality — 表記揺れ・同義語・タグ・WikiLink品質評価。
+- [x] Knowledge Graph Quality — 読取り専用CLI、良い/悪い16例・27件、固定実content125 Noteを評価。検索語612件未解決・表記群各3組と元hash不変を確認。[評価と限界](graph-quality.md)。
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
 最新の着手順・未完了Issueの計画・個別の受入状態は[次の作業](next-work.md)を正本とします。
@@ -61,6 +61,6 @@ DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではあ�
 
 - [ ] NS1: 検索キーワード・Note本文の固有語彙のWikiLinkについて、対応する公開Noteを優先し、未解決の場合はGoogle検索へつなぐ。
 
-2026-10-11の追加要望です。既存の「次の作業」の完了・受入後に着手します。
+2026-10-11の追加要望です。Knowledge Graph Qualityの評価は完了し、次の実装対象です。請求明細待ちとsource障害は独立して追跡します。
 本文へのWikiLink付与、SSG時の解決、既存Noteの互換性、検証と完了条件は
 [NS1の実装計画](next-work.md#ns1-google-search-fallback)に記録しています。現時点では未実装です。

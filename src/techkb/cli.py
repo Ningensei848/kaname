@@ -20,6 +20,8 @@ from .publication import export_notes, ExportDirectorySnapshot, ExportError
 from .distribution import publish_snapshot
 from ._cli_arguments import parse_args, validate_args
 from .source_health import source_health
+from .graph_quality import graph_quality
+from .publication.snapshot import load_snapshot
 
 
 class _Dependencies:
@@ -78,6 +80,11 @@ def main(argv=None):
         app, sources = load_config(args.config, args.sources)
         validate_args(args, app)
         dependencies.app = app
+        if args.command == "graph-quality":
+            if not args.public_snapshot:
+                raise ValueError("graph-quality requires --public-snapshot")
+            return _json_result(graph_quality(*load_snapshot(args.public_snapshot, app.tracking_parameters),
+                                             details=args.details))
         if args.command == "publish-notes":
             if not args.public_snapshot or not args.distribution_repo:
                 raise ValueError("publish-notes requires public snapshot and local bare repository")
