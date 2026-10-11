@@ -8,6 +8,7 @@
 
 | 履歴 | 内容 |
 |---|---|
+| [P1〜P4の実装・受入](2026-10/p1-p4-implementation-2026-10-11.md) | CI対象選択、スクショ/Actions費用推定、Source Health本番読取り、corpus/並列化の回帰と残る受入 |
 | [GlucoFMの限定画像補完](2026-10/glucofm-image-repair-2026-10-11.md) | 要約bytes・安定ID・課金情報を維持する2図補完、片側保存失敗の復旧と本番受入 |
 | [画像候補のMarkdown照合](2026-10/image-candidate-text-matching-2026-10-11.md) | altのescape・inline emphasis・Google Research caption、ConvApparelの5図候補と入力打切り回帰 |
 | [Google Researchの本文抽出](2026-10/google-research-body-extraction-2026-10-10.md) | 実記事4件の本文/画像タグ保持、GlucoFMの8図候補、standard/Batch回帰と残る画像候補課題 |

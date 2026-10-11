@@ -119,3 +119,36 @@ def test_real_sdk_result_passes_through_settle_and_billing(harness, failure):
         assert len(posts) == 1
     finally:
         client.close()
+
+
+@pytest.mark.parametrize('with_images', [False, True])
+def test_standard_and_batch_wire_payload_are_identical(harness, with_images):
+    """Compare both real SDK serializers with the same article and metadata."""
+    h = harness
+    sent = {}
+    def handler(req):
+        body = json.loads(req.content)
+        if req.url.path.endswith(':generateContent'):
+            sent['standard'] = body
+            return httpx.Response(200, json={'candidates': [{'content': {'role': 'model', 'parts': [{'text': h.sdk.text}]}}]})
+        sent['batch'] = body['batch']['inputConfig']['requests']['requests'][0]['request']
+        return httpx.Response(200, json={'name': 'batches/mock', 'metadata': {'state': 'BATCH_STATE_PENDING'}})
+    client = genai.Client(api_key='test', http_options=types.HttpOptions(
+        client_args={'transport': httpx.MockTransport(handler)}, retry_options=types.HttpRetryOptions(attempts=1)))
+    try:
+        gemini = Gemini(h.app.llm, h.app.categories, Path('prompts/enrich.txt').read_text(), 'test', client=client)
+        manager = BatchManager(h.store, gemini)
+        markdown = 'Exact input including Japanese 日本語 and <untrusted> data.'
+        from techkb._standard import StandardRequest
+        candidate = Candidate('now', h.source.id, 'https://example.com/a', title='日本語の候補')
+        images = [dict(image_id='img-1', url='https://example.com/figure.png', alt='Fixture',
+                       caption='Caption', context='Exact input')] if with_images else []
+        authors = ['Fixture Author']
+        item = manager.prepare(candidate, h.source, markdown, 'https://example.com/a',
+                               'a'*64, 'b'*64, authors, image_candidates=images)
+        request = StandardRequest(h.store, gemini, RunReport(llm_calls=1))
+        request.enrich(candidate, h.source, markdown, False, authors, image_candidates=images)
+        manager.submit([item], h.app, RunReport())
+        assert sent['standard'] == sent['batch']
+    finally:
+        client.close()

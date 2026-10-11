@@ -361,3 +361,16 @@ raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in
 
 これらは非公開GCSの収集・復旧形式です。新しい公開Git snapshotへ丸ごとコピーしません。
 公開には[配布契約](publication.md)に従う専用exportを使います。
+
+
+## 取得・変換の並列数と抽出回帰
+
+`config/app.yaml`の`processing.workers: 2`で、最大2件のfetch/convertを先行処理します。
+1〜8の整数が有効です。`workers: 1`で逐次処理へ戻せます。
+課金・usage・Note/index保存・重複判定は入力順の単一writerで、30件上限を並列数で増やしません。
+host間隔・robots・retryも維持するため、並列数を増やしても同じhostへの要求頻度は増えません。
+
+本文抽出/画像候補/変換依存を変えた場合は`python scripts/regression_corpus.py`で
+有効2 sourceの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
+fixtureは原文のコピーや実サイトへの定期アクセスではありません。
+GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。

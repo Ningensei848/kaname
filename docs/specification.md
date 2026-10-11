@@ -87,6 +87,8 @@ Pagesの表示中のcommit/digestを確認でき、利用側も同じ版を取�
 本文抽出・ブラウザ・raw保存・Batch切替は明示設定とします。
 Google Researchの本文入力と画像候補は`.blog-detail-wrapper`内の本文・図・キャプションを使い、
 ページのナビゲーションや関連記事で20,000文字の入力枠を消費しません。selector不一致は失敗としてpendingへ残します。
+fetch/convertは`processing.workers`で最大件数を限定して並列化し、結果は入力candidate順で処理します。
+LLM/Batch提出・usage・Note/index/pending更新は単一writerのまま、HTTP host間隔とrobotsを維持します。
 成功TSVを通常の重複排除の正本にし、失敗hashを成功登録しません。
 receiptで保存途中から復旧し、記事ごとにindexをcheckpointします。
 

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic text and public DOM patterns; no copied article text or image bytes.",
+  "cases": [
+    {
+      "id": "google-research-sections-media",
+      "source_id": "google-research",
+      "html": "tests/fixtures/google_research_article.html",
+      "markdown": "tests/fixtures/corpus/google_research.md",
+      "url": "https://example.com/google-research/article",
+      "images": [
+        {
+          "image_id": "img-1",
+          "url": "https://example.com/figure-1.png",
+          "alt": "Body diagram 1",
+          "caption": "Caption for diagram 1.",
+          "context": "First topic explanation."
+        },
+        {
+          "image_id": "img-2",
+          "url": "https://example.com/figure-2.png",
+          "alt": "Body diagram 2",
+          "caption": "Caption for diagram 2.",
+          "context": "Middle topic explanation."
+        },
+        {
+          "image_id": "img-3",
+          "url": "https://example.com/figure-3.png",
+          "alt": "Body diagram 3",
+          "caption": "Caption for diagram 3.",
+          "context": "Caption for diagram 2."
+        },
+        {
+          "image_id": "img-4",
+          "url": "https://example.com/figure-4.png",
+          "alt": "Body diagram 4",
+          "caption": "Caption for diagram 4.",
+          "context": "Caption for diagram 3."
+        },
+        {
+          "image_id": "img-5",
+          "url": "https://example.com/figure-5.png",
+          "alt": "Body diagram 5",
+          "caption": "Caption for diagram 5.",
+          "context": "Caption for diagram 4."
+        },
+        {
+          "image_id": "img-6",
+          "url": "https://example.com/figure-6.png",
+          "alt": "Body diagram 6",
+          "caption": "Caption for diagram 6.",
+          "context": "Caption for diagram 5."
+        },
+        {
+          "image_id": "img-7",
+          "url": "https://example.com/figure-7.png",
+          "alt": "Body diagram 7",
+          "caption": "Caption for diagram 7.",
+          "context": "Caption for diagram 6."
+        },
+        {
+          "image_id": "img-8",
+          "url": "https://example.com/figure-8.png",
+          "alt": "Body diagram 8",
+          "caption": "Caption for diagram 8.",
+          "context": "Last topic explanation."
+        }
+      ]
+    },
+    {
+      "id": "github-blog-article",
+      "source_id": "github-blog",
+      "html": "tests/fixtures/corpus/github_blog.html",
+      "markdown": "tests/fixtures/corpus/github_blog.md",
+      "url": "https://github.blog/engineering/example-release/",
+      "images": [
+        {
+          "image_id": "img-1",
+          "url": "https://example.com/sdk-architecture.png",
+          "alt": "SDK architecture",
+          "caption": "Request and storage boundaries.",
+          "context": "Operators can retry storage without generating another response."
+        }
+      ]
+    }
+  ]
+}
