@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "e28d6c2bb9d3d744a3f064fc2738730e70a5cf9e8c002abf4e83076156f5c6e8",
+  "dataset_digest": "6d61bc75a077364aaf2ee8bc5b9a8b51220193332ec098d7d4ab4484f82c3bbf",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1377,7 +1377,7 @@
       "path": "notes/eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419.md",
       "processed_at": "2026-10-10T01:49:08.101544+00:00",
       "published": "2026-08-26",
-      "sha256": "ce271417b252a109d5af1fc036af261bed3de5a8c56a738283d180c505723c8f",
+      "sha256": "4884907c27c19e57d86f4a577b3fbc9ba3567c1d7f451233fd3e3eb039a02d16",
       "source_id": "google-research",
       "title": "GlucoFM：持続血糖測定（CGM）向け基盤モデル"
     },
