@@ -34,7 +34,7 @@ Batch回収費用は専用reportへ記録するため、収集reportのtoken0を
 
 [最新の日次run](https://github.com/Ningensei848/kaname/actions/runs/38100338209)のcost-reportは
 10月推計USD 1.0921521、9月推計USD 0.0152929、unknown/未計上Batch/未完了standard usageはいずれも0。
-通常9日平均は約USD 0.09897/日、31日なら約USD 3.08です。
+通常9日平均は約USD 0.09897/日、31日なら約USD 3.07です。
 [公式価格](https://ai.google.dev/gemini-api/docs/pricing)の
 Gemini 3.5 Flash-Lite standard（入力0.30/出力2.50 USD per 1M、thinkingを出力へ加算）、
 Batch（入力0.15/出力1.25）は設定と一致します。
@@ -61,6 +61,8 @@ Batchは単価が半分でも拒否後の再生成が節約を相殺するため
 
 同じarticle/metadata/画像/prompt/schemaをstandardとBatchへ渡し、固定SDKの実HTTP serializerで
 payloadの完全一致を確認しました。送信差分に基づく修正理由は得られていません。
+[公式Batch API](https://ai.google.dev/gemini-api/docs/batch-api)はgenerateContentの構造化出力を許可しています。
+送信内容の一致だけでは返却の適合を保証できず、API側の逸脱理由は未確定です。
 既存のschema拒否・失敗usage回収は維持し、schema緩和や盲目的な有料再提出を行いません。
 **#94の成功保存は未受入、#116の確定請求照合は明細待ち**です。
 今回の費用推定と無課金切分けの完了を、それらのCloseと取り違えません。
@@ -110,7 +112,7 @@ host間隔/robots一回、異なるhostの実同時要求、設定上限と保�
 ## 全体の検証
 
 初回ローカル全458件と変更後の対象回帰67件が成功しました。
-最終コードhead `3700c43`の[CI](https://github.com/Ningensei848/kaname/actions/runs/38104175325)は
+最終コードhead `4af6781`の[CI](https://github.com/Ningensei848/kaname/actions/runs/38104580098)は
 **Python全460件・Web受入・両集約checkすべてsuccess**。設定検証、actionlint、diff checkも成功しました。
 3件のfixture Quartz/Chromiumは全元bytes・検索・内部リンク・画像・画面幅・外部resource0を確認しています。
 本体PR #141でもPython/Webとも成功しています。
@@ -122,7 +124,23 @@ host間隔/robots一回、異なるhostの実同時要求、設定上限と保�
 mainの固定headと実行中Daily writer0を確認し、
 [提出run](https://github.com/Ningensei848/kaname/actions/runs/38103771908)を
 `collection_mode=batch,max_calls=1`で一度だけ起動しました。モデル/本文/出力上限/厳格schemaは維持しています。
-通常設定をBatchへ切り替える操作とは分けます。返却・保存の受入結果は回収後に追記します。
+通常設定をBatchへ切り替える操作とは分けます。
+提出は1 request、通常LLM呼出し/HTTP attemptは0、audit障害0。提出runはGit/Pagesまでsuccessです。
+[GET専用の診断](https://github.com/Ningensei848/kaname/actions/runs/38104282193)では
+API jobがSUCCEEDEDでも返却1件は厳格schema検証に不適合でした。
+`title_ja`欠落・未知field・`images`型不一致を再現し、finish reasonはSTOPでした。
+API jobの成功をNote保存の成功と扱いません。
+ユーザー承認時の停止条件に従い、有料再提出を止めました。
+[追加提出0の失敗usage回収](https://github.com/Ningensei848/kaname/actions/runs/38114851460)で
+台帳complete、課金記録1件、入力3,372/出力665/thinking0 token、欠損usage0を確認しました。
+保存は0件でsuccess indexは335行のままです。元価格でUSD 0.00133705（円目安約0.2円）を計上します。
+回収runはschema拒否を記録してfailure、audit/exportはskipでした。
+費用記録はsuccess、10月USD 1.09348915、未計上Batch・不明usage・未完了standard usageは0です。
+追加提出0の[再実行](https://github.com/Ningensei848/kaname/actions/runs/38114962248)では
+collection success、通常呼出し/HTTP attempt/Batch提出/Batch保存/失敗/保存/復旧はすべて0、pendingは72のままでした。
+GCS読取りで台帳/課金recordのbytes、全index bytes、Note/receiptのgenerationとCRCが再実行前と一致し、
+課金recordも1件のままであることを照合しました。再実行のaudit stepもsuccessです。
+#94は成功保存が未受入のままOpenを維持します。
 
 固定Git版`e3ef457f3edab5b4ca90601c922cc3b415d288ab`の118件でもQuartz/Chromiumが成功し、
 元Markdown・内部リンク・画面幅・外部resource0を確認しました。実CIは検証時の最新content版を別に検査しています。

@@ -2,15 +2,15 @@
 
 2026-10-11に未解決Issueを再照会した着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
-P1、P3のcorpus、P4のParallelは実装/ローカル検証完了、P3のSource Healthは実GCS読取り受入済みです。
+P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
 費用推定とBatch切分けの根拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)にあります。
 READMEの古い未完了記載を理由に再実装しません。進捗は[検証・受入](verification.md)と各Issueで区別します。
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | 新規LLMの実選択は別受入。旧Noteへの一括適用はしない |
-| 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141の全検査も成功 |
-| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後、ユーザーが最大1件の再受入を許可し実行中 |
+| 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141のPython全460件・Web検査も成功 |
+| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後の許可済み最大1件でも同じschema拒否を再現。追加有料提出を停止。台帳complete・欠損usage0・追加提出0の再実行でデータ/課金不変とaudit成功を確認 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
 | 完了（実装・ローカル検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
@@ -29,7 +29,7 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 ## 未完了Issueの実装・受入計画
 
-#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94、#116、追加された#135はOpenを維持します。
+#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94と#116はOpenを維持します。#135は実CI受入完了で、本体PR #141の取込によりCloseします。
 
 ### #135: PR検証の対象選択 — 実CI受入完了
 
@@ -39,14 +39,16 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 分類/実Git比較15件、設定混在233件、actionlintが成功。設定のみのPR #142ではPython必要検査と既存checkが成功、Web検査はskip。検証後にマージせずCloseしました。
 本体PR #141ではPython/Web双方を実行し成功しています。
 
-### #94: 実Batchの成功保存
+### #94: API返却不適合で成功保存が未受入
 
-最初に追加課金なしで、同じ入力のstandard/Batch SDK送信payloadとschemaを比較する。
-原因を確認できた箇所だけ修正し、schema・候補ID検証、usage/receipt復旧、保存失敗後の有料処理停止を維持する。
-送信が正しくAPI応答だけが逸脱する場合は限界を記録し、schema緩和や盲目的な再提出で成功扱いしない。
-新しい実提出は最新preflight・対象・費用・操作範囲の個別承認後に最大1 job/1 requestとし、回収・再実行の追加提出は0にする。
-適合Note/receipt/index、audit/cost、再実行時の重複保存・二重計上0を確認してCloseする。
-詳細は[Issue #94](https://github.com/Ningensei848/kaname/issues/94)の更新済み計画を参照する。
+- [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致し、送信側の修正理由は得られませんでした。
+- [x] 公式Batchの構造化出力契約を照合し、厳格schema・候補ID検証を維持しました。API側の逸脱理由は未確定です。
+- [x] 最新preflight ready・費用/操作範囲の個別承認後、最大1 job/1 requestを一度だけ提出。返却1件は同じschema拒否を再現し、承認時の停止条件に従い有料再提出を止めました。
+- [x] 追加提出0で失敗usage回収・台帳complete・費用記録success。再実行も提出/保存/復旧0で、台帳・課金record・index・Note/receipt不変、二重計上0を照合しました。
+- [ ] 適合応答のNote/receipt/index・公開bytes、audit/costの成功保存受入。#94はOpenを維持します。schema緩和や盲目的な再提出で完了扱いしません。
+
+再拒否・回収・再実行の証拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#許可後の最大1件batch再受入)にあります。
+追加の有料試行やmodel/schemaの切替は、原因と操作範囲を再評価する別判断です。
 
 ### #116: 費用推定完了・確定請求照合は明細待ち
 

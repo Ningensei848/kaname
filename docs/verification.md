@@ -9,12 +9,15 @@
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
-| Batch | 提出・回収・診断・費用照合をoffline検証。読取り専用preflightはライブラリ移設後も実GCSでready | 実提出はschema不適合で成功保存0。成功Note保存の本番受入は未完了 |
+| Batch | SDK送信比較・厳格拒否をoffline検証。2026-10-11の許可済み1件もschema拒否。失敗usage回収・台帳complete・追加提出0の再実行でデータ/課金不変を本番確認 | 成功Note保存の本番受入は未完了。API逸脱原因は未確定で有料再提出を停止 |
 | Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規LLMの実選択は別の受入 |
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
 | Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。全体degradedはGoogle Researchの既知失敗・pendingを反映 |
+| CI対象選択 | 固定base/head分類、設定のみPRの必要検査成功・Web省略、本体PRのPython全460件/Web成功 | 未知path・比較失敗では全検査 |
+| Regression Corpus | 有効2 sourceの合成HTML・本文/画像golden・差分検出3件を検証 | 実サイトの将来のDOM変更を自動取得する機能ではない |
+| Parallel Processing | fetch/convert最大2件、入力順・単一writer・host間隔・robots・課金停止の回帰12件を検証 | 本番の時間短縮は未計測。workers: 1で逐次へ戻せる |
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
