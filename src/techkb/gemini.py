@@ -50,6 +50,12 @@ class Gemini:
         if definitions:
             schema["$defs"] = definitions
         schema["properties"]["category"]["enum"] = self.categories
+        image_ids = list(dict.fromkeys(candidate["image_id"] for candidate in
+                                       metadata.get("image_candidates", ())))
+        image_schema = schema["properties"]["images"]
+        image_schema["maxItems"] = min(image_schema["maxItems"], len(image_ids))
+        if image_ids:
+            image_schema["items"]["properties"]["image_id"]["enum"] = image_ids
         config = types.GenerateContentConfig(
             system_instruction=self.prompt + "\nカテゴリ候補: " + ", ".join(self.categories),
             response_mime_type="application/json", response_json_schema=schema,
