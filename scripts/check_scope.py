@@ -49,7 +49,7 @@ def main():
     parser.add_argument('--base'); parser.add_argument('--head')
     parser.add_argument('--run', help='run a selected Python scope')
     args = parser.parse_args()
-    if args.run:
+    if args.run is not None:
         subprocess.run(['python', '-m', 'techkb', 'validate-config'], check=True)
         # Regression tests do not validate the changed production plan itself.
         if args.run == 'full' or 'images' in args.run.split(','):
