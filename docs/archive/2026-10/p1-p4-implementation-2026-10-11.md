@@ -167,3 +167,13 @@ Pagesのbuild/deploy・配信照合もsuccessです。新規有料提出は最�
 python-checks/web-checksはskipとなり、P1の文書のみ分類も受入できました。
 今回の依頼範囲に対し、#94の成功Note保存はAPI返却不適合により未完了です。
 停止条件に従い、有料再提出・schema緩和で完了扱いしません。
+
+## 出力形式明示後の追加1件と後処理
+
+追加操作を個別承認され、PR #145をmainへ取込み、最新preflight ready後に最大1 job/1 requestを一度だけ提出しました。
+今回の診断はimages model_typeだけで拒否され、title_ja欠落/未知fieldの診断はありませんが、成功保存0です。
+追加提出0で失敗usage回収・台帳complete・課金record1・欠損usage0、費用推計USD 0.00142335（約0.2円）を確認。
+追加提出0の再実行・audit/cost/Git/Pagesはsuccess、Note/receipt・index・台帳/課金不変、二重計上0です。
+公開125件版は不変、10月cost推計はUSD 1.09491250で回収/再実行間の差0です。
+最新の根拠とP4の本番時間観測は[限定Batch受入記録](batch-prompt-contract-acceptance-2026-10-11.md)にあります。
+#94の成功保存は未受入で、有料再提出を停止しています。

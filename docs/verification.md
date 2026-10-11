@@ -9,7 +9,7 @@
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
-| Batch | SDK送信比較・厳格拒否をoffline検証。2026-10-11の許可済み1件もschema拒否。失敗usage回収・台帳complete・追加提出0の再実行でデータ/課金不変を本番確認 | 成功Note保存の本番受入は未完了。API逸脱原因は未確定で有料再提出を停止 |
+| Batch | SDK送信比較・厳格拒否をoffline検証。出力キー/画像配列形式を明示したPR #145を取込み、追加承認1件を提出。返却はimages model_typeで拒否。失敗usage回収・台帳complete・課金record1・欠損usage0を確認 | 成功Note保存は未受入。title_ja欠落/未知fieldの診断は今回なく、images型不適合が残る。API原因未確定で有料再提出停止。追加提出0の再実行・audit/cost/Git/Pages成功、データ/課金不変を受入 |
 | Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規LLMの実選択は別の受入 |
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
@@ -21,6 +21,8 @@
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
+追加承認1件の出力形式明示後もimages型不適合が残り、成功保存は未受入です。
+最新の拒否・失敗usage回収・費用は[受入記録](archive/2026-10/batch-prompt-contract-acceptance-2026-10-11.md)を参照してください。
 本番prompt/schemaのSDK送信と不適合応答の拒否は確認済みですが、生成側の逸脱原因は未確定です。
 schemaの緩和や有料再提出を今回の責務整理に含めません。
 

@@ -10,7 +10,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 |---|---|---|---|
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | 新規LLMの実選択は別受入。旧Noteへの一括適用はしない |
 | 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141のPython全460件・Web検査も成功 |
-| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後の許可済み最大1件でも同じschema拒否を再現。追加有料提出を停止。台帳complete・欠損usage0・追加提出0の再実行でデータ/課金不変とaudit成功を確認 |
+| P2・成功保存未受入 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 出力キー/画像配列形式を明示したPR #145を取込み、追加承認の1件を提出。今回もimages型不適合で拒否され、成功保存0。usage回収・台帳complete・欠損usage0は完了 | 追加提出0の再実行・audit/cost/Git/Pages成功とデータ/課金不変を確認。API逸脱原因は未確定、今回の有料枠は使用済みで再提出を停止。schema厳格検証を維持する |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
 | 完了（実装・実CI検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
@@ -41,24 +41,20 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 本体PR #141はmain取込済みで、Python全460件/Web双方・取込後CIも成功しています。
 文書のみPR #144でも必要なscope/既存checkは成功、Python/Webの重い検査はskipを実CIで受入済みです。
 
-### #94: API返却不適合で成功保存が未受入
+### #94: images型不適合で成功保存が未受入
 
-- [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致し、送信側の修正理由は得られませんでした。
-- [x] 公式Batchの構造化出力契約を照合し、厳格schema・候補ID検証を維持しました。API側の逸脱理由は未確定です。
-- [x] 最新preflight ready・費用/操作範囲の個別承認後、最大1 job/1 requestを一度だけ提出。返却1件は同じschema拒否を再現し、承認時の停止条件に従い有料再提出を止めました。
-- [x] 追加提出0で失敗usage回収・台帳complete・費用記録success。再実行も提出/保存/復旧0で、台帳・課金record・index・Note/receipt不変、二重計上0を照合しました。
-- [ ] 適合応答のNote/receipt/index・公開bytes、audit/costの成功保存受入。#94はOpenを維持します。schema緩和や盲目的な再提出で完了扱いしません。
+- [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致しました。
+- [x] 本番promptに正確な出力キー・title_ja・imagesのオブジェクト配列形式を明示したPR #145を、追加操作の個別承認後にmainへ取込み。既存回帰59件・PR/mainのPython全460件/Web検証は成功しました。
+- [x] 最新preflight ready・監査/課金欠損0・他writer不在を確認し、追加枠の最大1 job/1 requestを一度だけ提出しました。
+- [x] APIはSUCCEEDED・返却1件ですが、厳格検証はimagesのmodel_typeで拒否。今回の返却にはtitle_ja欠落/未知fieldの診断はありません。成功保存は0で、有料再提出を停止しました。
+- [x] 追加提出0で失敗usage回収・台帳complete・課金record1・欠損usage0を確認。入力3,514/output717/thinking0、費用推計USD 0.00142335（約0.2円）。receipt/成功indexは作られていません。
+- [x] 追加提出0の再実行の収集後、Note/receipt世代・index・台帳/課金bytes不変と課金record1を照合。二重計上0です。
+- [x] この再実行のcollection・audit・cost・Git/Pagesすべてsuccess。提出/生成/保存/復旧/失敗0、成功index335・pending72、日次/月次費用は回収時と同一。公開125件版も不変です。
+- [ ] 適合応答のNote/receipt/index・公開bytes、audit/costの成功保存受入。API逸脱理由は未確定で#94はOpenを維持します。
 
-再拒否・回収・再実行の証拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#許可後の最大1件batch再受入)にあります。
+最新の根拠は[出力形式明示後の受入記録](archive/2026-10/batch-prompt-contract-acceptance-2026-10-11.md)にあります。
+前回のtitle_ja欠落・未知field・images型不一致の拒否と回収/再実行は[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#許可後の最大1件batch再受入)に残しています。
 追加の有料試行やmodel/schemaの切替は、原因と操作範囲を再評価する別判断です。
-
-- [x] 追加試行の承認対象として、`prompts/enrich.txt`に正確な出力キーとimagesのオブジェクト配列形式を明示する候補を準備しました。schema・model・通常standard設定は維持します。
-- [ ] 候補のmain取込と、最大1 job/1 requestの追加有料試行・回収・成功保存/公開・audit/cost・追加提出0再実行の個別承認。前回の許可枠は使用済みで、この候補による有料提出はまだ行っていません。
-
-候補は、返却で欠落した`title_ja`と型が違った`images`を自然言語でも明示するものです。
-APIがschemaに従わなかった原因の特定・解消を証明したものではなく、実応答の改善は別途検証が必要です。
-無課金の既存回帰59件（standard/Batchの実SDK送信一致、厳格schema拒否、usage回収と再実行、画像選択）は成功しました。
-再拒否した場合は追加提出を止め、usage回収と二重計上防止を確認します。
 
 ### #116: 費用推定完了・確定請求照合は明細待ち
 
