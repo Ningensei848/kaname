@@ -1,6 +1,7 @@
 """Article image candidates and selection validation; never fetch image bytes."""
 import ipaddress
 import re
+import string
 from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
@@ -40,7 +41,11 @@ def article_images(raw, base_url, input_markdown):
     for node in soup.select("script,style,noscript,nav,header,footer,aside,form,iframe"):
         node.decompose()
     roots = soup.select("article") or soup.select("main") or [soup]
-    visible = " ".join(input_markdown.split())
+    # Compare text, preserving literal escaped punctuation while tolerating
+    # Markdown escapes and inline emphasis introduced by HTML conversion.
+    escape = r"\\([" + re.escape(string.punctuation) + r"])"
+    visible = [" ".join(re.sub(escape, r"\1", text).split()) for text in
+               (input_markdown, re.sub(r"(?<!\\)\*+", "", input_markdown))]
     candidates, seen = [], set()
     for image in (image for root in roots for image in root.find_all("img")):
         if any(str(image.get(k, "")).isdigit() and int(image[k]) <= 2 for k in ("width", "height")):
@@ -59,16 +64,21 @@ def article_images(raw, base_url, input_markdown):
             continue
         figure = image.find_parent("figure")
         caption_node = figure.find("figcaption") if figure else None
-        caption = " ".join(caption_node.get_text(" ", strip=True).split())[:300] if caption_node else ""
+        if caption_node is None:
+            media = image.find_parent(class_="dynamic_media")
+            caption_node = (media.select_one(".caption p") or media.select_one(".caption")) if media else None
+        # Preserve inline text boundaries: separators would invent spaces in
+        # captions such as "(<strong>black squares</strong>)".
+        caption = " ".join(caption_node.get_text().split())[:300] if caption_node else ""
         if not alt and re.search(r'<[^>]+>|!\[|javascript\s*:|data\s*:', caption, re.IGNORECASE):
             continue
         nearby = image.find_previous(["p", "h2", "h3"])
         context = " ".join(nearby.get_text(" ", strip=True).split())[:300] if nearby else ""
         # Exclude candidates whose textual evidence lies beyond the input cut.
         evidence = caption or alt or context
-        if not evidence or evidence not in visible or not urlsplit(url).path:
+        if not evidence or not any(evidence in text for text in visible) or not urlsplit(url).path:
             continue
-        if context not in visible:
+        if not any(context in text for text in visible):
             context = ""
         seen.add(url)
         candidates.append(dict(image_id=f"img-{len(candidates) + 1}", url=url,
