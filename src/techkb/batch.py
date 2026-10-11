@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from google.genai import types, errors
 from pydantic import ValidationError
 from .composer import compose, word_count
-from .images import image_context
+from .images import image_context, selected_images
 from ._receipts import build_receipt
 from .gemini import batch_response_schema, response_usage, validate_response
 from .pending import Candidate
@@ -81,7 +81,22 @@ def image_response_shape(response):
     return shape
 
 
-def failure_diagnostics(exc, phase, response):
+def image_selection_diagnostics(response, candidates):
+    """Count selection violations without exposing IDs or response values."""
+    payload = json.loads(response.text)
+    selections = payload.get("images", [])
+    known = {candidate["image_id"] for candidate in candidates}
+    ids = [selection["image_id"] for selection in selections]
+    return dict(candidate_count=len(known), selection_count=len(ids),
+                unknown_id_count=sum(image_id not in known for image_id in ids),
+                duplicate_id_count=len(ids) - len(set(ids)),
+                missing_key_point_count=sum(
+                    selection["after"].startswith("key_point_") and
+                    int(selection["after"][-1]) > len(payload["key_points"])
+                    for selection in selections))
+
+
+def failure_diagnostics(exc, phase, response, *, image_candidates=None):
     """Only structural error codes; never response text, values or error messages."""
     details = {"phase": phase}
     if isinstance(exc, errors.APIError):
@@ -102,7 +117,9 @@ def failure_diagnostics(exc, phase, response):
             details["unknown_field_count"] = sum(name not in known for name in canonical)
     codes = {"category outside configured vocabulary": "category_not_allowed",
              "empty or oversized enrichment item": "invalid_enrichment_item",
-             "batch item failed or missing": "batch_response_unavailable"}
+             "batch item failed or missing": "batch_response_unavailable",
+             "invalid_image_selection": "invalid_image_selection",
+             "invalid_image_url": "invalid_image_url"}
     if isinstance(exc, ValueError) and exc.args and isinstance(exc.args[0], str):
         code = codes.get(exc.args[0])
         if code:
@@ -119,6 +136,8 @@ def failure_diagnostics(exc, phase, response):
                 issues.add((field, code))
         details["validation_errors"] = [dict(field=field, code=code) for field, code in sorted(issues)]
     if response is not None:
+        if phase == 'compose' and image_candidates is not None:
+            details['image_selection'] = image_selection_diagnostics(response, image_candidates)
         shape = image_response_shape(response)
         if shape is not None:
             details["images_shape"] = shape
@@ -175,13 +194,18 @@ def inspect_batch(store, batch_id, client=None):
         response = by_key.get(item['ch'])
         content = response.response if response and not response.error else None
         outcome = dict(item=number, error_type=None)
+        phase = 'response'
         try:
             if content is None:
                 raise ValueError('batch item failed or missing')
-            validate_response(content, job['categories'])
+            phase = 'validation'
+            enrichment = validate_response(content, job['categories'])
+            phase = 'compose'
+            selected_images(enrichment, item.get('image_candidates', ()))
         except Exception as exc:
             outcome['error_type'] = type(exc).__name__
-            outcome['diagnostics'] = failure_diagnostics(exc, 'validation' if content is not None else 'response', content)
+            outcome['diagnostics'] = failure_diagnostics(
+                exc, phase, content, image_candidates=item.get('image_candidates', ()))
         result['remote_outcomes'].append(outcome)
     return result
 
@@ -317,7 +341,8 @@ class BatchManager:
                                                          image_candidates=item.get('image_candidates', ()))
                     except Exception as exc:
                         outcome['error']=type(exc).__name__
-                        outcome['diagnostics']=failure_diagnostics(exc, phase, response)
+                        outcome['diagnostics']=failure_diagnostics(
+                            exc, phase, response, image_candidates=item.get('image_candidates', ()))
                     outcomes.append(outcome)
                 job['outcomes']=outcomes; job['settled_at']=now()
                 job['billing_run_id']=job['settled_at'][:19].replace('-','').replace(':','')+'Z-'+hashlib.sha256(('batch:'+job['id']).encode()).hexdigest()[:8]

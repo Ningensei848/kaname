@@ -78,6 +78,8 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         image_definition = expected_schema.pop('$defs')['ImageSelection']
         expected_schema['properties']['images']['items'] = image_definition
         expected_schema['properties']['category']['enum'] = h.app.categories
+        expected_schema['properties']['images']['maxItems'] = 1
+        expected_schema['properties']['images']['items']['properties']['image_id']['enum'] = ['img-1']
         assert_api_schema_contract(schema)
         assert schema == normalized_schema(expected_batch_constraints(expected_schema))
         assert schema['required'] == list(ArticleEnrichment.model_fields)
@@ -90,7 +92,7 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         assert image_schema['properties']['image_id']['pattern'] == '^img-[1-9][0-9]*$'
         assert image_schema['properties']['after']['enum'] == [
             'summary', 'key_point_1', 'key_point_2', 'key_point_3', 'key_point_4', 'key_point_5', 'positioning']
-        assert schema['properties']['images']['maxItems'] == 6
+        assert schema['properties']['images']['maxItems'] == 1
         assert '$ref' not in json.dumps(schema) and '$defs' not in schema
         assert request['request']['systemInstruction']['parts'] == [
             {'text': prompt + '\nカテゴリ候補: ' + ', '.join(h.app.categories)}]

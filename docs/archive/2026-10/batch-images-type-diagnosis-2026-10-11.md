@@ -40,7 +40,7 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 [提出前検査38137324307](https://github.com/Ningensei848/kaname/actions/runs/38137324307)はready、監査0・成功335/pending72、未決済/不明usage0でした。
 
 - [x] APIが提出をClientErrorで拒否。台帳complete/submission_rejected、API job名なし。batch_submitted/standard call/保存/復旧0。新しい有料job・Batch usage recordは作られていません。
-- [ ] [追加提出0の再実行38138656289](https://github.com/Ningensei848/kaname/actions/runs/38138656289)でaudit/cost/公開とNote/receipt/index・拒否台帳の不変を確認する。
+- [x] [追加提出0の再実行38138656289](https://github.com/Ningensei848/kaname/actions/runs/38138656289)でcollection/audit/cost/Git/Pagesすべてsuccess。Note/receipt/index・拒否台帳と日次/月次費用の不変を確認。通知#152をClose。
 - [x] [公式v1beta discovery](https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta)を無料のGETで照合。Schemaの許容fieldにはminProperties/maxPropertiesがあり、additionalPropertiesはありません。固定SDKが送信するadditional_properties falseは、このAPI型定義に適合しません。SDK送信成功だけでAPI受理を保証した検証が不足していました。
 - [x] 対策を無料で実装。responseSchemaから非対応additionalPropertiesを除き、全既知キー必須・minProperties=maxPropertiesで閉じたobjectを表現する。親は9キー必須/9個、画像objectは2キー必須/2個。Batchではimagesも必須で、選択なしは[]。他の型/enum/pattern/字数/件数制約と通常standard、保存時のPydantic厳格検証は維持。
 - [x] 実SDK送信を公開API field定義のfixtureと照合し、非対応additional_propertiesを含む旧形式がこの検査で拒否される回帰を追加。API提出拒否のHTTP状態/既知field名だけを台帳・inspectへ残す診断も追加。関連78件成功。
@@ -54,10 +54,36 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 
 [PR #153](https://github.com/Ningensei848/kaname/pull/153)を[PR CI38138933697](https://github.com/Ningensei848/kaname/actions/runs/38138933697)成功後にmainへ取込み、[main CI38139072690](https://github.com/Ningensei848/kaname/actions/runs/38139072690)も成功しました。API型定義との照合を含む関連78件が成功しています。
 
-前の拒否枠のcostはsuccess・日次/月次推計不変、2026-10月USD 1.09491250です。追加のAPI費用推計は0。追加提出0の収集成功後、拒否台帳・index bytes・Note/receipt世代不変も確認しました。workflow全体のaudit/cost/公開完了は引き続き確認します。
+前の拒否枠のcostはsuccess・日次/月次推計不変、2026-10月USD 1.09491250です。追加のAPI費用推計は0。追加提出0の収集成功後、拒否台帳・index bytes・Note/receipt世代不変も確認しました。workflow全体のaudit/cost/Git/Pagesも成功し、通知#152をCloseしました。
 
 ユーザーから「この限定枠と受入まで許可する」と別の限定枠を受領しました。
 最大1つの生成job/1記事（費用目安約1円）、受付前のschema 400/422拒否のみjob未作成確認後に最大2回の修正再送を許可します。生成結果の不適合・曖昧な提出失敗では再提出しません。適合時の保存/公開・audit/cost・追加生成0の再実行を含みます。
 前の拒否枠の後処理完了と状態再確認後に使います。操作枠を別記録にし、課金可能な生成jobは最大1つに制限します。
 
 実APIでの成功保存は、まだ未受入です。
+
+
+## 新しい限定枠の実行状況
+
+- [x] main 451ff7499f7f132856a5bc5dfd839d6bc0ee4d52のCI成功、既存後処理完了・未決済/不明usage0・保存状態不変を再確認。
+- [x] [提出38140244746](https://github.com/Ningensei848/kaname/actions/runs/38140244746)のCollect成功。API生成job 1つ/記事1件を受付、台帳submitted・提出report永続化を照合。受付前のschema拒否は発生せず、修正再送0。
+- [ ] 追加生成0の回収と厳格検証、Note/receipt/indexの保存・audit/cost・公開、さらに追加生成0の再実行。
+
+受付済みjobを維持し、提出runの重複する後続公開工程をcancelしました。回収runで監査・費用・公開をまとめて確認します。提出成功を生成結果の適合/保存成功と扱いません。
+
+
+## 型不適合の解消と残る選択不整合
+
+[回収38140827154](https://github.com/Ningensei848/kaname/actions/runs/38140827154)で、新規jobの結果を追加生成0で回収しました。imagesは必須2キーを持つobject 5件で、JSON schema/Pydanticの型検証に成功しました。以前の文字列配列によるimages:model_typeは解消しました。
+
+ただし、入力の画像候補は4件で、5件の選択は候補外IDか重複IDを必ず含み、selected_imagesの厳格検証で拒否されました。組立てValueError・成功保存0、receipt/成功indexなしです。台帳complete・課金record1・usage欠損0、input 3,514/output 873/thinking 0、費用推計USD 0.00161835（約0.26円）。
+
+- [x] 生成job 1つ/1記事、受付前schema拒否/修正再送0。許可枠を使用済み、生成結果拒否後の有料再提出を停止。
+- [x] 次の修正を無料で実装: standard/Batch共通で記事の実候補IDをimage_id.enumに設定し、maxItemsをmin(6, 候補数)に制限。候補0はmaxItems 0で空配列。重複・候補外・存在しない重要ポイントへの配置を引き続き拒否する。
+- [x] 候補数/選択数/候補外数/重複数/不存在ポイント数だけの診断を追加し、既存jobのGET検査にも選択検証を適用。ID/本文/値は表示しない。
+- [x] 候補制約修正の関連86件成功。実SDK送信で候補0/1/4/12のenum/件数制約を照合し、候補外/重複/不存在ポイントの厳格拒否、4画像保存、GET検査の無書込み、課金record1・再課金0を検証。
+- [ ] 候補制約修正のPR/main CI。
+- [ ] [追加生成0の再実行38141105876](https://github.com/Ningensei848/kaname/actions/runs/38141105876)のaudit/cost/Git/Pagesと課金/保存状態不変の確認。
+- [ ] 候補制約修正後の実Batch成功保存。今回の生成結果拒否後は新しい個別承認が必要。
+
+maxItemsとenumは候補外と過剰件数を制限しますが、同じIDの別配置や返却key_points数との不整合までAPIのSchemaでは保証しません。保存時の厳格検証を維持し、不正な返却を変換・削除して成功扱いにしません。
