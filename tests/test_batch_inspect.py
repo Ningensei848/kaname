@@ -122,3 +122,41 @@ def test_invalid_cli_combinations_fail_before_network(arguments, monkeypatch):
         pytest.fail('invalid inspection arguments must fail before network')
     monkeypatch.setattr('techkb.cli.GCSStore', forbidden)
     assert main(arguments) == 1
+
+
+@pytest.mark.parametrize("images,expected", [
+    (["PRIVATE_IMAGE_ID"], {"type": "array", "count": 1,
+        "items": [{"type": "string"}], "omitted_items": 0}),
+    ([None], {"type": "array", "count": 1,
+        "items": [{"type": "null"}], "omitted_items": 0}),
+    ({"PRIVATE_KEY": "PRIVATE_VALUE"}, {"type": "object"}),
+    ([{"image_id": "PRIVATE_ID", "after": "PRIVATE_POSITION", "PRIVATE_KEY": "PRIVATE_VALUE"}],
+     {"type": "array", "count": 1, "items": [{"type": "object",
+        "fields": {"image_id": "string", "after": "string"}, "unknown_fields": 1}], "omitted_items": 0}),
+])
+def test_remote_inspection_reports_image_types_without_values_or_writes(harness, images, expected):
+    h = harness
+    sdk, batch_id, _ = prepared(h)
+    payload = json.loads(h.sdk.text)
+    payload["images"] = images
+    h.sdk.text = json.dumps(payload)
+    sdk.finish()
+    before, writes = dict(h.store.data), list(h.store.writes)
+    result = inspect_batch(h.store, batch_id, sdk)
+    outcome = result["remote_outcomes"][0]
+    assert outcome["error_type"] == "ValidationError"
+    assert outcome["diagnostics"]["images_shape"] == expected
+    assert "PRIVATE" not in json.dumps(result)
+    assert h.store.data == before and h.store.writes == writes
+    assert len(sdk.created) == 1 and not h.sdk.calls
+
+
+def test_image_diagnostics_bound_items_and_hide_unknown_nested_values():
+    from techkb.batch import image_response_shape
+    response = SimpleNamespace(text=json.dumps({"images": [
+        {"image_id": {"PRIVATE_KEY": "PRIVATE_VALUE"}, "after": ["PRIVATE"]}
+    ] * 20}))
+    shape = image_response_shape(response)
+    assert shape["count"] == 20 and len(shape["items"]) == 6 and shape["omitted_items"] == 14
+    assert shape["items"][0]["fields"] == {"image_id": "object", "after": "array"}
+    assert "PRIVATE" not in json.dumps(shape)
