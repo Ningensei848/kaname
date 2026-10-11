@@ -22,7 +22,7 @@
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
 追加承認1件の出力形式明示後もimages型不適合が残り、成功保存は未受入です。
-既存jobのGET再診断でimagesは文字列3個の配列と確認しました。PR #149で画像object定義を直接送信する修正をmainへ取込み、関連76件・PR CI成功済みです。新しい実API試行は有料枠の確認待ちで、成功保存を完了扱いにしません。根拠は[型不適合の切分け](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ記録しています。
+既存jobのGET再診断でimagesは文字列3個の配列と確認しました。PR #149で画像object定義を直接送信する修正をmainへ取込み、関連76件・PR CI成功済みです。新しい実API試行は最大1 job/1 requestの個別承認済みで、提出前検査中です。成功保存を完了扱いにしません。根拠は[型不適合の切分け](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ記録しています。
 最新の拒否・失敗usage回収・費用は[受入記録](archive/2026-10/batch-prompt-contract-acceptance-2026-10-11.md)を参照してください。
 本番prompt/schemaのSDK送信と不適合応答の拒否は確認済みですが、生成側の逸脱原因は未確定です。
 schemaの緩和や有料再提出を今回の責務整理に含めません。
