@@ -108,3 +108,8 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 DB/Vector DB/複数LLMへの移行、画像ファイル保存、GCS停止中の代替保存を前提にしません。
 Quartz 5.0.0と固定pluginを使い、元Markdownを同じbytesで成果物に含めます。
 公開・通常schedule・切戻し/復帰は受入済みです。現在の状態と未受入範囲は[検証・受入](verification.md)を参照してください。
+
+
+## Knowledge Graphの品質評価
+
+`graph-quality`は検証済み公開snapshotのタグ・検索キーワードWikiLinkを読取り専用で評価します。現行のタイトル完全一致と、NFKC/casefold/空白統一・明示同義語による解決案を比較します。一意な公開タイトルだけを候補とし、未解決・同名複数・自己参照を区別します。保存Note・Note ID・manifest・Web投影は変更しません。良否の評価例と対象範囲は[品質評価](graph-quality.md)を正本とします。

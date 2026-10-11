@@ -18,6 +18,7 @@
 | CI対象選択 | 固定base/head分類、設定のみPRの必要検査成功・Web省略、本体PRのPython全460件/Web成功 | 未知path・比較失敗では全検査 |
 | Regression Corpus | 有効2 sourceの合成HTML・本文/画像golden・差分検出3件を検証 | 実サイトの将来のDOM変更を自動取得する機能ではない |
 | Parallel Processing | fetch/convert最大2件、入力順・単一writer・host間隔・robots・課金停止の回帰12件を検証 | 本番の時間短縮は未計測。workers: 1で逐次へ戻せる |
+| Knowledge Graph Quality | 検証済み公開snapshotの無通信/無書込み評価、同義語/異なる語16例を含む27件、固定実content125 Noteの元hash不変 | 検索語612件は全件未解決。正規化案の保存/公開への適用、本文WikiLink・Google検索は未実装。詳細は[品質評価](graph-quality.md) |
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。

@@ -374,3 +374,15 @@ host間隔・robots・retryも維持するため、並列数を増やしても�
 有効2 sourceの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
 fixtureは原文のコピーや実サイトへの定期アクセスではありません。
 GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
+
+
+## Knowledge Graphの品質評価
+
+固定公開contentを読取り専用で評価します。
+
+```bash
+python -m techkb graph-quality --public-snapshot /path/to/public-content
+python -m techkb graph-quality --public-snapshot /path/to/public-content --details
+```
+
+認証・API呼出し・GCS/Note書込みは不要です。既定出力は件数のみ、`--details`は公開語句とNote IDも含みます。評価成功とリンク解決を区別し、曖昧候補や未解決語を任意のNoteへ結び付けません。正規化規則・指標・固定実contentの結果は[品質評価](graph-quality.md)を参照してください。
