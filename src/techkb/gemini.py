@@ -42,6 +42,12 @@ class Gemini:
 
     def request(self, metadata, markdown):
         schema = ArticleEnrichment.model_json_schema()
+        # Send the image object at items directly, so the generation constraint
+        # does not depend on the API resolving this nested definition reference.
+        definitions = schema.pop("$defs")
+        schema["properties"]["images"]["items"] = definitions.pop("ImageSelection")
+        if definitions:
+            schema["$defs"] = definitions
         schema["properties"]["category"]["enum"] = self.categories
         config = types.GenerateContentConfig(
             system_instruction=self.prompt + "\nカテゴリ候補: " + ", ".join(self.categories),

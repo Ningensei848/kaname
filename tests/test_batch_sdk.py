@@ -38,12 +38,21 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         assert request['request']['generationConfig']['responseJsonSchema']['properties']['category']['enum']==h.app.categories
         schema = request['request']['generationConfig']['responseJsonSchema']
         expected_schema = ArticleEnrichment.model_json_schema()
+        image_definition = expected_schema.pop('$defs')['ImageSelection']
+        expected_schema['properties']['images']['items'] = image_definition
         expected_schema['properties']['category']['enum'] = h.app.categories
         assert schema == expected_schema
         assert 'title_ja' in schema['required'] and schema['additionalProperties'] is False
         assert schema['properties']['images']['type'] == 'array'
-        assert schema['properties']['images']['items']['$ref'] == '#/$defs/ImageSelection'
-        assert schema['$defs']['ImageSelection']['required'] == ['image_id', 'after']
+        image_schema = schema['properties']['images']['items']
+        assert image_schema['type'] == 'object'
+        assert image_schema['required'] == ['image_id', 'after']
+        assert image_schema['additionalProperties'] is False
+        assert image_schema['properties']['image_id']['pattern'] == '^img-[1-9][0-9]*$'
+        assert image_schema['properties']['after']['enum'] == [
+            'summary', 'key_point_1', 'key_point_2', 'key_point_3', 'key_point_4', 'key_point_5', 'positioning']
+        assert schema['properties']['images']['maxItems'] == 6
+        assert '$ref' not in json.dumps(schema) and '$defs' not in schema
         assert request['request']['systemInstruction']['parts'] == [
             {'text': prompt + '\nカテゴリ候補: ' + ', '.join(h.app.categories)}]
         assert request['request']['generationConfig']['responseMimeType'] == 'application/json'
@@ -67,15 +76,16 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         client.close()
 
 
-@pytest.mark.parametrize("failure", [None, 'missing_title', 'missing_title_and_invalid_images'])
+@pytest.mark.parametrize("failure", [None, 'missing_title', 'missing_title_and_invalid_images', 'invalid_images'])
 def test_real_sdk_result_passes_through_settle_and_billing(harness, failure):
     h = harness
     remote = {}
     posts = []
     mismatched_title = json.loads(h.sdk.text)
-    mismatched_title['PRIVATE_EXTRA_FIELD'] = mismatched_title.pop('title_ja')
-    if failure == 'missing_title_and_invalid_images':
-        mismatched_title['images'] = ['PRIVATE_IMAGE_VALUE']
+    if failure in {'missing_title', 'missing_title_and_invalid_images'}:
+        mismatched_title['PRIVATE_EXTRA_FIELD'] = mismatched_title.pop('title_ja')
+    if failure in {'missing_title_and_invalid_images', 'invalid_images'}:
+        mismatched_title['images'] = ['PRIVATE_IMAGE_VALUE'] * 3
     def handler(req):
         if req.method == 'POST':
             body = json.loads(req.content)
@@ -108,6 +118,12 @@ def test_real_sdk_result_passes_through_settle_and_billing(harness, failure):
             expected = [{'field': '$', 'code': 'extra_forbidden'}, {'field': 'title_ja', 'code': 'missing'}]
             if failure == 'missing_title_and_invalid_images':
                 expected.insert(1, {'field': 'images', 'code': 'model_type'})
+            if failure == 'invalid_images':
+                expected = [{'field': 'images', 'code': 'model_type'}]
+                assert report.failures[0]['diagnostics']['images_shape'] == {
+                    'type': 'array', 'count': 3, 'items': [{'type': 'string'}] * 3, 'omitted_items': 0}
+                assert h.store.list('state/receipts/') == []
+                assert audit_state(h.store)['success_rows'] == 0
             assert report.failures[0]['diagnostics']['validation_errors'] == expected
             assert 'PRIVATE' not in report.to_bytes().decode()
         billing = [json.loads(h.store.read(name)) for name in h.store.list('runs/')
