@@ -32,3 +32,19 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 - [ ] 送信経路変更のPR/main CIと今回許可された最大1 job/1 requestの実受入。
 
 今回の追加送信経路検証も新規生成0です。許可された新しい1件枠はまだ使用せず、上記検証後に一度だけ使います。
+
+
+## 追加枠の提出時拒否とAPI契約に基づく修正
+
+[PR #151](https://github.com/Ningensei848/kaname/pull/151)の[PR CI38137799724](https://github.com/Ningensei848/kaname/actions/runs/38137799724)と[main CI38137906523](https://github.com/Ningensei848/kaname/actions/runs/38137906523)成功後、main b3e64ac1229bb325cb686bf01ca2d1a28c32c2fcから[1件枠38138049639](https://github.com/Ningensei848/kaname/actions/runs/38138049639)を一度だけ起動しました。
+[提出前検査38137324307](https://github.com/Ningensei848/kaname/actions/runs/38137324307)はready、監査0・成功335/pending72、未決済/不明usage0でした。
+
+- [x] APIが提出をClientErrorで拒否。台帳complete/submission_rejected、API job名なし。batch_submitted/standard call/保存/復旧0。新しい有料job・Batch usage recordは作られていません。
+- [ ] [追加提出0の再実行38138656289](https://github.com/Ningensei848/kaname/actions/runs/38138656289)でaudit/cost/公開とNote/receipt/index・拒否台帳の不変を確認する。
+- [x] [公式v1beta discovery](https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta)を無料のGETで照合。Schemaの許容fieldにはminProperties/maxPropertiesがあり、additionalPropertiesはありません。固定SDKが送信するadditional_properties falseは、このAPI型定義に適合しません。SDK送信成功だけでAPI受理を保証した検証が不足していました。
+- [x] 対策を無料で実装。responseSchemaから非対応additionalPropertiesを除き、全既知キー必須・minProperties=maxPropertiesで閉じたobjectを表現する。親は9キー必須/9個、画像objectは2キー必須/2個。Batchではimagesも必須で、選択なしは[]。他の型/enum/pattern/字数/件数制約と通常standard、保存時のPydantic厳格検証は維持。
+- [x] 実SDK送信を公開API field定義のfixtureと照合し、非対応additional_propertiesを含む旧形式がこの検査で拒否される回帰を追加。API提出拒否のHTTP状態/既知field名だけを台帳・inspectへ残す診断も追加。関連78件成功。
+- [ ] API契約修正のPR/main CIと、修正後の実Batch成功保存。
+
+今回のClientErrorのHTTP状態・field名は旧台帳に保存されず、API個別の拒否理由は確認できません。API型定義との不適合は確認済みですが、これを保存されていない実APIエラーメッセージの代わりに扱いません。
+今回許可された提出操作は終了し、新しい有料提出を止めています。成功保存は未受入です。

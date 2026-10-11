@@ -21,12 +21,33 @@ def normalized_schema(schema):
     if not isinstance(schema, dict):
         return schema
     names = {'additional_properties': 'additionalProperties', 'max_items': 'maxItems',
-             'min_items': 'minItems', 'max_length': 'maxLength', 'min_length': 'minLength'}
+             'min_items': 'minItems', 'max_length': 'maxLength', 'min_length': 'minLength',
+             'max_properties': 'maxProperties', 'min_properties': 'minProperties'}
     result = {names.get(key, key): normalized_schema(value) for key, value in schema.items()
               if key not in {'default', 'property_ordering', 'propertyOrdering'}}
     if isinstance(result.get('type'), str):
         result['type'] = result['type'].lower()
     return result
+
+
+def assert_api_schema_contract(schema):
+    """External oracle: field names published by the actual v1beta Schema API."""
+    contract = json.loads((Path(__file__).parent / 'fixtures/gemini-response-schema-contract.json').read_text())
+    assert set(schema) <= set(contract['schema_fields'])
+    for child in schema.get('properties', {}).values():
+        assert_api_schema_contract(child)
+    if 'items' in schema:
+        assert_api_schema_contract(schema['items'])
+
+
+def expected_batch_constraints(schema):
+    # The wire contract is stricter about including images; no-image is [].
+    # Other field constraints remain identical to ArticleEnrichment.
+    for node in (schema, schema['properties']['images']['items']):
+        del node['additionalProperties']
+        node['required'] = list(node['properties'])
+        node['minProperties'] = node['maxProperties'] = len(node['properties'])
+    return schema
 
 
 def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
@@ -57,13 +78,15 @@ def test_real_sdk_serializes_batch_request_and_reads_inline_response(harness):
         image_definition = expected_schema.pop('$defs')['ImageSelection']
         expected_schema['properties']['images']['items'] = image_definition
         expected_schema['properties']['category']['enum'] = h.app.categories
-        assert schema == normalized_schema(expected_schema)
-        assert 'title_ja' in schema['required'] and schema['additionalProperties'] is False
+        assert_api_schema_contract(schema)
+        assert schema == normalized_schema(expected_batch_constraints(expected_schema))
+        assert schema['required'] == list(ArticleEnrichment.model_fields)
+        assert schema['minProperties'] == schema['maxProperties'] == 9
         assert schema['properties']['images']['type'] == 'array'
         image_schema = schema['properties']['images']['items']
         assert image_schema['type'] == 'object'
         assert image_schema['required'] == ['image_id', 'after']
-        assert image_schema['additionalProperties'] is False
+        assert image_schema['minProperties'] == image_schema['maxProperties'] == 2
         assert image_schema['properties']['image_id']['pattern'] == '^img-[1-9][0-9]*$'
         assert image_schema['properties']['after']['enum'] == [
             'summary', 'key_point_1', 'key_point_2', 'key_point_3', 'key_point_4', 'key_point_5', 'positioning']
@@ -186,7 +209,14 @@ def test_standard_and_batch_wire_payload_preserve_same_content_and_schema_constr
         standard_schema = standard_config.pop('responseJsonSchema')
         batch_schema = batch_config.pop('responseSchema')
         assert 'responseSchema' not in standard_config and 'responseJsonSchema' not in batch_config
-        assert normalized_schema(standard_schema) == normalized_schema(batch_schema)
+        assert_api_schema_contract(normalized_schema(batch_schema))
+        assert normalized_schema(expected_batch_constraints(standard_schema)) == normalized_schema(batch_schema)
         assert sent['standard'] == sent['batch']
     finally:
         client.close()
+
+
+def test_api_contract_rejects_sdk_serializable_but_unsupported_closed_object_field():
+    # This field survived SDK serialization but is absent from the API Schema.
+    with pytest.raises(AssertionError):
+        assert_api_schema_contract(normalized_schema({'type': 'OBJECT', 'additional_properties': False}))
