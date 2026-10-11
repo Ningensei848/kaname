@@ -38,7 +38,8 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 文書のみ、source設定、app設定、画像補完計画、Python、Web、混在を選択し、未知path・比較失敗は全検査へ戻します。
 設定検証と対象別回帰、実計画のschema検査を維持し、既存`test`/`web-preview`で成功・省略を集約します。
 分類/実Git比較15件、設定混在233件、actionlintが成功。設定のみのPR #142ではPython必要検査と既存checkが成功、Web検査はskip。検証後にマージせずCloseしました。
-本体PR #141ではPython/Web双方を実行し成功しています。
+本体PR #141はmain取込済みで、Python全460件/Web双方・取込後CIも成功しています。
+文書のみPR #144でも必要なscope/既存checkは成功、Python/Webの重い検査はskipを実CIで受入済みです。
 
 ### #94: API返却不適合で成功保存が未受入
 

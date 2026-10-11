@@ -155,3 +155,15 @@ Python全460件（17.13秒）、Web、scope、両集約checkすべてsuccessで�
 #116の確定請求照合は明細待ちでOpen、依頼された費用推定は完了です。
 Google Researchの連続失敗#139・日次runのcompose失敗#140は既知の残件として維持します。
 新規生成0の成功runだけを理由に、これらの有料生成の障害を解消済みとは扱いません。
+
+
+再実行run `38114962248`はcollection/audit/cost/export/Git/Pagesまで全体successで完了しました。
+auditは335成功行・pending72・障害0、costはsuccessで日次/月次推計が回収直後と完全一致しました。
+Git公開後のcontentは提出runと同じ`238ecc96e8b9cd7f39dbdaf9f9d9f3cb16fbfb40`（125件）のままで、
+Pagesのbuild/deploy・配信照合もsuccessです。新規有料提出は最初の1 requestだけです。
+
+[文書のみのPR #144](https://github.com/Ningensei848/kaname/pull/144)では
+[実CI](https://github.com/Ningensei848/kaname/actions/runs/38116318830)のscope/test/web-previewがsuccess、
+python-checks/web-checksはskipとなり、P1の文書のみ分類も受入できました。
+今回の依頼範囲に対し、#94の成功Note保存はAPI返却不適合により未完了です。
+停止条件に従い、有料再提出・schema緩和で完了扱いしません。
