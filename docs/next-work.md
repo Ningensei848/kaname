@@ -13,8 +13,9 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後の許可済み最大1件でも同じschema拒否を再現。追加有料提出を停止。台帳complete・欠損usage0・追加提出0の再実行でデータ/課金不変とaudit成功を確認 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
-| 完了（実装・ローカル検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
-| 完了（実装・ローカル検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
+| 完了（実装・実CI検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
+| 完了（実装・実CI検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
+| 観測済み・別途対応 | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 原因の修正・受入は別途対応。今回の無課金runを有料生成の復旧と混同しない |
 | P4 | Knowledge Graph Quality | 表記揺れ・同義語・tags/WikiLinkの品質を評価する | 良否の評価例を確認 |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 | NextStep（既存計画完了後） | [NS1: 検索キーワード・本文のGoogle検索フォールバック](#ns1-google-search-fallback) | 2026-10-11の追加要望。上記の既存作業の完了・受入後に着手する未実装項目 | 既存Noteへのリンクを優先し、未解決WikiLinkをGoogle検索へつなぐ |
@@ -29,7 +30,7 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 ## 未完了Issueの実装・受入計画
 
-#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94と#116はOpenを維持します。#135は実CI受入完了で、本体PR #141の取込によりCloseします。
+#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94と#116はOpenを維持します。#135は実CI受入完了で、本体PR #141はmain取込済みで、#135はCloseしました。
 
 ### #135: PR検証の対象選択 — 実CI受入完了
 
@@ -37,7 +38,8 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 文書のみ、source設定、app設定、画像補完計画、Python、Web、混在を選択し、未知path・比較失敗は全検査へ戻します。
 設定検証と対象別回帰、実計画のschema検査を維持し、既存`test`/`web-preview`で成功・省略を集約します。
 分類/実Git比較15件、設定混在233件、actionlintが成功。設定のみのPR #142ではPython必要検査と既存checkが成功、Web検査はskip。検証後にマージせずCloseしました。
-本体PR #141ではPython/Web双方を実行し成功しています。
+本体PR #141はmain取込済みで、Python全460件/Web双方・取込後CIも成功しています。
+文書のみPR #144でも必要なscope/既存checkは成功、Python/Webの重い検査はskipを実CIで受入済みです。
 
 ### #94: API返却不適合で成功保存が未受入
 
