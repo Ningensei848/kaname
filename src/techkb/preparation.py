@@ -45,7 +45,6 @@ def prepare_article(pipeline, candidate, source, known_raw):
 def prepared_articles(pipeline, candidates, known_raw):
     sources = {source.id: source for source in pipeline.sources if source.enabled}
     eligible = ((candidate, sources[candidate.source_id]) for candidate in candidates if candidate.source_id in sources)
-    known_raw = frozenset(known_raw)
     workers = pipeline.app.processing.workers
     if workers == 1:
         yield ((candidate, source, prepare_article(pipeline, candidate, source, known_raw))
@@ -57,7 +56,7 @@ def prepared_articles(pipeline, candidates, known_raw):
         pair = next(eligible, None)
         if pair is not None:
             candidate, source = pair
-            queue.append((candidate, source, pool.submit(prepare_article, pipeline, candidate, source, known_raw)))
+            queue.append((candidate, source, pool.submit(prepare_article, pipeline, candidate, source, frozenset(known_raw))))
     def ordered():
         for _ in range(workers):
             submit()

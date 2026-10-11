@@ -9,8 +9,8 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | 新規LLMの実選択は別受入。旧Noteへの一括適用はしない |
-| 完了（実装・ローカル検証） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功 | PR上の実job選択は取込時のCIで確認 |
-| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後の最大1件の再受入判断待ち |
+| 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141の全検査も成功 |
+| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | standard/Batchの実SDK payloadは完全一致。原因は未確定、schema厳格検証を維持。最新preflight ready後、ユーザーが最大1件の再受入を許可し実行中 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 完了（本番読取り受入） | Source Health Checkの実環境受入 | 実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | sourceの既知失敗を監視。CLI成功とsource健全性を分ける |
 | 完了（実装・ローカル検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
@@ -31,12 +31,13 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 #127と#129は実装・失敗回収の証拠に基づきClose済みです。#94、#116、追加された#135はOpenを維持します。
 
-### #135: PR検証の対象選択 — 実装・ローカル検証完了
+### #135: PR検証の対象選択 — 実CI受入完了
 
 `checks.yml`と`scripts/check_scope.py`で比較base/headを固定し、削除・renameの両側を分類します。
 文書のみ、source設定、app設定、画像補完計画、Python、Web、混在を選択し、未知path・比較失敗は全検査へ戻します。
 設定検証と対象別回帰、実計画のschema検査を維持し、既存`test`/`web-preview`で成功・省略を集約します。
-分類/実Git比較15件、設定混在233件、actionlintが成功。実PR上の選択はCI受入として別記します。
+分類/実Git比較15件、設定混在233件、actionlintが成功。設定のみのPR #142ではPython必要検査と既存checkが成功、Web検査はskip。検証後にマージせずCloseしました。
+本体PR #141ではPython/Web双方を実行し成功しています。
 
 ### #94: 実Batchの成功保存
 

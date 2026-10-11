@@ -29,9 +29,11 @@ altエスケープとmedia captionの修正・実HTML再生は[検証記録](arc
 
 ## P1〜P4の今回の検証
 
-CI対象分類・実Git比較15件、設定混在233件、Regression Corpus3件、Parallel10件、
+CI対象分類・実Git比較15件、設定混在233件、Regression Corpus3件、Parallel12件、
 standard/Batchの実HTTP payload比較（画像あり/なし）を追加しました。
 Source Healthの実GCS読取りと最新preflight readyを確認しています。
+P1は設定のみPR #142のPython成功/Web省略・既存check成功、本体PR #141の全検査成功を受入済みです。
+Python全458件、fixtureのQuartz/Chromiumも成功。
 費用はスクショと全Daily履歴から推定し、確定請求照合とBatch成功保存は別の未完了受入です。
 実装・計数・限界は[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で追跡します。
 

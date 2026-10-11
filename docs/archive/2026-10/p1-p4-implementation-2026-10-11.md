@@ -14,7 +14,10 @@ Webと公開契約の変更はWeb受入を実行し、混在変更では必要�
 実検証は`python-checks`/`web-checks`で実行し、既存の`test`/`web-preview`は
 `always()`でscopeと実jobの結果を集約します。必要な検査の失敗・中断をskip成功へ変換しません。
 分類/実Git比較15件、設定混在の対象回帰233件、actionlint成功。
-実PRのjob選択は別途CIで確認します。
+[本体PR #141のChecks](https://github.com/Ningensei848/kaname/actions/runs/38103838342)は全job success。
+[source設定のみのPR #142](https://github.com/Ningensei848/kaname/pull/142)では
+[実CI](https://github.com/Ningensei848/kaname/actions/runs/38103890924)でscope/sources Python/test/web-previewがsuccess、
+web-checksがskip。受入専用PRはマージせずCloseし、作成branch/worktreeを片付けました。
 
 ## P2: 費用推定とBatch切分け
 
@@ -22,7 +25,7 @@ Webと公開契約の変更はWeb受入を実行し、混在変更では必要�
 2026-09-14〜2026-10-11の28日表示173.04円です。
 上限表示と期間合計は範囲/更新時刻が異なるので、確定明細や同一期間の請求とは扱いません。
 
-[抽出した計数](actions-cost-evidence-2026-10-11.json)はDaily TechKB全33回
+[抽出した計数](actions-cost-evidence-2026-10-11.json)は今回の再受入前のDaily TechKB全33回
 （schedule14回、手動19回）のログから収集report21回を抽出したものです。
 standard336呼出しと別のBatch提出2 requestを区別します。
 公開/診断/事前検査/補完だけの手動実行を、有料の新規生成回数へ加えません。
@@ -99,6 +102,25 @@ MarkItDownはthreadごとに独立したengineを使います。
 同じhostのnetworkとLLMは逐次なので、全runの時間が半減するとは主張しません。
 
 並列完了の逆転、単一writer、重複/上限、保存障害時の先行取得最大2件、dry-runの無更新、
-host間隔/robots一回、異なるhostの実同時要求、設定上限を10件で検証しました。
+host間隔/robots一回、異なるhostの実同時要求、設定上限と保存後の新規raw重複の変換省略を12件で検証しました。
 12件・各取得0.1秒の模擬benchmarkは、workers1で1.374秒、workers2で0.768秒（約44%短縮）。
 実HTTP/LLMの本番時間計測とは別です。`workers: 1`で逐次へ戻せます。
+
+
+## 全体の検証
+
+Python全458件、設定検証、actionlint、diff checkが成功しました。
+3件のfixture Quartz/Chromiumは全元bytes・検索・内部リンク・画像・画面幅・外部resource0を確認しています。
+本体PR #141でもPython/Webとも成功しています。
+
+## 許可後の最大1件Batch再受入
+
+最新preflight readyの後、ユーザーから最大1 job/1 requestの一度だけの提出・回収・audit/costと
+追加提出0の再実行を明示許可されました。
+mainの固定headと実行中Daily writer0を確認し、
+[提出run](https://github.com/Ningensei848/kaname/actions/runs/38103771908)を
+`collection_mode=batch,max_calls=1`で一度だけ起動しました。モデル/本文/出力上限/厳格schemaは維持しています。
+通常設定をBatchへ切り替える操作とは分けます。返却・保存の受入結果は回収後に追記します。
+
+固定Git版`e3ef457f3edab5b4ca90601c922cc3b415d288ab`の118件でもQuartz/Chromiumが成功し、
+元Markdown・内部リンク・画面幅・外部resource0を確認しました。実CIは検証時の最新content版を別に検査しています。

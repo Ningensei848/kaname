@@ -119,3 +119,13 @@ def test_parallel_limit_is_bounded():
     for value in (0, 9):
         with pytest.raises(ValidationError):
             ProcessingConfig(workers=value)
+
+
+@pytest.mark.parametrize('workers', [1, 2])
+def test_new_raw_duplicates_skip_conversion_after_bounded_speculation(harness, workers):
+    h = harness; h.app.processing.workers = workers
+    raw = h.fetcher.pages['https://example.com/a']
+    h.fetcher.pages = {f'https://example.com/{n}': raw for n in range(6)}
+    report = h.pipeline.run()
+    assert report.saved == 1 and report.raw_duplicates == 5
+    assert h.converter.calls <= workers
