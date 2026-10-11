@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "6d61bc75a077364aaf2ee8bc5b9a8b51220193332ec098d7d4ab4484f82c3bbf",
+  "dataset_digest": "eb64e954c0781711ede03688622434505caccf7ab688619bbaefbfc593d745f4",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -17,13 +17,13 @@
       "canonical_url": "https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/",
       "category": "ai-llm",
       "id": "08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903.md",
-      "processed_at": "2026-10-08T01:57:31.982951+00:00",
+      "processed_at": "2026-10-11T01:01:41.245760+00:00",
       "published": "2026-01-13",
-      "sha256": "07375c43634e0e5e6e451648342d603212761ba7f065beb9a679a8134358f54a",
+      "sha256": "7767268f6893762243b9bbfdc0ede1d474273572faac28568950cc3f5661618c",
       "source_id": "google-research",
-      "title": "MedGemma 1.5による次世代医療画像解釈とMedASRによる医療用音声認識"
+      "title": "MedGemma 1.5とMedASRによる次世代の医療画像解析および音声認識"
     },
     {
       "canonical_url": "https://research.google/blog/four-ways-google-research-scientists-have-been-using-empirical-research-assistance/",
@@ -60,6 +60,18 @@
       "sha256": "93e8a19c67e4cbfdbf6dd5ba097eaa3445c823c241afd7281169571b605c475a",
       "source_id": "github-blog",
       "title": "開発者向けポリシーの更新：透明性、州の政策、今後の展望"
+    },
+    {
+      "canonical_url": "https://github.blog/developer-skills/career-growth/hack-the-world-why-hackathons-are-still-the-best-place-to-learn-to-build/",
+      "category": "software-development",
+      "id": "0efde46915aca57a981ce0cc2bcb9245158581f45332a9860f4bcce8db88b275",
+      "llm_input_truncated": true,
+      "path": "notes/0efde46915aca57a981ce0cc2bcb9245158581f45332a9860f4bcce8db88b275.md",
+      "processed_at": "2026-10-11T01:02:13.771723+00:00",
+      "published": "2026-10-09",
+      "sha256": "c3df84537cf31393907dd81434ec6e7aa9c5abdee75e060ac806082a4f51d71a",
+      "source_id": "github-blog",
+      "title": "ハック・ザ・ワールド：ハックathonがいまだにものづくりを学ぶ最高の場である理由"
     },
     {
       "canonical_url": "https://research.google/blog/reducing-ev-range-anxiety-how-a-simple-ai-model-predicts-port-availability/",
@@ -173,13 +185,13 @@
       "canonical_url": "https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/",
       "category": "ai-llm",
       "id": "26b878a871d0ceffb1f02f58cb0ecdc245c54578dec8d0ee715a3477134e0ad4",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/26b878a871d0ceffb1f02f58cb0ecdc245c54578dec8d0ee715a3477134e0ad4.md",
-      "processed_at": "2026-10-10T01:48:41.419724+00:00",
+      "processed_at": "2026-10-11T01:03:46.297862+00:00",
       "published": "2025-12-10",
-      "sha256": "49c0145cfea313aef8424084a76c4a6d72a303e8496e391531aa695e3b0f1506",
+      "sha256": "e4a947d1a234236bfa8bd890652ea576216f32f026cad838a4274d266c2e33f1",
       "source_id": "google-research",
-      "title": "AIチャットボット利用状況から洞察を得るための差分プライバシーフレームワーク"
+      "title": "AIチャットボット利用の洞察を得るための差分プライバシーフレームワーク"
     },
     {
       "canonical_url": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
@@ -221,25 +233,25 @@
       "canonical_url": "https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/",
       "category": "ai-llm",
       "id": "33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e.md",
-      "processed_at": "2026-10-09T02:13:03.501115+00:00",
+      "processed_at": "2026-10-11T01:03:30.663673+00:00",
       "published": "2026-06-24",
-      "sha256": "cd420be9ca55fefa5a49c9b7639744081150d6883d6cc18248976641ff3c89f4",
+      "sha256": "de51a11e5300078999b3d8aec80325f54ea67be2935ccaf08a426525017d533e",
       "source_id": "google-research",
-      "title": "思考が回想を促す仕組み：推論が大規模言語モデル（LLM）のパラメータ知識を解放するプロセス"
+      "title": "推論が大規模言語モデルのパラメトリック知識を引き出すメカニズムに関する研究"
     },
     {
       "canonical_url": "https://research.google/blog/advancing-amie-towards-expert-level-audio-visual-clinical-consultations/",
       "category": "ai-llm",
       "id": "33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a.md",
-      "processed_at": "2026-10-10T01:47:11.968563+00:00",
+      "processed_at": "2026-10-11T01:03:51.375788+00:00",
       "published": "2026-08-11",
-      "sha256": "de5b573bd2bb92026742474f1e38f308140401220493d99d527b2eff64a95473",
+      "sha256": "8cc3ec7c4b540b19ffaa6b2b1b847e702452af0a8b7d0bc3d3a6a26717123c27",
       "source_id": "google-research",
-      "title": "リアルタイムビデオ診察に向けた医療AI「AMIE（Video）」の発表"
+      "title": "AMIEのリアルタイム臨床ビデオ相談への拡張：専門医レベルのオーディオ・ビジュアル医療AIに向けて"
     },
     {
       "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
@@ -281,13 +293,13 @@
       "canonical_url": "https://research.google/blog/titans-miras-helping-ai-have-long-term-memory/",
       "category": "ai-llm",
       "id": "40652942dec1c0dd77831eae6aa97912b5b2da911a8ace790803150a3690beeb",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/40652942dec1c0dd77831eae6aa97912b5b2da911a8ace790803150a3690beeb.md",
-      "processed_at": "2026-10-09T02:13:10.299895+00:00",
+      "processed_at": "2026-10-11T01:03:36.195461+00:00",
       "published": "2025-12-04",
-      "sha256": "640831b87da8601b9044acf3d48443e57ae308fc238c06a32744cc12756655da",
+      "sha256": "a14c9b439dcfe8d8c156d633b4a91f865ca1b25d434a3974cc577d0ff672ead6",
       "source_id": "google-research",
-      "title": "TitansとMIRAS：AIに長期記憶を付与する新しいアーキテクチャとフレームワーク"
+      "title": "TitansとMIRAS：AIの長期記憶を拡張する新しいアーキテクチャと理論的枠組み"
     },
     {
       "canonical_url": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
@@ -305,25 +317,25 @@
       "canonical_url": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
       "category": "ai-llm",
       "id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3.md",
-      "processed_at": "2026-10-09T02:12:32.801901+00:00",
+      "processed_at": "2026-10-11T01:03:12.973150+00:00",
       "published": "2026-07-22",
-      "sha256": "32818e178ff71f05f6e832562edf980da26298cc131036843c8170cef02deb14",
+      "sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
       "source_id": "google-research",
-      "title": "SymptomAI：日常の症状評価のための会話型AIエージェントの検証"
+      "title": "SymptomAI：日常の症状評価のための会話型AIエージェントに向けて"
     },
     {
       "canonical_url": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/",
       "category": "ai-llm",
       "id": "4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0.md",
-      "processed_at": "2026-10-08T01:57:04.920530+00:00",
+      "processed_at": "2026-10-11T01:01:27.852210+00:00",
       "published": "2025-11-07",
-      "sha256": "55573c2011009644b8046277654220039470158db81291fd730511da49652de9",
+      "sha256": "d527ca732f2c64bb2f07fae1f7565efd5c916dbc6e2b85865fc5647b7370798f",
       "source_id": "google-research",
-      "title": "ネステッド・ラーニングの導入：継続学習のための新しい機械学習パラダイム"
+      "title": "ネステッド・ラーニング（Nested Learning）：継続的学習のための新しい機械学習パラダイム"
     },
     {
       "canonical_url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
@@ -569,13 +581,13 @@
       "canonical_url": "https://research.google/blog/improving-breast-cancer-screening-workflows-with-machine-learning/",
       "category": "ai-llm",
       "id": "76291bc3b13c4cc6d41c42c2d1fc23c3141010fee3263daf879a9d246a55aa75",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/76291bc3b13c4cc6d41c42c2d1fc23c3141010fee3263daf879a9d246a55aa75.md",
-      "processed_at": "2026-10-08T01:56:51.276343+00:00",
+      "processed_at": "2026-10-11T01:01:17.910345+00:00",
       "published": "2026-03-17",
-      "sha256": "cfedec52bb58109ad6ec2f88be2212877421e44e6a39961f85e4e8db9134ddf4",
+      "sha256": "20159cdea20200f4259c3fb68ae9ffb1b79376d5f97d65b8012c772f30b7b357",
       "source_id": "google-research",
-      "title": "機械学習を活用した乳がん検診ワークフローの改善"
+      "title": "機械学習を用いた乳がんスクリーニングワークフローの改善"
     },
     {
       "canonical_url": "https://research.google/blog/catalyzing-scientific-impact-through-global-partnerships-and-open-resources/",
@@ -629,25 +641,25 @@
       "canonical_url": "https://research.google/blog/a-connectomics-milestone-mapping-the-complete-male-fruit-fly-brain/",
       "category": "ai-llm",
       "id": "805255bcee519563981a0f06aa3c385b489e08ed3dcc317abe082538198af2bd",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/805255bcee519563981a0f06aa3c385b489e08ed3dcc317abe082538198af2bd.md",
-      "processed_at": "2026-10-08T01:58:51.892705+00:00",
+      "processed_at": "2026-10-11T01:03:41.486016+00:00",
       "published": "2026-09-03",
-      "sha256": "816d18a223ec4d4e7107e487d510ff2c66c5391b775ed69a2f92f3d54bf57b70",
+      "sha256": "61b1df6026726f5b4c08b4bbe7e8f77b258411c07fbf284e9dd45940ebac6669",
       "source_id": "google-research",
-      "title": "コネクトミクスのマイルストーン：完全なオスのショウジョウバエの脳のマッピング"
+      "title": "コネクトミクスのマイルストーン：オスのキイロショウジョウバエの完全な脳のマッピング"
     },
     {
       "canonical_url": "https://research.google/blog/beyond-one-on-one-authoring-simulating-and-testing-dynamic-human-ai-group-conversations/",
       "category": "ai-llm",
       "id": "823f1395b6b4e60ea7d5a65e621234193f09bc7dc935dd9069cda143eebb5c82",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/823f1395b6b4e60ea7d5a65e621234193f09bc7dc935dd9069cda143eebb5c82.md",
-      "processed_at": "2026-10-10T01:48:51.314955+00:00",
+      "processed_at": "2026-10-11T01:04:07.067355+00:00",
       "published": "2026-02-10",
-      "sha256": "87d0cdbd2e3d0778fd8c93f5e8ff2629954ba54d52f03058b9cce86ef5c47c22",
+      "sha256": "970e4082c1e6619ee9465d47ae61eb1a02e206670088b7b58c13c50f8fe3dff6",
       "source_id": "google-research",
-      "title": "1対1を超えて：動的な人間とAIのグループ会話のオーサリング、シミュレーション、テスト"
+      "title": "マルチパーティな人間とAIのグループ会話のオーサリング、シミュレーション、テスト：DialogLab"
     },
     {
       "canonical_url": "https://research.google/blog/hard-braking-events-as-indicators-of-road-segment-crash-risk/",
@@ -677,13 +689,13 @@
       "canonical_url": "https://research.google/blog/teaching-ai-to-read-a-map/",
       "category": "ai-llm",
       "id": "8302fcfe7cdb212b84d990ec166283166f3c4adbf929c27892d649c67aff28b4",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/8302fcfe7cdb212b84d990ec166283166f3c4adbf929c27892d649c67aff28b4.md",
-      "processed_at": "2026-10-09T02:12:37.714246+00:00",
+      "processed_at": "2026-10-11T01:03:20.027699+00:00",
       "published": "2026-02-17",
-      "sha256": "2dabebb6168eb537228c196e4913b7debee4dc01819e4f612c9f70e939b81977",
+      "sha256": "4b78476cb7b064b6e8e8b5345352e499e8d12d8985498f9c5b3d400087f51dce",
       "source_id": "google-research",
-      "title": "AIに地図の読み方を教える：MapTraceによる経路探索のデータ生成と空間推論の向上"
+      "title": "AIに地図の読み方を教える：MapTraceによる経路追跡データのスケーラブルな生成"
     },
     {
       "canonical_url": "https://research.google/blog/mapping-the-modern-world-how-s2vec-learns-the-language-of-our-cities/",
@@ -691,11 +703,11 @@
       "id": "84551cf702883cb53c3b03135390e5756d32f98e073b72c9836f7eb2633cd165",
       "llm_input_truncated": false,
       "path": "notes/84551cf702883cb53c3b03135390e5756d32f98e073b72c9836f7eb2633cd165.md",
-      "processed_at": "2026-10-09T02:11:47.069622+00:00",
+      "processed_at": "2026-10-11T01:02:46.943694+00:00",
       "published": "2026-03-24",
-      "sha256": "140c9c36f3e7a2b980c57f4faa37c17a8cc0b8ffab5b1766c6a7a4addca79c38",
+      "sha256": "25b09ee856e72c729a013f7ce930a8e058ab03cbf438d7d7a6dd40427502bac2",
       "source_id": "google-research",
-      "title": "S2Vec：都市の言語を学習する自己教師ありフレームワーク"
+      "title": "都市の言語を学ぶS2Vec：現代世界のマッピング"
     },
     {
       "canonical_url": "https://research.google/blog/towards-a-quantum-computer-that-learns-from-its-errors/",
@@ -749,13 +761,13 @@
       "canonical_url": "https://research.google/blog/science-one-framework-a-verifiable-autonomous-research-framework-via-chain-of-evidence/",
       "category": "ai-llm",
       "id": "895839042ca5233965efa6be43da825abf95f068e8c6febde671a07ea62dbe74",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/895839042ca5233965efa6be43da825abf95f068e8c6febde671a07ea62dbe74.md",
-      "processed_at": "2026-10-08T01:58:07.568081+00:00",
+      "processed_at": "2026-10-11T01:02:07.530014+00:00",
       "published": "2026-07-30",
-      "sha256": "80cc3871a1ee72c2a90618171307e9e34c1be8daf2d578c75953e1f76238c842",
+      "sha256": "bd6d3e3ec0f0f32d616669468919f857f775bf0bce47de0ada1045bd62ba6ce0",
       "source_id": "google-research",
-      "title": "Science One Framework：Chain-of-Evidenceによる検証可能な自律型研究フレームワーク"
+      "title": "Science One Framework：Chain-of-Evidenceによる検証可能な自律研究フレームワーク"
     },
     {
       "canonical_url": "https://research.google/blog/bypassing-inference-bottlenecks-accelerating-complex-ai-search-with-retrieve-for-train/",
@@ -775,11 +787,11 @@
       "id": "8d74604c51c39b12f1782ac2d5db963a1548775dfa2f94cd85035836fa4032fd",
       "llm_input_truncated": true,
       "path": "notes/8d74604c51c39b12f1782ac2d5db963a1548775dfa2f94cd85035836fa4032fd.md",
-      "processed_at": "2026-10-08T01:56:23.681159+00:00",
+      "processed_at": "2026-10-11T01:01:10.500232+00:00",
       "published": "2025-12-18",
-      "sha256": "f80ddc6101ce498a3aee7c088d4d9f11f7b9fff23525f8e8750dd885cbeebd97",
+      "sha256": "67fee285091c53942189415c7939b704576b959b5d40e882131ca6ad35d55e81",
       "source_id": "google-research",
-      "title": "Google Research 2025年ハイライト：より大胆なブレークスルーと大きなインパクト"
+      "title": "Google Research 2025年：大胆なブレークスルーとより大きなインパクト"
     },
     {
       "canonical_url": "https://research.google/blog/unlocking-health-insights-estimating-advanced-walking-metrics-with-smartwatches/",
@@ -821,13 +833,13 @@
       "canonical_url": "https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/",
       "category": "ai-llm",
       "id": "989a59df80f53b37d28e86f7831e88219a242ccd3017cbdf4db7da22a45025c3",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/989a59df80f53b37d28e86f7831e88219a242ccd3017cbdf4db7da22a45025c3.md",
-      "processed_at": "2026-10-09T02:10:42.059957+00:00",
+      "processed_at": "2026-10-11T01:02:27.404980+00:00",
       "published": "2026-04-09",
-      "sha256": "3c9c8ff62f8c6658dbe3247c341ba6387929bdc47a020d9fc85d8a9903a2465d",
+      "sha256": "f29205f014957d0c8fd839127e6c5452b1303906db9b7c3df3a8c16bdc39f9c5",
       "source_id": "google-research",
-      "title": "ConvApparel：ユーザーシミュレータにおけるリアリズムギャップの測定と克服"
+      "title": "ConvApparel: ユーザーシミュレータにおけるリアリズムギャップの測定とブリッジ"
     },
     {
       "canonical_url": "https://research.google/blog/differentially-private-machine-learning-at-scale-with-jax-privacy/",
@@ -845,13 +857,13 @@
       "canonical_url": "https://research.google/blog/small-models-big-results-achieving-superior-intent-extraction-through-decomposition/",
       "category": "ai-llm",
       "id": "9a343329311d2828e3898e0e85c5280b31bcb273b69f5477c98d6b5425672ed1",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/9a343329311d2828e3898e0e85c5280b31bcb273b69f5477c98d6b5425672ed1.md",
-      "processed_at": "2026-10-09T02:12:23.430108+00:00",
+      "processed_at": "2026-10-11T01:03:06.566281+00:00",
       "published": "2026-01-22",
-      "sha256": "d6c351bf3665a19ea8e0a3cc0ebcaf7c7c38fc66acc78f13a049d786697fee61",
+      "sha256": "d17a58bbb92b5e9433c9569db930a0c6179736d1a168266815261b4a4d978dc1",
       "source_id": "google-research",
-      "title": "小さなモデルで大きな成果を：タスクの分解による優れた意図抽出の実現"
+      "title": "小さなモデルで大きな成果：分解による優れた意図抽出の達成"
     },
     {
       "canonical_url": "https://research.google/blog/does-better-work-always-mean-better-workers/",
@@ -955,11 +967,11 @@
       "id": "a6cfb0d02e92ee461d545995ff3cbdbe90e24ecfb735ace8e4a61c075b3e5680",
       "llm_input_truncated": false,
       "path": "notes/a6cfb0d02e92ee461d545995ff3cbdbe90e24ecfb735ace8e4a61c075b3e5680.md",
-      "processed_at": "2026-10-08T01:57:54.706140+00:00",
+      "processed_at": "2026-10-11T01:02:01.175528+00:00",
       "published": "2026-04-21",
-      "sha256": "f4943f9924556cd05d175e7dd9b0b559abd1c04952b40f24b1d9fce601304e6a",
+      "sha256": "93ae78441b30a61e990d8ace4c7729f84e3b524beba3300e8ff8b30ce33f2b3d",
       "source_id": "google-research",
-      "title": "ReasoningBank: エージェントが経験から学習できるようにするフレームワーク"
+      "title": "ReasoningBank: エージェントが経験から学習できるようにする仕組み"
     },
     {
       "canonical_url": "https://research.google/blog/ai-generated-synthetic-neurons-speed-up-brain-mapping/",
@@ -1131,15 +1143,15 @@
     },
     {
       "canonical_url": "https://research.google/blog/open-and-emergent-problems-in-agentic-privacy-and-security-a-contextual-angle/",
-      "category": "cybersecurity",
+      "category": "ai-llm",
       "id": "bd30484dc36a74ecc07f650a238124d0c48850ad9fbd8baa3d1bef9a6aa05213",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/bd30484dc36a74ecc07f650a238124d0c48850ad9fbd8baa3d1bef9a6aa05213.md",
-      "processed_at": "2026-10-08T01:57:38.994785+00:00",
+      "processed_at": "2026-10-11T01:01:48.547878+00:00",
       "published": "2026-10-05",
-      "sha256": "e026281a305c3e50b15a338fb3073309847ac5f5cacb951a048149eeeda77259",
+      "sha256": "12071ab4e784e34d3feccfa1f26894e0ce960183184cd1aed9be4ba687d11721",
       "source_id": "google-research",
-      "title": "エージェント型AIのプライバシーとセキュリティにおけるオープンかつ新興の課題：コンテキスト的視点"
+      "title": "AIエージェントのプライバシーとセキュリティにおけるオープンかつ新たな課題：コンテキストの視点から"
     },
     {
       "canonical_url": "https://research.google/blog/the-next-chapter-in-flood-resilience-open-sourcing-googles-hydrology-framework/",
@@ -1169,13 +1181,13 @@
       "canonical_url": "https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/",
       "category": "ai-llm",
       "id": "c25c36b7fc72bbea6378af6b6ec2f594a6f84943e8a5f2a5db20f92c250eb526",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/c25c36b7fc72bbea6378af6b6ec2f594a6f84943e8a5f2a5db20f92c250eb526.md",
-      "processed_at": "2026-10-08T01:59:11.644339+00:00",
+      "processed_at": "2026-10-11T01:02:20.423346+00:00",
       "published": "2026-08-25",
-      "sha256": "b36307a872808d53ceb90454ce04c37c4ed82a3e69c232ccc5343d3d4bbed21c",
+      "sha256": "9cdfbb9173d36de9087058f7507f6b39f3fbed0b239dce3b0db20ca1d01cd578",
       "source_id": "google-research",
-      "title": "AgentHands: XR空間における空間接地されたエージェント会話のためのインタラクティブな手話ジェスチャ生成"
+      "title": "AgentHands: XR空間におけるグラウンデッドなAIエージェント会話のための対話型ハンドジェスチャ生成"
     },
     {
       "canonical_url": "https://github.blog/security/how-we-found-24-android-vulnerabilities-using-our-open-source-ai-security-agent/",
@@ -1193,13 +1205,13 @@
       "canonical_url": "https://research.google/blog/how-diffusion-controller-unifies-and-simplifies-ai-image-generation/",
       "category": "ai-llm",
       "id": "c61f4bc40bd7275f6da411158941e21b93309d94bfaadc0184f9e268dce0684a",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/c61f4bc40bd7275f6da411158941e21b93309d94bfaadc0184f9e268dce0684a.md",
-      "processed_at": "2026-10-09T02:11:29.004693+00:00",
+      "processed_at": "2026-10-11T01:02:40.227020+00:00",
       "published": "2026-09-29",
-      "sha256": "f1336b8282016c68cf4cf5bfdf203fd5c70c6e44162f8a469cec29fa8db669bd",
+      "sha256": "3d1efbd04e0c33e6e74d9b85e9f64a9fb1045650b64b378e07bdf4a9a771cbd2",
       "source_id": "google-research",
-      "title": "Diffusion ControllerによるAI画像生成の統一と簡素化"
+      "title": "Diffusion ControllerによるAI画像生成の統合と簡素化の仕組み"
     },
     {
       "canonical_url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
@@ -1217,25 +1229,25 @@
       "canonical_url": "https://research.google/blog/an-ai-tool-for-prioritizing-candidate-biomarkers-from-wearable-sensor-data/",
       "category": "ai-llm",
       "id": "d421d6273f8206a0a52463f792b4fbb84bc2be92cf6e19578b272bc9a4b28f94",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/d421d6273f8206a0a52463f792b4fbb84bc2be92cf6e19578b272bc9a4b28f94.md",
-      "processed_at": "2026-10-10T01:47:19.316214+00:00",
+      "processed_at": "2026-10-11T01:03:57.251688+00:00",
       "published": "2026-08-21",
-      "sha256": "57040ddc31c6df3858e78e15eec4be88b35c2c3bfc11297d61a1f3a71c07d6da",
+      "sha256": "0349513adc476ada2e2cbdc2a2d5467f7e4cf0787b61cc1449bf2eaf30b64f22",
       "source_id": "google-research",
-      "title": "ウェアラブルセンサーデータからの候補バイオマーカーの優先順位付けを行うAIツール"
+      "title": "ウェアラブルセンサーデータからの候補バイオマーカー優先順位付けのためのAIツール"
     },
     {
       "canonical_url": "https://research.google/blog/neuralgcm-harnesses-ai-to-better-simulate-long-range-global-precipitation/",
       "category": "ai-llm",
       "id": "d42940cd8c73d8ee3a4a72a353c480534a6ae62bc82fc259abd3d90c0540224e",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/d42940cd8c73d8ee3a4a72a353c480534a6ae62bc82fc259abd3d90c0540224e.md",
-      "processed_at": "2026-10-08T01:57:18.496145+00:00",
+      "processed_at": "2026-10-11T01:01:34.550521+00:00",
       "published": "2026-01-12",
-      "sha256": "42879dc2e58bfbd925521e5814efdb35b63b406993cbd9d29b218968c40e9211",
+      "sha256": "3baba85a0819359e9e6fae178241205dea34d201361ad0d387082c3fcfefbc93",
       "source_id": "google-research",
-      "title": "NeuralGCMによるAIを活用した長距離地球規模降水シミュレーションの高度化"
+      "title": "NeuralGCMによるAIを活用した長期的・地球規模の降水シミュレーションの精度向上"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/when-chat-is-the-wrong-ui/",
@@ -1277,25 +1289,25 @@
       "canonical_url": "https://research.google/blog/sensorfm-towards-a-general-intelligence-and-interface-for-wearable-health-data/",
       "category": "ai-llm",
       "id": "dfb22a9d826d78cb5d5eeb3696768780049c51ba68cbbb96e3975d27aa0ac2c9",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/dfb22a9d826d78cb5d5eeb3696768780049c51ba68cbbb96e3975d27aa0ac2c9.md",
-      "processed_at": "2026-10-09T02:12:13.997058+00:00",
+      "processed_at": "2026-10-11T01:02:59.635403+00:00",
       "published": "2026-07-09",
-      "sha256": "ac170810018ba133feaaa121cc95c8184d5e941562e3d78fb125194aece776b2",
+      "sha256": "3b1be994bbecda97434cb13ea66bbeb5f49108c43e9783e26553e36fd70816c8",
       "source_id": "google-research",
-      "title": "SensorFM：ウェアラブル健康データの汎用基盤モデルとインターフェースに向けて"
+      "title": "SensorFM: ウェアラブル健康データに向けた汎用インテリジェンスとインターフェース"
     },
     {
       "canonical_url": "https://research.google/blog/seeing-beyond-bmi-estimating-cardiometabolic-risk-with-smartphone-imagery/",
       "category": "ai-llm",
       "id": "e309db50e020846af1a5b2001920faaa0a9f95025bdf264c28b6fd33c536f3e3",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/e309db50e020846af1a5b2001920faaa0a9f95025bdf264c28b6fd33c536f3e3.md",
-      "processed_at": "2026-10-09T02:12:09.796018+00:00",
+      "processed_at": "2026-10-11T01:02:53.207643+00:00",
       "published": "2026-08-17",
-      "sha256": "2efddee5680ca7bf16ee0beffb19f4ab52782ededdf47fb34dcb9b5bfd404990",
+      "sha256": "cf94ff696edbaa388239a81ceab95d8fb6044f28614829484286a3e2087f58a7",
       "source_id": "google-research",
-      "title": "BMIの先へ：スマートフォン画像を用いた心血管代謝リスクの推定"
+      "title": "BMIを超えて：スマートフォン画像による心血管代謝リスクの推定"
     },
     {
       "canonical_url": "https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/",
@@ -1411,11 +1423,11 @@
       "id": "f6536010b60b64969398e0aceeb318c1cc6c421a3991b9d87e220d90c72e11e6",
       "llm_input_truncated": false,
       "path": "notes/f6536010b60b64969398e0aceeb318c1cc6c421a3991b9d87e220d90c72e11e6.md",
-      "processed_at": "2026-10-09T02:10:47.951640+00:00",
+      "processed_at": "2026-10-11T01:02:33.812540+00:00",
       "published": "2025-11-06",
-      "sha256": "072eae8b120db81d4fc4cd4e4c21aaeb8f3d3cc97724d89002fbbf5d85eb4ad0",
+      "sha256": "ac461234d7f3f0d2360c82d79834034a064d15d2c1c331ec875bb2a5a58151f0",
       "source_id": "google-research",
-      "title": "DS-STAR: 最先端の多用途データサイエンスエージェント"
+      "title": "DS-STAR: 最先端の汎用データサイエンスエージェント"
     },
     {
       "canonical_url": "https://research.google/blog/accelerating-gemini-nano-models-on-pixel-with-frozen-multi-token-prediction/",
@@ -1433,11 +1445,11 @@
       "canonical_url": "https://research.google/blog/real-time-speech-to-speech-translation/",
       "category": "ai-llm",
       "id": "fa74aca7332279c86184613f10c1096f24c6c0190a060e1f17e24a1031811f8a",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/fa74aca7332279c86184613f10c1096f24c6c0190a060e1f17e24a1031811f8a.md",
-      "processed_at": "2026-10-08T01:57:49.265110+00:00",
+      "processed_at": "2026-10-11T01:01:54.741796+00:00",
       "published": "2025-11-19",
-      "sha256": "b9c35846772c7be58131464ad1336913cfb62dd69ce3f66b63e0ea47b8bcf9af",
+      "sha256": "32e83f178a6dac4ed438451571ec73ac3c8a4306764719ab1f3ed27a74be6b30",
       "source_id": "google-research",
       "title": "リアルタイム音声対音声翻訳（Speech-to-Speech Translation）"
     },
@@ -1445,23 +1457,23 @@
       "canonical_url": "https://research.google/blog/the-future-of-practice-enabling-teachers-to-create-learning-interactives-with-generative-ui/",
       "category": "ai-llm",
       "id": "fac05d673bf3e7359a3ad0319fba9af7f74278be6254aea77a1b8a4c275595b8",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/fac05d673bf3e7359a3ad0319fba9af7f74278be6254aea77a1b8a4c275595b8.md",
-      "processed_at": "2026-10-09T02:12:52.011114+00:00",
+      "processed_at": "2026-10-11T01:03:25.139170+00:00",
       "published": "2026-09-17",
-      "sha256": "0de0d7040ca39365295187982801e7ea1a517f3402b35b43c2c7d89baf6128fb",
+      "sha256": "f516978e38b5d9a9973728a27da0a5541ca7f40c5da978f3947798b55ff52344",
       "source_id": "google-research",
-      "title": "実践の未来：生成UIを活用した教育者向け学習インタラクティブ教材作成支援"
+      "title": "実践の未来：生成UIを活用して教師がインタラクティブな学習教材を作成できるようにする"
     },
     {
       "canonical_url": "https://research.google/blog/atlas-practical-scaling-laws-for-multilingual-models/",
       "category": "ai-llm",
       "id": "fb1990a1c9b60b7b00c0e248cb0290c5653afb4bbe77eeda42081a8d0bf71198",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/fb1990a1c9b60b7b00c0e248cb0290c5653afb4bbe77eeda42081a8d0bf71198.md",
-      "processed_at": "2026-10-10T01:48:46.461114+00:00",
+      "processed_at": "2026-10-11T01:04:02.175532+00:00",
       "published": "2026-01-27",
-      "sha256": "13bbccc40c89b247d97d25e89fc127222c89b87fbc930906c08fa143d383c064",
+      "sha256": "31f1f11b6f586038b9aa26ec215301c2594a32cdb896978a6ebcda809e10f349",
       "source_id": "google-research",
       "title": "ATLAS：多言語モデルのための実践的スケーリング則"
     },
