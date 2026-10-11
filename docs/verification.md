@@ -9,7 +9,7 @@
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
-| Batch | PR #153後の実APIで1 job/1記事を受付、images object 5件の型検証に成功。usage回収・台帳complete・課金record1・欠損0、費用推計USD 0.00161835 | 型不適合は解消。候補4件を超える画像選択は厳格拒否、成功保存0。記事別ID.enum/件数制約と安全な選択診断を修正中。追加生成0の再実行で状態/費用不変と監査/公開を確認中 |
+| Batch | PR #153後の実APIで1 job/1記事を受付、images object 5件の型検証に成功。usage回収・台帳complete・課金record1・欠損0、費用推計USD 0.00161835 | 型不適合は解消。候補4件を超える画像選択は厳格拒否、成功保存0。記事別ID.enum/件数制約と安全な選択診断はPR #156で取込み、関連86件・PR/main CI成功。追加生成0の再実行で状態/費用不変と監査/公開を確認中 |
 | Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規LLMの実選択は別の受入 |
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
@@ -22,7 +22,7 @@
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
 PR #148の既存job GET診断で文字列3個の配列を確認し、#149/#151/#153で直接object定義とAPI対応responseSchemaに修正しました。API公開型にないadditionalPropertiesは全キー必須/キー数固定へ置換し、関連78件・PR/main CI成功後の実APIで画像object 5件が返り、型検証に成功しました。
-候補4件に対する5件の選択は候補外または重複を必ず含むため、組立ての厳格検証で拒否しました。新枠の有料再提出を止め、追加生成0の回収・再実行を進めています。候補ID.enum・候補数以内のmaxItemsと、値を公開しない選択診断を修正中です。実成功保存は未受入として維持します。根拠は[切分け記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)で追跡します。
+候補4件に対する5件の選択は候補外または重複を必ず含むため、組立ての厳格検証で拒否しました。新枠の有料再提出を止め、追加生成0の回収・再実行を進めています。候補ID.enum・候補数以内のmaxItemsと、値を公開しない選択診断はPR #156で取込み、関連86件・PR/main CI成功済みです。後処理/GET確認後に使う別枠1生成job/1記事を個別承認済みです。実成功保存は未受入として維持します。根拠は[切分け記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)で追跡します。
 
 Google Researchの本文抽出・実HTTP検証と画像候補の残課題は[検証記録](archive/2026-10/google-research-body-extraction-2026-10-10.md)にあります。
 
