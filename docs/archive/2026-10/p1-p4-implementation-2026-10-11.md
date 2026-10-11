@@ -109,7 +109,9 @@ host間隔/robots一回、異なるhostの実同時要求、設定上限と保�
 
 ## 全体の検証
 
-Python全458件、設定検証、actionlint、diff checkが成功しました。
+初回ローカル全458件と変更後の対象回帰67件が成功しました。
+最終コードhead `3700c43`の[CI](https://github.com/Ningensei848/kaname/actions/runs/38104175325)は
+**Python全460件・Web受入・両集約checkすべてsuccess**。設定検証、actionlint、diff checkも成功しました。
 3件のfixture Quartz/Chromiumは全元bytes・検索・内部リンク・画像・画面幅・外部resource0を確認しています。
 本体PR #141でもPython/Webとも成功しています。
 
