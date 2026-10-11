@@ -25,7 +25,7 @@
 - [x] F6: 未処理sourceの失敗streakを維持。明示的完了だけでreset。
 - [x] F3: browser resource/robots redirectの各hopを通信前に検査。許可外hostへのDNS/HTTP要求0を検証。
 - [x] F7: 状態/schema/通知に関する現行文書の旧説明を改訂。
-- [ ] 実Batchの成功結果保存、再実行、audit/costの本番受入。後続standard成功と混同しない。
+- [x] 実Batchの3画像入りNote 1件を保存/公開、課金1回と追加生成0の再実行・audit/cost/Git/Pagesを本番受入。#94をClose。
 
 ## 既存機能の位置づけ
 
@@ -35,7 +35,7 @@
 | Git配布 | 公開内容のみのbare出版、15テスト。初回117件をcontent branchへ公開 |
 | Web preview | 公開境界24テスト、架空/実Noteのbrowser受入。117件の初回Pages deploy/公開URL hash照合は受入済み |
 | Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。F3は修正済み。実source受入は残る |
-| 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
+| 非同期Gemini Batch | 実Note 1件/画像3件の保存・公開、課金1回・追加生成0の再実行を本番受入済み |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |
 | Cost management | 推計/予算通知は実装済み。F4/F5は修正・offline検証済み。invoice照合は残る |
 | Failure notification | 日次Issue通知は実装・承認済み。F6修正済み。公開stage通知・重複抑止をoffline検証済み |
@@ -55,7 +55,7 @@ DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではあ�
 ## 保守性の改善
 
 [リファクタリング計画](refactoring-plan.md)のR1〜R5は2026-10-07に完了・取込済みです。
-実Batchと請求照合はそれぞれ独立した未受入項目です。
+実Batchの成功保存/公開/再実行は本番受入済み。確定請求照合は明細待ちで、費用推定は完了しています。
 
 ## 既存計画完了後のNextStep
 

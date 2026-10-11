@@ -9,9 +9,9 @@
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
-| Batch | PR #153後の実APIで1 job/1記事を受付、images object 5件の型検証に成功。usage回収・台帳complete・課金record1・欠損0、費用推計USD 0.00161835 | 型不適合は解消。候補4件を超える画像選択は厳格拒否、成功保存0。記事別ID.enum/件数制約と安全な選択診断はPR #156で取込み、関連86件・PR/main CI成功。追加生成0の再実行で状態/費用不変と監査/公開を確認中 |
-| Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規LLMの実選択は別の受入 |
-| 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規LLMの実選択は別受入。外部画像の内容・存続はGit版で固定できない |
+| Batch | PR #153/#156で画像型/候補外IDを解消。個別承認1job/1記事の実返却が厳格検証に成功し、3画像入りNote 1件を保存・公開。receipt/Note/index・artifact/Git/GCSのbytes一致、index336/pending71、課金record1・usage欠損0 | 追加生成0の再実行も全工程success、保存/課金bytes・世代・日次/月次費用・公開manifest/content commit不変を受入。外部画像の内容・存続はGit版で固定できない |
+| Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規Batch Noteでも3画像の実選択・保存/公開を受入 |
+| 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規Batch Noteの3画像実選択・保存/公開を受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
 | Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。全体degradedはGoogle Researchの既知失敗・pendingを反映 |
@@ -21,8 +21,12 @@
 | browser/互換sync | 実Chromium・一時Vaultで回帰検証 | 指定browser source、利用者環境の本番受入 |
 
 Batchの個別承認後の提出・拒否・追加提出0での失敗usage回収は[実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)を参照してください。
-PR #148の既存job GET診断で文字列3個の配列を確認し、#149/#151/#153で直接object定義とAPI対応responseSchemaに修正しました。API公開型にないadditionalPropertiesは全キー必須/キー数固定へ置換し、関連78件・PR/main CI成功後の実APIで画像object 5件が返り、型検証に成功しました。
-候補4件に対する5件の選択は候補外または重複を必ず含むため、組立ての厳格検証で拒否しました。新枠の有料再提出を止め、追加生成0の回収・再実行を進めています。候補ID.enum・候補数以内のmaxItemsと、値を公開しない選択診断はPR #156で取込み、関連86件・PR/main CI成功済みです。後処理/GET確認後に使う別枠1生成job/1記事を個別承認済みです。実成功保存は未受入として維持します。根拠は[切分け記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)で追跡します。
+PR #148のGET診断でimages文字列3件を確認し、#149/#151/#153で直接object定義とAPI対応responseSchemaに修正しました。
+その後の候補4件/選択5件は候補外ID 1件と確定し、#156で記事別候補ID.enum/件数上限を追加しました。
+関連86件・全Python476件/Web・PR/main CI成功後、別枠1job/1記事の実Batchが厳格検証に適合し、画像3件のNoteを保存・公開しました。
+追加生成0の回収workflowはcollection/audit/cost/Git/Pages・配信元Markdown照合すべてsuccess。
+台帳complete・課金record1・usage欠損0、input3553/output729/thinking0、費用推計USD 0.0014442（約0.23円）。
+追加生成0の再実行もcollection/audit/cost/Git/Pages・配信照合すべてsuccess、データ/費用/公開版不変、課金record1を受入済みです。根拠は[受入記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)で追跡します。
 
 Google Researchの本文抽出・実HTTP検証と画像候補の残課題は[検証記録](archive/2026-10/google-research-body-extraction-2026-10-10.md)にあります。
 
@@ -37,7 +41,7 @@ standard/Batchの実HTTP payload比較（画像あり/なし）を追加しま�
 Source Healthの実GCS読取りと最新preflight readyを確認しています。
 P1は設定のみPR #142のPython成功/Web省略・既存check成功、本体PR #141の全検査成功を受入済みです。
 Python全460件、fixtureのQuartz/Chromiumも成功。
-費用はスクショと全Daily履歴から推定し、確定請求照合とBatch成功保存は別の未完了受入です。
+費用はスクショと全Daily履歴から推定済みです。実Batch成功保存/公開・追加生成0の再実行まで受入完了、指定されたP4: Parallel Processingまで完了しました。確定請求照合は明細待ちの別項目です。
 実装・計数・限界は[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で追跡します。
 
 ## 責務整理のローカル検証

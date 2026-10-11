@@ -1,5 +1,7 @@
 # P1〜P4（Parallel Processingまで）の実装・受入記録
 
+追補（2026-10-12 JST）: 指定されたP4: Parallel Processingまで完了しました。P2の画像型/候補外IDは後続修正で解消し、実Batch Note 1件/画像3件の保存・公開と追加生成0の再実行まで受入済みです。最新の証拠は[画像型と候補制約の受入記録](batch-images-type-diagnosis-2026-10-11.md)を参照してください。以下は2026-10-11時点の実装・費用推定・途中の拒否履歴です。
+
 2026-10-11。P4のKnowledge Graph QualityとNS1は今回の範囲外です。
 元から存在したNS1の未コミット計画は保持しています。
 

@@ -1,12 +1,14 @@
 # #94: images型不適合の切分け（2026-10-11）
 
-現在はP2のBatch成功保存を妨げるimages型不適合に集中しています。
+最終状態（2026-10-12 JST）: images型不適合と候補外IDを解消し、実Batchの3画像入りNote 1件を保存/公開、追加生成0の再実行・監査/費用/Git/Pagesまで受入完了。#94をCloseしました。
+
+以下は途中の拒否・切分け・承認枠を時点順に残した履歴です。最終の受入証拠は末尾に集約します。
 
 - [x] [PR #148](https://github.com/Ningensei848/kaname/pull/148)で値・未知field名を出さないJSON型診断を追加。関連31件と[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38136804828)成功後、mainへ取込み。
 - [x] [GET診断38136914594](https://github.com/Ningensei848/kaname/actions/runs/38136914594)で既存の失敗jobを読取り。新規生成・提出・GCS保存0。APIはSUCCEEDED/STOP、imagesは配列、要素3個すべてstring。期待するImageSelection objectではないため、厳格検証はimages:model_typeのまま拒否。
 - [x] 修正候補としてresponseJsonSchemaのimages.itemsにImageSelectionの定義を直接展開。追加property禁止・image_id pattern・after enum・必須2キー・最大6件を維持。本文prompt・model・出力上限・Pydantic厳格受入は維持する。
 - [x] [PR #149](https://github.com/Ningensei848/kaname/pull/149)の関連76件・[PR CI38137101692](https://github.com/Ningensei848/kaname/actions/runs/38137101692)成功。main `a0358bc06f2cad2959d20a9c7ba5766652248f23`へ取込み。実SDK送信の制約維持/standard・Batch一致、文字列3件の拒否・保存0・usage回収1・再実行の追加課金0、画像付き保存/公開bytesの回帰を確認。
-- [ ] 修正候補の実API受入、適合Note/receipt/index保存、audit/cost/公開bytes、追加提出0の再実行。
+- 履歴（当時未受入）: 修正候補の実API受入、適合Note/receipt/index保存、audit/cost/公開bytes、追加提出0の再実行。 最終受入は末尾を参照。
 
 ## 判明した事実と仮説
 
@@ -29,7 +31,7 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 
 - [x] 実SDKのresponseSchema送信とstandardのresponseJsonSchemaを比較し、JSON/protobufのフィールド表記、propertyOrdering、default注釈を除いた制約がすべて一致。本文/metadata・他generation設定も一致。
 - [x] 親/画像objectの未知キー禁止、画像型・必須キー・ID pattern・配置enum・最大6件を保持すること、文字列3件を厳格拒否して保存0/usage1/再課金0になることを含む関連76件が成功。
-- [ ] 送信経路変更のPR/main CIと今回許可された最大1 job/1 requestの実受入。
+- 履歴（当時未受入）: 送信経路変更のPR/main CIと今回許可された最大1 job/1 requestの実受入。 最終受入は末尾を参照。
 
 今回の追加送信経路検証も新規生成0です。許可された新しい1件枠はまだ使用せず、上記検証後に一度だけ使います。
 
@@ -44,7 +46,7 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 - [x] [公式v1beta discovery](https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta)を無料のGETで照合。Schemaの許容fieldにはminProperties/maxPropertiesがあり、additionalPropertiesはありません。固定SDKが送信するadditional_properties falseは、このAPI型定義に適合しません。SDK送信成功だけでAPI受理を保証した検証が不足していました。
 - [x] 対策を無料で実装。responseSchemaから非対応additionalPropertiesを除き、全既知キー必須・minProperties=maxPropertiesで閉じたobjectを表現する。親は9キー必須/9個、画像objectは2キー必須/2個。Batchではimagesも必須で、選択なしは[]。他の型/enum/pattern/字数/件数制約と通常standard、保存時のPydantic厳格検証は維持。
 - [x] 実SDK送信を公開API field定義のfixtureと照合し、非対応additional_propertiesを含む旧形式がこの検査で拒否される回帰を追加。API提出拒否のHTTP状態/既知field名だけを台帳・inspectへ残す診断も追加。関連78件成功。
-- [ ] API契約修正のPR/main CIと、修正後の実Batch成功保存。
+- 履歴（当時未受入）: API契約修正のPR/main CIと、修正後の実Batch成功保存。 最終受入は末尾を参照。
 
 今回のClientErrorのHTTP状態・field名は旧台帳に保存されず、API個別の拒否理由は確認できません。API型定義との不適合は確認済みですが、これを保存されていない実APIエラーメッセージの代わりに扱いません。
 今回許可された提出操作は終了し、新しい有料提出を止めています。成功保存は未受入です。
@@ -67,7 +69,7 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 
 - [x] main 451ff7499f7f132856a5bc5dfd839d6bc0ee4d52のCI成功、既存後処理完了・未決済/不明usage0・保存状態不変を再確認。
 - [x] [提出38140244746](https://github.com/Ningensei848/kaname/actions/runs/38140244746)のCollect成功。API生成job 1つ/記事1件を受付、台帳submitted・提出report永続化を照合。受付前のschema拒否は発生せず、修正再送0。
-- [ ] 追加生成0の回収と厳格検証、Note/receipt/indexの保存・audit/cost・公開、さらに追加生成0の再実行。
+- 履歴（当時未受入）: 追加生成0の回収と厳格検証、Note/receipt/indexの保存・audit/cost・公開、さらに追加生成0の再実行。 最終受入は末尾を参照。
 
 受付済みjobを維持し、提出runの重複する後続公開工程をcancelしました。回収runで監査・費用・公開をまとめて確認します。提出成功を生成結果の適合/保存成功と扱いません。
 
@@ -83,8 +85,8 @@ response_schema経路の未知キー禁止が消えるという以前の判定�
 - [x] 候補数/選択数/候補外数/重複数/不存在ポイント数だけの診断を追加し、既存jobのGET検査にも選択検証を適用。ID/本文/値は表示しない。
 - [x] 候補制約修正の関連86件成功。実SDK送信で候補0/1/4/12のenum/件数制約を照合し、候補外/重複/不存在ポイントの厳格拒否、4画像保存、GET検査の無書込み、課金record1・再課金0を検証。
 - [x] [PR #156](https://github.com/Ningensei848/kaname/pull/156)の[PR CI38141460679](https://github.com/Ningensei848/kaname/actions/runs/38141460679)がPython/Webとも成功、main a0f89a97add180eeee644b5d181d8846843d04cfへ取込み。[main CI38141620406](https://github.com/Ningensei848/kaname/actions/runs/38141620406)も成功。
-- [ ] [追加生成0の再実行38141105876](https://github.com/Ningensei848/kaname/actions/runs/38141105876)のaudit/cost/Git/Pagesと課金/保存状態不変の確認。
-- [ ] 候補制約修正後の実Batch成功保存。今回の生成結果拒否後は新しい個別承認が必要。
+- 履歴（当時未受入）: [追加生成0の再実行38141105876](https://github.com/Ningensei848/kaname/actions/runs/38141105876)のaudit/cost/Git/Pagesと課金/保存状態不変の確認。 最終受入は末尾を参照。
+- 履歴（当時未受入）: 候補制約修正後の実Batch成功保存。今回の生成結果拒否後は新しい個別承認が必要。 最終受入は末尾を参照。
 
 maxItemsとenumは候補外と過剰件数を制限しますが、同じIDの別配置や返却key_points数との不整合までAPIのSchemaでは保証しません。保存時の厳格検証を維持し、不正な返却を変換・削除して成功扱いにしません。
 
@@ -94,3 +96,23 @@ maxItemsとenumは候補外と過剰件数を制限しますが、同じIDの別
 ユーザーから「この追加1件と受入まで許可する」と個別承認を受領しました。最大1生成job/1記事を一度だけ提出し、回収・保存/公開・監査/費用・追加生成0の再実行までを行います。目安約1円、生成結果の再拒否・曖昧な提出失敗では再提出しません。先の後処理完了・既存結果のGET選択診断・main CI成功の確認後に使います。
 
 先の拒否分の費用処理はsuccess、2026-10月USD 1.09653085、未計上/不明/未完了usage0。再実行途中の照合で台帳/課金bytes・index・Note/receipt世代は不変、課金record1です。全工程完了後に改めて照合します。新しい枠は未使用です。
+
+
+## 候補外IDの確定と適合保存（2026-10-12 JST）
+
+- [x] [既存結果GET38141639322](https://github.com/Ningensei848/kaname/actions/runs/38141639322)で、候補4/選択5/候補外1/重複0/不存在ポイント0を確定。schema型検証後の拒否理由は候補外ID 1件でした。新規生成・状態更新0。
+- [x] 前の[追加生成0の再実行38141105876](https://github.com/Ningensei848/kaname/actions/runs/38141105876)はcollection/audit/cost/Git/Pages・配信照合すべてsuccess。台帳/課金bytes・index・Note/receipt世代不変、課金record1、日次/月次費用も同一。通知#155をClose。公開125件版238ecc96e8b9cd7f39dbdaf9f9d9f3cb16fbfb40は不変。
+- [x] PR #156の全Python476件/Web CIと、記録PR #157のPR/main CI成功後、main 1b35f00598491b667b324174bee07d59619cfcabで新しい限定枠を提出。13:23:17 UTCの事前条件はready、監査0・335成功/pending72、未決済/不明usage0、他writer不在。
+- [x] [提出38142971837](https://github.com/Ningensei848/kaname/actions/runs/38142971837)は1job/1記事を受付し、workflow全体success。追加提出0。
+- [x] [回収38151266102](https://github.com/Ningensei848/kaname/actions/runs/38151266102)は追加生成0でGoogle Researchの適合Note 1件・画像3件を保存。型・候補・重複・配置の厳格検証を維持し、成功index335→336・pending72→71。台帳complete・課金record1・欠損usage0、input3553/output729/thinking0、Batch費用推計USD 0.0014442（従来の円換算目安で約0.23円）。
+- [x] 回収workflowのcollection/audit/cost/Git/Pages・配信版/元Markdown照合はすべてsuccess。未計上/不明/未完了usage0。Note/receipt/indexの一致、公開ポリシー、artifact/GitのNote bytes一致をGCS読取りとartifact/remote contentで再照合。公開125件の最新版 b6800161a0f51f07104d1927bf51ead7b7aff4f6に今回のNoteを含む。成功行増加を公開件数増加と扱わない。
+- [x] [追加生成0の再実行38177520997](https://github.com/Ningensei848/kaname/actions/runs/38177520997)はcollection/audit/cost/Git/Pages・配信版/元Markdown照合すべてsuccess。台帳/課金bytes・index・Note/receipt世代不変、課金record1、日次/月次費用同一、公開manifest bytes/content commit不変を照合。
+
+新しい最大1job/1記事の枠を1回だけ使い、追加の有料提出はありません。今回の有料2試行のAPI費用推計合計はUSD 0.00306255（約0.49円）。型不適合と候補外IDは、送信schemaをAPI型に合わせ、候補IDと件数を記事ごとに制限することで実保存まで解消しました。通常scheduleのstandard/max_calls 30/入力20000文字/出力2048/minimalは維持します。
+
+
+## 最終受入と残る別項目
+
+成功保存/公開と追加生成0の再実行を実API/GCS/Git/Pagesで確認したため、#94をCloseし、次の作業・検証・ロードマップを完了表示へ揃えました。P1/P2費用推定/P3/P4 Parallel Processingまでの指定範囲は完了です。2026-10月費用推計USD 1.09797505、未計上/不明/未完了usage0。通常運用の月500〜550円・25%増で625〜690円という履歴ベースの推定を維持します。
+
+#116の確定請求明細照合、既知source/日次障害#139/#140、Knowledge Graph Quality・NS1は別の後続項目です。今回の受入で未実施の作業を完了にはしません。
