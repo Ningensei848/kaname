@@ -5,6 +5,7 @@
 - [x] [PR #148](https://github.com/Ningensei848/kaname/pull/148)で値・未知field名を出さないJSON型診断を追加。関連31件と[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38136804828)成功後、mainへ取込み。
 - [x] [GET診断38136914594](https://github.com/Ningensei848/kaname/actions/runs/38136914594)で既存の失敗jobを読取り。新規生成・提出・GCS保存0。APIはSUCCEEDED/STOP、imagesは配列、要素3個すべてstring。期待するImageSelection objectではないため、厳格検証はimages:model_typeのまま拒否。
 - [x] 修正候補としてresponseJsonSchemaのimages.itemsにImageSelectionの定義を直接展開。追加property禁止・image_id pattern・after enum・必須2キー・最大6件を維持。本文prompt・model・出力上限・Pydantic厳格受入は維持する。
+- [x] [PR #149](https://github.com/Ningensei848/kaname/pull/149)の関連76件・[PR CI38137101692](https://github.com/Ningensei848/kaname/actions/runs/38137101692)成功。main `a0358bc06f2cad2959d20a9c7ba5766652248f23`へ取込み。実SDK送信の制約維持/standard・Batch一致、文字列3件の拒否・保存0・usage回収1・再実行の追加課金0、画像付き保存/公開bytesの回帰を確認。
 - [ ] 修正候補の実API受入、適合Note/receipt/index保存、audit/cost/公開bytes、追加提出0の再実行。
 
 ## 判明した事実と仮説

@@ -43,7 +43,7 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 
 ### #94: images型不適合で成功保存が未受入
 
-現在の作業はimages型不適合の解消に集中しています。PR #148のGET診断で、実返却はオブジェクトでなく文字列3個の配列と確認しました（新規生成/状態更新0）。画像要素のschema参照を等価な直接定義へ展開する修正候補を実装・検証中です。詳細は[画像型不適合の切分け](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ記録し、成功保存の実受入は未完了として維持します。
+現在の作業はimages型不適合の解消に集中しています。PR #148のGET診断で、実返却はオブジェクトでなく文字列3個の配列と確認しました（新規生成/状態更新0）。PR #149で画像要素のschema参照を等価な直接定義へ展開し、関連76件・PR CI成功後にmainへ取込みました。新しい有料枠の確認待ちで、追加生成はまだ行っていません。詳細は[画像型不適合の切分け](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ記録し、成功保存の実受入は未完了として維持します。
 
 - [x] 同じ入力のstandard/Batchを固定SDKの実HTTP serializerで比較。画像あり/なしともpayloadは完全一致しました。
 - [x] 本番promptに正確な出力キー・title_ja・imagesのオブジェクト配列形式を明示したPR #145を、追加操作の個別承認後にmainへ取込み。既存回帰59件・PR/mainのPython全460件/Web検証は成功しました。
@@ -52,6 +52,7 @@ GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-202
 - [x] 追加提出0で失敗usage回収・台帳complete・課金record1・欠損usage0を確認。入力3,514/output717/thinking0、費用推計USD 0.00142335（約0.2円）。receipt/成功indexは作られていません。
 - [x] 追加提出0の再実行の収集後、Note/receipt世代・index・台帳/課金bytes不変と課金record1を照合。二重計上0です。
 - [x] この再実行のcollection・audit・cost・Git/Pagesすべてsuccess。提出/生成/保存/復旧/失敗0、成功index335・pending72、日次/月次費用は回収時と同一。公開125件版も不変です。
+- [x] PR #148の実GET診断でimagesは文字列3個の配列と確認。PR #149の直接object定義送信は実SDK/保存/厳格拒否/課金回帰76件・PR CIで成功し、mainへ取込み。新規有料提出0。
 - [ ] 適合応答のNote/receipt/index・公開bytes、audit/costの成功保存受入。API逸脱理由は未確定で#94はOpenを維持します。
 
 最新の根拠は[出力形式明示後の受入記録](archive/2026-10/batch-prompt-contract-acceptance-2026-10-11.md)にあります。
