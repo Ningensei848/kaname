@@ -9,7 +9,7 @@ sources:
     # Keep all body sections and figures; exclude navigation and related posts.
     extract_main: true
     content_selector: .blog-detail-wrapper
-    request_interval_seconds: 2
+    request_interval_seconds: 3
     tags: [research]
   - id: github-blog
     name: GitHub Blog
