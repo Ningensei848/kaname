@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "eb64e954c0781711ede03688622434505caccf7ab688619bbaefbfc593d745f4",
+  "dataset_digest": "53c7ca546d75abfdca08e802c56f79f19d3e9f917c42fc1c7141b010d1a7f9a1",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -149,13 +149,13 @@
       "canonical_url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
       "category": "ai-llm",
       "id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1.md",
-      "processed_at": "2026-10-08T01:56:58.155827+00:00",
+      "processed_at": "2026-10-11T15:27:17.101953+00:00",
       "published": "2026-04-08",
-      "sha256": "12146cb36d5bbc44dbd913ca990cd46ffd2e076f9ecde01f3bd5d5bc144210b5",
+      "sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
       "source_id": "google-research",
-      "title": "学術ワークフローの改善：高品質な図表作成と査読を支援する2つのAIエージェントの紹介"
+      "title": "学術ワークフローの改善：高品質な図表と査読を実現する2つのAIエージェントの紹介"
     },
     {
       "canonical_url": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
