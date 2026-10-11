@@ -2,6 +2,10 @@
 
 2026-10-11の修正。前回（2026-10-10）に取得した実HTML4件を、同じ本文selector・20,000文字上限で再生した。
 
+[PR #136](https://github.com/Ningensei848/kaname/pull/136)をmain `ef195cf7ead4086feb811a864abccd4b93d324e2`へ取り込み、
+[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38097453717)と
+[main CI](https://github.com/Ningensei848/kaname/actions/runs/38097641442)が成功した。
+
 ## 原因と変更
 
 HTMLのaltにあるunderscoreなどはMarkItDown変換でエスケープされるため、HTMLの文字列との直接照合では候補から外れた。

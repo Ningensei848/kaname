@@ -10,7 +10,7 @@
 | pages | 検証済みcontent commitからbuild/deploy。`contents: read`、`pages: write`、`id-token: write` | 失敗状態と配信版照合を記録 |
 | notify-publication | GCS/収集Secretを使わず`issues: write`でstageとrun URLを通知 | 通知job自体の失敗はActionsで確認 |
 
-GCSの単一writer concurrencyはcollect jobだけ、Git配布は`kaname-content`、Pagesは`kaname-pages`で直列化します。
+GCSの単一writer concurrencyはcollect・Batch preflight・画像補完jobで共有し、Git配布は`kaname-content`、Pagesは`kaname-pages`で直列化します。
 Git/Pages jobへGemini/GCSのSecretを渡しません。artifactは検証済みの公開Note/manifestだけで、保持期間は2日です。
 入力snapshot不整合、remote取得失敗、content branch不在、競合は固定errorで停止し、force pushや自動branch作成をしません。
 日次Pagesは既に後続版へ進んだcommitのdeployを拒否します。手動の履歴版deployは[Pages手順](pages.md)で行います。
@@ -24,6 +24,13 @@ Git更新なしでもPagesを再deployし、前回の公開失敗を再試行で
 検査jobの権限は`contents: read`と`id-token: write`だけで、Gemini/GitHub書込み用Secretを渡しません。
 他モードや収集overrideとの同時指定は認証前に拒否します。
 `ready`でも有料提出は個別承認後です。詳細は[操作手順](operations.md#実batch受入の事前検査)を参照してください。
+
+## 既存Noteの限定画像補完
+
+`image_repair_plan`と`image_repair_apply`で、レビュー済み計画のプレビューまたは適用を行います。
+通常のcollect/publish/pagesはskipし、Geminiを呼ばず、要約を維持します。
+同じGCS writer lockで直列化し、適用とaudit成功後に公開専用実行を行います。
+詳細は[画像補完と復旧](operations.md#既存noteへの画像補完)を参照してください。
 
 ## 公開だけを再実行
 
