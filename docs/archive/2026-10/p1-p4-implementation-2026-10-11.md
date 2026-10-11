@@ -144,3 +144,14 @@ GCS読取りで台帳/課金recordのbytes、全index bytes、Note/receiptのgen
 
 固定Git版`e3ef457f3edab5b4ca90601c922cc3b415d288ab`の118件でもQuartz/Chromiumが成功し、
 元Markdown・内部リンク・画面幅・外部resource0を確認しました。実CIは検証時の最新content版を別に検査しています。
+
+
+## main取込後の確認
+
+[PR #141](https://github.com/Ningensei848/kaname/pull/141)をmain `0629a42`へ取り込み、
+[取込後のCI](https://github.com/Ningensei848/kaname/actions/runs/38116026059)も
+Python全460件（17.13秒）、Web、scope、両集約checkすべてsuccessでした。#135はClosedです。
+今回のBatch失敗通知#143は回収済みとしてCloseし、原因と成功保存は#94へ集約しました。
+#116の確定請求照合は明細待ちでOpen、依頼された費用推定は完了です。
+Google Researchの連続失敗#139・日次runのcompose失敗#140は既知の残件として維持します。
+新規生成0の成功runだけを理由に、これらの有料生成の障害を解消済みとは扱いません。
