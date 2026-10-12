@@ -25,7 +25,7 @@
 - [x] F6: 未処理sourceの失敗streakを維持。明示的完了だけでreset。
 - [x] F3: browser resource/robots redirectの各hopを通信前に検査。許可外hostへのDNS/HTTP要求0を検証。
 - [x] F7: 状態/schema/通知に関する現行文書の旧説明を改訂。
-- [ ] 実Batchの成功結果保存、再実行、audit/costの本番受入。後続standard成功と混同しない。
+- [x] 実Batchの3画像入りNote 1件を保存/公開、課金1回と追加生成0の再実行・audit/cost/Git/Pagesを本番受入。#94をClose。
 
 ## 既存機能の位置づけ
 
@@ -35,7 +35,7 @@
 | Git配布 | 公開内容のみのbare出版、15テスト。初回117件をcontent branchへ公開 |
 | Web preview | 公開境界24テスト、架空/実Noteのbrowser受入。117件の初回Pages deploy/公開URL hash照合は受入済み |
 | Playwright/HTML一覧、本文抽出、決定的filter | 実装済み、sourceごとのopt-in。F3は修正済み。実source受入は残る |
-| 非同期Gemini Batch | 実装/fixture検証済み。成功保存の本番受入は残る |
+| 非同期Gemini Batch | 実Note 1件/画像3件の保存・公開、課金1回・追加生成0の再実行を本番受入済み |
 | Obsidian直接sync | 編集保護を取込済み。新標準はGit/submodule、直接syncは互換用途 |
 | Cost management | 推計/予算通知は実装済み。F4/F5は修正・offline検証済み。invoice照合は残る |
 | Failure notification | 日次Issue通知は実装・承認済み。F6修正済み。公開stage通知・重複抑止をoffline検証済み |
@@ -43,17 +43,24 @@
 
 ## 継続する後続の必須項目
 
-- [ ] Parallel Processing — parallel fetch/convert + single state writer。
+- [x] Parallel Processing — 最大2件のfetch/convert先行処理、入力順の課金・状態更新、host間隔/robotsの排他を回帰検証。
 - [x] Source Health Check — 読取り専用`source-health` CLIのJSONで最終成功・連続失敗・source別発見/保存件数・pendingを表示。旧runの件数不明はnull。運用手順を参照。
-- [ ] Regression Corpus — 代表サイトfixtureと変換差分検出。
-- [ ] Knowledge Graph Quality — 表記揺れ・同義語・タグ・WikiLink品質評価。
+- [x] Regression Corpus — 有効2 sourceの合成fixture・本文/画像goldenと差分検出CLI、offline回帰。
+- [x] Knowledge Graph Quality — 読取り専用CLI、良い/悪い16例・27件、固定実content125 Noteを評価。検索語612件未解決・表記群各3組と元hash不変を確認。[評価と限界](graph-quality.md)。
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
-2026-10-10の優先順は[次の作業](next-work.md)に記載しています。まず#127の新規Note画像、現行文書の整合性、
-実Batch #94、確定明細のある請求照合 #116を進め、後続機能はsource health→回帰corpus→並列収集→graph品質の順で検討します。
+最新の着手順・未完了Issueの計画・個別の受入状態は[次の作業](next-work.md)を正本とします。
 DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではありません。
 
 ## 保守性の改善
 
 [リファクタリング計画](refactoring-plan.md)のR1〜R5は2026-10-07に完了・取込済みです。
-実Batchと請求照合はそれぞれ独立した未受入項目です。
+実Batchの成功保存/公開/再実行は本番受入済み。確定請求照合は明細待ちで、費用推定は完了しています。
+
+## 既存計画完了後のNextStep
+
+- [x] NS1: 検索キーワード・Note本文の固有語彙のWikiLinkについて、対応する公開Noteを優先し、未解決の場合はGoogle検索へつなぐ。
+
+2026-10-11の追加要望です。Knowledge Graph Qualityの評価とNS1の実装・本番受入は完了しました。請求明細待ちとsource障害は独立して追跡します。
+本文へのWikiLink付与、SSG時の解決、既存Noteの互換性、検証と完了条件は
+[NS1の完了状態](next-work.md#ns1-google-search-fallback)と受入記録に集約しています。実装・全Python543件/PR/main CI・架空3件/実125件のChromium・本番Pages配信照合まで完了です。[NS1記録](ns1-search-fallback.md)で追跡します。

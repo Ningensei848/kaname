@@ -5,11 +5,13 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 
-from ..composer import concept, inline, code_span, image_block, place_images
+from ..composer import inline, code_span, image_block, place_images
+from ..markup import valid_saved_concept
 from ..normalize import normalize_url
 from .common import ExportError
 from ..images import image_url
 from ..models import ImageSelection
+from ..wikilinks import linked_inline, map_wikilinks
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -80,6 +82,15 @@ def plain_inline(value):
     return decoded
 
 
+def plain_body(value, concepts):
+    decoded = map_wikilinks(value, lambda term: term)
+    decoded = re.sub(r"\\([\\`*_{}\[\]()<>!#|])", r"\1", decoded)
+    if (not decoded.strip() or len(decoded) > 2000 or
+            value not in (inline(decoded), linked_inline(decoded, concepts))):
+        raise ExportError("invalid_compact_body")
+    return decoded
+
+
 def validate_note(data, row, tracking, categories):
     if len(data) > 100_000:
         raise ExportError("oversized_note")
@@ -112,7 +123,7 @@ def validate_note(data, row, tracking, categories):
             raise ExportError("invalid_frontmatter")
         authors = []
         for author in meta["author"]:
-            if not author.startswith("[[") or not author.endswith("]]") or concept(author[2:-2]) != author[2:-2]:
+            if not author.startswith("[[") or not author.endswith("]]") or not valid_saved_concept(author[2:-2]):
                 raise ExportError("invalid_frontmatter")
             authors.append(author[2:-2])
         if (any(meta[k] != row[k] for k in ("raw_html_sha256", "content_sha256")) or
@@ -168,6 +179,11 @@ def validate_note(data, row, tracking, categories):
                     raise ExportError("invalid_article_images")
             except (ValueError, IndexError):
                 raise ExportError("invalid_article_images") from None
+        keyword_section = body.partition("\n\n## 検索キーワード\n\n")[2].partition(
+            "\n\n## 資料の位置づけ\n\n")[0]
+        body_terms = re.findall(r"^- \[\[([^\[\]\n]+)\]\]$", keyword_section, re.MULTILINE)
+        old_summary = "".join("> " + inline(line) + "\n" for line in meta["description"].splitlines())
+        linked_summary = "".join("> " + linked_inline(line, body_terms) + "\n" for line in meta["description"].splitlines())
         # Before the input-scope notice was introduced, compact Notes stored
         # only the truncation flag. Recognize that exact earlier structure;
         # never invent a limit or strip arbitrary sections to make it pass.
@@ -177,7 +193,9 @@ def validate_note(data, row, tracking, categories):
         if (meta["llm_input_truncated"] and "llm_input_max_chars" not in meta and
                 body.startswith(legacy_prefix)):
             prefix = legacy_prefix
-        if not body.startswith(prefix):
+        prefixes = (prefix, prefix.replace(old_summary, linked_summary, 1))
+        prefix = next((value for value in prefixes if body.startswith(value)), None)
+        if prefix is None:
             raise ExportError("invalid_compact_body")
         points, sep, rest = body[len(prefix):].partition("\n\n## 検索キーワード\n\n")
         if not sep or not 2 <= len(points.splitlines()) <= 5:
@@ -185,19 +203,19 @@ def validate_note(data, row, tracking, categories):
         for line in points.splitlines():
             if not line.startswith("- "):
                 raise ExportError("invalid_compact_body")
-            plain_inline(line[2:])
+            plain_body(line[2:], body_terms)
         concepts, sep, rest = rest.partition("\n\n## 資料の位置づけ\n\n")
         if not sep or not 1 <= len(concepts.splitlines()) <= 6:
             raise ExportError("invalid_compact_body")
         for line in concepts.splitlines():
-            if not line.startswith("- [[") or not line.endswith("]]") or not line[4:-2] or concept(line[4:-2]) != line[4:-2]:
+            if not line.startswith("- [[") or not line.endswith("]]") or not line[4:-2] or not valid_saved_concept(line[4:-2]):
                 raise ExportError("invalid_compact_body")
         positioning, sep, provenance = rest.partition("\n\n---\n\n## 出典情報\n\n")
-        if not sep or len(positioning) > 2400:
+        if not sep or len(map_wikilinks(positioning, lambda term: term)) > 2400:
             raise ExportError("invalid_compact_body")
         for line in positioning.splitlines():
             if line:
-                plain_inline(line)
+                plain_body(line, body_terms)
         if not positioning.strip():
             raise ExportError("invalid_compact_body")
         provenance_prefix = (

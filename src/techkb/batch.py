@@ -7,9 +7,9 @@ from types import SimpleNamespace
 from google.genai import types, errors
 from pydantic import ValidationError
 from .composer import compose, word_count
-from .images import image_context
+from .images import image_context, selected_images
 from ._receipts import build_receipt
-from .gemini import response_usage, validate_response
+from .gemini import batch_response_schema, response_usage, validate_response
 from .pending import Candidate
 from .models import ArticleEnrichment
 from .audit import audit_state
@@ -55,12 +55,71 @@ def preflight(store, app):
                 uncertain_runs=costs['uncertain_runs'], blockers=blockers)
 
 
-def failure_diagnostics(exc, phase, response):
+def image_response_shape(response):
+    """Describe only JSON types of the known image fields, never input values."""
+    try:
+        payload = json.loads(response.text or "")
+    except (ValueError, TypeError, AttributeError):
+        return None
+    if not isinstance(payload, dict) or "images" not in payload:
+        return None
+    def kind(value):
+        return {dict: "object", list: "array", str: "string", bool: "boolean",
+                int: "number", float: "number", type(None): "null"}[type(value)]
+    images = payload["images"]
+    shape = {"type": kind(images)}
+    if isinstance(images, list):
+        shape["count"] = len(images)
+        shape["items"] = []
+        for item in images[:6]:
+            detail = {"type": kind(item)}
+            if isinstance(item, dict):
+                detail["fields"] = {key: kind(item[key]) for key in ("image_id", "after") if key in item}
+                detail["unknown_fields"] = len(item.keys() - {"image_id", "after"})
+            shape["items"].append(detail)
+        shape["omitted_items"] = max(0, len(images) - 6)
+    return shape
+
+
+def image_selection_diagnostics(response, candidates):
+    """Count selection violations without exposing IDs or response values."""
+    payload = json.loads(response.text)
+    selections = payload.get("images", [])
+    known = {candidate["image_id"] for candidate in candidates}
+    ids = [selection["image_id"] for selection in selections]
+    return dict(candidate_count=len(known), selection_count=len(ids),
+                unknown_id_count=sum(image_id not in known for image_id in ids),
+                duplicate_id_count=len(ids) - len(set(ids)),
+                missing_key_point_count=sum(
+                    selection["after"].startswith("key_point_") and
+                    int(selection["after"][-1]) > len(payload["key_points"])
+                    for selection in selections))
+
+
+def failure_diagnostics(exc, phase, response, *, image_candidates=None):
     """Only structural error codes; never response text, values or error messages."""
     details = {"phase": phase}
+    if isinstance(exc, errors.APIError):
+        if type(exc.code) is int and 100 <= exc.code <= 599:
+            details["http_status"] = exc.code
+        if isinstance(exc.status, str) and exc.status in {"INVALID_ARGUMENT", "UNAUTHENTICATED", "PERMISSION_DENIED", "NOT_FOUND",
+                          "RESOURCE_EXHAUSTED", "FAILED_PRECONDITION", "INTERNAL", "UNAVAILABLE"}:
+            details["api_status"] = exc.status
+        # Never retain API messages: field paths may contain request data.
+        message = exc.message if isinstance(exc.message, str) else ""
+        names = re.findall(r'Unknown name "([A-Za-z_][A-Za-z0-9_]*)"', message)
+        if names:
+            details["code"] = "unknown_api_field"
+            known = {"additionalProperties", "minProperties", "maxProperties", "minLength", "maxLength",
+                     "minItems", "maxItems", "propertyOrdering", "pattern", "default", "title", "type"}
+            canonical = [re.sub(r"_([a-z])", lambda match: match[1].upper(), name) for name in names]
+            details["schema_fields"] = sorted(set(canonical) & known)
+            details["unknown_field_count"] = sum(name not in known for name in canonical)
     codes = {"category outside configured vocabulary": "category_not_allowed",
              "empty or oversized enrichment item": "invalid_enrichment_item",
-             "batch item failed or missing": "batch_response_unavailable"}
+             "batch item failed or missing": "batch_response_unavailable",
+             "invalid_image_selection": "invalid_image_selection",
+             "invalid_image_url": "invalid_image_url"}
     if isinstance(exc, ValueError) and exc.args and isinstance(exc.args[0], str):
         code = codes.get(exc.args[0])
         if code:
@@ -77,6 +136,11 @@ def failure_diagnostics(exc, phase, response):
                 issues.add((field, code))
         details["validation_errors"] = [dict(field=field, code=code) for field, code in sorted(issues)]
     if response is not None:
+        if phase == 'compose' and image_candidates is not None:
+            details['image_selection'] = image_selection_diagnostics(response, image_candidates)
+        shape = image_response_shape(response)
+        if shape is not None:
+            details["images_shape"] = shape
         try:
             details["text_present"] = bool(response.text)
         except Exception:
@@ -104,6 +168,10 @@ def inspect_batch(store, batch_id, client=None):
     result = dict(status='success', batch_id=batch_id, ledger_status=job['status'],
                   items=len(job['items']), remote_inspected=client is not None,
                   recorded_errors=[outcome['error'] for outcome in job.get('outcomes', [])])
+    if job.get('submission_rejected'):
+        result['submission_rejected'] = True
+        if job.get('submission_diagnostics'):
+            result['submission_diagnostics'] = job['submission_diagnostics']
     if client is None:
         return result
     if not job.get('name'):
@@ -126,13 +194,18 @@ def inspect_batch(store, batch_id, client=None):
         response = by_key.get(item['ch'])
         content = response.response if response and not response.error else None
         outcome = dict(item=number, error_type=None)
+        phase = 'response'
         try:
             if content is None:
                 raise ValueError('batch item failed or missing')
-            validate_response(content, job['categories'])
+            phase = 'validation'
+            enrichment = validate_response(content, job['categories'])
+            phase = 'compose'
+            selected_images(enrichment, item.get('image_candidates', ()))
         except Exception as exc:
             outcome['error_type'] = type(exc).__name__
-            outcome['diagnostics'] = failure_diagnostics(exc, 'validation' if content is not None else 'response', content)
+            outcome['diagnostics'] = failure_diagnostics(
+                exc, phase, content, image_candidates=item.get('image_candidates', ()))
         result['remote_outcomes'].append(outcome)
     return result
 
@@ -160,6 +233,10 @@ class BatchManager:
                       published_at=candidate.published_at,image_candidates=image_context(image_candidates),
                       llm_input_truncated=len(markdown)>self.gemini.config.max_input_chars)
         content,config=self.gemini.request(metadata,markdown)
+        # Use the structured-output route documented for inline Batch requests.
+        # Keep the same image object definition and strict local validation.
+        config.response_schema = batch_response_schema(config.response_json_schema)
+        config.response_json_schema = None
         request=types.InlinedRequest(contents=[types.Content(role='user',parts=[types.Part(text=content)])],
                                      config=config,metadata={'key':ch})
         item=dict(candidate=candidate.row(),source=dict(id=source.id,name=source.name,tags=source.tags),
@@ -194,7 +271,9 @@ class BatchManager:
                 # A definitive request rejection has not created a paid job. Do
                 # not let it freeze standard collection behind an ambiguous lock.
                 job['status']='complete'; job['submission_rejected']=True
-                job['error_type']=type(exc).__name__; self.persist(name,job)
+                job['error_type']=type(exc).__name__
+                job['submission_diagnostics']=failure_diagnostics(exc, 'submission', None)
+                self.persist(name,job)
             raise
         if not created.name:
             raise ValueError('batch job name unavailable')
@@ -262,7 +341,8 @@ class BatchManager:
                                                          image_candidates=item.get('image_candidates', ()))
                     except Exception as exc:
                         outcome['error']=type(exc).__name__
-                        outcome['diagnostics']=failure_diagnostics(exc, phase, response)
+                        outcome['diagnostics']=failure_diagnostics(
+                            exc, phase, response, image_candidates=item.get('image_candidates', ()))
                     outcomes.append(outcome)
                 job['outcomes']=outcomes; job['settled_at']=now()
                 job['billing_run_id']=job['settled_at'][:19].replace('-','').replace(':','')+'Z-'+hashlib.sha256(('batch:'+job['id']).encode()).hexdigest()[:8]

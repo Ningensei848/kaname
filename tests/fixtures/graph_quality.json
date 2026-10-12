@@ -1,0 +1,22 @@
+{
+  "equivalent": [
+    ["LLM", "ｌｌｍ"],
+    ["Large  Language Model", "大規模言語モデル"],
+    ["large language models", "LLM"],
+    ["RAG", "retrieval-augmented generation"],
+    ["retrieval augmented generation", "検索拡張生成"],
+    ["Model\tContext  Protocol", "model context protocol"],
+    ["Café", "Café"],
+    ["Ｃ＋＋", "C++"]
+  ],
+  "distinct": [
+    ["C", "C++"],
+    ["C#", "C++"],
+    ["Java", "JavaScript"],
+    ["GPT-4", "GPT-4o"],
+    ["Gemini", "Google"],
+    ["machine learning", "deep learning"],
+    ["cloud/security", "cloud-security"],
+    ["RAG", "GraphRAG"]
+  ]
+}

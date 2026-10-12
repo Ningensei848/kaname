@@ -1,0 +1,181 @@
+# P1〜P4（Parallel Processingまで）の実装・受入記録
+
+追補（2026-10-12 JST）: 指定されたP4: Parallel Processingまで完了しました。P2の画像型/候補外IDは後続修正で解消し、実Batch Note 1件/画像3件の保存・公開と追加生成0の再実行まで受入済みです。最新の証拠は[画像型と候補制約の受入記録](batch-images-type-diagnosis-2026-10-11.md)を参照してください。以下は2026-10-11時点の実装・費用推定・途中の拒否履歴です。
+
+2026-10-11。P4のKnowledge Graph QualityとNS1は今回の範囲外です。
+元から存在したNS1の未コミット計画は保持しています。
+
+## P1: PR検証の対象選択
+
+固定base/headの`git diff --no-renames --name-only -z`で削除・renameの両側を分類します。
+比較不能・未知pathではPython/Webの全検査へ戻します。
+文書のみは重い検証を省略、sources設定は本文/画像/HTTP/corpus、app設定は生成/保存/公開契約、
+画像補完計画は実JSONのschemaと補完回帰を検査します。Python/依存/共通契約は全Python回帰を残します。
+Webと公開契約の変更はWeb受入を実行し、混在変更では必要な検査群を合併します。
+
+実検証は`python-checks`/`web-checks`で実行し、既存の`test`/`web-preview`は
+`always()`でscopeと実jobの結果を集約します。必要な検査の失敗・中断をskip成功へ変換しません。
+分類/実Git比較15件、設定混在の対象回帰233件、actionlint成功。
+[本体PR #141のChecks](https://github.com/Ningensei848/kaname/actions/runs/38103838342)は全job success。
+[source設定のみのPR #142](https://github.com/Ningensei848/kaname/pull/142)では
+[実CI](https://github.com/Ningensei848/kaname/actions/runs/38103890924)でscope/sources Python/test/web-previewがsuccess、
+web-checksがskip。受入専用PRはマージせずCloseし、作成branch/worktreeを片付けました。
+
+## P2: 費用推定とBatch切分け
+
+ユーザー提供のAI Studioスクショは、月額上限800円・現在175円、
+2026-09-14〜2026-10-11の28日表示173.04円です。
+上限表示と期間合計は範囲/更新時刻が異なるので、確定明細や同一期間の請求とは扱いません。
+
+[抽出した計数](actions-cost-evidence-2026-10-11.json)は今回の再受入前のDaily TechKB全33回
+（schedule14回、手動19回）のログから収集report21回を抽出したものです。
+standard336呼出しと別のBatch提出2 requestを区別します。
+公開/診断/事前検査/補完だけの手動実行を、有料の新規生成回数へ加えません。
+10月2〜10日は通常30呼出し/日、standard HTTP attemptも30/日で、thinking tokenは0でした。
+Batch回収費用は専用reportへ記録するため、収集reportのtoken0を無料と誤認しません。
+
+[最新の日次run](https://github.com/Ningensei848/kaname/actions/runs/38100338209)のcost-reportは
+10月推計USD 1.0921521、9月推計USD 0.0152929、unknown/未計上Batch/未完了standard usageはいずれも0。
+通常9日平均は約USD 0.09897/日、31日なら約USD 3.07です。
+[公式価格](https://ai.google.dev/gemini-api/docs/pricing)の
+Gemini 3.5 Flash-Lite standard（入力0.30/出力2.50 USD per 1M、thinkingを出力へ加算）、
+Batch（入力0.15/出力1.25）は設定と一致します。
+
+円の目安は、スクショ175円と10月台帳1.092 USDの対応を仮に使った外挿が約492円/月、
+表示済み10日で175円として31日へ伸ばす保守的な外挿が543円/月です。
+この対応は為替レートの測定ではなく、時差・反映遅延・他利用の有無も確定していません。
+そのため通常運用の目安を500〜550円/月とします。
+
+| 同程度の記事長・出力・再試行率を仮定 | 円/月の目安 |
+|---|---:|
+| 現状と同程度 | 500〜550 |
+| 有料処理量25%増 | 625〜690 |
+| 有料処理量50%増 | 750〜825 |
+| Batchを同じtoken量で安定運用できた場合 | 通常推計の約半分（成功受入前の仮定） |
+
+800円以内という見立ては現状〜25%増なら妥当です。50%増まで保証はできません。
+無料枠を見込まず、GCS/Actions費用と確定請求照合をこのAPI推計へ混ぜません。
+
+安くするため、今回の調査は新規Gemini呼出し0、CIの不要なPython/Web/Chromiumを省略し、
+fetch/convertを並列化します。本文20,000文字・出力2,048 token・通常30件上限は維持します。
+公開repoのActions実行時間をGemini料金へ換算しません。
+Batchは単価が半分でも拒否後の再生成が節約を相殺するため、通常設定はstandardのままです。
+
+同じarticle/metadata/画像/prompt/schemaをstandardとBatchへ渡し、固定SDKの実HTTP serializerで
+payloadの完全一致を確認しました。送信差分に基づく修正理由は得られていません。
+[公式Batch API](https://ai.google.dev/gemini-api/docs/batch-api)はgenerateContentの構造化出力を許可しています。
+送信内容の一致だけでは返却の適合を保証できず、API側の逸脱理由は未確定です。
+既存のschema拒否・失敗usage回収は維持し、schema緩和や盲目的な有料再提出を行いません。
+**#94の成功保存は未受入、#116の確定請求照合は明細待ち**です。
+今回の費用推定と無課金切分けの完了を、それらのCloseと取り違えません。
+
+## P3: Source Healthの実GCS読取り
+
+2026-10-11 10:57 JST、再認証後の実ADCでCLIの読取りが成功しました。
+GCS一覧/ダウンロードのみで、記事取得・Gemini・write・通知・export・公開は行いません。
+335 success行、pending72件。GitHub Blogはhealthy（35行、pending0、最新保存1件）、
+Google Researchはfailing（300行、pending72、最新保存28件、streak3）、AWSはdisabled。
+CLI自体のsuccessとsource全体のdegradedを分け、部分保存をsource完了扱いしません。
+
+同日のpreflightは01:57:20 UTCにready、audit success/障害0。
+active ledger・未計上Batch・未完了standard usage・不明usageはいずれも0でした。
+この読取りでSource Healthの本番GCS受入は完了し、sourceの既知失敗は残ります。
+
+## P3: Regression Corpus
+
+Google Researchの複数本文section/別mediaと、GitHub Blogのarticle/figureを模した
+合成HTML・本文golden・画像候補manifestを固定しました。原文/画像bytesはコピーしません。
+`python scripts/regression_corpus.py`は変換差分をunified diff、候補変化をJSONで示し、差異で失敗します。
+source設定と20,000文字上限を実設定から読み、変更を自動承認するgolden再生成は実行しません。
+本文の末尾・画像8/1件・caption/alt・差分検出の回帰3件が成功しています。
+
+GitHubは現在の全ページ変換をbaselineとして固定しています。navigationが残る既存挙動を、
+本文selectorで除去済みと偽りません。実サイトのDOM変化は新fixtureをレビューして取り込みます。
+このoffline corpusだけでは、実サイトの将来の変更を自動取得・検知しません。
+
+## P4: Parallel Processing
+
+`processing.workers`は1〜8、既定モデルは1、運用設定は2です。
+最大workers件のfetch/convertを先行処理し、完了順に関係なく入力candidate順で結果を処理します。
+報告、重複判定、LLM/Batch準備・提出、usage、receipt/Note/index/pendingは主threadだけで行います。
+保存障害で後続課金を止め、未開始futureをcancel、実行中の無課金取得が完了してからclientを閉じます。
+
+HTTPはhostごとの排他で開始間隔・retryを維持し、robots cacheは別lockで重複取得を防ぎます。
+robotsが別hostへredirectしても複数transport lockを逆順で取得しません。
+MarkItDownはthreadごとに独立したengineを使います。
+同じhostのnetworkとLLMは逐次なので、全runの時間が半減するとは主張しません。
+
+並列完了の逆転、単一writer、重複/上限、保存障害時の先行取得最大2件、dry-runの無更新、
+host間隔/robots一回、異なるhostの実同時要求、設定上限と保存後の新規raw重複の変換省略を12件で検証しました。
+12件・各取得0.1秒の模擬benchmarkは、workers1で1.374秒、workers2で0.768秒（約44%短縮）。
+実HTTP/LLMの本番時間計測とは別です。`workers: 1`で逐次へ戻せます。
+
+
+## 全体の検証
+
+初回ローカル全458件と変更後の対象回帰67件が成功しました。
+最終コードhead `4af6781`の[CI](https://github.com/Ningensei848/kaname/actions/runs/38104580098)は
+**Python全460件・Web受入・両集約checkすべてsuccess**。設定検証、actionlint、diff checkも成功しました。
+3件のfixture Quartz/Chromiumは全元bytes・検索・内部リンク・画像・画面幅・外部resource0を確認しています。
+本体PR #141でもPython/Webとも成功しています。
+
+## 許可後の最大1件Batch再受入
+
+最新preflight readyの後、ユーザーから最大1 job/1 requestの一度だけの提出・回収・audit/costと
+追加提出0の再実行を明示許可されました。
+mainの固定headと実行中Daily writer0を確認し、
+[提出run](https://github.com/Ningensei848/kaname/actions/runs/38103771908)を
+`collection_mode=batch,max_calls=1`で一度だけ起動しました。モデル/本文/出力上限/厳格schemaは維持しています。
+通常設定をBatchへ切り替える操作とは分けます。
+提出は1 request、通常LLM呼出し/HTTP attemptは0、audit障害0。提出runはGit/Pagesまでsuccessです。
+[GET専用の診断](https://github.com/Ningensei848/kaname/actions/runs/38104282193)では
+API jobがSUCCEEDEDでも返却1件は厳格schema検証に不適合でした。
+`title_ja`欠落・未知field・`images`型不一致を再現し、finish reasonはSTOPでした。
+API jobの成功をNote保存の成功と扱いません。
+ユーザー承認時の停止条件に従い、有料再提出を止めました。
+[追加提出0の失敗usage回収](https://github.com/Ningensei848/kaname/actions/runs/38114851460)で
+台帳complete、課金記録1件、入力3,372/出力665/thinking0 token、欠損usage0を確認しました。
+保存は0件でsuccess indexは335行のままです。元価格でUSD 0.00133705（円目安約0.2円）を計上します。
+回収runはschema拒否を記録してfailure、audit/exportはskipでした。
+費用記録はsuccess、10月USD 1.09348915、未計上Batch・不明usage・未完了standard usageは0です。
+追加提出0の[再実行](https://github.com/Ningensei848/kaname/actions/runs/38114962248)では
+collection success、通常呼出し/HTTP attempt/Batch提出/Batch保存/失敗/保存/復旧はすべて0、pendingは72のままでした。
+GCS読取りで台帳/課金recordのbytes、全index bytes、Note/receiptのgenerationとCRCが再実行前と一致し、
+課金recordも1件のままであることを照合しました。再実行のaudit stepもsuccessです。
+#94は成功保存が未受入のままOpenを維持します。
+
+固定Git版`e3ef457f3edab5b4ca90601c922cc3b415d288ab`の118件でもQuartz/Chromiumが成功し、
+元Markdown・内部リンク・画面幅・外部resource0を確認しました。実CIは検証時の最新content版を別に検査しています。
+
+
+## main取込後の確認
+
+[PR #141](https://github.com/Ningensei848/kaname/pull/141)をmain `0629a42`へ取り込み、
+[取込後のCI](https://github.com/Ningensei848/kaname/actions/runs/38116026059)も
+Python全460件（17.13秒）、Web、scope、両集約checkすべてsuccessでした。#135はClosedです。
+今回のBatch失敗通知#143は回収済みとしてCloseし、原因と成功保存は#94へ集約しました。
+#116の確定請求照合は明細待ちでOpen、依頼された費用推定は完了です。
+Google Researchの連続失敗#139・日次runのcompose失敗#140は既知の残件として維持します。
+新規生成0の成功runだけを理由に、これらの有料生成の障害を解消済みとは扱いません。
+
+
+再実行run `38114962248`はcollection/audit/cost/export/Git/Pagesまで全体successで完了しました。
+auditは335成功行・pending72・障害0、costはsuccessで日次/月次推計が回収直後と完全一致しました。
+Git公開後のcontentは提出runと同じ`238ecc96e8b9cd7f39dbdaf9f9d9f3cb16fbfb40`（125件）のままで、
+Pagesのbuild/deploy・配信照合もsuccessです。新規有料提出は最初の1 requestだけです。
+
+[文書のみのPR #144](https://github.com/Ningensei848/kaname/pull/144)では
+[実CI](https://github.com/Ningensei848/kaname/actions/runs/38116318830)のscope/test/web-previewがsuccess、
+python-checks/web-checksはskipとなり、P1の文書のみ分類も受入できました。
+今回の依頼範囲に対し、#94の成功Note保存はAPI返却不適合により未完了です。
+停止条件に従い、有料再提出・schema緩和で完了扱いしません。
+
+## 出力形式明示後の追加1件と後処理
+
+追加操作を個別承認され、PR #145をmainへ取込み、最新preflight ready後に最大1 job/1 requestを一度だけ提出しました。
+今回の診断はimages model_typeだけで拒否され、title_ja欠落/未知fieldの診断はありませんが、成功保存0です。
+追加提出0で失敗usage回収・台帳complete・課金record1・欠損usage0、費用推計USD 0.00142335（約0.2円）を確認。
+追加提出0の再実行・audit/cost/Git/Pagesはsuccess、Note/receipt・index・台帳/課金不変、二重計上0です。
+公開125件版は不変、10月cost推計はUSD 1.09491250で回収/再実行間の差0です。
+最新の根拠とP4の本番時間観測は[限定Batch受入記録](batch-prompt-contract-acceptance-2026-10-11.md)にあります。
+#94の成功保存は未受入で、有料再提出を停止しています。

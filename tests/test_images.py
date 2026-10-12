@@ -85,6 +85,57 @@ def test_extracts_body_images_resolves_lazy_url_and_respects_input_cut():
     assert images[0]['caption'] == 'Measured result'
 
 
+@pytest.mark.parametrize('alt', ['ConvApparel1_Counterfactual', 'metric*score',
+                                  r'array\_value', 'Array[0]', 'cost_$5'])
+def test_candidate_matches_converted_escaped_alt_without_changing_it(alt):
+    from techkb.converter import Converter
+    from techkb.html_cleaner import clean_html
+    from techkb.normalize import normalize_markdown
+
+    raw = f'<article><p>Measured results</p><img src="/plot.png" alt="{alt}"></article>'.encode()
+    markdown = normalize_markdown(Converter().convert(clean_html(raw)))
+    images = article_images(raw, 'https://example.com/a', markdown)
+    assert len(images) == 1 and images[0]['alt'] == alt
+    assert images[0]['url'] == 'https://example.com/plot.png'
+
+
+def test_google_media_captions_match_inline_emphasis_and_stay_with_their_image():
+    from techkb.converter import Converter
+    from techkb.html_cleaner import clean_html
+    from techkb.normalize import normalize_markdown
+
+    raw = b'''<main><div class="blog-detail-wrapper">
+        <div class="dynamic_media"><picture><img src="/plot-1.png" alt="First_plot"></picture>
+        <div class="caption"><p>Measured impact (<b><i>black squares</i></b>).</p></div></div>
+        <div class="dynamic_media"><picture><img src="/plot-2.png" alt="Second_plot"></picture>
+        <div class="caption"><p><i>Different result.</i></p></div></div>
+        <img src="/plot-3.png" alt="Third_plot"><div class="caption"><p>Unrelated caption.</p></div>
+        </div></main>'''
+    markdown = normalize_markdown(Converter().convert(clean_html(raw)))
+    images = article_images(raw, 'https://example.com/a', markdown)
+    assert [image['caption'] for image in images] == [
+        'Measured impact (black squares).', 'Different result.', '']
+
+
+def test_escaped_alt_and_media_caption_still_respect_input_cut():
+    from techkb.converter import Converter
+    from techkb.html_cleaner import clean_html
+    from techkb.normalize import normalize_markdown
+
+    raw = b'''<main>
+        <div class="dynamic_media"><img src="/first.png" alt="First_plot">
+        <div class="caption"><p><b>Visible result.</b></p></div></div>
+        <h2>Input cutoff</h2>
+        <div class="dynamic_media"><img src="/later.png" alt="Later_plot">
+        <div class="caption"><p><b>Beyond the cutoff.</b></p></div></div>
+        </main>'''
+    markdown = normalize_markdown(Converter().convert(clean_html(raw)))
+    cut = markdown.index('## Input cutoff')
+    images = article_images(raw, 'https://example.com/a', markdown[:cut])
+    assert len(images) == 1 and images[0]['url'] == 'https://example.com/first.png'
+    assert images[0]['caption'] == 'Visible result.'
+
+
 def test_image_url_has_browser_compatible_canonical_bytes():
     assert image_url('https://EXAMPLE.com:443/図.png?x=日本語') == 'https://example.com/%E5%9B%B3.png?x=%E6%97%A5%E6%9C%AC%E8%AA%9E'
     assert article_images(b'<img alt="Plot">', 'https://example.com/article', 'Plot') == []

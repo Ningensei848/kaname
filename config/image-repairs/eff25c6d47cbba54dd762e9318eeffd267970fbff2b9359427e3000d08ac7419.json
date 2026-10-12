@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "note_id": "eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419",
+  "expected_note_sha256": "ce271417b252a109d5af1fc036af261bed3de5a8c56a738283d180c505723c8f",
+  "source_markdown_sha256": "c5e5a0074f4fc0f1397f60359a7792f262596aab114dae21a854fb8806a70bb7",
+  "images": [
+    {
+      "url": "https://storage.googleapis.com/gweb-research2023-media/images/GlucoFM1_Overview.width-1250.png",
+      "after": "summary"
+    },
+    {
+      "url": "https://storage.googleapis.com/gweb-research2023-media/images/GlucoFM2_Framework.width-1250.png",
+      "after": "key_point_1"
+    }
+  ]
+}

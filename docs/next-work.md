@@ -1,34 +1,88 @@
 # 次の作業と優先順位
 
-2026-10-10にREADME、現行仕様、未解決Issueと実装を照合した着手順です。
+2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。NS1と通常収集の復旧も本番受入まで完了しました。以下は完了状態と未完了Issueの着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
+P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
+2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
+費用推定とBatch切分けの根拠は[今回の作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)にあります。
 READMEの古い未完了記載を理由に再実装しません。進捗は[検証・受入](verification.md)と各Issueで区別します。
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| P1 | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | HTML候補抽出・LLM選択・Note配置・公開検査・Web表示をPR #128でmainへ取込済み。マージ後CIもsuccess | 方針は確認済み。画像入り実Noteの本番受入は未完了 |
-| P1 | README・方針・検証手順の整合性 | schedule・切戻し・リファクタリングの完了状態と画像通信の方針をPR #128で取込済み | 受入結果を更新し、未完了の本番受入と区別 |
-| P2 | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | 最大1件を個別承認後に提出したが、返却JSONがtitle_ja欠落・未知field・images型不一致で拒否された。追加提出0の失敗usage回収・台帳完了化・auditは完了。本番成功保存は未受入 | 逸脱原因は未確定。自動通知#129はこの既知の拒否に対応し、schema緩和・再提出は行わない |
-| P2 | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | 費用推計と請求実額の差を説明する。2026-10-10にユーザーから確定明細がないことを確認したため、今回は待機 | 確定明細が利用できる時点で対象期間と非公開明細を指定 |
-| P3 | Source Health Check | ユーザー指定の読取り専用CLI JSONを追加。最終成功・連続失敗・保存/発見件数・pendingを表示し、過去のsource別件数不明はnull | CLIから開始する方針は確認済み。読取り・保存/復旧の回帰を検証 |
-| P3 | Regression Corpus | 代表サイトの本文・画像抽出の変化を継続検出する | 代表sourceとfixtureの扱いを設計時に確認 |
-| P4 | Parallel Processing | fetch/convertだけを並列化し、状態更新と課金処理の順序を維持する | 必要な処理時間・並列数を設計時に確認 |
-| P4 | Knowledge Graph Quality | 表記揺れ・同義語・tags/WikiLinkの品質を評価する | 良否の評価例を確認 |
+| 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
+
+## 完了済みの作業
+
+完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#139/#140/#165をClose。#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。
+
+| 状態 | 作業 | 受入証拠 | 継続時の注意 |
+|---|---|---|---|
+| 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | Google Researchの新規Batch Noteでも3画像の実選択・保存/公開を受入。旧Noteへの一括適用はしない |
+| 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141のPython全460件・Web検査も成功 |
+| 完了（実Batch本番受入） | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | PR #153/#156後の限定1job/1記事で厳格検証に適合し、3画像入りNoteを保存・公開。index336/pending71、receipt/Note/indexと公開bytes一致、課金record1・欠損0。費用推計約0.23円 | 追加生成0の再実行も全工程success。保存/課金bytes・世代・費用不変、課金1回を受入。#94はClose、当該1件の承認枠は使用済み。通常復旧は後続の別枠 |
+| 完了（本番読取り受入） | Source Health Checkの実環境受入 | 2026-10-11に実ADC/GCSで335成功行・pending72を読取り。github-blog healthy、google-research failing、AWS disabledを確認 | 後続の通常復旧でindex407/pending0・healthyを確認。CLI成功とsource健全性を分ける |
+| 完了（実装・実CI検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
+| 完了（実装・実CI検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
+| 完了（品質評価） | [#159 Knowledge Graph Quality](https://github.com/Ningensei848/kaname/issues/159) | 無通信・無書込みCLI、良い/悪い16例・関連回帰27件、固定実content125件を評価し元hash不変。[指標と結果](graph-quality.md) | 正規化案だけでは検索語612件は解決しない。保存/投影への適用は後続で判断 |
+| 完了（通常収集・本番公開） | [#139](https://github.com/Ningensei848/kaname/issues/139) / [#140](https://github.com/Ningensei848/kaname/issues/140) / [#165](https://github.com/Ningensei848/kaname/issues/165) | 71保存・index407/pending0・連続失敗0・healthy。ゼロ生成で保存/課金不変、全工程success、公開125件/936検索リンク・配信照合 | API費用推計USD 0.2114893（承認USD 1内）。すべてClose。[復旧記録](source-recovery.md) |
+| 完了（本番受入） | [#161 NS1](https://github.com/Ningensei848/kaname/issues/161) | 本文/キーワードの検索導線、Python543件・実125件612リンク・本番配信/GCS/費用不変 | 追加Gemini費用USD 0。[受入記録](ns1-search-fallback.md) |
 
 読取り専用事前検査の承認範囲と実結果は[Batch事前検査の受入記録](archive/2026-10/batch-preflight-acceptance-2026-10-10.md)にあります。
 個別承認後の提出・schema拒否・失敗usage回収とローカル切分けは[実Batchの実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)にあります。
 
 責務整理はPR #131の取込み、main CI、固定124件版のPages更新・配信照合、読取り専用Batch preflightまで完了しました。
 証拠は[PR・本番受入記録](archive/2026-10/domain-refactoring-production-2026-10-10.md)に保存しています。
-画像入り実Note・実Batch成功保存などの未完了受入は上表で個別に扱います。
+GlucoFMの限定補完は[受入記録](archive/2026-10/glucofm-image-repair-2026-10-11.md)で完了を確認できます。
+新規LLMの実画像選択3件と実Batch成功保存/公開・追加生成0の再実行は受入完了です。
+
+## 完了記録と待機中の受入
+
+#127と#129は実装・失敗回収の証拠に基づきClose済みです。#94は成功保存・公開・再実行の受入完了でClose。#116は確定請求明細待ちでOpenを維持します。#135は実CI受入完了で、本体PR #141はmain取込済みで、#135はCloseしました。
+
+### #135: PR検証の対象選択 — 実CI受入完了
+
+`checks.yml`と`scripts/check_scope.py`で比較base/headを固定し、削除・renameの両側を分類します。
+文書のみ、source設定、app設定、画像補完計画、Python、Web、混在を選択し、未知path・比較失敗は全検査へ戻します。
+設定検証と対象別回帰、実計画のschema検査を維持し、既存`test`/`web-preview`で成功・省略を集約します。
+分類/実Git比較15件、設定混在233件、actionlintが成功。設定のみのPR #142ではPython必要検査と既存checkが成功、Web検査はskip。検証後にマージせずCloseしました。
+本体PR #141はmain取込済みで、Python全460件/Web双方・取込後CIも成功しています。
+文書のみPR #144でも必要なscope/既存checkは成功、Python/Webの重い検査はskipを実CIで受入済みです。
+
+### #94: 画像型/候補外IDを解消・実保存/公開/再実行まで完了
+
+PR #153でAPI対応のresponseSchemaに画像object定義を直接送り、画像文字列配列による型不適合を解消しました。
+その後の候補4件に対する5件選択は、GET診断で候補外ID 1件と確定しました。
+PR #156で記事ごとの候補ID.enumと候補数以内のmaxItemsを追加し、関連86件・全Python476件/Web・PR/main CI成功後にmainへ取込みました。
+画像文字列の変換や候補外画像の削除で成功扱いにせず、型・候補・重複・配置の厳格検証を維持しています。
+
+- [x] 事前条件ready・他writer不在・未決済/不明usage0を確認し、個別承認した新しい最大1job/1記事を一度だけ提出。受付・workflow全体success。
+- [x] 追加生成0の回収で適合Note 1件/画像3件を保存。成功index335→336・pending72→71、Note/receipt/index一致・公開ポリシー適合を確認。
+- [x] 台帳complete・課金record1・usage欠損0。input3553/output729/thinking0、費用推計USD 0.0014442（約0.23円）。
+- [x] collection/audit/cost/Git/Pages・配信版/元Markdown照合すべてsuccess。公開125件の最新版に今回のNoteを含み、artifact/Git/GCSのNote bytes一致を確認。
+- [x] 追加生成0の再実行で台帳/課金bytes・index・Note/receipt世代不変、課金record1、日次/月次費用同一、公開manifest/content commit不変を照合。collection/audit/cost/Git/Pages・配信照合すべてsuccess。#94をClose。
+
+実行URL・commit・費用・以前の拒否と回収は[画像型と候補制約の受入記録](archive/2026-10/batch-images-type-diagnosis-2026-10-11.md)へ集約しました。
+今回の有料2試行合計はUSD 0.00306255（約0.49円）。当時の限定提出枠は使用済みです。その後の通常復旧には追加USD 1の承認があり、[復旧記録](source-recovery.md)で消費・残額を管理します。通常scheduleのstandard設定を維持します。
+
+### #116: 費用推定完了・確定請求照合は明細待ち
+
+今回のユーザー指定に従い、AI Studioの175円/800円表示とActionsのDaily全33回、収集report21回、
+standard336呼出し・別Batch2 requestを照合し、月500〜550円、25%増で625〜690円を推定しました。
+計算、反映遅延・期間/時間帯の不一致、推計対象外のGCS/Actions、50%増なら800円を越える可能性は
+[作業記録](archive/2026-10/p1-p4-implementation-2026-10-11.md#p2-費用推定とbatch切分け)に記録しています。
+
+確定明細がないため実請求との差額はまだ算定できず、#116のinvoice照合はOpenを維持します。
+明細提供時に対象期間/通貨/時間帯/調整項目を決め、保存済みusageと元価格を読取り専用で対応付けます。
+推定完了を確定照合の完了と扱いません。
 
 ## #127の実装範囲
 
 記事本文からHTTPS画像候補を最大12件抽出し、alt・キャプション・周辺テキストを候補IDとともにLLMへ渡します。
 画像自体は解析せず、候補にあるIDだけを最大6件選び、AI要約・対応する重要ポイント・資料の位置づけの直後へ配置します。
 画像指定は要約文の字数とは別項目です。本文入力は20,000文字のまま、画像URLはLLM入力や元記事の語数へ加えません。
-画像なしの旧Note・既存Batch台帳・成功Noteの識別子とbytesは維持します。過去Noteの再取得・再生成は行いません。
+通常の収集で画像なしの旧Note・既存Batch台帳・成功Noteを変更しません。
+ユーザー承認済みのGlucoFM 1件は、[専用の画像補完](operations.md#既存noteへの画像補完)で本文だけを再取得し、要約の再生成なしで2図を追加・本番配信済みです。ほかの旧Noteへの一括適用は行いません。
 
 公開Noteに選んだ画像URLと配置を記録し、画像Markdownとの完全一致・位置・秘密の混入を検査します。
 画像ファイルは取得・保存・Git同梱しません。Pagesは当該Noteにある画像のみ表示し、画像hostだけをCSPの画像通信へ追加します。
@@ -39,3 +93,11 @@ HTTP、data URL、認証付きURL、IP/ローカルhost、署名・token付きUR
 standard/Batchのmock実行、復旧と二重計上防止、公開snapshotのbytes一致、実Chromiumの画像表示を検証します。
 Web検証では許可された画像レスポンスをローカルで代用し、出典サイトへ実通信せず、ほかの外部resourceは拒否します。
 本番のGemini/GCS更新・workflow手動実行・Pages deployと画像入りの実Note受入は別に判定します。
+
+<a id="ns1-google-search-fallback"></a>
+
+## NS1: 検索キーワード・本文のGoogle検索フォールバック — 完了
+
+新規本文の共通WikiLink付与、未解決時のGoogle検索、一意な内部Note優先を実装しました。Python全543件・PR/mainのPython/Web CI、架空3件と固定実125件のChromium、本番Pages更新・配信照合まで成功しています。公開612検索リンク、元Markdown/ID/dataset/GCS/費用不変、新規生成0・追加API費用USD 0を受入済みです。
+
+[#161](https://github.com/Ningensei848/kaname/issues/161)をCloseし、[実装・受入記録](ns1-search-fallback.md)へ証拠を集約しました。要求・以前の実装計画は[履歴](archive/2026-10/ns1-plan-2026-10-12.md)に保存しています。

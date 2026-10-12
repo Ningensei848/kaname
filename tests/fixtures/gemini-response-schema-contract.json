@@ -1,0 +1,28 @@
+{
+  "source": "https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta",
+  "checked_at": "2026-10-11",
+  "schema_fields": [
+    "anyOf",
+    "default",
+    "description",
+    "enum",
+    "example",
+    "format",
+    "items",
+    "maxItems",
+    "maxLength",
+    "maxProperties",
+    "maximum",
+    "minItems",
+    "minLength",
+    "minProperties",
+    "minimum",
+    "nullable",
+    "pattern",
+    "properties",
+    "propertyOrdering",
+    "required",
+    "title",
+    "type"
+  ]
+}

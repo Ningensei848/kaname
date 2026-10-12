@@ -39,10 +39,12 @@ def make_fixture(output):
         at = f"2026-10-0{n + 1}T09:00:00Z"
         url = f"https://example.com/fixture/{n + 1}"
         source = Source(id=source_id, name=publisher, feed_url="https://example.com/feed", base_url="https://example.com")
+        summary += "GlucoFMとC++ & 検証を扱います。"
+        points[0] += "。GlucoFMで確認する"
         enrichment = ArticleEnrichment(title_ja=title, summary_ja=summary, key_points=points,
             positioning_ja="このNoteは画面検証のための架空データです。実在の記事の要約ではありません。",
             category=category, tags=[category, "preview"],
-            related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方"], source_language="ja")
+            related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方", "GlucoFM", "C++ & 検証"], source_language="ja")
         images = []
         if n == 0:
             from techkb.models import ImageSelection

@@ -20,6 +20,43 @@ GCSへの認証・読取り・保存・exportに失敗したrunは失敗とし�
 不完全な出力を完成版として再利用せず、新しい出力先で再実行します。成功版や曖昧なBatch予約を自動削除しません。
 Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
+## 費用を限定したstandard収集
+
+`python -m techkb run --llm-mode standard --max-calls 30 --max-cost-usd 1`で、このrunの新規standard生成に費用推計上限を指定できます。Daily Actionsでも`max_cost_usd`を指定します。正の費用上限を指定したstandard runでは`--max-calls`を設定値より増やし、保留をまとめて処理できます。上限未指定では従来どおり件数を減らすだけです。通常scheduleは空欄で従来どおりです。Batch・公開専用・読取り専用モードとは併用できません。
+
+生成前に実際の入力・system/schemaのUTF-8 bytes、1,024 framing token相当、出力上限の2倍と全HTTP再試行回数から保守的に予約額を計算し、計測済みinput/output/thinking費用との合計が上限を越える記事は保留します。単価未定義・非有限/正でない上限はクライアント生成前に拒否します。APIが返したusageが欠ける、再試行が起きる、結果が厳格検証/画像組立てで拒否される場合は、次の有料呼出しへ進みません。既存のusage checkpoint・receipt・保存耐久性の停止条件も維持します。
+
+これは保存された単価とtoken見積りによるrun単位の制御で、確定請求・GCS/Actions費用や複数runの総上限を保証しません。複数runでは各runの実測usageを元単価で集計し、承認枠の残額を次の`max_cost_usd`に渡します。不明usageがあれば追加生成を停止して確認します。予算停止で保留が残るsourceは復旧完了になりません。`max_cost_usd`・`budget_deferred`・固定`budget_stop_reason`をrun reportに残します。`audit-run`もこの上限を元単価・確定usageで照合し、費用制限付きstandardの件数拡大を認識します。不明usage・再試行・元単価の欠損・上限超過や不正な上限は監査を失敗させます。
+
+standardのLLM/compose失敗にはBatchと共通の安全な構造診断を記録します。型・既知field/error code・候補/選択/重複/候補外/配置不適合の件数だけを残し、APIエラー本文・生成文・画像IDを診断へ保存しません。
+
+## 既存Noteへの画像補完
+
+要約を再生成せず、レビュー済みの画像URLと配置だけを追加できます。現在の対象はGlucoFM 1件です。
+`config/image-repairs/<Note ID>.json`に対象Note・取得した本文MarkdownのSHA256、画像URLと配置を固定します。
+対象は最新の公開revisionで、Noteとreceiptが一致し、既存画像がないことを確認します。
+本文はsourceの通常取得・抽出経路を使い、候補に存在するHTTPS画像だけを採用します。
+Gemini呼出し、画像バイナリ取得、index・usage・生成日・モデル・元本文hashの変更はありません。
+画像追加を取り除くと元Noteの全bytesへ戻ることも検査します。古い要約の入力打切り表示は維持します。
+
+```bash
+# GCS読取りと記事本文の取得のみ。出力先は新しいディレクトリを指定
+python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json --output /tmp/image-preview
+# 検証した計画をNoteと対応receiptへ適用
+python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json --output /tmp/image-apply --apply
+```
+
+ActionsではDaily TechKBの`image_repair_plan`に上記パスを指定します。
+`image_repair_apply=false`がプレビュー、`true`が適用です。他の実行mode・上限指定とは併用しません。
+mainのレビュー済み計画だけを許可し、日次writerと同じconcurrencyで直列化します。
+収集・公開jobは実行せず、検証済みNoteと判定JSONを7日間のartifactへ保存し、最後に`audit-state`を実行します。
+
+適用は世代条件を付けてreceipt、Noteの順で保存します。Note保存に失敗した場合は新しいreceiptに復旧用bytesが残ります。
+同じ計画を専用スクリプトで再実行すると、記事再取得・Gemini呼出しなしで再開します。
+通常の収集は登録済みNoteをskipするため、この片側更新を通常収集で修復しようとしません。
+競合・hash不一致・異なる計画は停止し、既存公開版を維持します。
+適用とauditが成功した後、別のDaily実行で`publish_only=true`を指定してGit/Pagesを更新します。
+
 ## 取得・本文・フィルタ
 
 現行の有効sourceはRSS/HTTPです。Google Researchは`content_selector: .blog-detail-wrapper`で、
@@ -334,3 +371,39 @@ raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in
 
 これらは非公開GCSの収集・復旧形式です。新しい公開Git snapshotへ丸ごとコピーしません。
 公開には[配布契約](publication.md)に従う専用exportを使います。
+
+
+## 取得・変換の並列数と抽出回帰
+
+`config/app.yaml`の`processing.workers: 2`で、最大2件のfetch/convertを先行処理します。
+1〜8の整数が有効です。`workers: 1`で逐次処理へ戻せます。
+課金・usage・Note/index保存・重複判定は入力順の単一writerで、30件上限を並列数で増やしません。
+host間隔・robots・retryも維持するため、並列数を増やしても同じhostへの要求頻度は増えません。
+
+本文抽出/画像候補/変換依存を変えた場合は`python scripts/regression_corpus.py`で
+有効2 sourceの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
+fixtureは原文のコピーや実サイトへの定期アクセスではありません。
+GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
+
+
+## Knowledge Graphの品質評価
+
+固定公開contentを読取り専用で評価します。
+
+```bash
+python -m techkb graph-quality --public-snapshot /path/to/public-content
+python -m techkb graph-quality --public-snapshot /path/to/public-content --details
+```
+
+認証・API呼出し・GCS/Note書込みは不要です。既定出力は件数のみ、`--details`は公開語句とNote IDも含みます。評価成功とリンク解決を区別し、曖昧候補や未解決語を任意のNoteへ結び付けません。正規化規則・指標・固定実contentの結果は[品質評価](graph-quality.md)を参照してください。
+
+
+## 本文・検索キーワードの検索導線
+
+SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGoogle検索を別タブで開くリンクへ投影します。APIキー・追加Gemini呼出し・CSPの外部resource許可は不要です。公開元Noteのbytes・ID・dataset digestは変えず、Web成果物は新しい投影で再ビルドします。本文への自動WikiLinkは新規Noteだけに適用し、旧Noteの一括再生成を行いません。
+別名表示・見出し・コード等の扱いと受入状態は[NS1記録](ns1-search-fallback.md)を参照してください。見出し欠落はリンク監査で検出します。`check:preview`/`check:pages`は検索リンクのhref・別タブ・opener不在・graph除外を検査し、Googleの遷移レスポンスをテスト内で代替して実検索を送りません。
+
+
+## 保存済み検索語ラベルの互換
+
+新規Noteの検索語/著者ラベルは、記号を空白へ置換した後に空白を整理し、160文字制限の切断後にも末尾を整理します。公開検証では、旧formatterが残した連続ASCIIスペースや160文字の切断位置の空白/ピリオドを含む保存済みラベルも限定して認めます。元Note/receipt/IDを変更せず、本文への任意WikiLink、構文区切り、非ASCII空白、長さ超過は拒否します。既存Noteを新しいラベルへ一括書換えたり、検証拒否だけを理由に要約を再生成したりしません。

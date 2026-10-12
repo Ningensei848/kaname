@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from copy import deepcopy
 import json
 import time
 import httpx
@@ -21,10 +22,12 @@ class Gemini:
         self.attempts = 0
         self.last_usage = Usage()
         self.last_usage_available = False
+        self.last_response = None
 
     def enrich(self, metadata, markdown):
         self.last_usage = Usage()
         self.last_usage_available = False
+        self.last_response = None
         content, config = self.request(metadata, markdown)
         for attempt in range(self.config.retries + 1):
             self.attempts += 1
@@ -37,12 +40,25 @@ class Gemini:
                 if not retryable or attempt == self.config.retries:
                     raise
                 self.sleep(min(2**attempt, 30))
+        self.last_response = response
         self.last_usage, self.last_usage_available = response_usage(response)
         return validate_response(response, self.categories)
 
     def request(self, metadata, markdown):
         schema = ArticleEnrichment.model_json_schema()
+        # Send the image object at items directly, so the generation constraint
+        # does not depend on the API resolving this nested definition reference.
+        definitions = schema.pop("$defs")
+        schema["properties"]["images"]["items"] = definitions.pop("ImageSelection")
+        if definitions:
+            schema["$defs"] = definitions
         schema["properties"]["category"]["enum"] = self.categories
+        image_ids = list(dict.fromkeys(candidate["image_id"] for candidate in
+                                       metadata.get("image_candidates", ())))
+        image_schema = schema["properties"]["images"]
+        image_schema["maxItems"] = min(image_schema["maxItems"], len(image_ids))
+        if image_ids:
+            image_schema["items"]["properties"]["image_id"]["enum"] = image_ids
         config = types.GenerateContentConfig(
             system_instruction=self.prompt + "\nカテゴリ候補: " + ", ".join(self.categories),
             response_mime_type="application/json", response_json_schema=schema,
@@ -55,6 +71,30 @@ class Gemini:
 
     def close(self):
         self.client.close()
+
+
+def batch_response_schema(schema):
+    """Express closed objects using the Developer API's Schema field subset.
+
+    responseSchema has no additionalProperties. Requiring every known property
+    and bounding the property count closes the object without that unsupported
+    field. In Batch, images is therefore required (use [] for no selection).
+    Local ArticleEnrichment validation remains the final acceptance boundary.
+    """
+    result = deepcopy(schema)
+    def close_objects(node):
+        if "additionalProperties" in node:
+            if node.pop("additionalProperties") is not False:
+                raise ValueError("batch schema requires closed objects")
+            properties = node["properties"]
+            node["required"] = list(properties)
+            node["minProperties"] = node["maxProperties"] = len(properties)
+        for child in node.get("properties", {}).values():
+            close_objects(child)
+        if "items" in node:
+            close_objects(node["items"])
+    close_objects(result)
+    return result
 
 
 def response_usage(response):

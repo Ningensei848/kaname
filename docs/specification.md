@@ -50,8 +50,12 @@ compact NoteにはAI要約、重要ポイント、資料の位置づけ、検索
 schemaを満たさない生成結果は成功Noteにせず、公開snapshotにも入れません。
 新規Noteには記事本文の画像候補から選んだ図・写真を出典のHTTPS URLで直接表示できます。
 候補ID・配置は要約本文と別に扱い、要約の300〜500字や元記事の語数へ画像URLを加えません。
+候補の説明はMarkdown変換のescape・inline emphasisを考慮して入力範囲と照合します。Google Researchのcaptionは各画像のmedia block内から取得します。
 画像自体の解析・ダウンロード・同梱・既存Noteの再生成は行いません。閲覧時に画像hostへ外部通信します。
 公開検査はNoteに記録した画像と位置が一致するものだけを許可し、画像以外の外部resourceは許可しません。
+既存Noteの画像補完は、hashを固定したレビュー済み計画による別の操作です。
+要約・生成情報・index・usageを維持し、Geminiを呼ばずNoteとreceiptへ画像だけを追加します。
+操作と片側保存失敗からの復旧は[運用手順](operations.md#既存noteへの画像補完)を参照してください。
 公開許容は全生成Noteに適用し、本文の不正・秘密の混入・取り下げ対象は検査失敗/明示除外として扱います。
 品質とsourceの取扱いは[source方針](source-policy.md)に従います。
 
@@ -83,6 +87,8 @@ Pagesの表示中のcommit/digestを確認でき、利用側も同じ版を取�
 本文抽出・ブラウザ・raw保存・Batch切替は明示設定とします。
 Google Researchの本文入力と画像候補は`.blog-detail-wrapper`内の本文・図・キャプションを使い、
 ページのナビゲーションや関連記事で20,000文字の入力枠を消費しません。selector不一致は失敗としてpendingへ残します。
+fetch/convertは`processing.workers`で最大件数を限定して並列化し、結果は入力candidate順で処理します。
+LLM/Batch提出・usage・Note/index/pending更新は単一writerのまま、HTTP host間隔とrobotsを維持します。
 成功TSVを通常の重複排除の正本にし、失敗hashを成功登録しません。
 receiptで保存途中から復旧し、記事ごとにindexをcheckpointします。
 
@@ -102,3 +108,14 @@ export・Git配布・Pages buildは既存成功Noteを使い、記事再取得�
 DB/Vector DB/複数LLMへの移行、画像ファイル保存、GCS停止中の代替保存を前提にしません。
 Quartz 5.0.0と固定pluginを使い、元Markdownを同じbytesで成果物に含めます。
 公開・通常schedule・切戻し/復帰は受入済みです。現在の状態と未受入範囲は[検証・受入](verification.md)を参照してください。
+
+
+## Knowledge Graphの品質評価
+
+`graph-quality`は検証済み公開snapshotのタグ・検索キーワードWikiLinkを読取り専用で評価します。現行のタイトル完全一致と、NFKC/casefold/空白統一・明示同義語による解決案を比較します。一意な公開タイトルだけを候補とし、未解決・同名複数・自己参照を区別します。保存Note・Note ID・manifest・Web投影は変更しません。良否の評価例と対象範囲は[品質評価](graph-quality.md)を正本とします。
+
+
+## 検索語句と本文のリンク
+
+公開時にWikiLinkを一意な公開タイトルの内部Noteへ解決し、未解決・同名複数・公開除外はGoogle検索へフォールバックします。外部検索を識別できる表示・アクセシブルな説明を付け、別タブとnoopener/noreferrerを使います。コード・URL・既存リンク・画像を保持し、外部検索をgraph edgeへ数えません。
+新規Noteの要約・重要ポイント・資料の位置づけは、related_conceptsの固有語彙を共通composerでWikiLinkにします。旧Noteのbytes・ID・manifestを変更せず、要約字数・入力上限・LLM呼出し・Batch schemaも維持します。規則・限界・受入は[NS1記録](ns1-search-fallback.md)を正本とします。

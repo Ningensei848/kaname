@@ -5,6 +5,7 @@ import ipaddress
 import logging
 import socket
 import time
+from threading import Lock, RLock
 import httpx
 from .normalize import normalize_url
 
@@ -41,8 +42,20 @@ class Fetcher:
         self.sleep = sleep
         self.last_request = {}
         self.robots = {}
+        self._locks_guard = Lock()
+        self._host_locks = {}
+        self._robots_locks = {}
+
+    def _host_lock(self, url):
+        host = urlsplit(normalize_url(url)).hostname
+        with self._locks_guard:
+            return self._host_locks.setdefault(host, RLock())
 
     def _request(self, url, interval, allowed_hosts=None):
+        with self._host_lock(url):
+            return self._request_locked(url, interval, allowed_hosts)
+
+    def _request_locked(self, url, interval, allowed_hosts=None):
         if allowed_hosts is not None and urlsplit(normalize_url(url)).hostname not in allowed_hosts:
             raise FetchError("destination outside allowed domains")
         safe_url(url)
@@ -74,6 +87,15 @@ class Fetcher:
         raise FetchError("retries exhausted")
 
     def _allowed(self, url, interval, allowed_hosts=None):
+        origin = urlsplit(normalize_url(url)).netloc
+        with self._locks_guard:
+            lock = self._robots_locks.setdefault(origin, RLock())
+        # Separate cache locks from transport locks: cross-host robots redirects
+        # must not acquire two transport locks in opposite order.
+        with lock:
+            return self._allowed_locked(url, interval, allowed_hosts)
+
+    def _allowed_locked(self, url, interval, allowed_hosts=None):
         p = urlsplit(url)
         origin = f"{p.scheme}://{p.netloc}"
         if origin not in self.robots:

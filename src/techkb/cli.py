@@ -20,6 +20,8 @@ from .publication import export_notes, ExportDirectorySnapshot, ExportError
 from .distribution import publish_snapshot
 from ._cli_arguments import parse_args, validate_args
 from .source_health import source_health
+from .graph_quality import graph_quality
+from .publication.snapshot import load_snapshot
 
 
 class _Dependencies:
@@ -78,6 +80,11 @@ def main(argv=None):
         app, sources = load_config(args.config, args.sources)
         validate_args(args, app)
         dependencies.app = app
+        if args.command == "graph-quality":
+            if not args.public_snapshot:
+                raise ValueError("graph-quality requires --public-snapshot")
+            return _json_result(graph_quality(*load_snapshot(args.public_snapshot, app.tracking_parameters),
+                                             details=args.details))
         if args.command == "publish-notes":
             if not args.public_snapshot or not args.distribution_repo:
                 raise ValueError("publish-notes requires public snapshot and local bare repository")
@@ -156,7 +163,8 @@ def main(argv=None):
         store = dependencies.store()
         fetcher = dependencies.articles()
         gemini = dependencies.llm(prompt) if not dry else None
-        report = Pipeline(app, sources, store, fetcher, Converter(), gemini).run(dry_run=dry)
+        options = {"max_cost_usd": args.max_cost_usd} if args.max_cost_usd is not None else {}
+        report = Pipeline(app, sources, store, fetcher, Converter(), gemini, **options).run(dry_run=dry)
         return 0 if report.status == "success" else 1
     except ExportError as exc:
         return _json_result(dict(status="failed", code=str(exc)), ensure_ascii=True, status_exit=True)

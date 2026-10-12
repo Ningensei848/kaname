@@ -82,6 +82,8 @@ def test_google_body_reaches_llm_and_late_image_reaches_note(harness, google_art
     assert "outside article" not in content["article_markdown"]
     assert "Article conclusion." in content["article_markdown"]
     assert len(content["metadata"]["image_candidates"]) == 8
+    assert [image["caption"] for image in content["metadata"]["image_candidates"]] == [
+        f"Caption for diagram {number}." for number in range(1, 9)]
     assert "figure-8.png" not in json.dumps(content)
     row = State(h.store).rows[0]
     note = h.store.read(row["note_object"]).decode()

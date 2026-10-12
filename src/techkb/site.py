@@ -9,6 +9,7 @@ import yaml
 from .composer import inline
 from .publication import ExportError, sha256, note_frontmatter, instant
 from .publication.snapshot import load_snapshot
+from .wikilinks import project_wikilinks
 
 
 def relative_link(target, current):
@@ -74,11 +75,7 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
             body = ("> [!warning] 要約対象の制限\n"
                     "> このNoteは入力を打ち切って生成されています。保存時点の上限文字数は記録されていません。\n"
                     "> 記事全体の確認には出典URLを参照してください。\n\n" + body.lstrip("\n"))
-        def wikilink(match):
-            title = match[1]
-            candidates = titles.get(title, [])
-            return f"[{inline(title)}]({candidates[0]})" if len(candidates) == 1 else inline(title)
-        body = re.sub(r"\[\[([^\[\]\n]+)\]\]", wikilink, body)
+        body = project_wikilinks(body, titles, entry["id"])
         lead = (f'<div class="note-context"><span class="eyebrow">AI GENERATED NOTE</span>'
                 f'<p>{html.escape(meta["publisher"])} · {html.escape(entry["category"])}</p>'
                 f'<a class="source-link" href="{html.escape(entry["canonical_url"], quote=True)}" '

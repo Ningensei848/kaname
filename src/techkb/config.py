@@ -13,6 +13,9 @@ class HTTPConfig(StrictModel):
     user_agent: str = "TechKnowledgeCollector/0.1"
     max_response_bytes: int = Field(default=10_000_000, gt=0)
 
+class ProcessingConfig(StrictModel):
+    workers: int = Field(default=1, ge=1, le=8)
+
 class LLMConfig(StrictModel):
     mode: Literal["standard", "batch"] = "standard"
     model: str = "gemini-3.5-flash-lite"
@@ -44,6 +47,7 @@ class NotificationConfig(StrictModel):
 
 class AppConfig(StrictModel):
     http: HTTPConfig = Field(default_factory=HTTPConfig)
+    processing: ProcessingConfig = Field(default_factory=ProcessingConfig)
     llm: LLMConfig = Field(default_factory=LLMConfig)
     storage: StorageConfig = Field(default_factory=StorageConfig)
     costs: CostConfig = Field(default_factory=CostConfig)
