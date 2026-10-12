@@ -63,4 +63,4 @@ DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではあ�
 
 2026-10-11の追加要望です。Knowledge Graph Qualityの評価は完了し、次の実装対象です。請求明細待ちとsource障害は独立して追跡します。
 本文へのWikiLink付与、SSG時の解決、既存Noteの互換性、検証と完了条件は
-[NS1の実装計画](next-work.md#ns1-google-search-fallback)に記録しています。現時点では未実装です。
+[NS1の実装計画](next-work.md#ns1-google-search-fallback)に記録しています。実装・架空Chromium受入・全Python542件まで完了、本番Pagesの受入を進行中です。[NS1記録](ns1-search-fallback.md)で追跡します。

@@ -11,7 +11,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 |---|---|---|---|
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 復旧受入待ち | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 10月12日再確認でgoogle-research failing・連続失敗6・pending71。#139/#140はOpen維持、限定Batch成功をsource全体の復旧と混同しない |
-| 次の実装 | [NS1: Google検索フォールバック](#ns1-google-search-fallback) | Graph Qualityで実公開125 Noteの検索語612件が未解決と判明。既存Note優先・未解決語の検索導線を実装する | 本文WikiLink付与・投影・Web受入まで実施 |
+| 実装・受入中 | [NS1: Google検索フォールバック](#ns1-google-search-fallback) | Graph Qualityで実公開125 Noteの検索語612件が未解決と判明。既存Note優先・未解決語の検索導線を実装する | 本文WikiLink付与・投影・Web受入まで実施 |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
 ## 完了済みの作業
@@ -98,7 +98,7 @@ Web検証では許可された画像レスポンスをローカルで代用し�
 
 ## NS1: 検索キーワード・本文のGoogle検索フォールバック
 
-2026-10-11のユーザー要望を記録した、次に実装するNextStepです。Graph Qualityの評価は完了しました。
+2026-10-12 JST、NS1は実装済み・関連151件/全Python542件/架空Chromium受入済みで、本番Pages受入を進めています。最新の状態は[実装・受入記録](ns1-search-fallback.md)へ集約します。以下は要求と完了条件です。
 明細待ちと既知source障害は独立して追跡します。これらの未完了項目を、この追加計画によって完了扱いにはしません。
 この節を後続実装の要求・着手条件・完了条件の正本とし、ロードマップから参照します。
 
@@ -107,10 +107,10 @@ Web検証では許可された画像レスポンスをローカルで代用し�
 検索キーワードとNote本文の固有語彙を、クリックだけで調べられるようにします。
 対応する公開Noteがあれば内部リンクを優先し、なければその語句のGoogle検索を開きます。
 
-現在、`composer.py`は`related_concepts`を「検索キーワード」の`[[語句]]`として出力します。
+着手前、`composer.py`は`related_concepts`を「検索キーワード」の`[[語句]]`として出力していました。
 `site.py`の`project_content`は、公開manifest内で同じタイトルが一意に見つかった語句だけを内部リンクにし、
-一致なし・同名複数の場合はプレーンテキストにしています。本文の固有語彙を自動でWikiLinkにする処理はありません。
-このため、未解決リンクの変換と本文へのWikiLink付与の両方が実装対象です。
+着手前の一致なし・同名複数はプレーンテキストでした。今回、検索リンクへの投影と新規本文へのWikiLink付与を実装しました。
+実装後の挙動と旧Note互換は[NS1記録](ns1-search-fallback.md)を参照してください。
 
 Google検索のリンクは`https://www.google.com/search?q=<URLエンコードした語句>`とします。
 `q`が検索語句のパラメータであることは[Googleの説明](https://support.google.com/analytics/answer/1012264?hl=en)で確認できます。

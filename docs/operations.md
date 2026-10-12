@@ -386,3 +386,9 @@ python -m techkb graph-quality --public-snapshot /path/to/public-content --detai
 ```
 
 認証・API呼出し・GCS/Note書込みは不要です。既定出力は件数のみ、`--details`は公開語句とNote IDも含みます。評価成功とリンク解決を区別し、曖昧候補や未解決語を任意のNoteへ結び付けません。正規化規則・指標・固定実contentの結果は[品質評価](graph-quality.md)を参照してください。
+
+
+## 本文・検索キーワードの検索導線
+
+SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGoogle検索を別タブで開くリンクへ投影します。APIキー・追加Gemini呼出し・CSPの外部resource許可は不要です。公開元Noteのbytes・ID・dataset digestは変えず、Web成果物は新しい投影で再ビルドします。本文への自動WikiLinkは新規Noteだけに適用し、旧Noteの一括再生成を行いません。
+別名表示・見出し・コード等の扱いと受入状態は[NS1記録](ns1-search-fallback.md)を参照してください。見出し欠落はリンク監査で検出します。`check:preview`/`check:pages`は検索リンクのhref・別タブ・opener不在・graph除外を検査し、Googleの遷移レスポンスをテスト内で代替して実検索を送りません。
