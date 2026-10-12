@@ -124,3 +124,20 @@ def test_response_reset_before_next_http_failure(harness):
     with pytest.raises(httpx.ReadTimeout):
         harness.gemini.enrich({}, 'text')
     assert harness.gemini.last_response is None
+
+
+@pytest.mark.parametrize('limit', [31, 100])
+def test_larger_standard_run_requires_and_keeps_cost_guard(harness, limit):
+    args = parse_args(['run', '--max-calls', str(limit), '--max-cost-usd', '0.000001'])
+    validate_args(args, harness.app)
+    assert harness.app.llm.max_calls_per_run == limit
+    r = capped(harness, args.max_cost_usd)
+    assert r.llm_calls == 0 and r.pending_after == 1
+
+
+@pytest.mark.parametrize('options', [[], ['--max-cost-usd', 'NaN'],
+                                   ['--max-cost-usd', '1', '--llm-mode', 'batch']])
+def test_larger_run_without_valid_standard_budget_rejected(harness, options):
+    with pytest.raises(ValueError):
+        validate_args(parse_args(['run', '--max-calls', '100', *options]), harness.app)
+    assert harness.app.llm.max_calls_per_run == 30

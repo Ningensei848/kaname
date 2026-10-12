@@ -22,7 +22,7 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 ## 費用を限定したstandard収集
 
-`python -m techkb run --llm-mode standard --max-calls 30 --max-cost-usd 1`で、このrunの新規standard生成に費用推計上限を指定できます。Daily Actionsでも`max_cost_usd`を指定します。通常scheduleは空欄で従来どおりです。Batch・公開専用・読取り専用モードとは併用できません。
+`python -m techkb run --llm-mode standard --max-calls 30 --max-cost-usd 1`で、このrunの新規standard生成に費用推計上限を指定できます。Daily Actionsでも`max_cost_usd`を指定します。正の費用上限を指定したstandard runでは`--max-calls`を設定値より増やし、保留をまとめて処理できます。上限未指定では従来どおり件数を減らすだけです。通常scheduleは空欄で従来どおりです。Batch・公開専用・読取り専用モードとは併用できません。
 
 生成前に実際の入力・system/schemaのUTF-8 bytes、1,024 framing token相当、出力上限の2倍と全HTTP再試行回数から保守的に予約額を計算し、計測済みinput/output/thinking費用との合計が上限を越える記事は保留します。単価未定義・非有限/正でない上限はクライアント生成前に拒否します。APIが返したusageが欠ける、再試行が起きる、結果が厳格検証/画像組立てで拒否される場合は、次の有料呼出しへ進みません。既存のusage checkpoint・receipt・保存耐久性の停止条件も維持します。
 
