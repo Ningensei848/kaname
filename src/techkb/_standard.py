@@ -3,6 +3,13 @@ from .usage import checkpoint
 from .images import image_context
 
 
+def request_metadata(candidate, source, truncated, authors, image_candidates=()):
+    return {"title": candidate.title[:1000], "source": source.name,
+            "authors": authors, "published_at": candidate.published_at,
+            "image_candidates": image_context(image_candidates),
+            "llm_input_truncated": truncated}
+
+
 class StandardRequest:
     def __init__(self, store, gemini, report):
         self.store, self.gemini, self.report = store, gemini, report
@@ -18,11 +25,8 @@ class StandardRequest:
         self.stage = "llm"
         attempts_before = gemini.attempts
         try:
-            enrichment = gemini.enrich({"title": candidate.title[:1000], "source": source.name,
-                                       "authors": authors,
-                                       "published_at": candidate.published_at,
-                                       "image_candidates": image_context(image_candidates),
-                                       "llm_input_truncated": truncated}, markdown)
+            enrichment = gemini.enrich(request_metadata(
+                candidate, source, truncated, authors, image_candidates), markdown)
         finally:
             usage = gemini.last_usage
             report.total_input_tokens += usage.input_tokens

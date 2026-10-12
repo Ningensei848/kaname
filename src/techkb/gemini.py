@@ -22,10 +22,12 @@ class Gemini:
         self.attempts = 0
         self.last_usage = Usage()
         self.last_usage_available = False
+        self.last_response = None
 
     def enrich(self, metadata, markdown):
         self.last_usage = Usage()
         self.last_usage_available = False
+        self.last_response = None
         content, config = self.request(metadata, markdown)
         for attempt in range(self.config.retries + 1):
             self.attempts += 1
@@ -38,6 +40,7 @@ class Gemini:
                 if not retryable or attempt == self.config.retries:
                     raise
                 self.sleep(min(2**attempt, 30))
+        self.last_response = response
         self.last_usage, self.last_usage_available = response_usage(response)
         return validate_response(response, self.categories)
 
