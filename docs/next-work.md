@@ -1,6 +1,6 @@
 # 次の作業と優先順位
 
-2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。以下は完了状態と後続の着手順です。
+2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。NS1も本番受入まで完了しました。以下は完了状態と未完了Issueの着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
 P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
 2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
@@ -11,12 +11,11 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 |---|---|---|---|
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 復旧受入待ち | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 10月12日再確認でgoogle-research failing・連続失敗6・pending71。#139/#140はOpen維持、限定Batch成功をsource全体の復旧と混同しない |
-| 実装・受入中 | [NS1: Google検索フォールバック](#ns1-google-search-fallback) | Graph Qualityで実公開125 Noteの検索語612件が未解決と判明。既存Note優先・未解決語の検索導線を実装する | 本文WikiLink付与・投影・Web受入まで実施 |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
 ## 完了済みの作業
 
-完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#94/#108〜#115/#127/#129/#135と解消済みの通知#143/#146/#152/#155はClosedを維持します。
+完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。
 
 | 状態 | 作業 | 受入証拠 | 継続時の注意 |
 |---|---|---|---|
@@ -27,6 +26,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | 完了（実装・実CI検証） | Regression Corpus | 有効2 sourceの合成HTML・本文golden・画像候補manifest、差分CLIと回帰3件を追加 | 変更時は差分をレビューしてgoldenを更新する |
 | 完了（実装・実CI検証） | Parallel Processing | fetch/convertをbounded・入力順で並列処理。既定設定2、LLM/usage/保存は単一writer。host間隔・robotsを排他制御 | 本番の時間短縮は今後の日次runで観測。workers: 1で逐次処理へ戻せる |
 | 完了（品質評価） | [#159 Knowledge Graph Quality](https://github.com/Ningensei848/kaname/issues/159) | 無通信・無書込みCLI、良い/悪い16例・関連回帰27件、固定実content125件を評価し元hash不変。[指標と結果](graph-quality.md) | 正規化案だけでは検索語612件は解決しない。保存/投影への適用は後続で判断 |
+| 完了（本番受入） | [#161 NS1](https://github.com/Ningensei848/kaname/issues/161) | 本文/キーワードの検索導線、Python543件・実125件612リンク・本番配信/GCS/費用不変 | 追加Gemini費用USD 0。[受入記録](ns1-search-fallback.md) |
 
 読取り専用事前検査の承認範囲と実結果は[Batch事前検査の受入記録](archive/2026-10/batch-preflight-acceptance-2026-10-10.md)にあります。
 個別承認後の提出・schema拒否・失敗usage回収とローカル切分けは[実Batchの実行記録](archive/2026-10/batch-acceptance-2026-10-10.md)にあります。
@@ -96,76 +96,8 @@ Web検証では許可された画像レスポンスをローカルで代用し�
 
 <a id="ns1-google-search-fallback"></a>
 
-## NS1: 検索キーワード・本文のGoogle検索フォールバック
+## NS1: 検索キーワード・本文のGoogle検索フォールバック — 完了
 
-2026-10-12 JST、NS1は実装済み・関連151件/全Python542件/架空Chromium受入済みで、本番Pages受入を進めています。最新の状態は[実装・受入記録](ns1-search-fallback.md)へ集約します。以下は要求と完了条件です。
-明細待ちと既知source障害は独立して追跡します。これらの未完了項目を、この追加計画によって完了扱いにはしません。
-この節を後続実装の要求・着手条件・完了条件の正本とし、ロードマップから参照します。
+新規本文の共通WikiLink付与、未解決時のGoogle検索、一意な内部Note優先を実装しました。Python全543件・PR/mainのPython/Web CI、架空3件と固定実125件のChromium、本番Pages更新・配信照合まで成功しています。公開612検索リンク、元Markdown/ID/dataset/GCS/費用不変、新規生成0・追加API費用USD 0を受入済みです。
 
-### 要求と現行との差
-
-検索キーワードとNote本文の固有語彙を、クリックだけで調べられるようにします。
-対応する公開Noteがあれば内部リンクを優先し、なければその語句のGoogle検索を開きます。
-
-着手前、`composer.py`は`related_concepts`を「検索キーワード」の`[[語句]]`として出力していました。
-`site.py`の`project_content`は、公開manifest内で同じタイトルが一意に見つかった語句だけを内部リンクにし、
-着手前の一致なし・同名複数はプレーンテキストでした。今回、検索リンクへの投影と新規本文へのWikiLink付与を実装しました。
-実装後の挙動と旧Note互換は[NS1記録](ns1-search-fallback.md)を参照してください。
-
-Google検索のリンクは`https://www.google.com/search?q=<URLエンコードした語句>`とします。
-`q`が検索語句のパラメータであることは[Googleの説明](https://support.google.com/analytics/answer/1012264?hl=en)で確認できます。
-API呼出しやAPIキーは不要で、利用者がリンクをクリックした際に検索ページへ遷移します。
-
-| 入力と公開先の状態 | 生成するリンク |
-|---|---|
-| 検索キーワード`[[GlucoFM]]`、対応するNoteなし | `GlucoFM`をクエリにしたGoogle検索 |
-| 本文中の`[[GlucoFM]]`、対応するNoteなし | 同じGoogle検索 |
-| 対応する公開Noteが一意に存在 | 既存の安定Note IDへの内部リンク |
-| 同名Noteが複数、または公開対象から除外されている | Google検索。任意のNoteを選ばない |
-| 別名表示`[[語句\|表示名]]` | 内部リンクの解決対象・検索語句は「語句」、表示は「表示名」 |
-| コード内・エスケープ済みの`[[語句]]` | 記述を保持し、検索リンクへ変換しない |
-
-### 実装順序と責務
-
-1. **公開Noteの解決と未解決時のリンク生成を共通化する。**
-   `src/techkb/site.py`のQuartz入力への投影を主な変更箇所とし、検索キーワードと本文に同じ規則を適用します。
-   判定には固定された公開snapshotのmanifestを使います。先行するGraph Qualityで別名・正規化規則を整備した場合は、その一意解決規則に合わせます。
-   ブラウザで404を検出してから遷移させる方式ではなく、SSG入力を生成する時点でリンク先を確定します。
-   任意の壊れたHTTPリンクや画像URLまで検索へ変換せず、対象はWikiLinkとします。
-   アンカー付きWikiLinkはNote部分と見出し部分を分離し、解決できる内部リンクと見出し指定を保ちます。
-   Noteが未解決ならNote部分の語句を検索し、見出しだけが不正な場合はGoogle検索へ変換せず、Web側のリンク監査で検出できることを確認します。
-
-2. **本文の固有語彙にWikiLinkを付与する。**
-   初期実装では既存の構造化された`related_concepts`を候補として使い、新規NoteのAI要約・重要ポイント・資料の位置づけに現れる語句を共通composerで`[[語句]]`にします。
-   候補は製品名・技術名などユニーク性の高い語句に限定し、一般語を無差別にリンク化しません。
-   重なる候補は長い語句を優先し、英単語の一部への一致、URL・コード・既存リンク・画像alt/captionへの重複挿入を避けます。
-   安全なテキストのエスケープとリンク記法の組立を分け、`inline()`全体の保護を弱めません。
-   LLMには現在どおり記法なしの概念名を返させ、追加LLM呼出し・Batch schema変更を伴わせません。
-   要約の字数判定は記法を付ける前の要約文で行い、WikiLinkの括弧やGoogle検索URLを字数に加えません。
-
-3. **公開Note検証とWeb表示を合わせる。**
-   standard/Batchが同じ本文を生成し、公開Noteの組立検証も同じ規則で受け入れるようにします。
-   旧生成形式の検証経路を保持し、本文にWikiLinkを追加していない既存Noteも引き続き公開できるようにします。
-   Markdownのコードブロック・コードspan・エスケープ・別名表示を区別し、単純な全置換で記述を壊さないようにします。
-   Google検索URLは固定のHTTPS originと`urlencode({"q": 語句})`等で組み立て、日本語・空白・`C++`・`&`を別パラメータに解釈させません。
-   外部検索と分かる表示・アクセシブルな説明を付け、Google検索は別タブで開き、`rel="noopener noreferrer"`を適用します。
-   内部リンクは既存の遷移・検索・graphの挙動を維持し、外部検索リンクをNote間のgraph edgeに数えません。
-   外部検索はクリック時のナビゲーションとし、ページ表示時やビルド時のGoogleへのresource取得・script追加・CSP通信許可の拡張を伴わせません。
-
-4. **既存Noteへの適用と受入を確認する。**
-   既存の保存Note・公開元Markdown bytes・Note ID・manifest schemaを維持します。
-   既存Noteの明示的なWikiLinkは次のWebビルドからフォールバックの対象になります。
-   本文への自動WikiLink付与は新規生成Noteから適用し、旧Noteの一括書換え・要約の再生成はこのNextStepへ含めません。
-   投影だけの変更では元snapshotのdataset digestを変えず、Web成果物の検証情報は再ビルドに合わせて更新します。
-
-### 完了条件
-
-- 検索キーワードと本文のWikiLinkを、それぞれクリック一回で内部Noteまたは対応語句のGoogle検索へ移動できる。
-- 一意の内部Noteがある場合は内部リンクを優先し、未解決・同名複数・公開除外ではGoogle検索になる。
-- 日本語、空白、`C++`、`&`、引用符、別名表示を含むクエリが正しく復号でき、クエリへの別パラメータ混入やHTML/Markdownの破損がない。
-- コード・エスケープ・URL・画像記述を保持し、部分一致や候補の重複で本文を壊さない。
-- standard/Batchの共通生成、公開Noteの組立検証、Quartz投影、内部リンク監査を対象回帰で確認する。
-- fixtureと固定実contentでビルドし、Chromiumでクリック先・別タブ・表示幅・外部リンクの識別・想定外resource通信なしを確認する。
-  CIではGoogleへ実検索せず、生成href・復号したクエリ・クリック時のナビゲーション先で判定する。
-- 既存Noteの元Markdown hashとIDが維持され、新規Noteの要約本文の字数・画像配置・公開検証が従来の制約を満たす。
-- 仕様・運用・検証の正本に実装後の挙動と受入結果を記録してから、NS1を完了とする。
+[#161](https://github.com/Ningensei848/kaname/issues/161)をCloseし、[実装・受入記録](ns1-search-fallback.md)へ証拠を集約しました。要求・以前の実装計画は[履歴](archive/2026-10/ns1-plan-2026-10-12.md)に保存しています。

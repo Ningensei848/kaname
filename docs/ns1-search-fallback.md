@@ -1,6 +1,6 @@
 # NS1: 検索キーワード・本文のGoogle検索フォールバック
 
-2026-10-12 JST。実装・ローカル検証済み、本番Pagesの受入は進行中です。
+2026-10-12 JST。実装・ローカル/CI・本番Pagesまで受入完了です。#161の完了証拠は以下に集約しています。
 
 ## 利用時の挙動
 
@@ -21,14 +21,16 @@
 ## 検証・受入
 
 - [x] クエリ符号化・別名/見出し・保護構文・長い候補優先・部分一致拒否・standard/Batch共通保存と公開、未宣言リンク拒否・アンカー監査を40件で検証。
-- [x] 関連151件とPython全542件が成功。
+- [x] 関連151件とPython全543件が成功。
 - [x] 架空3 Noteの固定QuartzビルドとChromium受入。本文とキーワードの検索リンク18件、内部Note遷移、Google通信を代替するクリック1回、openerなし・4表示幅・画像・元Markdown一致を確認。
 - [x] 固定実content125 NoteのChromium受入。検索リンク612件、代替クリック1回・opener不在・4表示幅・承認画像103回・想定外通信0、元bytes/ID/dataset不変を確認。
-- [ ] PR/main CIと取込。
-- [ ] 本番Pages更新・配信版/元Markdown照合。追加生成0を確認して完了とする。
+- [x] [PR #162](https://github.com/Ningensei848/kaname/pull/162)の[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38187232937)成功後、main ffb48bcbaa2543f9f66f17d69056448bd440c581へ取込み。[main CI](https://github.com/Ningensei848/kaname/actions/runs/38187397774)も成功。
+- [x] [公開専用run38187556718](https://github.com/Ningensei848/kaname/actions/runs/38187556718)の監査/export/Git/Pages・配信版/元Markdown125件の照合がすべてsuccess。Collect・課金/通知工程はskip、新規生成0。公開artifactの612検索リンクとgraph除外、配信HTMLのhash・検索リンク/別タブ属性を独立に照合。GCS notes/state/runs全728 objectの世代・CRC、index bytes、日次/月次費用も不変。
 
 公開元contentは`b6800161a0f51f07104d1927bf51ead7b7aff4f6`、dataset digestは`53c7ca546d75abfdca08e802c56f79f19d3e9f917c42fc1c7141b010d1a7f9a1`です。Web投影・成果物digestと元dataset digestを区別します。外部検索をNote間のgraph edgeへ数えず、CSPのresource通信許可も広げません。
 
 ## 操作範囲と後続
 
-ユーザーから追加Gemini API費用合計USD 1までの承認を受領しました。今回のNS1実装・ローカル受入はGemini呼出し0で進めています。請求明細待ち#116とsource復旧受入待ち#139/#140は独立して追跡し、Web検索導線の完了をこれらの復旧と混同しません。
+ユーザーから追加Gemini API費用合計USD 1までの承認を受領しました。今回のNS1実装・CI・本番受入はGemini呼出し0で完了しました。請求明細待ち#116とsource復旧受入待ち#139/#140は独立して追跡し、Web検索導線の完了をこれらの復旧と混同しません。
+
+公開artifact digestは`58c7893c664c7135df928414363856fb83fe78cdb8d9200931eb613cfe5749df`。配信markerとの完全一致を確認しました。今回の追加Gemini API費用はUSD 0、許可されたUSD 1の枠は未使用です。NS1の実装と本番受入を完了し、残る#116/#139/#140は独立した未完了Issueとして維持します。
