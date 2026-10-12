@@ -9,17 +9,18 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 着手中 | Daily TechKBの所要時間短縮 | 成功5 runの工程を分析、逐次GCS読取りが支配的。最大8件並列取得・runner内の世代別cacheを実装、実GCSの監査/費用/公開digest一致を確認 | 全CIと生成0の実Actions時間・保存/費用/公開不変を受入。[記録](daily-performance.md) |
 | 通常運用で継続 | 新source初回保留145件 | DeepMind96 / Microsoft10 / Meta9 / Apple10 / Cloudflare20。既存の日次・全source合計30件で順次処理 | 元usage・source別の失敗/保留を追跡。追加手動処理は既存USD 1承認の残額USD 0.7860526を管理。[記録](four-source-activation.md) |
+| 後続候補 | 記事取得・Quartzの追加短縮 | 日次の読取り改善は受入完了。残る収集9分03秒・Web環境準備55秒/ビルド検査89秒を実測 | source別先行取得/条件付きHTTP、Web変更・検索/リンク・切戻しを含むartifact再利用の無効化条件を比較。[記録](daily-performance.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
 ## 完了済みの作業
 
-完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#139/#140/#165をClose。#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。後続のPR #134/#171は取込済みでClosed、Open Issueは明細待ち#116のみです。
+完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#139/#140/#165をClose。#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。後続のPR #134/#171/#173は取込済みでClosed、一時的なHTTP500の通知#174も再実行/配信照合後にClose。Open Issueは明細待ち#116のみです。
 
 | 状態 | 作業 | 受入証拠 | 継続時の注意 |
 |---|---|---|---|
+| 完了（実Actions受入） | [PR #173 日次処理の短縮](https://github.com/Ningensei848/kaname/pull/173) | 同じ7社/生成0で全体39分22秒→15分30秒（60.63%短縮）、監査445→62秒/export825→13秒。Python642件・PR/main CI・本番全工程成功。index408/pending145・保存/元費用/公開126件・配信版を保持 | 追加Gemini USD 0。別run間の永続cacheは含めない。HTTP500履歴によるDeepMindのstreak1は未完了sourceの規則で保持。[受入記録](daily-performance.md) |
 | 完了（有効化・生成0本番受入） | [PR #171 追加4社の有効化](https://github.com/Ningensei848/kaname/pull/171) | 実49記事の取得/変換・Python632件/専用79件・PR/main CI成功。本番7 source成功、生成0/index408/pending145、既存881オブジェクト/元費用不変。全工程・公開126件/959検索リンク・保存bytes/配信版照合success | 追加API USD 0、承認残額USD 0.7860526。新4社の実Note生成は日次運用で順次処理。[受入記録](four-source-activation.md) |
 | 完了（限定本番受入） | [PR #134 DeepMind追加](https://github.com/Ningensei848/kaname/pull/134) | 本文の新旧2レイアウト、対象外3件filter、実100候補の無課金検査、Python620件/専用67件・PR/main CI成功。実1件保存/公開126件/959検索リンク・ゼロ生成の保存/課金880オブジェクト/費用/公開版不変を照合 | 追加API推計USD 0.0024581。初回保留96件は通常運用で別管理。他4候補の後続有効化は別管理。[受入記録](source-onboarding.md) |
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | Google Researchの新規Batch Noteでも3画像の実選択・保存/公開を受入。旧Noteへの一括適用はしない |
