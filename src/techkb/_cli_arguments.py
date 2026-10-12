@@ -1,6 +1,8 @@
 """CLI parsing and cross-command argument validation; no client construction."""
 
 import argparse
+from decimal import Decimal
+from .budget import validate_budget
 
 
 def parse_args(argv):
@@ -25,6 +27,7 @@ def parse_args(argv):
     parser.add_argument("--job-name", help="matching Gemini job resource name; batch-bind only")
     parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
     parser.add_argument("--max-calls", type=int, help="reduce run limit (0..configured limit)")
+    parser.add_argument("--max-cost-usd", type=Decimal, help="estimated standard generation cost cap for this run; stops on uncertain usage")
     return parser.parse_args(argv)
 
 
@@ -37,6 +40,10 @@ def validate_args(args, app):
         if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
             raise ValueError("--max-calls must reduce the configured limit")
         app.llm.max_calls_per_run=args.max_calls
+    if args.max_cost_usd is not None:
+        if args.command != "run":
+            raise ValueError("--max-cost-usd requires standard run")
+        validate_budget(app, args.max_cost_usd)
     if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "export-notes"}:
         raise ValueError("--state-dir requires a command supporting read-only snapshots")
     if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:

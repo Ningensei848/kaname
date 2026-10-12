@@ -4,7 +4,8 @@ from .composer import compose
 from .preparation import prepared_articles
 from .images import article_images
 from ._receipts import build_receipt
-from ._standard import StandardRequest
+from ._standard import StandardRequest, request_metadata
+from .budget import validate_budget, request_reserve, measured_cost
 from .dedupe import Dedupe
 from .feeds import parse_feed
 from .hashes import content_hash
@@ -14,13 +15,14 @@ from .reporting import RunReport, now
 from .state import State
 from .fetcher import audit_url
 from .extraction import parse_listing, relevance
-from .batch import BatchManager
+from .batch import BatchManager, failure_diagnostics
 from .usage import checkpoint, has_usage_record
 
 log = logging.getLogger(__name__)
 
 class Pipeline:
-    def __init__(self, app, sources, store, fetcher, converter, gemini=None):
+    def __init__(self, app, sources, store, fetcher, converter, gemini=None, *, max_cost_usd=None):
+        self.max_cost_usd = validate_budget(app, max_cost_usd) if max_cost_usd is not None else None
         self.app, self.sources, self.store = app, sources, store
         self.fetcher, self.converter, self.gemini = fetcher, converter, gemini
 
@@ -38,6 +40,7 @@ class Pipeline:
         price = self.app.costs.prices.get(self.app.llm.model, {}).get(self.app.llm.mode)
         report = RunReport(dry_run=dry_run, llm_model=self.app.llm.model, llm_mode=self.app.llm.mode,
                            token_price=price.model_dump() if price else None,
+                           max_cost_usd=str(self.max_cost_usd) if self.max_cost_usd is not None else None,
                            source_ids=[s.id for s in self.sources if s.enabled])
         state, candidates, done = None, None, set()
         batch, prepared, active = None, [], set()
@@ -89,6 +92,8 @@ class Pipeline:
             with prepared_articles(self, candidates, dedupe.raw) as articles:
                 for candidate, source, article in articles:
                     stage = "fetch"
+                    images = ()
+                    response = None
                     log.info("article source=%s url=%s", source.id, audit_url(candidate.url))
                     try:
                         fetched = article.fetched
@@ -143,6 +148,16 @@ class Pipeline:
                             prepared.append(batch.prepare(candidate, source, markdown, canon, rh, ch, authors, images))
                             attempted_content.add(ch)
                             continue
+                        if self.max_cost_usd is not None:
+                            if report.llm_usage_unavailable:
+                                report.budget_stop_reason = "usage_uncertain"
+                                break
+                            metadata = request_metadata(candidate, source, truncated, authors, images)
+                            reserve = request_reserve(self.gemini, metadata, markdown, price)
+                            if measured_cost(report, price) + reserve > self.max_cost_usd:
+                                report.budget_deferred += 1
+                                report.budget_stop_reason = "estimated_cost_limit"
+                                continue
                         stage = "llm"
                         report.llm_calls += 1
                         attempted_content.add(ch)
@@ -152,6 +167,7 @@ class Pipeline:
                         finally:
                             # Keep the original exception type and storage-failure stage.
                             stage = request.stage
+                            response = getattr(self.gemini, "last_response", None)
                         log.info("LLM success")
                         stage = "compose"
                         fetched_at = now()
@@ -165,11 +181,22 @@ class Pipeline:
                         stage = "note_or_index_save"
                         self._save_receipt(receipt, state, dedupe, report)
                         done.add(candidate.url)
+                        if self.max_cost_usd is not None and report.llm_usage_unavailable:
+                            report.budget_stop_reason = "usage_uncertain"
+                            break
+                        if self.max_cost_usd is not None and measured_cost(report, price) > self.max_cost_usd:
+                            report.budget_stop_reason = "measured_cost_limit"
+                            break
                     except Exception as exc:
-                        report.fail(stage, source.id, candidate.url, exc)
+                        diagnostics = failure_diagnostics(exc, stage, response,
+                            image_candidates=images if stage == "compose" else None) if stage in {"llm", "compose"} else None
+                        report.fail_recorded(stage, source.id, candidate.url, type(exc).__name__, diagnostics)
                         if stage == "llm":
                             report.llm_failed += 1
                         log.error("%s failed source=%s error=%s", stage, source.id, type(exc).__name__)
+                        if self.max_cost_usd is not None and stage in {"llm", "compose"}:
+                            report.budget_stop_reason = "generation_failed"
+                            break
                         if stage in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"}:
                             break  # Stop paid work if durability is unavailable.
             if prepared and not dry_run and not any(f["stage"] in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"} for f in report.failures):

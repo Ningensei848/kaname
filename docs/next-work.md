@@ -10,7 +10,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
-| 復旧受入待ち | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 10月12日再確認でgoogle-research failing・連続失敗6・pending71。#139/#140はOpen維持、限定Batch成功をsource全体の復旧と混同しない |
+| 作業中（standard診断・費用制御） | [#139 Google Research連続失敗](https://github.com/Ningensei848/kaname/issues/139) / [#140 日次収集失敗](https://github.com/Ningensei848/kaname/issues/140) | 10月11日の日次runは30生成・29保存後のcompose失敗。Source Healthは失敗/pendingを正しく表示 | 10月12日再確認でgoogle-research failing・連続失敗6・pending71。追加Gemini USD 1の承認枠内で実受入へ進む。診断・停止制御は実装中、実復旧後にClose。[復旧記録](source-recovery.md) |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
 ## 完了済みの作業

@@ -21,6 +21,9 @@ class RunReport:
     llm_model: str = ""
     llm_mode: str = "standard"
     token_price: dict | None = None
+    max_cost_usd: str | None = None
+    budget_deferred: int = 0
+    budget_stop_reason: str | None = None
     source_ids: list[str] = field(default_factory=list)
     source_completed_ids: list[str] = field(default_factory=list)
     discovered: int = 0
