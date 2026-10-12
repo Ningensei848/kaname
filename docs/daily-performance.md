@@ -63,3 +63,5 @@ Actionsのqueueと通信条件も全体時間に含まれます。改善前5 run
 収集9分03秒が残り時間の中心です。記事取得は最大2件の先行処理でも、candidateのsource別の並びとhost間隔/transport lockにより同じhostを直列化します。以前のrunではredirectも含むHTTP応答351回を観測しました。並列数を増やすだけで同じhostの間隔は短縮しません。
 
 Web環境準備55秒、Quartzビルド/検査89秒、deploy/配信確認を含むjob約32秒。Python全テスト35秒も維持します。次の候補はsource別の先行取得、HTTP条件付き再取得、Webコード/config/lock・Note以外のリンク/タグ/検索index・切戻しも含む無効化条件を定めたartifact再利用です。取得順/freshness/課金対象/公開provenanceを変える案は、今回の受入と分けて評価します。
+
+後続の[新規記事限定](incremental-collection.md)で日次の収集済み本文再GETも解消しました。2026-10-12の実受入は収集543→32秒、全体930→351秒（生成0）、index408/public126/pending148。上記はGCS読取り改善時点の比較記録です。

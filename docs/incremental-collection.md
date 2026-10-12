@@ -2,7 +2,7 @@
 
 2026-10-12 JST、成功済み記事の本文を日次で再GETする処理を止め、未知/未完了記事だけをNote化します。公開済みNoteはGCS/Gitから利用します。収集と配布の差分は別の責務です。
 
-## 収集の変更 — 実装完了・本番受入待ち
+## 収集の変更 — 本番受入完了
 
 従来はRSS全件の本文をGETした後でraw/content hashを比較していました。直近は7 source・259候補で約9分。保存Noteを読み直す時間ではなく、元サイトへのHTTP・robots・redirect・間隔制御が中心です。初回の未Note化保留145件も残っており、すべてが既存記事の再取得という意味ではありません。
 
@@ -44,9 +44,13 @@ GCSの「正本」は生成Noteと運用記録です。原記事HTML/原文を�
 
 ## 検証・受入
 
-- [x] 全Python657件・新規記事限定17件が成功（追加Batch2件を含む）。
-- [ ] PR/main Python/Web CI。
-- [ ] 生成0の日次runでRSS受付・既知URL skip・本文HTTP0・保留保持を確認。
-- [ ] 既存Note/receipt/index/usage/Batch・元費用・公開bytes/配信版を保持。
+- [x] 全Python659件・新規記事限定17件が成功（Batch2件を含む）。
+- [x] [PR #176](https://github.com/Ningensei848/kaname/pull/176)をmain `77463ccdd7538bc63460a4d22a75cb1c005b5a39`へ取込み。[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38235284776)/[main CI](https://github.com/Ningensei848/kaname/actions/runs/38235716620)のPython/Webが成功。
+- [x] [生成0の日次run](https://github.com/Ningensei848/kaname/actions/runs/38236132360)の収集は32秒（前回543秒）。RSS259候補・既知111件skip・本文HTTP/生成/保存0、index408・元pending145件の全項目を保持。本文判定を行わなかった3件を追加してpending148（DeepMind99/Cloudflare20/Meta9/Apple10/Microsoft10）。未分類3件を新たな保存成功や対象確定と扱わない。
+- [x] 既存884オブジェクト（pendingを除く）の世代/CRC、Note/receipt/index/usage/Batchの集合・元費用を保持。公開版の最終照合も成功。
+- [x] 全工程success。公開126件/959検索リンク・最新Note/receipt/index/snapshot bytes一致、content/dataset/artifactと実配信manifest・HTML hash不変。追加Gemini USD 0。
+- [x] 同じ7 source・生成0の日次全体は930秒→351秒（15分30秒→5分51秒、62.26%短縮）。記事収集543秒→32秒、HTTPはRSS/robotsの14応答、本文HTTP0。生成30件の通常run時間の保証には使わない。
 
 未Note化候補の本番生成やRelease assetsへの切替えを完了扱いにしません。
+
+工程と検証計数は[実測JSON](archive/2026-10/new-only-acceptance-2026-10-12.json)へ保存。現行の初回保留は148件で、未分類3件を含みます。Release assetsへの配布切替えと、別run間の差分GCS監査/export・差分HTMLビルドは未実装の設計候補です。

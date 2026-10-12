@@ -66,3 +66,5 @@ DB/Vector DB/複数LLMへの移行は、今回の配布・Webの前提ではあ�
 [NS1の完了状態](next-work.md#ns1-google-search-fallback)と受入記録に集約しています。実装・全Python543件/PR/main CI・架空3件/実125件のChromium・本番Pages配信照合まで完了です。[NS1記録](ns1-search-fallback.md)で追跡します。
 
 日次のGCS読取り短縮も実Actions受入済みです。最大8件並列とrunner内世代cacheで、生成0の同条件runが39分22秒→15分30秒。全件検査・保存/費用/配信不変を確認し、[性能記録](daily-performance.md)へ集約しました。
+
+新規記事だけの収集も659件/PR/main CI・生成0本番受入済みです。既知111件を本文GET前に除外し、生成上限で本文取得も止め、全体15分30秒→5分51秒。配布assetの差分/完全版の復元契約は[設計記録](incremental-collection.md)で未採用案として区別します。
