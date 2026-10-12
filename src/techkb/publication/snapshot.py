@@ -10,6 +10,7 @@ from .common import (ExportError, PUBLIC_README, sha256, json_bytes,
 from .note import note_frontmatter, validate_note, instant
 from ..normalize import normalize_url
 from ..state import INDEX_COLUMNS, decode_tsv
+from ..read_snapshot import SnapshotChangedError
 
 
 class ExportDirectorySnapshot:
@@ -65,6 +66,13 @@ class CheckedReads:
                 raise ExportError("snapshot_changed")
         if index_catalog(self.store) != index_names:
             raise ExportError("snapshot_changed")
+        # Optimized remote views recheck live generations/catalogs before
+        # installing public output; their cached read() is immutable locally.
+        if hasattr(self.store, 'verify'):
+            try:
+                self.store.verify()
+            except SnapshotChangedError:
+                raise ExportError('snapshot_changed') from None
 
 
 def index_catalog(store):

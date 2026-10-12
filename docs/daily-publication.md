@@ -66,3 +66,7 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 - 通常scheduleの初回連続実行は2026-10-07に受入済み。収集・usage保存・audit・export・Git配布・Pages・全元Markdown配信照合の証拠は[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)に保存。実Batch/F3 browserの受入と実障害Issue投稿の故意の試験は未実施。
 - 初回Pagesの117件公開は[従来の受入](verification.md)で確認済み。今回の実行結果とは区別します。
 - O2の切戻し117件/復帰118件は個別承認後、2026-10-07に両版の実deployと全元Markdown配信照合まで受入済み。現行118件版への復帰も確認した。実行runと期待digestの一致は[月別受入記録](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)に保存。
+
+## GCS読取りの並列化と再利用
+
+監査/export/費用/通知はliveの世代catalogに基づく読取り専用viewを使い、本文downloadを最大8件並列化します。同じrunnerのprivateな一時cacheで変更のないbytesを再利用し、毎回の検査とlive catalogの再確認は維持します。書込み・Gemini生成は単一writerです。cacheを削除してもcold取得に戻るだけで、GCS正本や公開版は変わりません。性能の実測と受入状態は[所要時間短縮](daily-performance.md)に記録します。

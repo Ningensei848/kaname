@@ -39,6 +39,13 @@ class GCSStore:
                                 if_generation_match=self.generations[name])
         self.generations[name] = int(blob.generation)
 
+    def read_snapshot(self, prefixes, *, cache_dir=None):
+        from .read_snapshot import read_snapshot
+        return read_snapshot(self, prefixes, cache_dir=cache_dir)
+
+    def close(self):
+        self.client.close()
+
 class DirectorySnapshot:
     """Read-only local state for dry-run. Never used for production writes."""
     def __init__(self, root):

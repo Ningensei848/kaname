@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from pathlib import Path
+from contextlib import nullcontext
 from .config import load_config
 from .converter import Converter
 from .fetcher import Fetcher
@@ -31,6 +32,7 @@ class _Dependencies:
         self.args = args
         self.app = None
         self.fetcher = self.gemini = None
+        self.stores = []
 
     def store(self, *, public=False):
         if self.args.state_dir:
@@ -40,7 +42,15 @@ class _Dependencies:
             if self.args.command != "dry-run" and not Path(self.args.state_dir).is_dir():
                 raise ValueError("snapshot directory does not exist")
             return DirectorySnapshot(self.args.state_dir)
-        return GCSStore(self.app.storage.bucket)
+        store = GCSStore(self.app.storage.bucket)
+        self.stores.append(store)
+        return store
+
+    def read_store(self, prefixes, *, public=False):
+        store = self.store(public=public)
+        if hasattr(store, 'read_snapshot'):
+            return store.read_snapshot(prefixes, cache_dir=os.environ.get('TECHKB_READ_CACHE'))
+        return nullcontext(store)
 
     def http(self):
         self.fetcher = Fetcher(self.app.http)
@@ -62,6 +72,9 @@ class _Dependencies:
         finally:
             if self.gemini:
                 self.gemini.close()
+            for store in self.stores:
+                if hasattr(store, 'close'):
+                    store.close()
 
 
 def _json_result(result, *, ensure_ascii=False, status_exit=False):
@@ -92,8 +105,8 @@ def main(argv=None):
         if args.command == "export-notes":
             if not args.output:
                 raise ValueError("export-notes requires --output")
-            store = dependencies.store(public=True)
-            result = export_notes(store, args.output, app.tracking_parameters, app.categories, args.exclude_note_id)
+            with dependencies.read_store(('state/index/', 'notes/', 'state/receipts/'), public=True) as store:
+                result = export_notes(store, args.output, app.tracking_parameters, app.categories, args.exclude_note_id)
             return _json_result(result)
         if args.command == "batch-inspect":
             if not args.batch_id:
@@ -114,15 +127,17 @@ def main(argv=None):
         if args.command == 'source-health':
             return _json_result(source_health(dependencies.store(), sources))
         if args.command in {"cost-report", "notify", "raw-lifecycle"}:
-            store = dependencies.store()
-            if args.command == "cost-report":
-                result = cost_report(store, app, args.as_of)
-            elif args.command == "raw-lifecycle":
-                result = configure_lifecycle(store, sources, apply=args.apply)
+            if args.command == "raw-lifecycle":
+                result = configure_lifecycle(dependencies.store(), sources, apply=args.apply)
             else:
-                events = notification_plan(store, app, [s.id for s in sources if s.enabled])
-                result = (publish_issues(events, app.notifications.github_repository, os.environ.get("GITHUB_TOKEN", ""))
-                          if args.apply else dict(status="success", events=events, applied=False))
+                with dependencies.read_store(('runs/', 'state/standard-usage/', 'state/batches/')) as store:
+                    if args.command == "cost-report":
+                        result = cost_report(store, app, args.as_of)
+                    else:
+                        events = notification_plan(store, app, [s.id for s in sources if s.enabled])
+                if args.command == 'notify':
+                    result = (publish_issues(events, app.notifications.github_repository, os.environ.get("GITHUB_TOKEN", ""))
+                              if args.apply else dict(status="success", events=events, applied=False))
             return _json_result(result)
         if args.command == "sync":
             if not args.vault:
@@ -131,9 +146,12 @@ def main(argv=None):
             result = sync_vault(store, args.vault, dry_run=args.dry_run)
             return _json_result(result, ensure_ascii=True, status_exit=True)
         if args.command in {"audit-state", "audit-run"}:
-            store = dependencies.store()
-            result = (audit_state(store) if args.command == "audit-state" else
-                      audit_run(store, args.run_id, app.llm.max_calls_per_run, args.expected_success_before))
+            prefixes = ('state/index/', 'state/pending.tsv', 'notes/', 'state/receipts/')
+            if args.command == 'audit-run':
+                prefixes += ('runs/',)
+            with dependencies.read_store(prefixes) as store:
+                result = (audit_state(store) if args.command == "audit-state" else
+                          audit_run(store, args.run_id, app.llm.max_calls_per_run, args.expected_success_before))
             return _json_result(result, status_exit=True)
         if args.command == "refresh-metadata":
             store = dependencies.store()
