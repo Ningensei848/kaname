@@ -5,7 +5,8 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 
-from ..composer import concept, inline, code_span, image_block, place_images
+from ..composer import inline, code_span, image_block, place_images
+from ..markup import valid_saved_concept
 from ..normalize import normalize_url
 from .common import ExportError
 from ..images import image_url
@@ -122,7 +123,7 @@ def validate_note(data, row, tracking, categories):
             raise ExportError("invalid_frontmatter")
         authors = []
         for author in meta["author"]:
-            if not author.startswith("[[") or not author.endswith("]]") or concept(author[2:-2]) != author[2:-2]:
+            if not author.startswith("[[") or not author.endswith("]]") or not valid_saved_concept(author[2:-2]):
                 raise ExportError("invalid_frontmatter")
             authors.append(author[2:-2])
         if (any(meta[k] != row[k] for k in ("raw_html_sha256", "content_sha256")) or
@@ -207,7 +208,7 @@ def validate_note(data, row, tracking, categories):
         if not sep or not 1 <= len(concepts.splitlines()) <= 6:
             raise ExportError("invalid_compact_body")
         for line in concepts.splitlines():
-            if not line.startswith("- [[") or not line.endswith("]]") or not line[4:-2] or concept(line[4:-2]) != line[4:-2]:
+            if not line.startswith("- [[") or not line.endswith("]]") or not line[4:-2] or not valid_saved_concept(line[4:-2]):
                 raise ExportError("invalid_compact_body")
         positioning, sep, provenance = rest.partition("\n\n---\n\n## 出典情報\n\n")
         if not sep or len(map_wikilinks(positioning, lambda term: term)) > 2400:

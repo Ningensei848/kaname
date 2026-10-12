@@ -402,3 +402,8 @@ python -m techkb graph-quality --public-snapshot /path/to/public-content --detai
 
 SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGoogle検索を別タブで開くリンクへ投影します。APIキー・追加Gemini呼出し・CSPの外部resource許可は不要です。公開元Noteのbytes・ID・dataset digestは変えず、Web成果物は新しい投影で再ビルドします。本文への自動WikiLinkは新規Noteだけに適用し、旧Noteの一括再生成を行いません。
 別名表示・見出し・コード等の扱いと受入状態は[NS1記録](ns1-search-fallback.md)を参照してください。見出し欠落はリンク監査で検出します。`check:preview`/`check:pages`は検索リンクのhref・別タブ・opener不在・graph除外を検査し、Googleの遷移レスポンスをテスト内で代替して実検索を送りません。
+
+
+## 保存済み検索語ラベルの互換
+
+新規Noteの検索語/著者ラベルは、記号を空白へ置換した後に空白を整理し、160文字制限の切断後にも末尾を整理します。公開検証では、旧formatterが残した連続ASCIIスペースや160文字の切断位置の空白/ピリオドを含む保存済みラベルも限定して認めます。元Note/receipt/IDを変更せず、本文への任意WikiLink、構文区切り、非ASCII空白、長さ超過は拒否します。既存Noteを新しいラベルへ一括書換えたり、検証拒否だけを理由に要約を再生成したりしません。

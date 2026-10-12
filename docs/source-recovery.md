@@ -9,8 +9,10 @@
 - [x] 既存履歴・実GCS Source Healthとpending・未決済/不明usageの基準を読取り確認。
 - [x] standardの安全な画像型/候補/配置診断と、任意runの費用推計上限を実装。
 - [x] Python全561件・actionlint・[PR #164](https://github.com/Ningensei848/kaname/pull/164)のPython/Web CI成功。mainへ取込済み。
-- [ ] USD 1枠の残額を各runへ渡して通常standardの実生成・保存・監査/費用/Git/Pagesを受入。
-- [ ] 保留解消、source_completed・連続失敗0・healthyを確認し、追加生成0の再実行を受入。
+- [x] USD 1枠内で通常standardの生成/保存を受入。累計72呼出し・71保存、欠損/再試行0、index407。
+- [ ] 全41件を含む監査/費用/Git/Pagesの本番公開を受入。
+- [x] 実GCSで保留0、両source_completed・連続失敗0・healthyを確認。
+- [ ] 追加生成0の再実行で保存・課金の不変を受入。
 - [ ] #139/#140と解消した通知を証拠に基づいてClose。
 
 制御の対象・見積りと停止条件は[運用手順](operations.md#費用を限定したstandard収集)に記録しています。生成拒否・曖昧な提出/usage・保存障害を確認した場合は追加生成を止め、原因を修正します。画像を削除/型変換して適合扱いにはしません。
@@ -32,3 +34,13 @@
 PR #166のPython/Web・[main CI 38193231300](https://github.com/Ningensei848/kaname/actions/runs/38193231300)成功後、[全保留run 38193431223](https://github.com/Ningensei848/kaname/actions/runs/38193431223)をstandard/max_calls=100/max_cost_usd=0.9039089で開始しました。先行の限定run 38192090307はcollection/audit/cost/Git/Pagesすべてsuccessで完了しました。
 
 `audit-run`も費用上限を元単価・確定usageで検証し、通常件数を越える正当なstandard実行を認識する調整を実施します。不明usage・再試行・単価欠損・費用超過・不正な上限は拒否し、上限未指定の既存件数判定を維持します。
+
+## 全保留の保存・Source Health復旧と公開互換の補修
+
+全保留runは41呼出し/41HTTP試行・41保存・不明usage0、input147994/output28400/thinking0で成功しました。両source_completed、Google成功372/GitHub35、index407/pending0・連続失敗0・healthyを実GCSで確認済みです。このrunの費用推計USD 0.1153982、開始後累計は定期分を含めUSD 0.2114893（72呼出し）、残額USD 0.7885107です。
+
+追加のローカル実Note公開検証で、旧`concept()`が記号除去後の連続ASCIIスペースを残すために、保存済み407件中1件/検索語1つを再検証で拒否すると判明しました。全41件の生成/保存/usageは確定済みで、通常の状態監査も通過しています。旧コードによる不要な残工程を止めるためrun 38193431223はCost/notification工程で取消しました。GCSの保存・課金記録は削除せず、Geminiの再生成なしで公開検証の互換を直します。
+
+新規ラベルは記号除去後の空白を整理し、160文字で切った末尾の空白/ピリオドも除き、再適用で変わらない形にします。旧保存ラベルは旧formatterが出力し得た形式だけを受け入れ、キーワード/著者のbytesを保持します。構文区切り、非ASCII空白、長さ超過、本文への未審査WikiLinkは拒否します。
+
+Python全609件・関連143件が成功。実41Noteはすべて公開適合（59画像）、元単価/確定usageによるaudit-runも全407行/pending0/issues0で成功しました。元Note/receiptを保持した固定実125件のローカルGit版はexport/build/Chromiumに適合し、検索リンク936件・画像要求243回・外部resource通信0を確認しました。このlocal commitは検証用で、リモート公開とは区別します。修正のPR/main CI後に、max_calls=0のrunで保存済み結果を本番公開・ゼロ生成再実行します。
