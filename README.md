@@ -38,7 +38,7 @@ Windowsでは対応するvenvのPowerShell activateを使います。
 | 設定 | 役割 |
 |---|---|
 | `config/app.yaml` | モデル、呼出し/入力/出力上限、カテゴリ、保存・費用・通知 |
-| `config/sources.yaml` | 情報源と取得方式。Google Research/GitHub Blog有効、AWS News無効 |
+| `config/sources.yaml` | 情報源と取得方式。Google Research/GitHub Blog/DeepMind有効、AWS Newsと他4候補は無効。DeepMindの限定受入と初回保留は[記録](docs/source-onboarding.md)で管理 |
 | `prompts/enrich.txt` | 本文を命令として扱わない要約・分類指示 |
 | `GCS_BUCKET` | 非公開GCS保存先。ローカルADCまたはActions WIFで認証 |
 | `GEMINI_API_KEY` | Gemini認証。環境変数またはGitHub Secretで渡す |

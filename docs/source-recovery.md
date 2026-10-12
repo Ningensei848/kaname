@@ -2,7 +2,7 @@
 
 2026-10-12 JST、[#139](https://github.com/Ningensei848/kaname/issues/139)・[#140](https://github.com/Ningensei848/kaname/issues/140)・[#165](https://github.com/Ningensei848/kaname/issues/165)を実受入の証拠でCloseしました。開始時の保留71件を保存し、成功index407（Google Research372/GitHub35）・pending0・連続失敗0・両source healthyです。通常のstandard設定30件、fetch/convertの2 workerを維持しています。
 
-追加Gemini API費用推計は、遅れて開始した定期分も含めUSD 0.2114893（72呼出し・71保存）、承認USD 1の残額はUSD 0.7885107です。確定請求・GCS/Actions費用とは区別します。確定請求の照合[#116](https://github.com/Ningensei848/kaname/issues/116)は明細待ちでOpenです。
+追加Gemini API費用推計は、遅れて開始した定期分も含めUSD 0.2114893（72呼出し・71保存）、復旧完了時点の承認USD 1の残額はUSD 0.7885107です。その後のDeepMind先行追加による消費・現在の残額は[追加受入記録](source-onboarding.md)で管理します。確定請求・GCS/Actions費用とは区別します。確定請求の照合[#116](https://github.com/Ningensei848/kaname/issues/116)は明細待ちでOpenです。
 
 ## 完了した受入
 
@@ -42,4 +42,4 @@ PR #168の[PR CI](https://github.com/Ningensei848/kaname/actions/runs/3819523255
 - dataset digest: `d12a18435e240adba90dd0750135e6a8894d325a9572302838043cd44ea781c0`
 - artifact digest: `b93e7c65744b74f7ddad79302a06db827871441a5e3c1a0dbc15f57205e4d273`
 
-[本番配信](https://ningensei848.github.io/kaname/)は上記manifestと一致します。ローカル検証用commitは本番commitと区別し、受入は実配信で確認しています。
+通常復旧の受入時、[本番配信](https://ningensei848.github.io/kaname/)は上記manifestと一致しました。その後の最新公開版は[DeepMind追加記録](source-onboarding.md)で確認できます。ローカル検証用commitは本番commitと区別し、受入は実配信で確認しています。

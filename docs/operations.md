@@ -381,7 +381,7 @@ raw/<source-id>/YYYY/MM/<raw-sha256>.html  # opt-in
 host間隔・robots・retryも維持するため、並列数を増やしても同じhostへの要求頻度は増えません。
 
 本文抽出/画像候補/変換依存を変えた場合は`python scripts/regression_corpus.py`で
-有効2 sourceの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
+有効3 source（Google Research/GitHub Blog/DeepMind）の4レイアウトの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
 fixtureは原文のコピーや実サイトへの定期アクセスではありません。
 GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
 

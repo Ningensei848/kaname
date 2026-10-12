@@ -5,7 +5,7 @@ LLMが生成したcompact Note群を公開する方針はユーザーが指定�
 
 ## 取得と要約
 
-有効sourceはGoogle Research/GitHub Blogと、ユーザー選択で先行受入するGoogle DeepMindです。
+有効sourceはGoogle Research/GitHub Blogと、ユーザー選択で限定本番受入を完了したGoogle DeepMindです。
 DeepMindの本文抽出と限定受入の状態は[RSS追加記録](source-onboarding.md)で管理します。Microsoft Research/Meta/Apple/Cloudflareは無効の候補です。
 AWS Newsは利用条件に関する未解決の制約から無効を継続します。
 source追加時は適用される条件と機械可読の指示を確認し、robots拒否・取得不能時は停止します。
