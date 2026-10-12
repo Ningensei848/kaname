@@ -173,6 +173,11 @@ jobs:
         run: |
           python -m techkb validate-config
           python -m pytest -q
+      - name: Configure private read cache
+        run: |
+          # Private GCS bytes stay on this runner, never Actions cache/artifacts.
+          # Each command lists live generations; only unchanged bytes are reused.
+          echo "TECHKB_READ_CACHE=$RUNNER_TEMP/techkb-read-cache" >> "$GITHUB_ENV"
       - name: Validate execution mode
         env:
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
