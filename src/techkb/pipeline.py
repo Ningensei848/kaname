@@ -17,6 +17,7 @@ from .fetcher import audit_url
 from .extraction import parse_listing, relevance
 from .batch import BatchManager, failure_diagnostics
 from .usage import checkpoint, has_usage_record
+from .discovery import KnownArticles
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +42,8 @@ class Pipeline:
         report = RunReport(dry_run=dry_run, llm_model=self.app.llm.model, llm_mode=self.app.llm.mode,
                            token_price=price.model_dump() if price else None,
                            max_cost_usd=str(self.max_cost_usd) if self.max_cost_usd is not None else None,
-                           source_ids=[s.id for s in self.sources if s.enabled])
+                           source_ids=[s.id for s in self.sources if s.enabled],
+                           article_policy=self.app.processing.article_policy)
         state, candidates, done = None, None, set()
         batch, prepared, active = None, [], set()
         feeds_complete = {}
@@ -88,8 +90,23 @@ class Pipeline:
             # Durably retain discovery before any paid work or a runner interruption.
             if not dry_run:
                 state.save_pending(candidates)
+            to_fetch = candidates
+            new_only = self.app.processing.article_policy == 'new_only'
+            if new_only:
+                known = KnownArticles(state.rows, self.app.tracking_parameters)
+                enabled = {s.id for s in self.sources if s.enabled}
+                to_fetch = []
+                for candidate in candidates:
+                    if candidate.source_id in enabled and known.contains(candidate):
+                        done.add(candidate.url)
+                        report.known_articles_skipped += 1
+                    else:
+                        to_fetch.append(candidate)
+            def can_fetch():
+                return (dry_run or not new_only or
+                        report.llm_calls + len(prepared) < self.app.llm.max_calls_per_run)
             attempted_content = set()
-            with prepared_articles(self, candidates, dedupe.raw) as articles:
+            with prepared_articles(self, to_fetch, dedupe.raw, can_continue=can_fetch) as articles:
                 for candidate, source, article in articles:
                     stage = "fetch"
                     images = ()

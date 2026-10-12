@@ -407,3 +407,7 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 ## 保存済み検索語ラベルの互換
 
 新規Noteの検索語/著者ラベルは、記号を空白へ置換した後に空白を整理し、160文字制限の切断後にも末尾を整理します。公開検証では、旧formatterが残した連続ASCIIスペースや160文字の切断位置の空白/ピリオドを含む保存済みラベルも限定して認めます。元Note/receipt/IDを変更せず、本文への任意WikiLink、構文区切り、非ASCII空白、長さ超過は拒否します。既存Noteを新しいラベルへ一括書換えたり、検証拒否だけを理由に要約を再生成したりしません。
+
+## 新規記事限定と既知記事の再検査
+
+日次は`processing.article_policy: new_only`で成功済みURLへの本文HTTPを省き、生成枠を使い切った後の本文取得も停止します。失敗/未完了はpendingに残し、保存済みNoteをGCS/Gitから公開します。同じURLの変更は日次で自動検知せず、`python -m techkb dry-run --recheck-known`で無生成/無保存の検査、`python -m techkb run --recheck-known`で通常の件数/費用制限内の更新を行います。詳細と差分配布の設計は[記録](incremental-collection.md)を参照してください。

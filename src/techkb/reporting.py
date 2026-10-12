@@ -26,6 +26,8 @@ class RunReport:
     budget_stop_reason: str | None = None
     source_ids: list[str] = field(default_factory=list)
     source_completed_ids: list[str] = field(default_factory=list)
+    article_policy: str = 'recheck'
+    known_articles_skipped: int = 0
     discovered: int = 0
     pending_before: int = 0
     fetched: int = 0

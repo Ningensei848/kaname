@@ -7,6 +7,9 @@ http:
 processing:
   # Only article fetch/convert runs concurrently; paid work and state have one writer.
   workers: 2
+  # Skip successful URLs before HTTP; stop fetching after the daily generation limit.
+  # Same-URL edits are inspected deliberately with --recheck-known.
+  article_policy: new_only
 llm:
   model: gemini-3.5-flash-lite
   thinking_level: minimal

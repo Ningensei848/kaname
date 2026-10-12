@@ -15,6 +15,9 @@ class HTTPConfig(StrictModel):
 
 class ProcessingConfig(StrictModel):
     workers: int = Field(default=1, ge=1, le=8)
+    # Older configurations retain body-based update detection. Daily opts into
+    # new_only explicitly; recheck is also available as a CLI override.
+    article_policy: Literal['new_only', 'recheck'] = 'recheck'
 
 class LLMConfig(StrictModel):
     mode: Literal["standard", "batch"] = "standard"
