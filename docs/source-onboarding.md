@@ -1,10 +1,10 @@
-# RSS追加 — DeepMindの限定受入
+# RSS追加 — DeepMindの限定受入完了
 
-2026-10-12 JST、ユーザーの選択により、既存[PR #134](https://github.com/Ningensei848/kaname/pull/134)の5候補からDeepMindを先に進めます。他4社は無効の候補として保持します。元PRの古いCI成功だけを本番受入とは扱いません。
+2026-10-12 JST、ユーザーの選択により、既存[PR #134](https://github.com/Ningensei848/kaname/pull/134)の5候補からDeepMindを先行追加し、実1件の保存/公開・追加生成0の本番受入まで完了しました。他4社は無効の候補として保持します。元PRの古いCI成功だけを本番受入とは扱いません。
 
-## 取得と条件の確認 — 完了
+## 取得と利用条件の初期確認 — 完了
 
-既存のrobots検査付きFetcherで5フィードと各1記事を取得できました。robotsは各HTTP 200で、現行User-Agentのフィード取得を許可しています。Gemini/GCS/公開の更新は行っていません。
+既存のrobots検査付きFetcherで5フィードと各1記事を取得できました。robotsは各HTTP 200で、現行User-Agentのフィード取得を許可しています。この読取り検査ではGemini/GCS/公開の更新は行っていません。
 
 | 候補 | RSS件数 | 状態と根拠 |
 |---|---:|---|
@@ -26,16 +26,29 @@ source固有のセレクタで、旧`template-blog-page`の本文rich-textを含
 
 実取得済み3記事の本文は9,246 / 1,745 / 7,376文字、画像候補4 / 0 / 3件です。すべて入力上限20,000文字以内で、関連記事カードを除外できました。新旧の合成corpusと、本文末尾/図の保持・ナビゲーション変更で再生成0・本文不一致で生成0の回帰を追加しました。原記事本文や画像bytesはrepositoryへ追加しません。
 
-初回100候補の無課金検査では97件の本文を抽出でき、3件はCloud Blog/Antigravityへ移る別レイアウトでした。今回の先行対象から最終hostで除外します。ブラウザ取得や別サイトの本文抽出を自動で拡大しません。
+初回100候補の無課金検査では97件の本文を抽出でき、3件はCloud Blog/Antigravityへ移る別レイアウトでした。最終host filter追加後の全100件再検査はsuccess（would_enrich97/filter3・失敗0・LLM0・GCS書込み0）です。今回の先行対象から最終hostで除外します。ブラウザ取得や別サイトの本文抽出を自動で拡大しません。
 
-## 本番受入 — 未完了
+## 本番受入 — 限定1件の保存/公開・ゼロ生成再実行まで完了
 
-- [ ] 更新後PR CIとmain CIを確認。
-- [ ] 実GCSのindex/pending/usageと他writer不在を読取り確認。
-- [ ] 最大1 standard呼出しの限定runで実Noteの保存・監査・費用・Git/Pagesを確認。USD 1の既存承認残額USD 0.7885107を超える追加生成をしない。
-- [ ] 生成されたNote/receipt/indexと公開snapshot/配信を照合。拒否・不明usage・曖昧な提出では追加生成を停止して診断。
-- [ ] 追加生成0の再実行で保存/課金の不変を確認し、本番受入を完了として記録。
+- [x] 更新後[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38210171406)と[main CI](https://github.com/Ningensei848/kaname/actions/runs/38210490547)が成功。全Python620件、source専用67件・本文/並列回帰、Webを確認。PR #134は`cd678b7d5a706e3937a1c54c30aabd2054183404`で取込済み。
+- [x] 実GCSのindex407/pending0・未決済Batch/不明usage0と他writer不在を読取り確認。開始時877オブジェクトの世代/CRCを固定し、本番提出直前にも不変を照合。
+- [x] [限定run](https://github.com/Ningensei848/kaname/actions/runs/38210790344)を最大1 standard呼出し・推計上限USD 0.10で開始。実Note/receipt 1件・index408/pending96・対象外filter3件・元usage確定（input3002/output623/thinking0・HTTP試行1・不明usage0）を確認。
+- [x] 限定runの収集・監査・費用・export/Git/Pagesがすべてsuccess。新しい障害Issueなし。
+- [x] 新規Noteが厳格な公開検証に適合。Note/receiptの本文bytesと、数値をTSV表現へ正規化したindex行が一致。入力打切りfalse。
+- [x] 公開126件/検索リンク959件。全最新版のGCS Note/receipt/indexとsnapshot bytesが一致し、新規1件の配信HTML hashとartifact、site-manifestの実配信が一致。
+- [x] [追加生成0の再実行](https://github.com/Ningensei848/kaname/actions/runs/38213251145)の収集はsuccess、新規呼出し/保存0・index408/pending96。既存880オブジェクト（保存/課金/既存run等）の世代/CRC、pending bytes、日次/月次費用不変、新規の課金/Noteオブジェクトなしを実GCSで照合。pendingの保存世代は更新されますが、内容は同一です。
+- [x] ゼロ生成runの監査・費用・export/Git/Pagesすべてsuccess。公開commit/dataset/artifactとsite-manifest・新規Noteの配信HTMLが限定runの公開版と完全一致。限定受入を完了。
 
-初回RSSには100件の過去記事が含まれます（先行対象97件・対象外3件）。限定1件の成功と全対象記事の受入を区別し、追加生成0のrunに残り記事を生成させません。通常の1日1回schedule・全source合計30件・本文20,000文字・standard・workers 2は維持します。
+限定runとゼロ生成再実行後、既存2 sourceはhealthy/pending0/連続失敗0を維持しています。DeepMindは保存1/pending96/連続失敗0、全候補の完了前なのでSource Healthはunverifiedです。限定受入の成功を全sourceのhealthyや初回backlog解消と同一視しません。
 
-以前の月500〜550円は2 sourceの実行履歴に基づく推定です。新sourceの初回backlogや実呼出し数の増加後にも同額になる保証とは扱いません。新runの元usage/単価を残し、既存承認の累計へ追加します。請求明細との確定照合[#116](https://github.com/Ningensei848/kaname/issues/116)は引き続き明細待ちです。
+初回RSSには100件の過去記事が含まれます（先行対象97件・対象外3件）。限定1件の成功と全対象記事の受入を区別し、追加生成0のrunに残り96件を生成させません。通常の1日1回schedule・全source合計30件・本文20,000文字・standard・workers 2は維持します。
+
+以前の月500〜550円は2 sourceの実行履歴に基づく推定です。新sourceの初回backlogや実呼出し数の増加後にも同額になる保証とは扱いません。新runの元usage/単価を残し、既存承認の累計へ追加します。今回の限定1件は推計USD 0.0024581、通常復旧からの累計USD 0.2139474、承認USD 1の残額USD 0.7860526です。確定請求とは区別します。請求明細との確定照合[#116](https://github.com/Ningensei848/kaname/issues/116)は引き続き明細待ちです。
+
+## 限定受入の公開版
+
+- content commit: `b871690bda9ebe0d4712b473d75c9423f6550545`
+- dataset digest: `bfdd3c297fcf1b2d2838a88ff8a647a0b6cb7db409dee4d5b9a624466940664a`
+- artifact digest: `a04472f25c5e137128ecb1e60b7df5593b5a5ae1f51fdb86fcf2cced1683097f`
+
+[本番配信](https://ningensei848.github.io/kaname/)のmanifestと新規NoteのHTMLを上記版と照合しました。

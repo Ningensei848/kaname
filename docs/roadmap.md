@@ -45,7 +45,7 @@
 
 - [x] Parallel Processing — 最大2件のfetch/convert先行処理、入力順の課金・状態更新、host間隔/robotsの排他を回帰検証。
 - [x] Source Health Check — 読取り専用`source-health` CLIのJSONで最終成功・連続失敗・source別発見/保存件数・pendingを表示。旧runの件数不明はnull。運用手順を参照。
-- [x] Regression Corpus — 有効2 sourceの合成fixture・本文/画像goldenと差分検出CLI、offline回帰。
+- [x] Regression Corpus — 有効3 source・4レイアウトの合成fixture・本文/画像goldenと差分検出CLI、offline回帰。
 - [x] Knowledge Graph Quality — 読取り専用CLI、良い/悪い16例・27件、固定実content125 Noteを評価。検索語612件未解決・表記群各3組と元hash不変を確認。[評価と限界](graph-quality.md)。
 
 大規模化でActionsの時間/quotaやdurabilityが問題になった場合にCloud Run Jobs等を再検討します。
