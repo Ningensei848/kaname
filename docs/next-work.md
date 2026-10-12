@@ -9,6 +9,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
+| 着手中 | 新規記事だけの収集 | 成功済みURLの事前除外・日次生成上限での本文取得停止・明示再検査を実装 | CIと生成0の実受付/保存/配信不変を受入。Release assetsは設計候補として分離。[記録](incremental-collection.md) |
 | 通常運用で継続 | 新source初回保留145件 | DeepMind96 / Microsoft10 / Meta9 / Apple10 / Cloudflare20。既存の日次・全source合計30件で順次処理 | 元usage・source別の失敗/保留を追跡。追加手動処理は既存USD 1承認の残額USD 0.7860526を管理。[記録](four-source-activation.md) |
 | 後続候補 | 記事取得・Quartzの追加短縮 | 日次の読取り改善は受入完了。残る収集9分03秒・Web環境準備55秒/ビルド検査89秒を実測 | source別先行取得/条件付きHTTP、Web変更・検索/リンク・切戻しを含むartifact再利用の無効化条件を比較。[記録](daily-performance.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |

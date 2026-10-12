@@ -92,6 +92,7 @@ Google Researchの本文入力と画像候補は`.blog-detail-wrapper`内の本�
 ページのナビゲーションや関連記事で20,000文字の入力枠を消費しません。selector不一致は失敗としてpendingへ残します。
 fetch/convertは`processing.workers`で最大件数を限定して並列化し、結果は入力candidate順で処理します。
 LLM/Batch提出・usage・Note/index/pending更新は単一writerのまま、HTTP host間隔とrobotsを維持します。
+日次は`processing.article_policy: new_only`で、成功indexのsource別元URL/canonical URLを本文GET前に除外します。生成枠到達後は本文取得も停止し、未消費candidateはpendingに残します。同じURLの後日更新は`--recheck-known`で明示再検査します。旧設定の既定は`recheck`を維持します。
 成功TSVを通常の重複排除の正本にし、失敗hashを成功登録しません。
 receiptで保存途中から復旧し、記事ごとにindexをcheckpointします。
 

@@ -9,6 +9,7 @@
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
 | 日次runの読取り性能 | GCS最大8件並列取得・世代別のrunner内cache・live catalog再確認。実GCS監査/費用/公開digest一致、追加生成/書込み0 | Python642件・PR #173/mainのPython/Web CI成功。実Actionsで39分22秒→15分30秒、監査445→62秒/export825→13秒（追加download0）。全工程と保存/元費用/公開126件・配信不変を受入。[記録](daily-performance.md) |
+| 新規記事限定 | 成功URL事前除外・元URL/canonical alias・生成枠でHTTP停止・失敗/receipt/Batchの復旧・明示再検査を実装 | 全CI・本番受付/公開不変の受入待ち。[記録](incremental-collection.md) |
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
 | Batch | PR #153/#156で画像型/候補外IDを解消。個別承認1job/1記事の実返却が厳格検証に成功し、3画像入りNote 1件を保存・公開。receipt/Note/index・artifact/Git/GCSのbytes一致、index336/pending71、課金record1・usage欠損0 | 追加生成0の再実行も全工程success、保存/課金bytes・世代・日次/月次費用・公開manifest/content commit不変を受入。外部画像の内容・存続はGit版で固定できない |
 | 追加4社の有効化 | source別本文抽出・図/末尾保持・合成corpus。実49記事の取得/変換が全4社success・生成/書込み0。Python632件/関連17件成功 | PR #171取込・PR/main Python/Web CI成功。本番収集成功・生成0/index408/pending145・既存881オブジェクト/費用不変。全工程success、公開126件/959検索リンク・最新Note/receipt/index/snapshot bytes一致、content/dataset/artifact/配信不変。新4社の実Note生成は後続の日次処理。[記録](four-source-activation.md) |

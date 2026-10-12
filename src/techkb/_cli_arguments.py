@@ -28,10 +28,15 @@ def parse_args(argv):
     parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
     parser.add_argument("--max-calls", type=int, help="run limit; increases require a standard --max-cost-usd cap")
     parser.add_argument("--max-cost-usd", type=Decimal, help="estimated standard generation cost cap for this run; stops on uncertain usage")
+    parser.add_argument('--recheck-known', action='store_true', help='re-fetch successful article URLs to detect edits; run/dry-run only')
     return parser.parse_args(argv)
 
 
 def validate_args(args, app):
+    if args.recheck_known:
+        if args.command not in {'run', 'dry-run'}:
+            raise ValueError('--recheck-known requires run or dry-run')
+        app.processing.article_policy = 'recheck'
     if (args.llm_mode or args.max_calls is not None) and args.command not in {"run", "dry-run"}:
         raise ValueError("LLM overrides require run or dry-run")
     if args.llm_mode:

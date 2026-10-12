@@ -48,17 +48,23 @@ def prepare_article(pipeline, candidate, source, known_raw):
 
 
 @contextmanager
-def prepared_articles(pipeline, candidates, known_raw):
+def prepared_articles(pipeline, candidates, known_raw, *, can_continue=lambda: True):
     sources = {source.id: source for source in pipeline.sources if source.enabled}
     eligible = ((candidate, sources[candidate.source_id]) for candidate in candidates if candidate.source_id in sources)
     workers = pipeline.app.processing.workers
     if workers == 1:
-        yield ((candidate, source, prepare_article(pipeline, candidate, source, known_raw))
-               for candidate, source in eligible)
+        def sequential():
+            for candidate, source in eligible:
+                if not can_continue():
+                    return
+                yield candidate, source, prepare_article(pipeline, candidate, source, known_raw)
+        yield sequential()
         return
     pool = ThreadPoolExecutor(max_workers=workers, thread_name_prefix='article')
     queue = deque()
     def submit():
+        if not can_continue():
+            return
         pair = next(eligible, None)
         if pair is not None:
             candidate, source = pair
@@ -66,7 +72,7 @@ def prepared_articles(pipeline, candidates, known_raw):
     def ordered():
         for _ in range(workers):
             submit()
-        while queue:
+        while queue and can_continue():
             candidate, source, future = queue.popleft()
             yield candidate, source, future.result()
             # Refill only when the single writer continues after saving/billing.
