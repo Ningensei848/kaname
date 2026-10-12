@@ -17,12 +17,17 @@ def test_reviewed_body_and_image_candidates(case):
             assert noise not in markdown
         assert len(images) == 8 and 'Article conclusion.' in markdown
         assert 'Last topic explanation.' in markdown
-    else:
+    elif case['source_id'] == 'github-blog':
         # Existing GitHub configuration converts the whole page. Freeze that
         # behavior explicitly; corpus acceptance is not a selector change.
         assert 'Navigation links' in markdown
         assert len(images) == 1 and 'measured limitations' in markdown
         assert images[0]['alt'] == 'SDK architecture'
+    elif case['source_id'] == 'google-deepmind':
+        assert 'Article introduction.' in markdown and 'Article conclusion.' in markdown
+        for noise in ('outside article', 'Related posts', 'unwanted()'):
+            assert noise not in markdown
+        assert len(images) == 1 and images[0]['alt'] == 'Method diagram'
 
 
 def test_changes_show_a_reviewable_diff(monkeypatch):

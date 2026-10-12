@@ -100,6 +100,11 @@ class Pipeline:
                         if fetched is None:
                             raise article.error
                         report.fetched += 1
+                        if article.filter_reason:
+                            report.filtered += 1
+                            report.filter_reasons[article.filter_reason] = report.filter_reasons.get(article.filter_reason, 0) + 1
+                            done.add(candidate.url)
+                            continue
                         raw, rh = article.raw, article.rh
                         if rh in dedupe.raw and source.fetcher != "playwright":
                             report.raw_duplicates += 1

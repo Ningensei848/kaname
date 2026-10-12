@@ -29,3 +29,62 @@ sources:
     base_url: https://aws.amazon.com/
     request_interval_seconds: 2
     tags: [cloud]
+
+  # Google DeepMind: AI and foundational research
+  - id: google-deepmind
+    name: Google DeepMind
+    enabled: true
+    type: rss
+    feed_url: https://deepmind.google/blog/rss.xml
+    base_url: https://deepmind.google/
+    # Cross-posts to other Google sites are outside this initial acceptance.
+    article_domains: [deepmind.google, blog.google]
+    # DeepMind legacy body sections and redirected Google Blog articles.
+    extract_main: true
+    content_selector: "body.template-blog-page main > section:has(.rich-text), article.uni-article-wrapper"
+    request_interval_seconds: 2
+    tags: [ai-llm, research]
+
+  # Candidate only: external AI use / public summaries require a separate decision.
+  # Microsoft Research: CS and AI research
+  - id: microsoft-research
+    name: Microsoft Research Blog
+    enabled: false
+    type: rss
+    feed_url: https://www.microsoft.com/en-us/research/blog/feed/
+    base_url: https://www.microsoft.com/en-us/research/
+    request_interval_seconds: 2
+    tags: [research]
+
+  # Candidate only: linked terms require login; automated-use scope is unverified.
+  # Meta: large-scale engineering and AI infrastructure
+  - id: meta-engineering
+    name: Engineering at Meta
+    enabled: false
+    type: rss
+    feed_url: https://engineering.fb.com/feed/
+    base_url: https://engineering.fb.com/
+    request_interval_seconds: 2
+    tags: [software-development, ai-llm]
+
+  # Candidate only: website terms restrict automated acquisition / distribution.
+  # Apple: machine learning research
+  - id: apple-ml-research
+    name: Apple Machine Learning Research
+    enabled: false
+    type: rss
+    feed_url: https://machinelearning.apple.com/rss.xml
+    base_url: https://machinelearning.apple.com/
+    request_interval_seconds: 2
+    tags: [ai-llm, research]
+
+  # Candidate only: reconcile positive AI content signals with website terms §8.
+  # Cloudflare: security engineering
+  - id: cloudflare-security
+    name: Cloudflare Security Blog
+    enabled: false
+    type: rss
+    feed_url: https://blog.cloudflare.com/tag/security/rss
+    base_url: https://blog.cloudflare.com/
+    request_interval_seconds: 2
+    tags: [cybersecurity]

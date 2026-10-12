@@ -9,6 +9,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
+| 着手中 | [PR #134 RSS追加](https://github.com/Ningensei848/kaname/pull/134)のDeepMind先行受入 | ユーザー選択済み。5フィードの読み取り確認、DeepMind新旧本文の抽出/回帰を準備。他4社は無効の候補 | 更新CI・限定1 standard生成・保存/公開・ゼロ生成再実行を確認。[記録](source-onboarding.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 

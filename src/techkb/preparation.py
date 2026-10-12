@@ -3,6 +3,7 @@ from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 
 from .fetcher import FetchResult
 from .extraction import extract_main
@@ -20,6 +21,7 @@ class PreparedArticle:
     markdown: str = ''
     stage: str = 'fetch'
     error: Exception | None = None
+    filter_reason: str | None = None
 
 
 def prepare_article(pipeline, candidate, source, known_raw):
@@ -28,6 +30,10 @@ def prepare_article(pipeline, candidate, source, known_raw):
         result.fetched = pipeline._page(candidate.url, source)
         result.raw = result.fetched.raw_content if result.fetched.raw_content is not None else result.fetched.content
         result.rh = raw_hash(result.raw)
+        if source.article_domains and (urlsplit(result.fetched.url).hostname or '').lower() not in {
+                host.lower().rstrip('.') for host in source.article_domains}:
+            result.filter_reason = 'article_domain_not_allowed'
+            return result
         if result.rh in known_raw and source.fetcher != 'playwright':
             return result
         result.stage = 'convert'

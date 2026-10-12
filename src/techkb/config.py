@@ -81,6 +81,8 @@ class Source(StrictModel):
     fetcher: Literal["http", "playwright"] = "http"
     render_selector: str | None = None
     resource_domains: list[str] = Field(default_factory=list)
+    # Optional exact final article hosts; empty preserves existing source behavior.
+    article_domains: list[str] = Field(default_factory=list)
     max_browser_requests: int = Field(default=40, ge=1, le=200)
     extract_main: bool = False
     content_selector: str | None = None
