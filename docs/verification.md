@@ -10,14 +10,14 @@
 |---|---|---|
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
 | Batch | PR #153/#156で画像型/候補外IDを解消。個別承認1job/1記事の実返却が厳格検証に成功し、3画像入りNote 1件を保存・公開。receipt/Note/index・artifact/Git/GCSのbytes一致、index336/pending71、課金record1・usage欠損0 | 追加生成0の再実行も全工程success、保存/課金bytes・世代・日次/月次費用・公開manifest/content commit不変を受入。外部画像の内容・存続はGit版で固定できない |
-| 追加4社の有効化 | source別本文抽出・図/末尾保持・合成corpus。実49記事の取得/変換が全4社success・生成/書込み0。Python632件/関連17件成功 | PR/main CIと生成0の本番反映は未完了。[記録](four-source-activation.md) |
+| 追加4社の有効化 | source別本文抽出・図/末尾保持・合成corpus。実49記事の取得/変換が全4社success・生成/書込み0。Python632件/関連17件成功 | PR #171取込・PR/main Python/Web CI成功。本番収集成功・生成0/index408/pending145・既存881オブジェクト/費用不変。全工程success、公開126件/959検索リンク・最新Note/receipt/index/snapshot bytes一致、content/dataset/artifact/配信不変。新4社の実Note生成は後続の日次処理。[記録](four-source-activation.md) |
 | DeepMind先行追加 | PR #134取込、全Python620件・PR/main CI成功。新旧本文corpus・実100候補で97本文/3対象外、失敗/生成/書込み0 | 限定1件を保存、index408/pending96・元usage確定・新規Note公開適合。限定run全工程success・公開126件/959検索リンク・元保存/配信照合。ゼロ生成run全工程success・880オブジェクト/費用/公開commit/dataset/artifact/配信不変。限定受入完了。[受入記録](source-onboarding.md) |
 | 通常収集の復旧 | standardで71保存、index407/pending0・両source healthy/連続失敗0。実41Note/59画像・Python609件・固定実125件Chromiumに適合 | 追加生成0で保存/課金875オブジェクトの世代/内容・費用不変、全工程success、公開125件/936検索リンク・保存した71件の配信照合。#139/#140/#165 Closed。[受入記録](source-recovery.md) |
 | Google Research本文抽出 | 本文専用selectorを実記事4件で検証。GlucoFMの8図候補、standard/Batchの末尾図配置とnavigation変更の重複判定をoffline回帰 | GlucoFM補完は本番受入済み。新規Batch Noteでも3画像の実選択・保存/公開を受入 |
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規Batch Noteの3画像実選択・保存/公開を受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
-| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。2026-10-12に通常収集の復旧とゼロ生成再実行でindex407/pending0・両source healthy/連続失敗0を実GCSで確認。後続DeepMind限定受入はindex408/pending96・既存2 source healthy・DeepMind unverified/連続失敗0 |
+| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。2026-10-12に通常収集の復旧とゼロ生成再実行でindex407/pending0・両source healthy/連続失敗0を実GCSで確認。後続DeepMind限定受入はindex408/pending96・既存2 source healthy・DeepMind unverified/連続失敗0。追加4社の本番収集後はindex408/pending145、既存2社healthy/DeepMindと追加4社unverified、全7社の連続失敗0 |
 | CI対象選択 | 固定base/head分類、設定のみPRの必要検査成功・Web省略、本体PRのPython全460件/Web成功 | 未知path・比較失敗では全検査 |
 | Regression Corpus | 有効7 source・8レイアウトの合成HTML・本文/画像golden・差分検出9件を検証 | 実サイトの将来のDOM変更を自動取得する機能ではない |
 | Parallel Processing | fetch/convert最大2件、入力順・単一writer・host間隔・robots・課金停止の回帰12件を検証 | 本番の時間短縮は未計測。workers: 1で逐次へ戻せる |

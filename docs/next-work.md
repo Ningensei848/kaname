@@ -1,6 +1,6 @@
 # 次の作業と優先順位
 
-2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。NS1と通常収集の復旧も本番受入まで完了しました。DeepMind追加も限定1件の保存/公開・ゼロ生成再実行まで完了しました（index408/public126/pending96）。以下は完了状態と後続作業の着手順です。
+2026-10-12 JST、指定されたP4: Parallel Processingまでの作業は完了しました。NS1と通常収集の復旧も本番受入まで完了しました。DeepMind追加も限定1件の保存/公開・ゼロ生成再実行まで完了しました。Microsoft Research/Meta/Apple/Cloudflareも有効化・生成0の本番受付/配信まで完了し、現在は有効7 source・index408/public126/pending145です。以下は完了状態と後続作業の着手順です。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
 P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
 2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
@@ -9,18 +9,18 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 通常運用で継続 | DeepMind初回保留96件 | PR #134の追加と限定1件/ゼロ生成受入は完了。残り96件は既存の日次・全source合計30件で順次処理 | まとめて処理する場合も既存USD 1承認の残額USD 0.7860526と元usageを管理。[記録](source-onboarding.md) |
-| 着手中 | Microsoft Research/Meta/Apple/Cloudflareの有効化 | ユーザー明示指示で4社の本文抽出と有効化を準備。全49記事の無課金取得/変換・Python632件成功 | PR/main CIと生成0の本番反映、保存/費用/公開不変を確認。[記録](four-source-activation.md) |
-| 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供 | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
+| 通常運用で継続 | 新source初回保留145件 | DeepMind96 / Microsoft10 / Meta9 / Apple10 / Cloudflare20。既存の日次・全source合計30件で順次処理 | 元usage・source別の失敗/保留を追跡。追加手動処理は既存USD 1承認の残額USD 0.7860526を管理。[記録](four-source-activation.md) |
+| 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
 ## 完了済みの作業
 
-完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#139/#140/#165をClose。#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。後続のPR #134は取込済みでClosed、Open Issueは明細待ち#116のみです。
+完了項目を着手順から分離しました。2026-10-12にGitHubのClosed状態と受入記録を照合し、#139/#140/#165をClose。#94/#108〜#115/#127/#129/#135/#159/#161と解消済みの通知#143/#146/#152/#155はClosedを維持します。後続のPR #134/#171は取込済みでClosed、Open Issueは明細待ち#116のみです。
 
 | 状態 | 作業 | 受入証拠 | 継続時の注意 |
 |---|---|---|---|
-| 完了（限定本番受入） | [PR #134 DeepMind追加](https://github.com/Ningensei848/kaname/pull/134) | 本文の新旧2レイアウト、対象外3件filter、実100候補の無課金検査、Python620件/専用67件・PR/main CI成功。実1件保存/公開126件/959検索リンク・ゼロ生成の保存/課金880オブジェクト/費用/公開版不変を照合 | 追加API推計USD 0.0024581。初回保留96件は通常運用で別管理。他4候補は無効。[受入記録](source-onboarding.md) |
+| 完了（有効化・生成0本番受入） | [PR #171 追加4社の有効化](https://github.com/Ningensei848/kaname/pull/171) | 実49記事の取得/変換・Python632件/専用79件・PR/main CI成功。本番7 source成功、生成0/index408/pending145、既存881オブジェクト/元費用不変。全工程・公開126件/959検索リンク・保存bytes/配信版照合success | 追加API USD 0、承認残額USD 0.7860526。新4社の実Note生成は日次運用で順次処理。[受入記録](four-source-activation.md) |
+| 完了（限定本番受入） | [PR #134 DeepMind追加](https://github.com/Ningensei848/kaname/pull/134) | 本文の新旧2レイアウト、対象外3件filter、実100候補の無課金検査、Python620件/専用67件・PR/main CI成功。実1件保存/公開126件/959検索リンク・ゼロ生成の保存/課金880オブジェクト/費用/公開版不変を照合 | 追加API推計USD 0.0024581。初回保留96件は通常運用で別管理。他4候補の後続有効化は別管理。[受入記録](source-onboarding.md) |
 | 実装/限定受入済み | [#127 記事画像](https://github.com/Ningensei848/kaname/issues/127) | 実装済みでClosed。GlucoFM 1件の2図補完・GCS/Git/Pages・実画像表示を受入済み | Google Researchの新規Batch Noteでも3画像の実選択・保存/公開を受入。旧Noteへの一括適用はしない |
 | 完了（実CI受入） | [#135 PR検証の対象整理](https://github.com/Ningensei848/kaname/issues/135) | 固定base/headの対象分類・設定別検査・既存check名の結果集約を実装。分類/実Git比較15件・設定混在233件・actionlint成功。設定のみPR #142で必要検査成功/Web省略を受入 | #142は検証後Close、本体PR #141のPython全460件・Web検査も成功 |
 | 完了（実Batch本番受入） | [#94 実Batch受入](https://github.com/Ningensei848/kaname/issues/94) | PR #153/#156後の限定1job/1記事で厳格検証に適合し、3画像入りNoteを保存・公開。index336/pending71、receipt/Note/indexと公開bytes一致、課金record1・欠損0。費用推計約0.23円 | 追加生成0の再実行も全工程success。保存/課金bytes・世代・費用不変、課金1回を受入。#94はClose、当該1件の承認枠は使用済み。通常復旧は後続の別枠 |
