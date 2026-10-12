@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "47517c87a895be19a70c87cb9fabf968968d49f219836e676f32008d4b7d67e8",
+  "dataset_digest": "d12a18435e240adba90dd0750135e6a8894d325a9572302838043cd44ea781c0",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -7,9 +7,9 @@
       "id": "02a360a91a073f25dd9ccd9b89780cc88943b18c3fc48f1aa0855f962ae06f29",
       "llm_input_truncated": false,
       "path": "notes/02a360a91a073f25dd9ccd9b89780cc88943b18c3fc48f1aa0855f962ae06f29.md",
-      "processed_at": "2026-10-09T02:12:04.762200+00:00",
+      "processed_at": "2026-10-12T01:54:13.574311+00:00",
       "published": "2026-03-31",
-      "sha256": "93ffa374f8e63109243c3b0a6d2c99f59a89ad6ab6869dce8782f1e8ca228bc1",
+      "sha256": "ddf22c38ec12bc38e6984ee1f99d641d8579abc007222e4891e8e277595a07ed",
       "source_id": "google-research",
       "title": "暗号資産の保護と量子脆弱性の責任ある開示に向けて"
     },
@@ -89,25 +89,25 @@
       "canonical_url": "https://research.google/blog/optimizing-cloud-economics-with-linear-elastic-caching/",
       "category": "cloud",
       "id": "14fb26f59cee6fe836ec102f906fff77a9c627085656911e312d5f7dff8b80d7",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/14fb26f59cee6fe836ec102f906fff77a9c627085656911e312d5f7dff8b80d7.md",
-      "processed_at": "2026-10-09T02:11:51.308530+00:00",
+      "processed_at": "2026-10-12T01:53:48.791926+00:00",
       "published": "2026-06-25",
-      "sha256": "6a50d004d465815d11587075acd71fa497638acc115fa27ebb77e175e69cb245",
+      "sha256": "cd4996fb0fb44dff40047210ff7357304620dc926ae17a9e83deccdbe3a3989d",
       "source_id": "google-research",
-      "title": "線形弾力キャッシュによるクラウド経済性の最適化"
+      "title": "リニア弾力キャッシュによるクラウド経済性の最適化"
     },
     {
       "canonical_url": "https://research.google/blog/planetary-prediction-engine-automating-global-models-via-earth-ai/",
       "category": "ai-llm",
       "id": "1b979cf8abff836a0e4aa721100620a223f173f543087778f4df1331a054c3f6",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/1b979cf8abff836a0e4aa721100620a223f173f543087778f4df1331a054c3f6.md",
-      "processed_at": "2026-10-09T02:11:55.901914+00:00",
+      "processed_at": "2026-10-12T01:53:53.929184+00:00",
       "published": "2026-08-27",
-      "sha256": "77451d697aae16bd69ce509fd5d2bdee027fae6089fe3522c2405bc1756aa0cb",
+      "sha256": "733c5617f13bb53e615211f44ff9c357f185265276847aaa38df346e62188a00",
       "source_id": "google-research",
-      "title": "惑星予測エンジン：Earth AIによるグローバルモデルの自動化"
+      "title": "Planetary prediction engine: Earth AIによるグローバルモデルの自動化"
     },
     {
       "canonical_url": "https://research.google/blog/introducing-groundsource-turning-news-reports-into-data-with-gemini/",
@@ -163,11 +163,11 @@
       "id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
       "llm_input_truncated": true,
       "path": "notes/2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481.md",
-      "processed_at": "2026-10-10T01:47:04.816211+00:00",
+      "processed_at": "2026-10-12T01:51:50.738718+00:00",
       "published": "2026-05-28",
-      "sha256": "a88aa1a683c50b48ef7a4b42f0e9c11ab9552357e0c2dc3ffe5ec891b53523ec",
+      "sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
       "source_id": "google-research",
-      "title": "新たな発見の時代：Google I/O 2026でのGoogle Research"
+      "title": "Google I/O 2026におけるGoogleリサーチの最新成果：科学的発見、医療AI、エッジコンピューティング、気候予測の新たな展開"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
@@ -271,11 +271,11 @@
       "id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
       "llm_input_truncated": false,
       "path": "notes/393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314.md",
-      "processed_at": "2026-10-10T01:48:56.926525+00:00",
+      "processed_at": "2026-10-12T01:52:16.528913+00:00",
       "published": "2026-03-31",
-      "sha256": "3434f821b47298cdf976487373e04f6c83f3f69c9f99ac9e0a69162e35352dac",
+      "sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
       "source_id": "google-research",
-      "title": "より良いAIベンチマークの構築：十分な評価者数とは？"
+      "title": "AIベンチマークの構築改善：十分な評価者の数とは何か"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
@@ -341,13 +341,13 @@
       "canonical_url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
       "category": "ai-llm",
       "id": "4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a.md",
-      "processed_at": "2026-10-07T01:34:46.876480+00:00",
+      "processed_at": "2026-10-12T01:52:36.277615+00:00",
       "published": "2026-04-16",
-      "sha256": "276d3d509fde3f1492e4cb378059e7e1727a8d6978962b354f49874e068eca67",
+      "sha256": "15f5e733457686023835b919323c1e3a98ddff5e0d3ee9e6e530abb64bc309e5",
       "source_id": "google-research",
-      "title": "実世界向け合成データセットの設計：メカニズムデザインと第一原理からの推論"
+      "title": "実世界に向けた合成データセットの設計：メカニズムデザインと第一原理からの推論"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/should-you-read-the-code-is-rag-dead-and-did-skills-kill-mcp/",
@@ -379,11 +379,11 @@
       "id": "55776c638a76623b3bfb1b4109e6701872cfe31458ca0ff51a3892a57fe25b26",
       "llm_input_truncated": false,
       "path": "notes/55776c638a76623b3bfb1b4109e6701872cfe31458ca0ff51a3892a57fe25b26.md",
-      "processed_at": "2026-10-09T02:11:06.026277+00:00",
+      "processed_at": "2026-10-12T01:53:08.679137+00:00",
       "published": "2025-11-05",
-      "sha256": "4b087da92f1651931cd3f5198ec0c13fd0a24dd1af9775a6ccb40b4630fe71bd",
+      "sha256": "2c3ef9c32bd894a7bcf582a4ec53b2b60debdc740673e1c722007d452aa1b289",
       "source_id": "google-research",
-      "title": "AIによる森林の未来予測：森林消失の計測からリスク予測へ"
+      "title": "AIによる森林の未来予測：損失の数え上げからリスク予測へ"
     },
     {
       "canonical_url": "https://research.google/blog/from-pixels-to-planning-earth-ai-for-nature-restoration/",
@@ -391,23 +391,23 @@
       "id": "566b5dc9c0997862b0083a6d91ee422941ea9dc19b4b377f1c72846f5e9b094a",
       "llm_input_truncated": false,
       "path": "notes/566b5dc9c0997862b0083a6d91ee422941ea9dc19b4b377f1c72846f5e9b094a.md",
-      "processed_at": "2026-10-09T02:11:11.960952+00:00",
+      "processed_at": "2026-10-12T01:53:13.909833+00:00",
       "published": "2026-06-16",
-      "sha256": "5f05bd6599a4410d42806f2522e6ff06c0d7ba541471ad956c696ad638d35d5d",
+      "sha256": "aa7dcae0f67b710a493ec99b608c2331c8303ef83fbc6c46e77a8569b65fae98",
       "source_id": "google-research",
-      "title": "ピクセルから計画へ：自然復元の為のEarth AI"
+      "title": "ピクセルから計画へ：自然修復のためのEarth AI"
     },
     {
       "canonical_url": "https://research.google/blog/a-new-quantum-toolkit-for-optimization/",
       "category": "ai-llm",
       "id": "5684516fee955e0a18b2072878bccb2ecce17ecd9ceafe3ee483bc3f36faccb6",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/5684516fee955e0a18b2072878bccb2ecce17ecd9ceafe3ee483bc3f36faccb6.md",
-      "processed_at": "2026-10-08T01:59:02.037682+00:00",
+      "processed_at": "2026-10-12T01:51:57.068862+00:00",
       "published": "2025-11-13",
-      "sha256": "5aa76f9cfb7516150629b4f67229c057a50763353224d90468e7253ddbe9a1ff",
+      "sha256": "9f8d3515cf5b885091b7e3ca266135b21cc2f6a05ce7fda7cb5d2af3a54c014d",
       "source_id": "google-research",
-      "title": "最適化のための新しい量子ツールキット"
+      "title": "最適化のための新しい量子ツールキット：Decoded Quantum Interferometry (DQI)"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/secret-protection-must-scale-with-software/",
@@ -425,23 +425,23 @@
       "canonical_url": "https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/",
       "category": "ai-llm",
       "id": "5703fac0b9890a3dd1dbeda85bd4f5ba8a2e6608b461f4c308198c9c93442d12",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/5703fac0b9890a3dd1dbeda85bd4f5ba8a2e6608b461f4c308198c9c93442d12.md",
-      "processed_at": "2026-10-08T01:58:28.871917+00:00",
+      "processed_at": "2026-10-12T01:54:57.934707+00:00",
       "published": "2026-06-05",
-      "sha256": "ca6cee2ed84e5f44deb522fdd8397da59810a9a0fe45f1792506c3cbbca34db1",
+      "sha256": "799c3a23423486a323ba889a6b00ce590c7b81ba3f02ffa6a8225154f0ac9812",
       "source_id": "google-research",
-      "title": "Gemini Enterprise Agent PlatformのAgentic RAGによる信頼性の高い応答の実現"
+      "title": "Gemini Enterprise Agent Platformのエージェント型RAGによる信頼性の高い応答の実現"
     },
     {
       "canonical_url": "https://research.google/blog/waxal-a-large-scale-open-resource-for-african-language-speech-technology/",
       "category": "ai-llm",
       "id": "58206bad49228fd53935a0f68986819a1b21da224a7c758aaa6ec32744d80226",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/58206bad49228fd53935a0f68986819a1b21da224a7c758aaa6ec32744d80226.md",
-      "processed_at": "2026-10-07T01:33:29.734490+00:00",
+      "processed_at": "2026-10-12T01:51:37.700148+00:00",
       "published": "2026-03-06",
-      "sha256": "a061cdeae0078c448f17d3f00df364f56a20b465f0dfb7eda9b3435d7916d3a8",
+      "sha256": "892191e0e364e851a6ea57239d1145140d6fec9f4097157cfeaddcb4367e6d56",
       "source_id": "google-research",
       "title": "WAXAL：アフリカ言語の音声技術に向けた大規模オープンリソース"
     },
@@ -461,13 +461,13 @@
       "canonical_url": "https://research.google/blog/towards-demystifying-the-creativity-of-diffusion-models/",
       "category": "ai-llm",
       "id": "60dfb1cd275c09ada3589ec5d0798d47e2a3635985b2926536b2d3dd9196e434",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/60dfb1cd275c09ada3589ec5d0798d47e2a3635985b2926536b2d3dd9196e434.md",
-      "processed_at": "2026-10-10T01:48:04.215252+00:00",
+      "processed_at": "2026-10-12T01:54:48.412737+00:00",
       "published": "2026-07-15",
-      "sha256": "ecc5246cfabd4d76177a6044a8989f0c6144e2f2d2d95cd9dc29e221d65b4a72",
+      "sha256": "f29e409e1a7c7f0a11527751bbf55962e92e9a0f9cea35ab68939a75a1fa10af",
       "source_id": "google-research",
-      "title": "拡散モデルの「創造性」の仕組みを解き明かす：スコア平滑化と補間効果"
+      "title": "拡散モデルの「創造性」の解明に向けて"
     },
     {
       "canonical_url": "https://research.google/blog/google-earth-ai-unlocking-geospatial-insights-with-foundation-models-and-cross-modal-reasoning/",
@@ -485,13 +485,13 @@
       "canonical_url": "https://research.google/blog/testing-llms-on-superconductivity-research-questions/",
       "category": "ai-llm",
       "id": "6525306b698216b750748ee1f30fffbae23b53d6195fcf456a426b0a38789167",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/6525306b698216b750748ee1f30fffbae23b53d6195fcf456a426b0a38789167.md",
-      "processed_at": "2026-10-09T02:12:46.916258+00:00",
+      "processed_at": "2026-10-12T01:51:31.494677+00:00",
       "published": "2026-03-16",
-      "sha256": "4fb89d303089412f876518082bfe171720ebbbbb6bec0a871e304b95b6e8c22f",
+      "sha256": "ad0deffc018237eee03b53a1d9885d7b56f95b07a51c9d6bfd3b4729a61910c6",
       "source_id": "google-research",
-      "title": "超伝導研究の質問を用いた大規模言語モデル（LLM）の評価"
+      "title": "超伝導研究の疑問に対する大規模言語モデル（LLM）の評価"
     },
     {
       "canonical_url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
@@ -559,23 +559,23 @@
       "id": "7106bfdee62fcd6aa136ac172b31a0325f0282c340c6b6dcae21a796bba96dd3",
       "llm_input_truncated": false,
       "path": "notes/7106bfdee62fcd6aa136ac172b31a0325f0282c340c6b6dcae21a796bba96dd3.md",
-      "processed_at": "2026-10-09T02:11:22.892280+00:00",
+      "processed_at": "2026-10-12T01:53:23.519632+00:00",
       "published": "2025-12-15",
-      "sha256": "f42c86c2fd696fabdcf123d793f49a5cbb2f65c653d3546bcb4c351368ce1396",
+      "sha256": "4accd74219cb4058192b56003a221a6c0864e26011b58ec6dd4eee7e3df6cfa1",
       "source_id": "google-research",
-      "title": "Geminiを活用したPaper Assistant Tool、STOC 2026の理論計算機科学者向けに自動フィードバックを提供"
+      "title": "STOC 2026の理論コンピュータ科学者向けに自動フィードバックを提供するGeminiを活用したPaper Assistant Tool"
     },
     {
       "canonical_url": "https://research.google/blog/sequential-attention-making-ai-models-leaner-and-faster-without-sacrificing-accuracy/",
       "category": "ai-llm",
       "id": "726219a3fd4a5abcfbdbc9c894693db32a40ebef49d38d1de1a23e36a6f150e5",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/726219a3fd4a5abcfbdbc9c894693db32a40ebef49d38d1de1a23e36a6f150e5.md",
-      "processed_at": "2026-10-09T02:12:18.840772+00:00",
+      "processed_at": "2026-10-12T01:54:23.700299+00:00",
       "published": "2026-02-04",
-      "sha256": "9925f4548e91929551547924b5c5cf42902f4bab7affba3ff5a1b10b10f1297f",
+      "sha256": "646b9c6d30c718c5f8ea27bedc26c91dcf798a53e46be40a5b9ed0f24a6a9207",
       "source_id": "google-research",
-      "title": "Sequential Attention：精度を犠牲にせずにAIモデルをよりスリムかつ高速にする技術"
+      "title": "Sequential Attention：精度を犠牲にせずにAIモデルをよりスリムかつ高速にする手法"
     },
     {
       "canonical_url": "https://research.google/blog/improving-breast-cancer-screening-workflows-with-machine-learning/",
@@ -619,23 +619,23 @@
       "id": "7d73a60cceb89f433c6bbd5d075610f531d9df25505765cfadfac5ab53c7884f",
       "llm_input_truncated": false,
       "path": "notes/7d73a60cceb89f433c6bbd5d075610f531d9df25505765cfadfac5ab53c7884f.md",
-      "processed_at": "2026-10-09T02:10:59.867517+00:00",
+      "processed_at": "2026-10-12T01:52:58.205795+00:00",
       "published": "2026-06-30",
-      "sha256": "7518706875f6aa27d81939d87fba3c7273a3d86a309c783d39c57706c75fb407",
+      "sha256": "30eba5dc5946431483bcc1e172cba3bd47c84c03e4fc4bc062c06d6aeff06060",
       "source_id": "google-research",
-      "title": "Google Research、ヒートレジリエンスデータを50以上の世界的な都市へ拡大"
+      "title": "Google Research、極端な都市熱対策として50以上の世界的な都市へ「Heat Resilience」データを拡大"
     },
     {
       "canonical_url": "https://research.google/blog/mapping-global-methane-emissions-from-space-with-deep-learning/",
       "category": "ai-llm",
       "id": "804e3e576af6601675c4846e374dce5ecec0e03eb33d23b92b9d9cb722e37c3f",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/804e3e576af6601675c4846e374dce5ecec0e03eb33d23b92b9d9cb722e37c3f.md",
-      "processed_at": "2026-10-08T01:57:11.893197+00:00",
+      "processed_at": "2026-10-12T01:53:43.727017+00:00",
       "published": "2026-09-01",
-      "sha256": "af2a06541cee7d14048db903eb5571402d528cbd5a4b1a8cd1fe46c8a1ca515d",
+      "sha256": "74578ab073d8a6fe43af125c92f2737b04f6bab6e09aecbfd7e700101218d787",
       "source_id": "google-research",
-      "title": "ディープラーニングによる宇宙からの地球規模メタン排出量のマッピング"
+      "title": "ディープラーニングを活用した宇宙からの世界的なメタン排出量マッピング"
     },
     {
       "canonical_url": "https://research.google/blog/a-connectomics-milestone-mapping-the-complete-male-fruit-fly-brain/",
@@ -675,15 +675,15 @@
     },
     {
       "canonical_url": "https://research.google/blog/the-power-of-collaboration-how-we-can-reduce-traffic-congestion/",
-      "category": "software-development",
+      "category": "ai-llm",
       "id": "8287c899ae5f1830e33cf0cf2865dae50d84870750c66ea292e67a1057641a31",
       "llm_input_truncated": false,
       "path": "notes/8287c899ae5f1830e33cf0cf2865dae50d84870750c66ea292e67a1057641a31.md",
-      "processed_at": "2026-10-06T02:19:33.523791+00:00",
+      "processed_at": "2026-10-12T01:54:38.403933+00:00",
       "published": "2026-07-07",
-      "sha256": "ad032ebc0364094f713e6d34118507a2c0b843dcc39df366dbdefeff72983681",
+      "sha256": "18955f5e5ef6a52043f33441bdbf07b17c2be100955ee9a4ab3eb7b9d95d431c",
       "source_id": "google-research",
-      "title": "協調の力：交通渋滞をどのように軽減できるか"
+      "title": "協力の力：交通渋滞をいかにして軽減するか"
     },
     {
       "canonical_url": "https://research.google/blog/teaching-ai-to-read-a-map/",
@@ -773,13 +773,13 @@
       "canonical_url": "https://research.google/blog/bypassing-inference-bottlenecks-accelerating-complex-ai-search-with-retrieve-for-train/",
       "category": "ai-llm",
       "id": "8ab00ad1b51420ca590a6e4be10d9c8e00ab333e2d7e8b4e1e12ff0552e42cc4",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/8ab00ad1b51420ca590a6e4be10d9c8e00ab333e2d7e8b4e1e12ff0552e42cc4.md",
-      "processed_at": "2026-10-09T02:10:35.738370+00:00",
+      "processed_at": "2026-10-12T01:52:23.483431+00:00",
       "published": "2026-09-15",
-      "sha256": "f9ea39606d461e6510c7bc242de90b87a829a2d4d8e713e75dcfd648cf31bd55",
+      "sha256": "588c3300cc53da94ada15e1f91830ec00070f78e8b9b7bc804918655366efdc3",
       "source_id": "google-research",
-      "title": "推論のボトルネックのバイパス：Retrieve-for-Trainによる複雑なAI検索の高速化"
+      "title": "推論のボトルネックを迂 Salvage：Retrieve-for-Trainによる複雑なAI検索の高速化"
     },
     {
       "canonical_url": "https://research.google/blog/google-research-2025-bolder-breakthroughs-bigger-impact/",
@@ -799,11 +799,11 @@
       "id": "93660db7fdcb735e9b654de876949da1a1708ebe52d5886bfb2b60272b078f7c",
       "llm_input_truncated": false,
       "path": "notes/93660db7fdcb735e9b654de876949da1a1708ebe52d5886bfb2b60272b078f7c.md",
-      "processed_at": "2026-10-10T01:46:32.440425+00:00",
+      "processed_at": "2026-10-12T01:55:02.624010+00:00",
       "published": "2026-01-15",
-      "sha256": "edae1226c4ec071f39850ec2d8cb76be2fd5cc730f9b003b2e6a9aef91bc11fb",
+      "sha256": "391c2d23925ab404083c90f2512890c3ee06588081917dca2385b2ae4d6401bc",
       "source_id": "google-research",
-      "title": "スマートウォッチを用いた高度な歩行指標（歩行解析）の推定に関する研究"
+      "title": "スマートウォッチを用いた高度な歩行メトリクスの推定による健康インサイトの解放"
     },
     {
       "canonical_url": "https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/",
@@ -845,13 +845,13 @@
       "canonical_url": "https://research.google/blog/differentially-private-machine-learning-at-scale-with-jax-privacy/",
       "category": "ai-llm",
       "id": "98c6153bf7e61e167c08ba3c5e2e4b4162aeb161f55c7c55944628272e7a4842",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/98c6153bf7e61e167c08ba3c5e2e4b4162aeb161f55c7c55944628272e7a4842.md",
-      "processed_at": "2026-10-07T01:34:52.115777+00:00",
+      "processed_at": "2026-10-12T01:52:42.338369+00:00",
       "published": "2025-11-12",
-      "sha256": "84a96cc1d2a8819509a2344796fcdc40622c5b4e05d7308e45a11043d18cb774",
+      "sha256": "db886a8c3ea36055d9c2837f10c4b27e4f18655afd6472622a2d022185e8bcb7",
       "source_id": "google-research",
-      "title": "JAX-Privacy 1.0のリリース：JAX基盤の大規模差分プライバシー機械学習"
+      "title": "JAX-Privacy：JAXを活用した大規模な差分プライバシー機械学習ツールキット"
     },
     {
       "canonical_url": "https://research.google/blog/small-models-big-results-achieving-superior-intent-extraction-through-decomposition/",
@@ -883,11 +883,11 @@
       "id": "9c10bf9f7a5e81a24a25379005650ad779bb1b313b94e4dedbbc357932c7c3a6",
       "llm_input_truncated": false,
       "path": "notes/9c10bf9f7a5e81a24a25379005650ad779bb1b313b94e4dedbbc357932c7c3a6.md",
-      "processed_at": "2026-10-05T00:58:24.169515+00:00",
+      "processed_at": "2026-10-12T01:51:44.048192+00:00",
       "published": "2026-06-12",
-      "sha256": "5dc77f2ef429a5209c4a39bff225091ccb2c30a06a5ec0ead56c5ab5acc3830e",
+      "sha256": "3c357022853e81b65e611b285f2a5972c40e04cfcbaf2576dced40e8df792b28",
       "source_id": "google-research",
-      "title": "退役したスマートフォンを活用した低炭素型コンピューティングプラットフォーム"
+      "title": "リタイアしたスマートフォンを活用した低炭素コンピューティングプラットフォーム"
     },
     {
       "canonical_url": "https://github.blog/engineering/user-experience/rendering-huge-pull-requests-in-the-github-copilot-app/",
@@ -905,13 +905,13 @@
       "canonical_url": "https://research.google/blog/vibe-coding-xr-accelerating-ai-xr-prototyping-with-xr-blocks-and-gemini/",
       "category": "ai-llm",
       "id": "a16387807a86bf05c62d6a06ec581a0697c009cc64c2063229bfa1a03ae70234",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/a16387807a86bf05c62d6a06ec581a0697c009cc64c2063229bfa1a03ae70234.md",
-      "processed_at": "2026-10-04T00:39:11.496140+00:00",
+      "processed_at": "2026-10-12T01:55:07.313445+00:00",
       "published": "2026-03-25",
-      "sha256": "6844d06ce039efc4194eef5f4027e0a41448495dbf993bf84dd96f3a929a7a64",
+      "sha256": "d443e604bc31b9180ce30912ecfd17318b7d16a7f817505b197a5d02debfdb12",
       "source_id": "google-research",
-      "title": "Vibe Coding XR: XR BlocksとGeminiを活用したAI + XRプロトタイピングの迅速化"
+      "title": "Vibe Coding XR: XR BlocksとGeminiを活用したAIとXRプロトタイピングの加速"
     },
     {
       "canonical_url": "https://research.google/blog/spotlight-on-innovation-google-sponsored-data-science-for-health-ideathon-across-africa/",
@@ -919,23 +919,23 @@
       "id": "a1f99db44bb202dbefe246b275774a39eeb96c7e9a95cd34cc2ab7b185316271",
       "llm_input_truncated": false,
       "path": "notes/a1f99db44bb202dbefe246b275774a39eeb96c7e9a95cd34cc2ab7b185316271.md",
-      "processed_at": "2026-10-09T02:12:28.190845+00:00",
+      "processed_at": "2026-10-12T01:54:28.799720+00:00",
       "published": "2025-12-12",
-      "sha256": "d4cf624d8c23c3b991a8b4747cead8d4d8000806b0c767fd8db35402e1e68a8f",
+      "sha256": "7dc95cf07865d0257c8623ecb8d07aa20d2e7809c4fcaa3b3f1bd9d87cf5c41c",
       "source_id": "google-research",
-      "title": "イノベーションに焦点を当てる：アフリカ全土で開催されたGoogleスポンサーの「Data Science for Health Ideathon」"
+      "title": "アフリカ全域の医療データサイエンス・アイディアソンにおけるGoogle支援の革新的な取り組み"
     },
     {
       "canonical_url": "https://research.google/blog/from-waveforms-to-wisdom-the-new-benchmark-for-auditory-intelligence/",
       "category": "ai-llm",
       "id": "a3caaf4e6dabb5d8d88971b70f3c0c138c195faaf69c480982c3f56acae2a7ea",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/a3caaf4e6dabb5d8d88971b70f3c0c138c195faaf69c480982c3f56acae2a7ea.md",
-      "processed_at": "2026-10-09T02:11:17.390238+00:00",
+      "processed_at": "2026-10-12T01:53:18.791004+00:00",
       "published": "2025-12-03",
-      "sha256": "b1da2aefdfa57e750e8e88601f9a086d3099aaa5bac1f1bc5a9376fcb0515a16",
+      "sha256": "b6e666d91cd11a3ccb54e56ca2f4e5bbb36d9f7629dd2b24e7661725f714e4f5",
       "source_id": "google-research",
-      "title": "波形から知性へ：聴覚知性のための新しいベンチマーク"
+      "title": "音響知能の新しいベンチマーク「MSEB」：波形から知恵へ"
     },
     {
       "canonical_url": "https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/",
@@ -943,11 +943,11 @@
       "id": "a45ba3dc4525dad3020f1dbcfefe9f74c470e17fd7fa5f9c0c25b0f5defa288f",
       "llm_input_truncated": false,
       "path": "notes/a45ba3dc4525dad3020f1dbcfefe9f74c470e17fd7fa5f9c0c25b0f5defa288f.md",
-      "processed_at": "2026-10-09T02:11:41.001600+00:00",
+      "processed_at": "2026-10-12T01:53:38.350965+00:00",
       "published": "2026-04-22",
-      "sha256": "c4a2951f195b18b9f9814b518709b7d76e2fd707bdbb2be3afe53041c1791afc",
+      "sha256": "8fb225100aa1eee013476420359b24a1f11dbb1b2278eceff2c3d108a342ba0e",
       "source_id": "google-research",
-      "title": "アングルを変える新しい写真編集：Googleフォトの自動フレーム機能で写真を再構成する"
+      "title": "写真の再構成：アングルを調整する新しい3D認識型画像編集手法"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/reviewbench-an-open-benchmark-for-ai-code-review/",
@@ -979,9 +979,9 @@
       "id": "a6cfbe8aee6ba8baf522dacd144afc209da9a350e9899ebb6e8fb0a897191382",
       "llm_input_truncated": false,
       "path": "notes/a6cfbe8aee6ba8baf522dacd144afc209da9a350e9899ebb6e8fb0a897191382.md",
-      "processed_at": "2026-10-07T01:34:19.676919+00:00",
+      "processed_at": "2026-10-12T01:52:09.926311+00:00",
       "published": "2026-04-16",
-      "sha256": "69a31a39300d9653f9eedb7285ece2b87faadabdaae11dc5be78ddb152a53958",
+      "sha256": "89d7f0eff2bc43af6d6748d677e711e94de7d99b8f806824112f9be80266bf2a",
       "source_id": "google-research",
       "title": "AI生成による合成ニューロンが脳マッピングを加速"
     },
@@ -989,35 +989,35 @@
       "canonical_url": "https://research.google/blog/google-research-at-the-check-up-from-healthcare-innovation-to-real-world-care-settings/",
       "category": "ai-llm",
       "id": "ab8c768c53525fa7ce59bb8ee32f5ffb534a74d046388f6484016639266a5973",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/ab8c768c53525fa7ce59bb8ee32f5ffb534a74d046388f6484016639266a5973.md",
-      "processed_at": "2026-10-08T01:56:30.322262+00:00",
+      "processed_at": "2026-10-12T01:53:28.692943+00:00",
       "published": "2026-03-17",
-      "sha256": "63463dbd24a265a382f1a959b4021b69c51fdbe8374cf60a33f8ce3ea5aa2ee0",
+      "sha256": "0bb54ad70eb3882a273af7401a369cc05f6e87b43663ae9b74c028ea5359acc6",
       "source_id": "google-research",
-      "title": "Google Researchが「The Check Up」で発表：ヘルスケアのイノベーションから現実の医療現場へ"
+      "title": "Google Researchが「The Check Up」で発表した医療分野におけるAIイノベーションと実世界への適用"
     },
     {
       "canonical_url": "https://research.google/blog/timesfm-3-a-zero-shot-foundation-model-for-multivariate-forecasting/",
       "category": "ai-llm",
       "id": "adf7a528492756ce90acb0f113354dc201baf172707421dbaf9eb8e24f08e130",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/adf7a528492756ce90acb0f113354dc201baf172707421dbaf9eb8e24f08e130.md",
-      "processed_at": "2026-10-06T02:21:38.176058+00:00",
+      "processed_at": "2026-10-12T01:54:43.270101+00:00",
       "published": "2026-08-31",
-      "sha256": "f095d6352389f2d97dc4ab2cba2671b4e27ace19a995522902d764ed80f022d2",
+      "sha256": "90e90d81f3e1d4ea38bc2af7af89c56cf4fc944546ea0d8cecbfb356cbe59f02",
       "source_id": "google-research",
-      "title": "TimesFM-3：多変量時系列予測のためのゼロショット基盤モデル"
+      "title": "TimesFM-3：多変量予測のためのゼロショット基盤モデル"
     },
     {
       "canonical_url": "https://research.google/blog/private-analytics-via-zero-trust-aggregation/",
       "category": "cybersecurity",
       "id": "af5ed97639220a60acd515c72d575e558a68c6261129038e869aa1f0cb82561f",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/af5ed97639220a60acd515c72d575e558a68c6261129038e869aa1f0cb82561f.md",
-      "processed_at": "2026-10-09T02:12:00.248893+00:00",
+      "processed_at": "2026-10-12T01:53:58.727163+00:00",
       "published": "2026-05-27",
-      "sha256": "eb83c0d29a4e0c81498c494dd56873b27ae8df489457569185f5079ebdbb3f89",
+      "sha256": "b41a3c48cd85a4c87d7af44dd5a73e8ac3e654b98b04fd6a8dc85e3a7d3119a8",
       "source_id": "google-research",
       "title": "ゼロトラスト集約によるプライベートアナリティクス"
     },
@@ -1059,51 +1059,51 @@
     },
     {
       "canonical_url": "https://research.google/blog/exploring-a-space-based-scalable-ai-infrastructure-system-design/",
-      "category": "cloud",
+      "category": "ai-llm",
       "id": "b48dfcb9191f34fffab38cb4e07426b18692bcf90f04bed1304e5c5f737a2445",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/b48dfcb9191f34fffab38cb4e07426b18692bcf90f04bed1304e5c5f737a2445.md",
-      "processed_at": "2026-10-02T01:42:13.205906+00:00",
+      "processed_at": "2026-10-12T01:53:03.375546+00:00",
       "published": "2025-11-04",
-      "sha256": "dbb660ac57e7f20dde6dfea28ea195f2cbb412076113a8d3ebf4ab34fd5a4c21",
+      "sha256": "2f2742926acd2c1b29b148ae505eaa2f074365c4e6ad6da09dd273ff5942e030",
       "source_id": "google-research",
-      "title": "宇宙ベースの拡張可能なAIインフラストラクチャシステム設計の探索"
+      "title": "将来の宇宙ベースにおけるスケーラブルなAIインフラストラクチャシステム設計の探索"
     },
     {
       "canonical_url": "https://research.google/blog/earth-ais-planetary-geospatial-foundation-models-for-global-public-health/",
       "category": "ai-llm",
       "id": "b496ab471e0ffc5b7e57af226dde207b073e6e9e136c8e28fe331239d717d999",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/b496ab471e0ffc5b7e57af226dde207b073e6e9e136c8e28fe331239d717d999.md",
-      "processed_at": "2026-10-09T02:10:54.298194+00:00",
+      "processed_at": "2026-10-12T01:52:48.682216+00:00",
       "published": "2026-10-06",
-      "sha256": "538cb95c11f4475e8ce2ab0cbf8ca8ec1b8f8fef69a32abb67eecf0f6b26a1e3",
+      "sha256": "f628a815a7c21ead3d3e1a62046e9b35d2eddf708643329fb8f435cd025dd7ef",
       "source_id": "google-research",
-      "title": "地球規模の公衆衛生に向けたGoogle Earth AIの地理空間基盤モデルの活用"
+      "title": "グローバル公衆衛生に向けたGoogle Earth AIの惑星規模地理空間基盤モデルの活用"
     },
     {
       "canonical_url": "https://research.google/blog/accelerating-the-magic-cycle-of-research-breakthroughs-and-real-world-applications/",
       "category": "ai-llm",
       "id": "b70df63d418d3c793deaf23ffea9eb59d29e7574d3f744e132090fe3ec1f6c34",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/b70df63d418d3c793deaf23ffea9eb59d29e7574d3f744e132090fe3ec1f6c34.md",
-      "processed_at": "2026-10-08T01:59:06.716740+00:00",
+      "processed_at": "2026-10-12T01:52:03.291301+00:00",
       "published": "2025-10-31",
-      "sha256": "eb7058f7ef583abebd97aea0a30ad15220d07d5be73bf5f49d448c28dd053dfd",
+      "sha256": "8e7cff18f297b032975582a1653f0e646c49991de87af85ed30b02a132922862",
       "source_id": "google-research",
-      "title": "研究のブレークスルーと現実世界の応用のマジックサイクルを加速する"
+      "title": "研究のブレイクスルーと現実世界の応用を結ぶマジック・サイクルの加速"
     },
     {
       "canonical_url": "https://research.google/blog/protecting-cities-with-ai-driven-flash-flood-forecasting/",
       "category": "ai-llm",
       "id": "b77e976b0af2edc1f9c384517bb031aa4c49d260ef92987a0abee1d9a5933c93",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/b77e976b0af2edc1f9c384517bb031aa4c49d260ef92987a0abee1d9a5933c93.md",
-      "processed_at": "2026-10-08T01:57:44.200904+00:00",
+      "processed_at": "2026-10-12T01:54:03.826487+00:00",
       "published": "2026-03-12",
-      "sha256": "667f7697081ae9bb4d13565f01c0006daf0e572199821dd07a323bcfe1aeacc5",
+      "sha256": "c29031c34d521988ea849a3773b4c4b8450ed3627a6347946ab4fbeed4fc048b",
       "source_id": "google-research",
-      "title": "AI駆動型の都市向け突発洪水予測による気候レジリエンスの強化"
+      "title": "都市の保護：AIを活用した都市型突発洪水予測の導入"
     },
     {
       "canonical_url": "https://research.google/blog/transfer-learning-for-genomic-prediction-in-underrepresented-populations/",
@@ -1133,13 +1133,13 @@
       "canonical_url": "https://research.google/blog/separating-natural-forests-from-other-tree-cover-with-ai-for-deforestation-free-supply-chains/",
       "category": "ai-llm",
       "id": "bb0f8df115dcedfaac384922c4ba47da2b8c8542ce35b872a5b6429148138de6",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/bb0f8df115dcedfaac384922c4ba47da2b8c8542ce35b872a5b6429148138de6.md",
-      "processed_at": "2026-10-08T01:58:14.859379+00:00",
+      "processed_at": "2026-10-12T01:54:18.713703+00:00",
       "published": "2025-11-13",
-      "sha256": "9e67ddf1f0d469fdc48206eacce22edfcadea0b28007df7a1376760f1128a355",
+      "sha256": "15f5e6ea4bfc8b6c9d4daf095d3dbe32bf622dc86e11ff9d3e4a71b242b8d651",
       "source_id": "google-research",
-      "title": "AIを活用して天然林とその他の樹木被覆を区別し、森林破壊のないサプライチェーンを実現する"
+      "title": "AIを活用して天然林を他の樹木被覆から分離し、森林破壊のないサプライチェーンを実現"
     },
     {
       "canonical_url": "https://research.google/blog/open-and-emergent-problems-in-agentic-privacy-and-security-a-contextual-angle/",
@@ -1157,23 +1157,23 @@
       "canonical_url": "https://research.google/blog/the-next-chapter-in-flood-resilience-open-sourcing-googles-hydrology-framework/",
       "category": "ai-llm",
       "id": "be3678d031df0c5457deb515707dfba99a92f3c418620c1bf756dc04c55a4c70",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/be3678d031df0c5457deb515707dfba99a92f3c418620c1bf756dc04c55a4c70.md",
-      "processed_at": "2026-10-09T02:12:56.290695+00:00",
+      "processed_at": "2026-10-12T01:54:33.768652+00:00",
       "published": "2026-06-03",
-      "sha256": "03f5d9af7fc8dda0ef561e83927db0cb005f13d2e0f467a76b904a554d81d50a",
+      "sha256": "31551516a65bba94877232284a97c69e37bd3cf15bab445db3d79bcdc7ac4256",
       "source_id": "google-research",
-      "title": "洪水レジリエンスの新たな章：Googleの水文学フレームワークのオープンソース化"
+      "title": "洪水レジリエンスの次の章：Googleの水文学フレームワークのオープンソース化"
     },
     {
       "canonical_url": "https://research.google/blog/empirical-research-assistance-era-from-nature-publication-to-catalyzing-computational-discovery/",
       "category": "ai-llm",
       "id": "c1c94507726f69be032c5b6edfb38af0e6afdcb241d1ab6d95348545f7dc5bfd",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/c1c94507726f69be032c5b6edfb38af0e6afdcb241d1ab6d95348545f7dc5bfd.md",
-      "processed_at": "2026-10-07T01:35:02.121279+00:00",
+      "processed_at": "2026-10-12T01:52:53.257714+00:00",
       "published": "2026-05-19",
-      "sha256": "825a2b37c82ddd15b2b60cd81a1498d00dee8be7e582833dead7c99cceb5b062",
+      "sha256": "2716e9f14a443aef2cab66bb7ae70d5d9d0d565f9399256b13c083b4cdabae68",
       "source_id": "google-research",
       "title": "Empirical Research Assistance (ERA): Nature誌への掲載から計算科学的発見の促進へ"
     },
@@ -1325,13 +1325,13 @@
       "canonical_url": "https://research.google/blog/research-into-how-ai-can-help-users-understand-skin-conditions/",
       "category": "ai-llm",
       "id": "ea62700d3eb46ce8737e965a29217c6971baf4d71ade5c40d4d5ed02f7592859",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/ea62700d3eb46ce8737e965a29217c6971baf4d71ade5c40d4d5ed02f7592859.md",
-      "processed_at": "2026-10-08T01:58:00.917820+00:00",
+      "processed_at": "2026-10-12T01:54:08.663034+00:00",
       "published": "2026-06-12",
-      "sha256": "c3cd1e948ba2c204b13ab39c5a89d406a2b4a163455ef073d110d16ced78d2ea",
+      "sha256": "694d410dac12dc4b785c2ca31740d5a536f9b57ae35356ad35ccaa7178d11ad3",
       "source_id": "google-research",
-      "title": "皮膚疾患の理解を支援するAIツールの活用に関する研究"
+      "title": "AIがユーザーの皮膚疾患の理解をどのように支援できるかに関する研究"
     },
     {
       "canonical_url": "https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/",
@@ -1397,25 +1397,25 @@
       "canonical_url": "https://research.google/blog/collaborating-on-a-nationwide-randomized-study-of-ai-in-real-world-virtual-care/",
       "category": "ai-llm",
       "id": "f14143887a8c22222cd375e198ceb0f3abda1f82e05127978d65d862385e3f73",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/f14143887a8c22222cd375e198ceb0f3abda1f82e05127978d65d862385e3f73.md",
-      "processed_at": "2026-10-07T01:34:41.810877+00:00",
+      "processed_at": "2026-10-12T01:52:29.365733+00:00",
       "published": "2026-02-03",
-      "sha256": "9ca53779d9da622d6099000acab70919bc62c48598e97a8f1374581a43b62a0c",
+      "sha256": "1e34a731afc0ec4ed43a47d5bc3002089aff7d565e921eeaf0a3e8e5d5718556",
       "source_id": "google-research",
-      "title": "リアルなバーチャルケアにおけるAIの全国規模のランダム化試験での協業について"
+      "title": "実際の仮想ケアにおける医療用AIの全国規模のランダム化試験に向けた提携について"
     },
     {
       "canonical_url": "https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/",
       "category": "ai-llm",
       "id": "f4a65d3696ddee23531e2ed23c7ea45f957f5d5cceb24c08f18188e392c93368",
-      "llm_input_truncated": true,
+      "llm_input_truncated": false,
       "path": "notes/f4a65d3696ddee23531e2ed23c7ea45f957f5d5cceb24c08f18188e392c93368.md",
-      "processed_at": "2026-10-10T01:48:20.786581+00:00",
+      "processed_at": "2026-10-12T01:54:53.282371+00:00",
       "published": "2026-03-24",
-      "sha256": "a5320f7e499698ed54fd9f09b9bba57df98b328b3fa7bea5b6a088b1ee80f8f2",
+      "sha256": "a90a23b77842ab02b0d0ef440b157dc263293a36656d2a725f82380dfb6d813f",
       "source_id": "google-research",
-      "title": "TurboQuant: 極限圧縮によるAI効率の再定義"
+      "title": "TurboQuant: 究極の圧縮でAIの効率を再定義する"
     },
     {
       "canonical_url": "https://research.google/blog/ds-star-a-state-of-the-art-versatile-data-science-agent/",
@@ -1495,11 +1495,11 @@
       "id": "fef3639cf8a773dc96e0076d1b7f102443bf5ed4e8a6156a15799fab070c932c",
       "llm_input_truncated": false,
       "path": "notes/fef3639cf8a773dc96e0076d1b7f102443bf5ed4e8a6156a15799fab070c932c.md",
-      "processed_at": "2026-10-08T01:56:36.874367+00:00",
+      "processed_at": "2026-10-12T01:53:33.606605+00:00",
       "published": "2026-02-05",
-      "sha256": "9dc749f85f18d689abcbdf71cc7caa577300023224af7a2eeb8acfcdcb704917",
+      "sha256": "99e9c799b6b4741733308154373fdc115c7c7babfcb1eff9923649fa3a7cb524",
       "source_id": "google-research",
-      "title": "AIツールがアクセシビリティを向上させるためにユニバーサルデザインをどう再定義するか"
+      "title": "生成AIによるユニバーサルデザインの再定義：アクセシビリティの向上とNatively Adaptive Interfaces"
     }
   ],
   "schema_version": 1
