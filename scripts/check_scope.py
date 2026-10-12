@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 
-SOURCES_TESTS = ['test_extraction', 'test_google_research', 'test_deepmind', 'test_html_cleaner', 'test_images', 'test_fetcher', 'test_regression_corpus']
+SOURCES_TESTS = ['test_extraction', 'test_google_research', 'test_deepmind', 'test_new_rss_sources', 'test_html_cleaner', 'test_images', 'test_fetcher', 'test_regression_corpus']
 APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_batch', 'test_usage_recovery']
 
 
