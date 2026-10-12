@@ -1,7 +1,8 @@
 http:
   timeout_seconds: 20
   retries: 3
-  user_agent: TechKnowledgeCollector/0.1
+  # Dedicated to article retrieval for AI summarization; do not impersonate other bots.
+  user_agent: "KanameAISummarizer/0.1 (+https://github.com/Ningensei848/kaname)"
   max_response_bytes: 10000000
 processing:
   # Only article fetch/convert runs concurrently; paid work and state have one writer.
