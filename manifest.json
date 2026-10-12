@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "d12a18435e240adba90dd0750135e6a8894d325a9572302838043cd44ea781c0",
+  "dataset_digest": "bfdd3c297fcf1b2d2838a88ff8a647a0b6cb7db409dee4d5b9a624466940664a",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1404,6 +1404,18 @@
       "sha256": "1e34a731afc0ec4ed43a47d5bc3002089aff7d565e921eeaf0a3e8e5d5718556",
       "source_id": "google-research",
       "title": "実際の仮想ケアにおける医療用AIの全国規模のランダム化試験に向けた提携について"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/10-years-of-alphago/",
+      "category": "ai-llm",
+      "id": "f2aea78fbc103516201e73af7db0ab5b88e41a6a6166b523d0b2622fbf78f7fb",
+      "llm_input_truncated": false,
+      "path": "notes/f2aea78fbc103516201e73af7db0ab5b88e41a6a6166b523d0b2622fbf78f7fb.md",
+      "processed_at": "2026-10-12T06:05:44.301239+00:00",
+      "published": "2026-03-09",
+      "sha256": "ef83d4d8e49be22b453cf2cc419f1bd007aeaf8da8c1e0e37a620ab978bd3320",
+      "source_id": "google-deepmind",
+      "title": "ゲームから生物学へ：AlphaGoの衝撃から10年"
     },
     {
       "canonical_url": "https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/",
