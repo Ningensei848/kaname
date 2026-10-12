@@ -37,6 +37,8 @@ sources:
     type: rss
     feed_url: https://deepmind.google/blog/rss.xml
     base_url: https://deepmind.google/
+    # Cross-posts to other Google sites are outside this initial acceptance.
+    article_domains: [deepmind.google, blog.google]
     # DeepMind legacy body sections and redirected Google Blog articles.
     extract_main: true
     content_selector: "body.template-blog-page main > section:has(.rich-text), article.uni-article-wrapper"

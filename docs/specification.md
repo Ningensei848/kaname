@@ -83,7 +83,9 @@ Pagesの表示中のcommit/digestを確認でき、利用側も同じ版を取�
 ## 収集基盤との互換性
 
 既存のstandard収集、CLI/パッケージ名`techkb`、設定、GCS保存形式、重複判定を維持します。
-既定はGoogle Research/GitHub Blog、HTTP/RSS、standard、30件/run、minimalです。
+有効sourceはGoogle Research/GitHub Blog/Google DeepMind、HTTP/RSS、standard、全source合計30件/run、minimalです。
+DeepMindは最終article hostを`deepmind.google`/`blog.google`に限定し、対象外redirectは本文変換・生成前にfilterします。
+`article_domains`が空のsourceは従来の取得先判定を維持します。本文は新旧のsource固有セレクタで取得し、不一致なら生成前に失敗としてpendingへ残します。
 本文抽出・ブラウザ・raw保存・Batch切替は明示設定とします。
 Google Researchの本文入力と画像候補は`.blog-detail-wrapper`内の本文・図・キャプションを使い、
 ページのナビゲーションや関連記事で20,000文字の入力枠を消費しません。selector不一致は失敗としてpendingへ残します。

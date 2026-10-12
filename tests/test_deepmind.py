@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from techkb.config import load_config
+from techkb.fetcher import FetchResult
 from techkb.state import State
 
 
@@ -46,3 +47,41 @@ def test_body_layout_missing_stops_before_paid_request(harness):
     report = h.pipeline.run()
     assert report.status == 'failed' and report.pending_after == 1
     assert not h.sdk.calls and not State(h.store).rows
+
+
+@pytest.mark.parametrize('workers', [1, 2])
+@pytest.mark.parametrize('dry_run', [False, True])
+def test_outside_final_host_is_filtered_before_conversion_or_generation(harness, workers, dry_run):
+    h = harness
+    h.app.processing.workers = workers
+    h.source.article_domains = ['example.com', 'blog.example.com']
+    h.source.content_selector = '.missing'
+    original = h.fetcher.get
+    def get(url, *args, **kwargs):
+        result = original(url, *args, **kwargs)
+        return result if url.endswith('feed.xml') else FetchResult(
+            result.content, 'https://outside.example/post', 200, 'text/html')
+    h.fetcher.get = get
+    report = h.pipeline.run(dry_run=dry_run)
+    assert report.status == 'success' and report.filtered == 1
+    assert report.filter_reasons == {'article_domain_not_allowed': 1}
+    assert report.pending_after == 0 and report.source_completed_ids == ['example']
+    assert not h.sdk.calls and h.converter.calls == 0
+    assert not h.store.list('notes/') and not h.store.list('state/receipts/')
+    if dry_run:
+        assert not h.store.writes
+
+
+@pytest.mark.parametrize('final_host', ['example.com', 'blog.example.com'])
+def test_allowed_final_host_preserves_article_generation(harness, final_host):
+    h = harness
+    h.source.article_domains = ['EXAMPLE.COM.', 'blog.example.com']
+    original = h.fetcher.get
+    def get(url, *args, **kwargs):
+        result = original(url, *args, **kwargs)
+        return result if url.endswith('feed.xml') else FetchResult(
+            result.content, f'https://{final_host}/post', 200, 'text/html')
+    h.fetcher.get = get
+    report = h.pipeline.run()
+    assert report.status == 'success' and report.saved == 1
+    assert report.filtered == 0 and len(h.sdk.calls) == 1
