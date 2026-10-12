@@ -26,7 +26,7 @@ def parse_args(argv):
     parser.add_argument("--remote", action="store_true", help="GET the existing Batch result; batch-inspect only")
     parser.add_argument("--job-name", help="matching Gemini job resource name; batch-bind only")
     parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
-    parser.add_argument("--max-calls", type=int, help="reduce run limit (0..configured limit)")
+    parser.add_argument("--max-calls", type=int, help="run limit; increases require a standard --max-cost-usd cap")
     parser.add_argument("--max-cost-usd", type=Decimal, help="estimated standard generation cost cap for this run; stops on uncertain usage")
     return parser.parse_args(argv)
 
@@ -36,14 +36,14 @@ def validate_args(args, app):
         raise ValueError("LLM overrides require run or dry-run")
     if args.llm_mode:
         app.llm.mode=args.llm_mode
-    if args.max_calls is not None:
-        if not 0 <= args.max_calls <= app.llm.max_calls_per_run:
-            raise ValueError("--max-calls must reduce the configured limit")
-        app.llm.max_calls_per_run=args.max_calls
     if args.max_cost_usd is not None:
         if args.command != "run":
             raise ValueError("--max-cost-usd requires standard run")
         validate_budget(app, args.max_cost_usd)
+    if args.max_calls is not None:
+        if args.max_calls < 0 or (args.max_cost_usd is None and args.max_calls > app.llm.max_calls_per_run):
+            raise ValueError("increasing --max-calls requires a standard cost cap")
+        app.llm.max_calls_per_run=args.max_calls
     if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "export-notes"}:
         raise ValueError("--state-dir requires a command supporting read-only snapshots")
     if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:

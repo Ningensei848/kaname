@@ -38,7 +38,7 @@ on:
         options: [configured, standard, batch]
         default: configured
       max_calls:
-        description: 'Reduce the configured call/request limit (empty keeps app.yaml)'
+        description: 'Run call/request limit; increases require max_cost_usd with standard mode'
         type: string
         default: ''
       max_cost_usd:
