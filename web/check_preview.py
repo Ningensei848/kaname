@@ -12,6 +12,7 @@ from serve import WEB, server
 from kaname_web.artifact import load_artifact
 from techkb.publication import sha256
 from image_acceptance import approved_images, image_guard, check_images
+from link_acceptance import audit_search_links, audit_note_anchors, check_search_click
 
 
 def check(artifact, screenshots=None):
@@ -20,6 +21,8 @@ def check(artifact, screenshots=None):
         raise ValueError("fixture_required")
     manifest = json.loads(files["markdown/manifest.json"])
     note_files = {name.removeprefix('markdown/'): data for name, data in files.items() if name.startswith('markdown/')}
+    search_links = audit_search_links(manifest, note_files, files)
+    audit_note_anchors(files)
     image_entries = approved_images(manifest, note_files)
     approved = {image['url'] for images in image_entries.values() for image in images}
     httpd = server(artifact, 0)
@@ -54,7 +57,8 @@ def check(artifact, screenshots=None):
             expect(page.locator("h1.article-title")).to_have_text("失敗から再実行できるバッチ設計")
             expect(page.locator("article")).to_contain_text("先頭20,000文字だけを要約")
             expect(page.locator("article")).to_contain_text("知識の育て方")
-            assert page.locator('article a').filter(has_text="知識の育て方").count() == 0
+            expect(page.locator('article a.concept-search').filter(has_text="知識の育て方")).to_have_count(1)
+            search_clicks = check_search_click(context, page)
             related = page.locator('article a').filter(has_text="検索から知識にたどり着く").first
             related.click()
             expect(page.locator("h1.article-title")).to_have_text("検索から知識にたどり着く")
@@ -97,6 +101,7 @@ def check(artifact, screenshots=None):
     finally:
         httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status="passed", notes=len(manifest["notes"]), browser="chromium", external_requests=0,
+                search_links=search_links, offline_search_clicks=search_clicks,
                 approved_image_requests=len(image_requests),
                 dataset_digest=marker["dataset_digest"])
 

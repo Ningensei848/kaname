@@ -15,11 +15,14 @@ from kaname_web.artifact import load_artifact
 from techkb.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
 from image_acceptance import approved_images, image_guard, check_images
+from link_acceptance import audit_search_links, audit_note_anchors, check_search_click
 
 
 def check(content, commit, artifact):
     manifest, original, _ = content_snapshot(content, commit)
     marker, files = load_artifact(artifact)
+    search_links = audit_search_links(manifest, original, files)
+    audit_note_anchors(files)
     image_entries = approved_images(manifest, original)
     approved = {image['url'] for images in image_entries.values() for image in images}
     if (not public_version_matches(marker, commit) or
@@ -56,6 +59,7 @@ def check(content, commit, artifact):
     origin = f'http://127.0.0.1:{httpd.server_port}'
     home = origin + '/kaname/'
     errors, external, image_requests = [], [], []
+    search_clicks = 0
     try:
         with sync_playwright() as runtime:
             browser = runtime.chromium.launch()
@@ -77,6 +81,7 @@ def check(content, commit, artifact):
                 result.click()
                 expect(page.locator('h1.article-title')).to_have_text(entry['title'])
                 expect(page.locator('.source-link')).to_have_attribute('href', entry['canonical_url'])
+                search_clicks = check_search_click(context, page)
                 response = context.request.get(home + 'markdown/' + entry['path'])
                 assert response.ok and response.body() == original[entry['path']], 'pages_note_bytes_mismatch'
             for entry in manifest['notes']:
@@ -99,6 +104,7 @@ def check(content, commit, artifact):
         httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status='passed', notes=len(manifest['notes']), content_commit=commit,
                 dataset_digest=manifest['dataset_digest'], external_requests=0,
+                search_links=search_links, offline_search_clicks=search_clicks,
                 approved_image_requests=len(image_requests))
 
 

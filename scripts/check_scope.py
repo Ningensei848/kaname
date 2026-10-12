@@ -24,7 +24,7 @@ def classify(paths):
             pass
         elif path.startswith(('src/', 'tests/')) or path in {'pyproject.toml', 'requirements.lock', 'requirements-browser.lock'}:
             scopes.add('full')
-            if path.startswith(('src/techkb/publication/', 'src/techkb/pages', 'src/techkb/site', 'src/techkb/composer', 'src/techkb/models', 'src/techkb/config', 'src/techkb/normalize', 'src/techkb/hashes', 'src/techkb/images', 'tests/test_publication', 'tests/test_site', 'tests/test_pages')):
+            if path.startswith(('src/techkb/publication/', 'src/techkb/pages', 'src/techkb/site', 'src/techkb/composer', 'src/techkb/markup', 'src/techkb/wikilinks', 'src/techkb/models', 'src/techkb/config', 'src/techkb/normalize', 'src/techkb/hashes', 'src/techkb/images', 'tests/test_publication', 'tests/test_site', 'tests/test_pages', 'tests/test_wikilinks')):
                 web = True
         else:
             scopes.add('full'); web = True

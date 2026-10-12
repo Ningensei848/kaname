@@ -3,16 +3,8 @@ import unicodedata
 from urllib.parse import urlsplit
 import yaml
 from .images import selected_images
-
-def plain(value):
-    return " ".join(str(value).split())
-
-def inline(value):
-    value = plain(value)
-    return re.sub(r"([\\`*_{}\[\]()<>!#|])", r"\\\1", value)
-
-def concept(value):
-    return re.sub(r"[\[\]#|^<>\\/:*?\"]", " ", plain(value)).strip(" .")[:160]
+from .markup import plain, inline, concept
+from .wikilinks import linked_inline
 
 def word_count(value):
     return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[ぁ-んァ-ヶ一-龠]+", value))
@@ -76,6 +68,7 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
     if input_char_limit is not None:
         metadata["llm_input_max_chars"] = input_char_limit
     images = selected_images(enrichment, image_candidates)
+    concepts = list(dict.fromkeys(c for v in enrichment.related_concepts if (c := concept(v))))
     if images:
         metadata["article_images"] = images
     sections = ["---", yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False).rstrip(), "---", "",
@@ -86,12 +79,11 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
                      f"> 入力上限により、変換後の本文の{scope}だけを要約しています。",
                      "> 記事後半の論点が含まれない場合があります。記事全体の確認には出典URLを参照してください。", ""]
     sections += ["> [!abstract] AI要約"]
-    sections.extend("> " + inline(line) for line in enrichment.summary_ja.splitlines())
-    sections += ["", "## 重要ポイント", ""] + ["- " + inline(v) for v in enrichment.key_points]
-    concepts = list(dict.fromkeys(c for v in enrichment.related_concepts if (c := concept(v))))
+    sections.extend("> " + linked_inline(line, concepts) for line in enrichment.summary_ja.splitlines())
+    sections += ["", "## 重要ポイント", ""] + ["- " + linked_inline(v, concepts) for v in enrichment.key_points]
     sections += ["", "## 検索キーワード", ""] + [f"- [[{c}]]" for c in concepts]
     sections += ["", "## 資料の位置づけ", ""]
-    sections.extend(inline(line) for line in enrichment.positioning_ja.splitlines())
+    sections.extend(linked_inline(line, concepts) for line in enrichment.positioning_ja.splitlines())
     sections += ["", "---", "", "## 出典情報", "",
                  "- Title: " + inline(candidate.title or enrichment.title_ja),
                  "- Publisher/Site: " + inline(source.name),

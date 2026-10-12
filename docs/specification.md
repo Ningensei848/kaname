@@ -113,3 +113,9 @@ Quartz 5.0.0と固定pluginを使い、元Markdownを同じbytesで成果物に�
 ## Knowledge Graphの品質評価
 
 `graph-quality`は検証済み公開snapshotのタグ・検索キーワードWikiLinkを読取り専用で評価します。現行のタイトル完全一致と、NFKC/casefold/空白統一・明示同義語による解決案を比較します。一意な公開タイトルだけを候補とし、未解決・同名複数・自己参照を区別します。保存Note・Note ID・manifest・Web投影は変更しません。良否の評価例と対象範囲は[品質評価](graph-quality.md)を正本とします。
+
+
+## 検索語句と本文のリンク
+
+公開時にWikiLinkを一意な公開タイトルの内部Noteへ解決し、未解決・同名複数・公開除外はGoogle検索へフォールバックします。外部検索を識別できる表示・アクセシブルな説明を付け、別タブとnoopener/noreferrerを使います。コード・URL・既存リンク・画像を保持し、外部検索をgraph edgeへ数えません。
+新規Noteの要約・重要ポイント・資料の位置づけは、related_conceptsの固有語彙を共通composerでWikiLinkにします。旧Noteのbytes・ID・manifestを変更せず、要約字数・入力上限・LLM呼出し・Batch schemaも維持します。規則・限界・受入は[NS1記録](ns1-search-fallback.md)を正本とします。
