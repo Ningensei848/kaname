@@ -1,11 +1,14 @@
 """Read-only consistency checks for Phase 1 acceptance."""
 import json
 import re
+from decimal import Decimal
 from pathlib import PurePosixPath
 
 import yaml
 
 from .state import State
+from .config import TokenPrice
+from .budget import token_cost
 
 
 def audit_run(store, run_id, max_calls=30, expected_success_before=None):
@@ -33,7 +36,25 @@ def audit_run(store, run_id, max_calls=30, expected_success_before=None):
         return {"status": "failed", "audit": audit, "issues": [{"code": "invalid_report"}]}
     if report.get("run_id") != run_id or report.get("status") != "success" or report.get("dry_run") is not False or report.get("failures") != [] or report.get("record_kind", "collection") != "collection":
         issues.append({"code": "unsuccessful_report"})
-    if report["llm_calls"] + report.get("batch_submitted", 0) > max_calls or report["llm_failed"] or report.get("batch_failed", 0) or report["llm_processed"] != report["llm_calls"]:
+    call_limit_exceeded = report["llm_calls"] + report.get("batch_submitted", 0) > max_calls
+    if report.get("max_cost_usd") is not None:
+        # A bounded standard run may deliberately exceed the configured count.
+        # Audit its recorded monetary cap using known usage and original price.
+        try:
+            if not isinstance(report["max_cost_usd"], str):
+                raise ValueError("invalid cost cap")
+            limit = Decimal(report["max_cost_usd"])
+            price = TokenPrice.model_validate(report["token_price"])
+            value = token_cost(price, report["total_input_tokens"],
+                               report["total_output_tokens"] + report["total_thinking_tokens"])
+            if (not limit.is_finite() or limit <= 0 or report.get("llm_mode") != "standard" or
+                    report.get("batch_submitted", 0) or report.get("batch_saved", 0) or
+                    report["llm_usage_unavailable"] or report["llm_http_attempts"] != report["llm_calls"] or value > limit):
+                raise ValueError("invalid cost cap")
+            call_limit_exceeded = False
+        except (ValueError, KeyError, ArithmeticError):
+            issues.append({"code": "invalid_cost_cap"})
+    if call_limit_exceeded or report["llm_failed"] or report.get("batch_failed", 0) or report["llm_processed"] != report["llm_calls"]:
         issues.append({"code": "invalid_llm_counts"})
     if report["saved"] != report["llm_processed"] + report["recovered"] + report.get("batch_saved", 0):
         issues.append({"code": "invalid_saved_count"})

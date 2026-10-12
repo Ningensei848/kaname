@@ -28,3 +28,7 @@
 限定Noteは2画像・本文WikiLink 8件を含み、receipt/indexと同一であることを実GCS読取りで確認しました。次の[run 38192547670](https://github.com/Ningensei848/kaname/actions/runs/38192547670)をstandard/max_calls=30/max_cost_usd=0.9039089で提出し、同じwriter排他キューで待機しています。
 
 複数の成功runごとに全状態監査/公開を繰り返す費用を抑えるため、正の費用上限を指定したstandard実行に限り件数上限の拡大を許可する調整へ進みます。待機run 38192547670はwriter steps未開始を確認して取消し、生成/課金0です。通常設定30件・上限未指定の引上げ拒否・不明usage/結果拒否/耐久保存障害での停止は維持します。
+
+PR #166のPython/Web・[main CI 38193231300](https://github.com/Ningensei848/kaname/actions/runs/38193231300)成功後、[全保留run 38193431223](https://github.com/Ningensei848/kaname/actions/runs/38193431223)をstandard/max_calls=100/max_cost_usd=0.9039089で開始しました。先行の限定run 38192090307はcollection/audit/cost/Git/Pagesすべてsuccessで完了しました。
+
+`audit-run`も費用上限を元単価・確定usageで検証し、通常件数を越える正当なstandard実行を認識する調整を実施します。不明usage・再試行・単価欠損・費用超過・不正な上限は拒否し、上限未指定の既存件数判定を維持します。

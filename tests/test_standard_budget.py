@@ -141,3 +141,33 @@ def test_larger_run_without_valid_standard_budget_rejected(harness, options):
     with pytest.raises(ValueError):
         validate_args(parse_args(['run', '--max-calls', '100', *options]), harness.app)
     assert harness.app.llm.max_calls_per_run == 30
+
+
+def test_audit_accepts_larger_run_with_known_usage_within_recorded_cap(harness):
+    from techkb.audit import audit_run
+    two_articles(harness)
+    harness.app.llm.max_calls_per_run = 1
+    validate_args(parse_args(['run', '--max-calls', '2', '--max-cost-usd', '1']), harness.app)
+    r = capped(harness, Decimal('1'))
+    assert r.saved == r.llm_calls == 2
+    before = dict(harness.store.data)
+    assert audit_run(harness.store, r.run_id, max_calls=1, expected_success_before=0)['status'] == 'success'
+    assert harness.store.data == before
+    r.max_cost_usd = None
+    harness.store.data[next(n for n in harness.store.list('runs/'))] = r.to_bytes()
+    assert {'code': 'invalid_llm_counts'} in audit_run(harness.store, r.run_id, max_calls=1)['issues']
+
+
+@pytest.mark.parametrize('field,value', [
+    ('max_cost_usd', 'NaN'), ('max_cost_usd', 'Infinity'), ('max_cost_usd', '-1'),
+    ('max_cost_usd', 'invalid'), ('max_cost_usd', 1), ('max_cost_usd', '0.000001'),
+    ('token_price', None), ('llm_usage_unavailable', 1), ('llm_http_attempts', 2),
+    ('llm_mode', 'batch'), ('batch_submitted', 1), ('batch_saved', 1),
+])
+def test_audit_rejects_invalid_or_unverifiable_recorded_cost_cap(harness, field, value):
+    from techkb.audit import audit_run
+    r = capped(harness, Decimal('1'))
+    setattr(r, field, value)
+    harness.store.data[next(n for n in harness.store.list('runs/'))] = r.to_bytes()
+    result = audit_run(harness.store, r.run_id)
+    assert result['status'] == 'failed' and {'code': 'invalid_cost_cap'} in result['issues']

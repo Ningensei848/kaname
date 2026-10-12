@@ -26,7 +26,7 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 生成前に実際の入力・system/schemaのUTF-8 bytes、1,024 framing token相当、出力上限の2倍と全HTTP再試行回数から保守的に予約額を計算し、計測済みinput/output/thinking費用との合計が上限を越える記事は保留します。単価未定義・非有限/正でない上限はクライアント生成前に拒否します。APIが返したusageが欠ける、再試行が起きる、結果が厳格検証/画像組立てで拒否される場合は、次の有料呼出しへ進みません。既存のusage checkpoint・receipt・保存耐久性の停止条件も維持します。
 
-これは保存された単価とtoken見積りによるrun単位の制御で、確定請求・GCS/Actions費用や複数runの総上限を保証しません。複数runでは各runの実測usageを元単価で集計し、承認枠の残額を次の`max_cost_usd`に渡します。不明usageがあれば追加生成を停止して確認します。予算停止で保留が残るsourceは復旧完了になりません。`max_cost_usd`・`budget_deferred`・固定`budget_stop_reason`をrun reportに残します。
+これは保存された単価とtoken見積りによるrun単位の制御で、確定請求・GCS/Actions費用や複数runの総上限を保証しません。複数runでは各runの実測usageを元単価で集計し、承認枠の残額を次の`max_cost_usd`に渡します。不明usageがあれば追加生成を停止して確認します。予算停止で保留が残るsourceは復旧完了になりません。`max_cost_usd`・`budget_deferred`・固定`budget_stop_reason`をrun reportに残します。`audit-run`もこの上限を元単価・確定usageで照合し、費用制限付きstandardの件数拡大を認識します。不明usage・再試行・元単価の欠損・上限超過や不正な上限は監査を失敗させます。
 
 standardのLLM/compose失敗にはBatchと共通の安全な構造診断を記録します。型・既知field/error code・候補/選択/重複/候補外/配置不適合の件数だけを残し、APIエラー本文・生成文・画像IDを診断へ保存しません。
 
