@@ -9,10 +9,9 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 通常運用で継続 | 収集保留127件 | 2026-10-13通常日次は29保存/1生成失敗、成功index437。元未処理とRSSの追加候補を含む。日次・全source合計30件で順次処理 | source別内訳は認証更新後のsource-healthで確認。通常日次30呼出しUSD 0.076561も承認台帳へ合算し、残額USD 0.7094916。[現状](release-distribution.md) |
+| 通常運用で継続 | 収集保留127件 | 2026-10-13通常日次は29保存/1生成失敗、成功index437。元未処理とRSSの追加候補を含む。日次・全source合計30件で順次処理 | 独立照合でDeepMind70/GitHub1/Microsoft11/Meta12/Apple13/Cloudflare20を確認。通常日次30呼出しUSD 0.076561も承認台帳へ合算し、残額USD 0.7094916。[現状](release-distribution.md) |
 | 要対応・Open維持 | [#178 DeepMindのJSON打切り](https://github.com/Ningensei848/kaname/issues/178) | 通常日次の1件がMAX_TOKENS/json_invalid。29件は保存/公開済みだが、失敗した1件の成功受入は未完了 | 出力上限・費用/件数capを保った再検証を別途進める。配布成功を収集成功扱いにしない |
 | 後続候補 | GCS監査/export・HTMLの追加短縮 | 新規記事限定とRelease差分配布は受入完了。GCS全件監査・Quartz全体buildを維持 | 別run間の差分GCS監査、ReleaseのHTTP重複取得、検索/リンクの無効化を測定して判断。[現状](release-distribution.md) |
-| 認証更新後の補足 | ローカルGCS世代/元usageの独立再照合 | ADC期限切れ。Actions WIFによる437成功行/127保留の監査/exportと公開bytes照合はsuccess | `gcloud auth application-default login`後にsource別保留/全世代を確認。配布受入の追加生成/費用は0 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
@@ -22,7 +21,8 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 状態 | 作業 | 受入証拠 | 継続時の注意 |
 |---|---|---|---|
-| 完了（実Release/Actions受入） | [PR #179 Release差分配布](https://github.com/Ningensei848/kaname/pull/179) | Python693件/専用34件・PR/main CI成功。完全版125件から変更30件の差分で155件を復元し、旧126件不変・1,359検索リンク・実配信一致。2回の公開専用run全工程success、追加Release/asset/content commit 0 | GCS正本・content/submodule互換性を維持。独立したローカル世代照合はADC更新待ち。新規API費用0、通常日次の既知USD 0.076561は台帳へ合算。[受入](release-distribution.md) |
+| 完了（再認証後の独立読取り） | GCS保存/費用/公開版の補足照合 | 全437 Note/receipt/index整合・公開155件の全bytes/配信版一致・元費用不変。読取り前後で946オブジェクト世代/CRC不変、旧883オブジェクト/408成功行保持、未決済/不明usage0 | Source Healthのdegradedを維持し、#178は未解消。元の2公開run前の完全catalog不足を今回の前後比較と区別。[証拠](archive/2026-10/release-gcs-independent-acceptance-2026-10-13.json) |
+| 完了（実Release/Actions受入） | [PR #179 Release差分配布](https://github.com/Ningensei848/kaname/pull/179) | Python693件/専用34件・PR/main CI成功。完全版125件から変更30件の差分で155件を復元し、旧126件不変・1,359検索リンク・実配信一致。2回の公開専用run全工程success、追加Release/asset/content commit 0 | GCS正本・content/submodule互換性を維持。再認証後の独立照合も完了（946世代/CRC・元費用・公開bytes一致）。新規API費用0、通常日次の既知USD 0.076561は台帳へ合算。[受入](release-distribution.md) |
 | 完了（新規限定・実Actions受入） | [PR #176 新規記事だけの収集](https://github.com/Ningensei848/kaname/pull/176) | 659件・PR/main CI成功。RSS259/既知111 skip/本文HTTP0、収集543→32秒/日次930→351秒（生成0）。元保存884オブジェクト/費用/公開126件・配信不変、index408/pending148 | 未分類3件を含む保留を日次30件で処理。同じURLの編集は明示再検査。Release配布は後続PR #179で実装・本番受入。[受入/設計](incremental-collection.md) |
 | 完了（実Actions受入） | [PR #173 日次処理の短縮](https://github.com/Ningensei848/kaname/pull/173) | 同じ7社/生成0で全体39分22秒→15分30秒（60.63%短縮）、監査445→62秒/export825→13秒。Python642件・PR/main CI・本番全工程成功。index408/pending145・保存/元費用/公開126件・配信版を保持 | 追加Gemini USD 0。別run間の永続cacheは含めない。HTTP500履歴によるDeepMindのstreak1は未完了sourceの規則で保持。[受入記録](daily-performance.md) |
 | 完了（有効化・生成0本番受入） | [PR #171 追加4社の有効化](https://github.com/Ningensei848/kaname/pull/171) | 実49記事の取得/変換・Python632件/専用79件・PR/main CI成功。本番7 source成功、生成0/index408/pending145、既存881オブジェクト/元費用不変。全工程・公開126件/959検索リンク・保存bytes/配信版照合success | 追加API USD 0、承認残額USD 0.7860526。新4社の実Note生成は日次運用で順次処理。[受入記録](four-source-activation.md) |
