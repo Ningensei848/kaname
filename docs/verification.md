@@ -8,7 +8,8 @@
 
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
-| Release差分配布 | Python693件/専用34件、PR #179/main CIのGit/Release両入力・実Chromium成功。実125件完全版＋変更30件の差分で155件を配信。再実行でRelease/asset/content版不変、全Note/1,359リンク/配信一致、追加生成/費用0 | 再認証後の独立照合が成功。437 Note/receipt/index・155公開bytes・元費用が一致、読取り前後で全946オブジェクトの世代/CRC不変。HTML全体buildは維持。直前通常日次のMAX_TOKENS/json_invalid 1件は#178で未解消、29保存分は公開済み。[受入](release-distribution.md) |
+| 出力打切りの限定復旧 | PR #182・関連107件/全Python720件/actionlint・PR/main CI成功。失敗対象を1論理生成/1HTTPで厳格検証・保存・公開。input1,456/output514/thinking0、推計USD 0.0017218、不明usage0。index438/public156/pending126、旧437行と他候補保持 | 追加生成0の再実行も全工程success、保存/元費用/949既存世代/CRC・3 Release/6 assets・公開版不変、pending126のbytes保持（同内容の書直しだけ世代更新）。#178 Closed。通常出力2,048/30件/HTTP retry3の既定は維持。MAX_TOKENSを将来完全に防ぐ保証はない。[受入](output-recovery.md) |
+| Release差分配布 | Python693件/専用34件、PR #179/main CIのGit/Release両入力・実Chromium成功。実125件完全版＋変更30件の差分で155件を配信。再実行でRelease/asset/content版不変、全Note/1,359リンク/配信一致、追加生成/費用0 | 再認証後の独立照合が成功。437 Note/receipt/index・155公開bytes・元費用が一致、読取り前後で全946オブジェクトの世代/CRC不変。後続の復旧で変更1件の差分/depth2を追加し、156件/1,377リンクと配信一致。HTML全体buildは維持。[初回受入](release-distribution.md)・[復旧後](output-recovery.md) |
 | 日次runの読取り性能 | GCS最大8件並列取得・世代別のrunner内cache・live catalog再確認。実GCS監査/費用/公開digest一致、追加生成/書込み0 | Python642件・PR #173/mainのPython/Web CI成功。実Actionsで39分22秒→15分30秒、監査445→62秒/export825→13秒（追加download0）。全工程と保存/元費用/公開126件・配信不変を受入。[記録](daily-performance.md) |
 | 新規記事限定 | 成功URL事前除外・元URL/canonical alias・生成枠でHTTP停止・失敗/receipt/Batchの復旧・明示再検査を実装 | 全Python659件/新規17件・PR #176/main Python/Web CI成功。実RSS259/既知111 skip/本文HTTP0、収集543→32秒/全体930→351秒（生成0）。index408/pending148・保存/元費用/公開126件/配信不変を受入。[記録](incremental-collection.md) |
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |
@@ -20,7 +21,7 @@
 | 記事画像 | 候補ID/URL/配置、standard/Batchをoffline検証。GlucoFMの2図補完、実GCS/Git/Pages、375/1440pxの実画像読込みを受入済み | 新規Batch Noteの3画像実選択・保存/公開を受入。外部画像の内容・存続はGit版で固定できない |
 | 公開snapshot/Git | 初回公開と通常schedule受入済み。完了manifest・世代/bytes・競合拒否を検証 | 利用者Vault/プラグイン/NTFSは別の受入 |
 | Web/Pages | fixture/固定Git版、元Markdown、検索・内部リンク・画面幅・配信版照合を検証。初回公開・通常schedule・切戻し/復帰、責務整理後の124件版の本番更新・配信照合を受入済み | — |
-| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。2026-10-12に通常収集の復旧とゼロ生成再実行でindex407/pending0・両source healthy/連続失敗0を実GCSで確認。後続DeepMind限定受入はindex408/pending96・既存2 source healthy・DeepMind unverified/連続失敗0。追加4社の本番収集後はindex408/pending145、既存2社healthy/DeepMindと追加4社unverified、全7社の連続失敗0。その後の性能測定の一時HTTP500履歴でDeepMindはfailing/streak1を保持（再収集は成功・pending96件未完了）、他sourceの状態は維持。新規限定の生成0後はpending148/DeepMind99（未分類3件を含む）、streak1を保持。2026-10-13の独立照合は437成功行/127保留、Google Research healthy・GitHub incomplete/1保留・DeepMind failing/streak2/70保留、追加4社unverified。失敗を配布成功でresetしない |
+| Source Health | 読取り専用CLI、時刻順、旧計数null、source完了とstreakをoffline検証 | 2026-10-11に実ADC/GCS読取りを受入。2026-10-12に通常収集の復旧とゼロ生成再実行でindex407/pending0・両source healthy/連続失敗0を実GCSで確認。後続DeepMind限定受入はindex408/pending96・既存2 source healthy・DeepMind unverified/連続失敗0。追加4社の本番収集後はindex408/pending145、既存2社healthy/DeepMindと追加4社unverified、全7社の連続失敗0。その後の性能測定の一時HTTP500履歴でDeepMindはfailing/streak1を保持（再収集は成功・pending96件未完了）、他sourceの状態は維持。新規限定の生成0後はpending148/DeepMind99（未分類3件を含む）、streak1を保持。2026-10-13の独立照合は437成功行/127保留、Google Research healthy・GitHub incomplete/1保留・DeepMind failing/streak2/70保留、追加4社unverified。後続の限定復旧と生成0再実行後は438成功行/126保留、DeepMind31成功行/69保留/failing/streak2、他sourceの状態は維持。失敗を配布成功でresetしない |
 | CI対象選択 | 固定base/head分類、設定のみPRの必要検査成功・Web省略、本体PRのPython全460件/Web成功 | 未知path・比較失敗では全検査 |
 | Regression Corpus | 有効7 source・8レイアウトの合成HTML・本文/画像golden・差分検出9件を検証 | 実サイトの将来のDOM変更を自動取得する機能ではない |
 | Parallel Processing | fetch/convert最大2件、入力順・単一writer・host間隔・robots・課金停止の回帰12件を検証 | 本番の時間短縮は未計測。workers: 1で逐次へ戻せる |

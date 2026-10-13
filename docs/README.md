@@ -12,6 +12,7 @@ git submoduleで参照する」です。人力Vault側の管理・公開は別�
 | [Git配布手順](git-distribution.md) | 公開Noteの取得、bare出版、submoduleの参照固定と編集保護 |
 | [実装状態](implementation-plan.md) | 完了済み公開工程の状態と正本への参照 |
 | [操作手順](operations.md) | 現在動くCLIの設定・副作用・復旧操作 |
+| [出力打切りの限定復旧](output-recovery.md) | 1件/費用cap付き出力override・実保存/公開・再実行受入 |
 | [設計補足](design-decisions.md) | 現行収集の状態・receipt・課金・通信の保証と限界 |
 | [検証・受入](verification.md) | 現在の実装状態、既知の指摘、受入の判定基準 |
 | [日次公開](daily-publication.md) | 公開pipeline、公開専用runの受入、再実行と障害通知 |
