@@ -1,6 +1,6 @@
 # 公開NoteのRelease差分配布
 
-2026-10-12 JST、実装・検証中。本番受入と実行URLは完了後に追記します。GCSは全生成Note履歴・index・receipt・usageの非公開正本です。日次Pagesの入力を公開Releaseから復元し、`content`はsubmodule・履歴版の切戻し・commitの照合用として維持します。mainへNoteを置かず、既存content履歴も削除しません。
+2026-10-13 JST、実装・本番公開・同じ版の再実行まで受入完了です。GCSは全生成Note履歴・index・receipt・usageの非公開正本です。日次Pagesの入力を公開Releaseから復元し、`content`はsubmodule・履歴版の切戻し・commitの照合用として維持します。mainへNoteを置かず、既存content履歴も削除しません。
 
 ## 配布する版
 
@@ -41,7 +41,15 @@ gh workflow run pages.yml --repo Ningensei848/kaname --ref main \
 
 - [x] 完全版/差分/追加/更新/削除、深度上限、破損ZIP・descriptor・基底拒否、draft途中失敗の再開、公開済み版の変更拒否、redirectの認証剥離を実装。
 - [x] 全Python693件、Release34件、Git/Pages互換とactionlintが成功。既存125→126件を追加1件の差分（28,345 bytes）で復元し、UTC固定のQuartz成果物は現行配信版hashと一致。
-- [ ] PR/main CI・実ChromiumのWeb検査。
-- [ ] 実Releaseの完全版/差分復元、生成0の日次、追加Release0の再実行、GCS/費用/元Markdown/配信版一致。
+- [x] [PR #179](https://github.com/Ningensei848/kaname/pull/179)をmain `f62b2ce9381d81989f2b37f9894f630235612fa4`へ取込み。[PR CI](https://github.com/Ningensei848/kaname/actions/runs/38355145861)/[main CI](https://github.com/Ningensei848/kaname/actions/runs/38355706688)で全Python693件と実126件のGit/Release両入力・Chromium検査が成功。
+- [x] 既存125件の[完全版](https://github.com/Ningensei848/kaname/releases/tag/notes-dfd4aebed88f22bbd7f3538511d4e019ee4ae5ae)はZIP330,620 bytes。公開APIの匿名復元も成功。
+- [x] [公開専用run](https://github.com/Ningensei848/kaname/actions/runs/38356072092)でGITHUB_TOKENのcontents権限のみで固定tag/draft/upload/検証/publishが成功。[155件版](https://github.com/Ningensei848/kaname/releases/tag/notes-92dcd8ecdf4045470e0536cc68998a2dfc997a62)は基底125件から変更30件/削除0、ZIP96,849 bytes/descriptor2,832 bytes。audit437成功行/pending127、export・復元・Chromium・Pages配信までsuccess。旧公開126件の元Markdown不変、復元した155件の全bytes・検索1,359リンク・実配信manifest/HTML/版一致。
+- [x] [公開専用の再実行](https://github.com/Ningensei848/kaname/actions/runs/38357056972)も全工程success。Release2件/asset4件のまま、ID/size/SHA-256不変、追加Release/asset/content commit 0。全155 Note・dataset/artifact・実配信版が初回と一致。
+
+公開専用モードではCollect・費用/通知state更新をskipし、GCSはaudit/exportの読取りのみです。今回の配布受入の追加Gemini呼出し/費用は0です。ローカルADCは期限切れのため、独立したGCS全オブジェクト世代の前後照合は未実施です。Actionsの既存WIF認証・整合性監査は成功しており、CLI認証更新後の補足照合と区別します。
+
+直前の[通常日次](https://github.com/Ningensei848/kaname/actions/runs/38339836814)でDeepMind29件を保存し、1件は`MAX_TOKENS`/`json_invalid`で拒否しました。公開155件にはその29件を含み、旧126件を変更していません。この収集失敗は[Issue #178](https://github.com/Ningensei848/kaname/issues/178)をOpenで管理し、差分配布成功を生成成功扱いにしません。通常日次の30呼出しは元usageが全件判明、推計USD 0.076561。承認USD 1の台帳へ保守的に合算し、累計USD 0.2905084/残額USD 0.7094916です。
 
 別run間の差分GCS監査/exportと差分HTML buildはこの変更の範囲に含めません。Release配布を時間短縮と同義にはせず、Actionsの工程時間で結果を測ります。
+
+実測は公開専用で420秒/412秒（7分/6分52秒）、155 Note/1,359リンクです。以前の126 Note・生成0の通常run351秒とは入力件数とモードが異なり、今回のRelease切替えだけで時間が短縮したと扱いません。工程時間・固定版・検証計数は[受入JSON](archive/2026-10/release-distribution-acceptance-2026-10-13.json)に保存しました。

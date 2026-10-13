@@ -29,9 +29,9 @@ GCSの「正本」は生成Noteと運用記録です。原記事HTML/原文を�
 
 `content`は各commitで完全な公開版を表しますが、Gitは内容hashで同じblobを共有します。毎回全Noteの独立コピーをGit履歴へ増やす意味ではありません。日次exportのGCS読取りと、Git/Quartzの入力取得は別工程です。前段のGCS監査は並列取得・runner内cacheで短縮済みで、別run間の永続差分exportは未実装です。
 
-## Release assetsの差分配布 — 実装・検証中
+## Release assetsの差分配布 — 本番公開・再実行受入完了
 
-ユーザー承認を受け、完全版checkpoint＋最大7段の差分、変更/削除ID、基底/target digest、固定tag復元を実装中です。日次QuartzはReleaseから全体を復元してbuildし、content/submoduleとGit履歴の切戻しは互換経路として保持します。詳細・残る受入は[Release配布](release-distribution.md)で管理します。
+ユーザー承認を受け、完全版checkpoint＋最大7段の差分、変更/削除ID、基底/target digest、固定tag復元を実装し、実155件の公開まで受入済みです。同版の再実行でも追加Release/asset/content commit 0を受入済みです。日次QuartzはReleaseから全体を復元してbuildし、content/submoduleとGit履歴の切戻しは互換経路として保持します。詳細・残る受入は[Release配布](release-distribution.md)で管理します。
 
 ## 検証・受入
 
@@ -44,4 +44,6 @@ GCSの「正本」は生成Noteと運用記録です。原記事HTML/原文を�
 
 未Note化候補の本番生成と、実装中のRelease配布の本番受入は別管理です。
 
-工程と検証計数は[実測JSON](archive/2026-10/new-only-acceptance-2026-10-12.json)へ保存。現行の初回保留は148件で、未分類3件を含みます。Release配布は実装・検証中です。別run間の差分GCS監査/export・差分HTMLビルドは後続候補です。
+工程と検証計数は[実測JSON](archive/2026-10/new-only-acceptance-2026-10-12.json)へ保存。現行の初回保留は148件で、未分類3件を含みます。Release配布は実装・初回本番受入済みです。別run間の差分GCS監査/export・差分HTMLビルドは後続候補です。
+
+2026-10-13の通常日次でDeepMind29件を追加保存し、現行はindex437/public155/pending127です。1件のMAX_TOKENS/json_invalidはIssue #178で未解消として管理します。旧126件の元Markdownは保持して公開しました。新規限定の収集を通常の有料枠30件でも実行した記録と、現在の配布受入は[Release配布](release-distribution.md)へ追記しています。

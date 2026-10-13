@@ -8,6 +8,7 @@
 
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
+| Release差分配布 | Python693件/専用34件、PR #179/main CIのGit/Release両入力・実Chromium成功。実125件完全版＋変更30件の差分で155件を配信。再実行でRelease/asset/content版不変、全Note/1,359リンク/配信一致、追加生成/費用0 | 独立したGCS全世代照合はローカルADC更新待ち。HTML全体buildは維持。直前通常日次のMAX_TOKENS/json_invalid 1件は#178で未解消、29保存分は公開済み。[受入](release-distribution.md) |
 | 日次runの読取り性能 | GCS最大8件並列取得・世代別のrunner内cache・live catalog再確認。実GCS監査/費用/公開digest一致、追加生成/書込み0 | Python642件・PR #173/mainのPython/Web CI成功。実Actionsで39分22秒→15分30秒、監査445→62秒/export825→13秒（追加download0）。全工程と保存/元費用/公開126件・配信不変を受入。[記録](daily-performance.md) |
 | 新規記事限定 | 成功URL事前除外・元URL/canonical alias・生成枠でHTTP停止・失敗/receipt/Batchの復旧・明示再検査を実装 | 全Python659件/新規17件・PR #176/main Python/Web CI成功。実RSS259/既知111 skip/本文HTTP0、収集543→32秒/全体930→351秒（生成0）。index408/pending148・保存/元費用/公開126件/配信不変を受入。[記録](incremental-collection.md) |
 | standard収集 | 本番稼働。部分usage、receipt復旧、保存失敗後の停止を障害注入で検証 | 確定請求明細との照合 |

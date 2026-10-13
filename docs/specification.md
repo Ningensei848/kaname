@@ -22,7 +22,7 @@
 | Web | 配布snapshotを指定してbuildした静的成果物 | GitHub Pagesで公開 |
 | 人力Vault | 利用者が別repoで管理する内容とsubmoduleの参照commit | 利用者が別途判断。本セッションの対象外 |
 
-コード・設定・文書は`main`、公開NoteとmanifestはRelease assets/互換`content`へ分けます。[Release配布](release-distribution.md)は実装・本番検証中です。
+コード・設定・文書は`main`、公開NoteとmanifestはRelease assets/互換`content`へ分けます。[Release配布](release-distribution.md)で日次Web入力を復元します。
 repoの可視性とGCSの可視性は別です。本repoはPUBLICでもGCSはUBLA/PAPを維持します。
 Pages buildは人力Vault、収集state、rootの文書archiveを入力にしません。
 

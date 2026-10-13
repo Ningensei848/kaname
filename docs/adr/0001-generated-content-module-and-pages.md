@@ -80,4 +80,4 @@ Pagesがそのsnapshotだけから再構築できることを受入条件とし�
 
 ## 2026-10-12: 日次Web入力の差分配布
 
-ユーザー承認に基づき、GCSを非公開正本のまま維持し、公開Release assetsの完全版＋差分から日次Web入力を復元する変更を実装・検証中です。mainとNoteデータを分離する責務は維持します。contentはsubmodule・履歴切戻し・commit照合の互換配布として残します。全体snapshotとhashの契約を共有し、Quartzの全体buildを維持します。実装と受入は[Release配布](../release-distribution.md)へ記録します。
+ユーザー承認に基づき、GCSを非公開正本のまま維持し、公開Release assetsの完全版＋差分から日次Web入力を復元する変更を実装・本番受入しました。mainとNoteデータを分離する責務は維持します。contentはsubmodule・履歴切戻し・commit照合の互換配布として残します。全体snapshotとhashの契約を共有し、Quartzの全体buildを維持します。実装と受入は[Release配布](../release-distribution.md)へ記録します。

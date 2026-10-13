@@ -18,7 +18,7 @@ flowchart LR
 生成NoteにはAI要約・重要ポイント・検索語・資料の位置づけ・出典・生成情報を含めます。
 記事原文、raw HTML、認証情報、state/receipt/run reportは公開しません。
 画像は選択した出典HTTPS URLから直接表示し、閲覧時に出典サイトへの外部通信が発生します。
-公開Noteの元Markdown bytesとhashをGit/Release/Webで保持します。[Release差分配布](docs/release-distribution.md)は実装・本番検証中です。
+公開Noteの元Markdown bytesとhashをGit/Release/Webで保持します。[Release差分配布](docs/release-distribution.md)で日次Pagesの固定入力を復元します。
 
 ## 開始する
 
