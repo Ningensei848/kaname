@@ -50,3 +50,10 @@ def test_serial_rollback_and_empty_input():
     with pages() as (origin, visited):
         assert check_image_pages(origin, {'a': [{'url': 'https://example.com/approved.svg'}]}, workers=1) == dict(notes=1, requests=1, workers=1)
     assert visited == ['a']
+
+
+def test_duplicate_image_is_rejected_before_acceptance():
+    script = 'document.querySelector("article").appendChild(document.querySelector("img").cloneNode())'
+    with pages(script=script) as (origin, _):
+        with pytest.raises(Exception, match='duplicate_article_image'):
+            check_image_pages(origin, {'a': [{'url': 'https://example.com/approved.svg'}]}, workers=1)

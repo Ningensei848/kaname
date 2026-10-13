@@ -1,0 +1,19 @@
+{
+  "status": "failure_before_collection",
+  "run": 38393154698,
+  "issue": 185,
+  "failed_stage": "Validate and test",
+  "reason": "Browser tests collected in nonbrowser environment",
+  "gcp_auth_skipped": true,
+  "collection_skipped": true,
+  "publish_skipped": true,
+  "gcs_catalog_exactly_unchanged": true,
+  "protected_objects": 951,
+  "gemini_calls": 0,
+  "api_usd": "0",
+  "fix_python": 732,
+  "fix_web": 4,
+  "browserless_python": 727,
+  "browserless_optional_module_skipped": 1,
+  "fix_pr": 186
+}

@@ -65,3 +65,5 @@ Actionsのqueueと通信条件も全体時間に含まれます。改善前5 run
 Web環境準備55秒、Quartzビルド/検査89秒、deploy/配信確認を含むjob約32秒。Python全テスト35秒も維持します。次の候補はsource別の先行取得、HTTP条件付き再取得、Webコード/config/lock・Note以外のリンク/タグ/検索index・切戻しも含む無効化条件を定めたartifact再利用です。取得順/freshness/課金対象/公開provenanceを変える案は、今回の受入と分けて評価します。
 
 後続の[新規記事限定](incremental-collection.md)で日次の収集済み本文再GETも解消しました。2026-10-12の実受入は収集543→32秒、全体930→351秒（生成0）、index408/public126/pending148。上記はGCS読取り改善時点の比較記録です。
+
+後続の[Web検証の短縮](web-validation-performance.md)も受入完了しました。HTML解析を共有し、画像ブラウザを最大2並列へ。156件の生成0でbuild/検証111→108秒、全体411→460秒、全件検証・保存/元費用/Release/配信版を保持しています。Quartzの1/2 thread比較では改善が得られず、1を維持しました。

@@ -25,9 +25,13 @@ def check_images(page, images):
     viewport = page.viewport_size
     for image in images:
         # Use an argument rather than interpolating an untrusted URL into CSS/JS.
-        page.evaluate('(url) => [...document.querySelectorAll("article img")].find(img => img.src === url)?.scrollIntoView()', image['url'])
-        page.wait_for_function('(url) => [...document.querySelectorAll("article img")].some(img => img.src === url && img.complete && img.naturalWidth > 0)', arg=image['url'])
-        assert page.evaluate('(url) => [...document.querySelectorAll("article img")].filter(img => img.src === url).length', image['url']) == 1
+        page.wait_for_function('''(url) => {
+            const images = [...document.querySelectorAll("article img")].filter(img => img.src === url);
+            if (images.length > 1) throw new Error("duplicate_article_image");
+            const image = images[0];
+            image?.scrollIntoView();
+            return !!image && image.complete && image.naturalWidth > 0;
+        }''', arg=image['url'])
     if images:
         for width in (375, 768, 1024, 1440):
             page.set_viewport_size({'width': width, 'height': 900})
