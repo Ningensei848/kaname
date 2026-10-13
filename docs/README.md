@@ -8,6 +8,7 @@ git submoduleで参照する」です。人力Vault側の管理・公開は別�
 | [ADR-0001](adr/0001-generated-content-module-and-pages.md) | 要求変更の背景、採用する構成、旧仕様を置き換える範囲 |
 | [仕様書](specification.md) | 生成Note・人力Vaultの境界、公開範囲、更新・編集の規則 |
 | [公開・配布](publication.md) | Git snapshot、Note識別子、Pages/submoduleが共有する契約 |
+| [Release差分配布](release-distribution.md) | 完全版/差分/削除情報・固定版復元・実Actions受入 |
 | [Git配布手順](git-distribution.md) | 公開Noteの取得、bare出版、submoduleの参照固定と編集保護 |
 | [実装状態](implementation-plan.md) | 完了済み公開工程の状態と正本への参照 |
 | [操作手順](operations.md) | 現在動くCLIの設定・副作用・復旧操作 |

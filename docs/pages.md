@@ -1,6 +1,6 @@
 # 固定した公開Note版をGitHub Pagesへ配信する
 
-`pages.yml`は`content`の固定commitからbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。
+`pages.yml`は固定した公開版からbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。日次は`release_tag`で[完全版＋差分を復元](release-distribution.md)し、手動でtagを省略した場合は従来のGit入力を使います。
 実装・ローカル検証・GitHub上の初回deployと公開URLの受入を完了しました。
 公開URL: [kaname](https://ningensei848.github.io/kaname/)。[初回deploy run](https://github.com/Ningensei848/kaname/actions/runs/37430216275)が成功しています。
 日次公開経路は接続し、通常scheduleを受入済みです。[履歴版への実切戻し・現行版復帰](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)も2026-10-07に受入済みです。
@@ -15,7 +15,7 @@ workflowはPagesを自動有効化せず、GCP/WIF、Gemini Secret、GCS IAMを�
 
 | job | 権限 | 入力/出力 |
 |---|---|---|
-| build | `contents: read`, `pages: read` | 固定Git snapshot → 検証済み公開artifact |
+| build | `contents: read`, `pages: read` | 固定Release復元/Git互換snapshot → 検証済み公開artifact |
 | deploy | `contents: read`, `pages: write`, `id-token: write` | Pages専用artifact → Pages URL |
 
 build/deployは`main`からの手動実行またはreusable workflow呼出しだけを許します。
@@ -23,6 +23,8 @@ PRのChecksでは実`content`からbuild・ブラウザ検証を行いますが�
 site buildにGCS/Gemini認証や収集writer権限を渡しません。
 
 ## 初回公開と再実行
+
+Release版を使う場合は`content_commit`と`release_tag=notes-<そのcommit>`を指定します。tagのcommit、asset/hash、基底と全体digestを復元時に検証し、snapshot外のreceiptでbuild前後に全bytesを照合します。以下のtagを省略する手順はGit互換経路です。
 
 workflowを含むPRをmainへmergeした後、Actions → **Publish Notes to Pages** → Run workflowを使います。
 `content_commit`が空なら実行時に取得した`content`のtipを固定します。
