@@ -38,7 +38,6 @@ def check_images(page, images):
 def check_image_pages(origin, entries, workers=2):
     """Use at most two browsers; each thread owns its complete Playwright runtime."""
     from concurrent.futures import ThreadPoolExecutor
-    from playwright.sync_api import sync_playwright
 
     if type(workers) is not int or workers not in (1, 2):
         raise ValueError('invalid_image_workers')
@@ -49,6 +48,7 @@ def check_image_pages(origin, entries, workers=2):
     approved = {image['url'] for _, images in selected for image in images}
 
     def inspect(group):
+        from playwright.sync_api import sync_playwright
         errors, external, requests = [], [], []
         with sync_playwright() as runtime:
             browser = runtime.chromium.launch()

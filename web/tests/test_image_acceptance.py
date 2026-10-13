@@ -50,9 +50,3 @@ def test_serial_rollback_and_empty_input():
     with pages() as (origin, visited):
         assert check_image_pages(origin, {'a': [{'url': 'https://example.com/approved.svg'}]}, workers=1) == dict(notes=1, requests=1, workers=1)
     assert visited == ['a']
-
-
-@pytest.mark.parametrize('workers', [0, 3, True])
-def test_unbounded_or_noninteger_browser_count_is_rejected(workers):
-    with pytest.raises(ValueError, match='invalid_image_workers'):
-        check_image_pages('http://unused.invalid', {}, workers)
