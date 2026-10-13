@@ -46,10 +46,12 @@ gh workflow run pages.yml --repo Ningensei848/kaname --ref main \
 - [x] [公開専用run](https://github.com/Ningensei848/kaname/actions/runs/38356072092)でGITHUB_TOKENのcontents権限のみで固定tag/draft/upload/検証/publishが成功。[155件版](https://github.com/Ningensei848/kaname/releases/tag/notes-92dcd8ecdf4045470e0536cc68998a2dfc997a62)は基底125件から変更30件/削除0、ZIP96,849 bytes/descriptor2,832 bytes。audit437成功行/pending127、export・復元・Chromium・Pages配信までsuccess。旧公開126件の元Markdown不変、復元した155件の全bytes・検索1,359リンク・実配信manifest/HTML/版一致。
 - [x] [公開専用の再実行](https://github.com/Ningensei848/kaname/actions/runs/38357056972)も全工程success。Release2件/asset4件のまま、ID/size/SHA-256不変、追加Release/asset/content commit 0。全155 Note・dataset/artifact・実配信版が初回と一致。
 
-公開専用モードではCollect・費用/通知state更新をskipし、GCSはaudit/exportの読取りのみです。今回の配布受入の追加Gemini呼出し/費用は0です。ローカルADCは期限切れのため、独立したGCS全オブジェクト世代の前後照合は未実施です。Actionsの既存WIF認証・整合性監査は成功しており、CLI認証更新後の補足照合と区別します。
+公開専用モードではCollect・費用/通知state更新をskipし、GCSはaudit/exportの読取りのみです。今回の配布受入の追加Gemini呼出し/費用は0です。再認証後の独立照合も完了しました。全437 Note/receipt/indexが整合し、再exportした155件は両公開snapshotと同じbytes、元費用は公開前の通常日次後の費用reportと一致。今回の読取り監査前後で全946オブジェクトの世代/CRCが不変、以前からの883オブジェクトと408成功行も保持を確認しました。元の2公開run直前の完全catalogは取得できていないため、その2runを挟む全世代比較を後から実施したとは扱いません。[独立照合JSON](archive/2026-10/release-gcs-independent-acceptance-2026-10-13.json)へ根拠を保存しています。
 
 直前の[通常日次](https://github.com/Ningensei848/kaname/actions/runs/38339836814)でDeepMind29件を保存し、1件は`MAX_TOKENS`/`json_invalid`で拒否しました。公開155件にはその29件を含み、旧126件を変更していません。この収集失敗は[Issue #178](https://github.com/Ningensei848/kaname/issues/178)をOpenで管理し、差分配布成功を生成成功扱いにしません。通常日次の30呼出しは元usageが全件判明、推計USD 0.076561。承認USD 1の台帳へ保守的に合算し、累計USD 0.2905084/残額USD 0.7094916です。
 
 別run間の差分GCS監査/exportと差分HTML buildはこの変更の範囲に含めません。Release配布を時間短縮と同義にはせず、Actionsの工程時間で結果を測ります。
 
 実測は公開専用で420秒/412秒（7分/6分52秒）、155 Note/1,359リンクです。以前の126 Note・生成0の通常run351秒とは入力件数とモードが異なり、今回のRelease切替えだけで時間が短縮したと扱いません。工程時間・固定版・検証計数は[受入JSON](archive/2026-10/release-distribution-acceptance-2026-10-13.json)に保存しました。
+
+Source Healthの独立読取りでは、Google Researchはhealthy、GitHubは新規保留1件でincomplete、DeepMindはfailing/streak2・保留70件、Microsoft11/Meta12/Apple13/Cloudflare20はunverifiedです。計127保留、失敗や未処理sourceを配布成功でresetしません。Issue #178の出力打切りはOpenのままです。

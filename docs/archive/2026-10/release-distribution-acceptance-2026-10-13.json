@@ -87,8 +87,10 @@
     "success_rows": 437,
     "pending": 127,
     "read_only_audit_export_success": true,
-    "independent_generation_comparison": false,
-    "independent_comparison_blocker": "local_ADC_refresh_required"
+    "independent_generation_comparison": true,
+    "comparison_scope": "post_reauthentication_readonly_audit",
+    "historical_full_catalog_before_release_runs_available": false,
+    "independent_followup": "release-gcs-independent-acceptance-2026-10-13.json"
   },
   "costs": {
     "release_acceptance_new_calls": 0,
