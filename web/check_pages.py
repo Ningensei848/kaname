@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, expect
 
 from serve import server
-from techkb.publication.git_snapshot import content_snapshot
+from kaname_web.public_input import public_input
 from kaname_web.artifact import load_artifact
 from techkb.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
@@ -18,8 +18,8 @@ from image_acceptance import approved_images, image_guard, check_images
 from link_acceptance import audit_search_links, audit_note_anchors, check_search_click
 
 
-def check(content, commit, artifact):
-    manifest, original, _ = content_snapshot(content, commit)
+def check(content, commit, artifact, release_receipt=None):
+    manifest, original, _ = public_input(content, commit, release_receipt)
     marker, files = load_artifact(artifact)
     search_links = audit_search_links(manifest, original, files)
     audit_note_anchors(files)
@@ -113,9 +113,10 @@ if __name__ == '__main__':
     parser.add_argument('--content', required=True, type=Path)
     parser.add_argument('--content-commit', required=True)
     parser.add_argument('--artifact', required=True, type=Path)
+    parser.add_argument('--release-receipt', type=Path)
     args = parser.parse_args()
     try:
-        print(json.dumps(check(args.content, args.content_commit, args.artifact)))
+        print(json.dumps(check(args.content, args.content_commit, args.artifact, args.release_receipt)))
     except ExportError as exc:
         print(json.dumps(dict(status='failed', code=str(exc))), file=sys.stderr); sys.exit(1)
     except Exception:

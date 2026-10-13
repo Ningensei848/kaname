@@ -10,14 +10,15 @@ flowchart LR
     A[HTTP収集・Gemini要約] --> B[GCS: 非公開の収集・復旧状態]
     B --> C[成功Noteの公開snapshot]
     C --> D[Git content branch: Markdown・manifest]
-    D --> E[Quartz・GitHub Pages]
+    C --> R[Release assets: 完全版・差分・manifest]
+    R --> E[固定版を復元・Quartz・GitHub Pages]
     D --> F[利用者Vault: commitを固定して参照]
 ```
 
 生成NoteにはAI要約・重要ポイント・検索語・資料の位置づけ・出典・生成情報を含めます。
 記事原文、raw HTML、認証情報、state/receipt/run reportは公開しません。
 画像は選択した出典HTTPS URLから直接表示し、閲覧時に出典サイトへの外部通信が発生します。
-公開Noteの元Markdown bytesとhashをGit/Webで保持します。
+公開Noteの元Markdown bytesとhashをGit/Release/Webで保持します。[Release差分配布](docs/release-distribution.md)は実装・本番検証中です。
 
 ## 開始する
 

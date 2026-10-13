@@ -10,7 +10,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 通常運用で継続 | 新source初回保留148件 | DeepMind99 / Microsoft10 / Meta9 / Apple10 / Cloudflare20。元145件と未分類3件を含む。日次・全source合計30件で順次処理 | 元usage・source別の失敗/保留を追跡。追加手動処理は既存USD 1承認の残額USD 0.7860526を管理。[記録](four-source-activation.md) |
-| 後続候補 | 差分配布・Quartzの追加短縮 | 新規記事限定は受入完了。GCSの全件監査・Quartz全体ビルドは維持。Release assetsは設計候補 | 完全版＋差分manifest/削除/復元digest、submodule互換性、Web変更・検索/リンク・切戻しの無効化条件を比較。[設計](incremental-collection.md) |
+| 実装・検証中 | Release assetsでの差分配布 | ユーザー承認を受け、完全版＋最大7段の差分、削除・全体digest・固定tag復元を実装中。content/submodule互換性を維持 | Python/実CI、実Releaseの復元、生成0の日次・公開一致・再実行を受入後に完了へ移す。[設計](incremental-collection.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 

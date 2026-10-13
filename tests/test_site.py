@@ -201,9 +201,11 @@ def test_failed_build_preserves_previous_artifact_and_strips_credentials(public_
     pointer = work / ".cache/last-build.json"; pointer.write_bytes(json_bytes(dict(output=str(previous))))
     before = pointer.read_bytes()
     monkeypatch.setattr(builder, "WEB", work)
+    monkeypatch.setenv("TZ", "Asia/Tokyo")
     for key in ("GEMINI_API_KEY", "GOOGLE_APPLICATION_CREDENTIALS", "GCS_BUCKET", "GH_TOKEN"):
         monkeypatch.setenv(key, "fixture-only")
     def fail(*args, **kwargs):
+        assert kwargs["env"]["TZ"] == "UTC"
         assert all(key not in kwargs["env"] for key in ("GEMINI_API_KEY", "GOOGLE_APPLICATION_CREDENTIALS", "GCS_BUCKET", "GH_TOKEN"))
         return SimpleNamespace(returncode=1)
     monkeypatch.setattr(builder.subprocess, "run", fail)

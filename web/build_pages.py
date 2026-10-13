@@ -5,15 +5,15 @@ from pathlib import Path
 import sys
 
 from build import build
-from techkb.publication.git_snapshot import content_snapshot
+from kaname_web.public_input import public_input
 from kaname_web.pages import prepare_pages
 from techkb.publication import ExportError
 
 
-def build_pages(content, commit, output):
-    content_snapshot(content, commit)  # Reject private/dirty input before Quartz.
+def build_pages(content, commit, output, release_receipt=None):
+    public_input(content, commit, release_receipt)  # Reject private/dirty input before Quartz.
     result = build(content, fixture=False, content_commit=commit)
-    return prepare_pages(content, commit, result["output"], output)
+    return prepare_pages(content, commit, result["output"], output, release_receipt)
 
 
 if __name__ == "__main__":
@@ -21,9 +21,10 @@ if __name__ == "__main__":
     parser.add_argument("--content", required=True, type=Path)
     parser.add_argument("--content-commit", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--release-receipt", type=Path)
     args = parser.parse_args()
     try:
-        print(json.dumps(build_pages(args.content, args.content_commit, args.output)))
+        print(json.dumps(build_pages(args.content, args.content_commit, args.output, args.release_receipt)))
     except ExportError as exc:
         print(json.dumps(dict(status="failed", code=str(exc))), file=sys.stderr); sys.exit(1)
     except Exception:

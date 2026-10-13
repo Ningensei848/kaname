@@ -63,6 +63,35 @@ jobs:
           commit=$(git -C ../public-content rev-parse HEAD)
           npm --silent run build:pages -- --content ../public-content --content-commit "$commit" --output .cache/pages-artifact
           npm --silent run check:pages -- --content ../public-content --content-commit "$commit" --artifact .cache/pages-artifact
+      - name: Verify the same artifact against restored Release bytes
+        env:
+          PYTHONPATH: src:web
+        run: |
+          set -euo pipefail
+          export CONTENT_COMMIT=$(git -C public-content rev-parse HEAD)
+          python - <<'PY'
+          import os, tempfile
+          from pathlib import Path
+          from techkb.publication import PUBLIC_README, json_bytes
+          from techkb.publication.git_snapshot import content_snapshot
+          from techkb.publication.install import install_snapshot
+          from techkb.release_bundle import build_bundle, apply_bundle
+          from kaname_web.pages import prepare_pages
+          commit = os.environ['CONTENT_COMMIT']
+          _, files, _ = content_snapshot('public-content', commit)
+          with tempfile.TemporaryDirectory(dir='web/.cache') as temporary:
+              root = Path(temporary) / 'source'
+              install_snapshot(root, dict(files, **{'README.md': PUBLIC_README}))
+              value, packed = build_bundle(root, commit)
+              _, restored, _ = apply_bundle(value, packed)
+              install_snapshot(Path('release-content'), restored)
+              Path('release-receipt.json').write_bytes(json_bytes(value))
+              prepare_pages('release-content', commit, 'web/.cache/pages-artifact',
+                            Path(temporary) / 'pages', 'release-receipt.json')
+          PY
+          cd web
+          npm --silent run check:pages -- --content ../release-content --content-commit "$CONTENT_COMMIT" \
+            --release-receipt ../release-receipt.json --artifact .cache/pages-artifact
       - uses: actions/upload-artifact@v7
         with:
           name: kaname-web-validation

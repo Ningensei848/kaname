@@ -47,6 +47,9 @@ def build(snapshot, output=None, fixture=False, content_commit=None):
                 # The builder gets no inherited API/GCS/GitHub credentials.
                 env = {key: os.environ[key] for key in ("PATH", "HOME", "TMPDIR", "LANG", "LC_ALL") if key in os.environ}
                 env["NO_COLOR"] = "1"
+                # Match Actions' UTC rendering regardless of the developer's
+                # host timezone, including Note dates and tag-page ordering.
+                env["TZ"] = "UTC"
                 result = subprocess.run(["node", str(engine / "quartz/bootstrap-cli.mjs"), "build",
                     "-d", str(content), "-o", str(compiled), "--concurrency", "1"], cwd=engine,
                     env=env, capture_output=True, timeout=180)

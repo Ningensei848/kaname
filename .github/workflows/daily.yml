@@ -292,6 +292,7 @@ jobs:
     outputs:
       commit: ${{ steps.publish.outputs.commit }}
       unchanged: ${{ steps.publish.outputs.unchanged }}
+      release_tag: ${{ steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -321,6 +322,26 @@ jobs:
               for key in ('commit', 'dataset_digest', 'notes', 'unchanged'):
                   print(f'- {key}: `{result[key]}`', file=stream)
           PY
+      - name: Publish verified Note checkpoint or delta assets
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CONTENT_COMMIT: ${{ steps.publish.outputs.commit }}
+        run: |
+          set -euo pipefail
+          python scripts/release_notes.py publish --snapshot "$RUNNER_TEMP/public-snapshot" \
+            --commit "$CONTENT_COMMIT" > "$RUNNER_TEMP/release-result.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = json.loads((Path(os.environ['RUNNER_TEMP']) / 'release-result.json').read_bytes())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              print('tag=' + result['tag'], file=stream)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
+              print('### Release distribution\n', file=stream)
+              for key in ('tag', 'dataset_digest', 'notes', 'kind', 'depth', 'changed', 'deleted', 'unchanged'):
+                  print(f'- {key}: `{result[key]}`', file=stream)
+          PY
   pages:
     needs: publish
     if: ${{ !inputs.batch_preflight && needs.publish.result == 'success' }}
@@ -331,6 +352,7 @@ jobs:
     uses: ./.github/workflows/pages.yml
     with:
       content_commit: ${{ needs.publish.outputs.commit }}
+      release_tag: ${{ needs.publish.outputs.release_tag }}
       require_tip: true
   notify-publication:
     needs: [collect, publish, pages]

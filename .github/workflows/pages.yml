@@ -6,6 +6,10 @@ on:
         description: 'Full content-branch commit to deploy (empty = current content tip)'
         type: string
         default: ''
+      release_tag:
+        description: 'Fixed notes-<content commit> Release (empty = Git compatibility input)'
+        type: string
+        default: ''
   workflow_call:
     inputs:
       content_commit:
@@ -16,6 +20,10 @@ on:
         description: 'Daily publication must never deploy an already superseded content version'
         type: boolean
         default: false
+      release_tag:
+        description: 'Restore this verified public Release instead of cloning Note history'
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
@@ -39,18 +47,29 @@ jobs:
         with:
           persist-credentials: false
       - uses: actions/checkout@v5
+        if: inputs.release_tag == ''
         with:
           ref: content
           path: public-content
           fetch-depth: 0
           persist-credentials: false
-      - name: Pin an existing content history commit
+      - name: Pin the requested public version
         id: content
         env:
           REQUESTED_COMMIT: ${{ inputs.content_commit }}
           REQUIRE_TIP: ${{ inputs.require_tip }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
+          if [[ -n "$RELEASE_TAG" ]]; then
+            [[ "$REQUESTED_COMMIT" =~ ^[0-9a-f]{40}$ && "$RELEASE_TAG" == "notes-$REQUESTED_COMMIT" ]] || { echo 'Invalid Release version'; exit 1; }
+            if [[ "$REQUIRE_TIP" == true ]]; then
+              tip=$(git ls-remote --exit-code --heads "https://github.com/$GITHUB_REPOSITORY.git" refs/heads/content | cut -f1)
+              [[ "$REQUESTED_COMMIT" == "$tip" ]] || { echo 'Content version was superseded'; exit 1; }
+            fi
+            echo "commit=$REQUESTED_COMMIT" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           tip=$(git -C public-content rev-parse HEAD)
           commit=${REQUESTED_COMMIT:-$tip}
           [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid content commit'; exit 1; }
@@ -63,15 +82,27 @@ jobs:
           git -C public-content checkout --detach "$commit"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/setup-web
+      - name: Restore the fixed Release checkpoint and deltas
+        if: inputs.release_tag != ''
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          CONTENT_COMMIT: ${{ steps.content.outputs.commit }}
+        run: |
+          python scripts/release_notes.py restore --tag "$RELEASE_TAG" --commit "$CONTENT_COMMIT" \
+            --output public-content --receipt "$RUNNER_TEMP/release-receipt.json"
       - name: Build and verify the public artifact
         id: build
         working-directory: web
         env:
           CONTENT_COMMIT: ${{ steps.content.outputs.commit }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          npm --silent run build:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact > .cache/pages-result.json
-          npm --silent run check:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact
+          args=()
+          if [[ -n "$RELEASE_TAG" ]]; then args+=(--release-receipt "$RUNNER_TEMP/release-receipt.json"); fi
+          npm --silent run build:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --output .cache/pages-artifact "${args[@]}" > .cache/pages-result.json
+          npm --silent run check:pages -- --content ../public-content --content-commit "$CONTENT_COMMIT" --artifact .cache/pages-artifact "${args[@]}"
           python - <<'PY'
           import json, os
           from pathlib import Path

@@ -110,7 +110,7 @@ kanameは第三者プラグインの動作を保証せず、選択した更新�
 
 ## Pages向け契約
 
-同じ`content`commitを固定入力として、`main`側の固定SSG設定でHTMLをbuildします。
+日次は同じ`content`commitに結び付いたRelease完全版/差分を復元し、`main`側の固定SSG設定でHTMLをbuildします。Git/submodule配布と手動Git切戻しは保持します。[Release配布の契約と受入状態](release-distribution.md)を参照してください。
 Quartz 5.0.0の[Markdown/Obsidian機能](https://quartz.jzhao.xyz/)をfixtureで確認し、versionとpluginを固定しました。
 [Pages配信](pages.md)は固定Git入力と公開前検証を経て、公式Actionのartifact/deployを分離します。
 [Web preview](web-preview.md)に固定方式・実装契約・未解消の依存制約を記載します。
