@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "measured_on": "2026-10-13 JST",
+  "status": "local_verified_production_pending",
+  "before": {
+    "status": "success",
+    "seconds": 93.435,
+    "result": {
+      "status": "passed",
+      "notes": 156,
+      "content_commit": "33c0530da3249e839db715277e22f193f1baa761",
+      "dataset_digest": "a9d739ac32bedd5de2978ea0157a1e9a78b57ae690ee93a05c1a1ffc083c184d",
+      "external_requests": 0,
+      "search_links": 1377,
+      "offline_search_clicks": 1,
+      "approved_image_requests": 259,
+      "image_notes": 102,
+      "image_workers": 2
+    },
+    "navigation_browser_closed_before_pool": true
+  },
+  "after": {
+    "status": "success",
+    "seconds": 80.346,
+    "result": {
+      "status": "passed",
+      "notes": 156,
+      "content_commit": "33c0530da3249e839db715277e22f193f1baa761",
+      "dataset_digest": "a9d739ac32bedd5de2978ea0157a1e9a78b57ae690ee93a05c1a1ffc083c184d",
+      "external_requests": 0,
+      "search_links": 1377,
+      "offline_search_clicks": 1,
+      "approved_image_requests": 259,
+      "image_notes": 102,
+      "image_workers": 2
+    },
+    "navigation_browser_closed_before_pool": true
+  },
+  "python": 733,
+  "web_tests": 5,
+  "related": 23,
+  "http_persistent_redirect_head_bytes_404_verified": true,
+  "image_roundtrips_before": 3,
+  "image_roundtrips_after": 1,
+  "image_widths": [
+    375,
+    768,
+    1024,
+    1440
+  ],
+  "gemini_calls": 0
+}

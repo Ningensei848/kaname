@@ -16,6 +16,8 @@ from kaname_web.artifact import load_artifact
 def server(artifact, port=8765):
     _, files = load_artifact(artifact)
     class Handler(BaseHTTPRequestHandler):
+        protocol_version = 'HTTP/1.1'
+        disable_nagle_algorithm = True
         def do_HEAD(self):
             self.respond(False)
         def do_GET(self):
@@ -23,7 +25,7 @@ def server(artifact, port=8765):
         def respond(self, body):
             path = unquote(urlsplit(self.path).path)
             if path in {"/", "/kaname"}:
-                self.send_response(302); self.send_header("Location", "/kaname/"); self.end_headers(); return
+                self.send_response(302); self.send_header("Location", "/kaname/"); self.send_header('Content-Length', '0'); self.end_headers(); return
             if not path.startswith("/kaname/") or ".." in path.split("/") or "\\" in path:
                 self.send_error(404); return
             name = path.removeprefix("/kaname/") or "index.html"

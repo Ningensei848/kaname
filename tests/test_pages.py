@@ -48,6 +48,40 @@ def test_fixed_commit_public_only_artifact_and_repeatability(pages):
     assert not (output / '.git').exists() and not (output / 'README.md').exists()
 
 
+def test_preview_http_connection_reused_for_redirect_head_and_original_bytes(pages):
+    import http.client
+    from threading import Thread
+    from serve import server
+    from kaname_web.artifact import load_artifact
+    _, _, artifact, _ = pages
+    expected = load_artifact(artifact)[1]['index.html']
+    httpd = server(artifact, 0)
+    thread = Thread(target=httpd.serve_forever, daemon=True); thread.start()
+    connection = http.client.HTTPConnection('127.0.0.1', httpd.server_port, timeout=5)
+    try:
+        connection.request('GET', '/kaname')
+        response = connection.getresponse()
+        assert response.status == 302 and response.version == 11
+        assert response.getheader('Content-Length') == '0' and response.read() == b''
+        captured_socket = connection.sock
+        assert captured_socket is not None
+        connection.request('HEAD', '/kaname/index.html')
+        response = connection.getresponse()
+        assert response.status == 200 and int(response.getheader('Content-Length')) == len(expected)
+        assert response.read() == b'' and connection.sock is captured_socket
+        for _ in range(3):
+            connection.request('GET', '/kaname/index.html')
+            response = connection.getresponse()
+            assert response.status == 200 and response.read() == expected
+            assert connection.sock is captured_socket
+        connection.request('GET', '/kaname/.git/config')
+        response = connection.getresponse()
+        assert response.status == 404
+        response.read()
+    finally:
+        connection.close(); httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
+
+
 @pytest.mark.parametrize('damage', ['tracked', 'untracked', 'ignored', 'symlink'])
 def test_dirty_or_linked_content_never_reaches_public_output(pages, damage):
     checkout, commit, artifact, output = pages
