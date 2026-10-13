@@ -18,11 +18,11 @@
 | 領域 | 正本・更新主体 | 公開範囲 |
 |---|---|---|
 | 収集/復旧 | 非公開GCSの成功index、Note、receipt、pending、run/Batch記録。コレクタが更新 | 外部配布しない |
-| 生成Note配布 | 本repoの`content`branchに確定したsnapshot。export処理が更新 | 有効な生成Note群を公開 |
+| 生成Note配布 | Release完全版/差分と、互換content branchの固定snapshot | 有効な生成Note群を公開 |
 | Web | 配布snapshotを指定してbuildした静的成果物 | GitHub Pagesで公開 |
 | 人力Vault | 利用者が別repoで管理する内容とsubmoduleの参照commit | 利用者が別途判断。本セッションの対象外 |
 
-コード・設定・文書は`main`、公開Noteとmanifestは`content`へ分けます。
+コード・設定・文書は`main`、公開NoteとmanifestはRelease assets/互換`content`へ分けます。[Release配布](release-distribution.md)は実装・本番検証中です。
 repoの可視性とGCSの可視性は別です。本repoはPUBLICでもGCSはUBLA/PAPを維持します。
 Pages buildは人力Vault、収集state、rootの文書archiveを入力にしません。
 

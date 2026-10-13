@@ -6,8 +6,8 @@
 | 工程 | 操作・権限 | 失敗時 |
 |---|---|---|
 | collect | 既存WIFで収集・audit。成功後にGCS読取りexport。`contents: read`、`id-token: write`、既存通知用`issues: write` | 後続公開を停止 |
-| publish | 公開snapshot artifactのみ取得。`contents: write`でcontentへnon-force push、fresh cloneで全bytesを検証 | Pagesを停止。競合は上書きしない |
-| pages | 検証済みcontent commitからbuild/deploy。`contents: read`、`pages: write`、`id-token: write` | 失敗状態と配信版照合を記録 |
+| publish | 公開snapshot artifactのみ取得。`contents: write`でcontentへnon-force push、fresh cloneで全bytesを検証後、完全版/差分Releaseをdraftで検査してpublish | Pagesを停止。競合は上書きしない |
+| pages | 固定Releaseから全体を復元してbuild/deploy（手動はGit互換も可）。`contents: read`、`pages: write`、`id-token: write` | 失敗状態と配信版照合を記録 |
 | notify-publication | GCS/収集Secretを使わず`issues: write`でstageとrun URLを通知 | 通知job自体の失敗はActionsで確認 |
 
 GCSの単一writer concurrencyはcollect・Batch preflight・画像補完jobで共有し、Git配布は`kaname-content`、Pagesは`kaname-pages`で直列化します。
@@ -38,7 +38,7 @@ Git更新なしでもPagesを再deployし、前回の公開失敗を再試行で
 gh workflow run daily.yml --repo Ningensei848/kaname --ref main -f publish_only=true
 ```
 
-既存Noteのaudit/export、Git配布、Pages更新だけを実行します。記事取得、Gemini呼出し、費用/通知stateの更新はありません。
+既存Noteのaudit/export、Git/Release配布、Pages更新だけを実行します。記事取得、Gemini呼出し、費用/通知stateの更新はありません。
 通常収集の入力変更や診断モードとの同時指定は拒否します。通常の入力未指定実行とscheduleは収集します。
 追加のGCS IAM権限や新しいSecretは不要です。
 
@@ -70,3 +70,7 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 ## GCS読取りの並列化と再利用
 
 監査/export/費用/通知はliveの世代catalogに基づく読取り専用viewを使い、本文downloadを最大8件並列化します。同じrunnerのprivateな一時cacheで変更のないbytesを再利用し、毎回の検査とlive catalogの再確認は維持します。書込み・Gemini生成は単一writerです。cacheを削除してもcold取得に戻るだけで、GCS正本や公開版は変わりません。性能の実測と受入状態は[所要時間短縮](daily-performance.md)に記録します。
+
+## Release差分配布
+
+完全版checkpointと最大7段の差分から公開Note全体を復元します。同じcontent commitではReleaseを増やさず、asset欠損・改変・基底不一致で停止します。契約・実装状態と受入は[Release配布](release-distribution.md)へ記録します。
