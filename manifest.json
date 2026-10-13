@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "ad663a73451765dca56087ba0280698e340cccc3176e5bc293345d9febe43bc3",
+  "dataset_digest": "a9d739ac32bedd5de2978ea0157a1e9a78b57ae690ee93a05c1a1ffc083c184d",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1428,6 +1428,18 @@
       "sha256": "31551516a65bba94877232284a97c69e37bd3cf15bab445db3d79bcdc7ac4256",
       "source_id": "google-research",
       "title": "洪水レジリエンスの次の章：Googleの水文学フレームワークのオープンソース化"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/finding-the-molecular-switches-behind-new-infectious-diseases/",
+      "category": "ai-llm",
+      "id": "beeae4c33783c7dc89c1a225fb7c174e40737fd99c6f08592620baa0b4581132",
+      "llm_input_truncated": false,
+      "path": "notes/beeae4c33783c7dc89c1a225fb7c174e40737fd99c6f08592620baa0b4581132.md",
+      "processed_at": "2026-10-13T07:35:17.559269+00:00",
+      "published": "2026-05-16",
+      "sha256": "1bf4af541d931ab5aee333d4da452b652ef4df525f18424b6ba3da1f6abb114f",
+      "source_id": "google-deepmind",
+      "title": "新興感染症の分子スイッチを解明するためのAIツール「Co-Scientist」の活用"
     },
     {
       "canonical_url": "https://research.google/blog/empirical-research-assistance-era-from-nature-publication-to-catalyzing-computational-discovery/",
