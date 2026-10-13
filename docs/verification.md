@@ -8,6 +8,7 @@
 
 | 領域 | 実装・検証 | 未受入・限界 |
 |---|---|---|
+| Web検証の通信 | PR #187・Python733件/Web5件・PR/main CI成功。実156件のWeb108→99秒・全体460→445秒、1,377リンク/画像102頁/259応答/4幅を維持 | 生成/追加Gemini費用0。保存/元費用/951既存世代・3 Release/6 assets・配信版不変。日次全体は以前の411秒より長く、安定短縮は後続。[受入](web-transport-performance.md) |
 | Web検証の性能 | PR #184・Python732件/Web4件/actionlint・PR #184/#186とmain CI成功。HTML解析共有・画像ブラウザ最大2並列。実156件のbuild検証111→108秒、全体411→460秒 | 1,377リンク/画像入り102頁/画像259応答/4幅を維持。生成0・保存/元費用/950既存世代・3 Release/6 assets/配信版不変。単一run間の測定で環境時間は変動、Quartz1 threadと全体buildは維持。[受入](web-validation-performance.md) |
 | 出力打切りの限定復旧 | PR #182・関連107件/全Python720件/actionlint・PR/main CI成功。失敗対象を1論理生成/1HTTPで厳格検証・保存・公開。input1,456/output514/thinking0、推計USD 0.0017218、不明usage0。index438/public156/pending126、旧437行と他候補保持 | 追加生成0の再実行も全工程success、保存/元費用/949既存世代/CRC・3 Release/6 assets・公開版不変、pending126のbytes保持（同内容の書直しだけ世代更新）。#178 Closed。通常出力2,048/30件/HTTP retry3の既定は維持。MAX_TOKENSを将来完全に防ぐ保証はない。[受入](output-recovery.md) |
 | Release差分配布 | Python693件/専用34件、PR #179/main CIのGit/Release両入力・実Chromium成功。実125件完全版＋変更30件の差分で155件を配信。再実行でRelease/asset/content版不変、全Note/1,359リンク/配信一致、追加生成/費用0 | 再認証後の独立照合が成功。437 Note/receipt/index・155公開bytes・元費用が一致、読取り前後で全946オブジェクトの世代/CRC不変。後続の復旧で変更1件の差分/depth2を追加し、156件/1,377リンクと配信一致。HTML全体buildは維持。[初回受入](release-distribution.md)・[復旧後](output-recovery.md) |

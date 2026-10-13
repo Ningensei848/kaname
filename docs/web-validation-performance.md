@@ -24,7 +24,7 @@ Quartz自体は1 threadを維持します。固定engineの並列処理はMarkdo
 
 別run間のprivate GCS cache、ReleaseのHTTP重複取得、Web環境そのものの再利用、差分HTML buildは別の候補です。今回の効果を未測定の候補の効果と混同しません。
 
-## 通信の追加改善 — 実装・検証中
+## 通信の追加改善 — 受入完了
 
 最初の本番比較ではWeb工程の改善は3秒に留まり、監査/配信の変動で全体は49秒増えました。これを日次全体の短縮達成と扱いません。ローカルpreview serverはHTTP/1.0でresourceごとに接続を閉じていたため、HTTP/1.1・Content-Length・TCP_NODELAYで再利用します。redirect/HEAD/元bytes/私的path拒否を実TCP接続で回帰検証します。
 
@@ -39,3 +39,5 @@ Quartz自体は1 threadを維持します。固定engineの並列処理はMarkdo
 [ローカル測定](archive/2026-10/web-validation-local-2026-10-13.json)と[本番受入JSON](archive/2026-10/web-validation-acceptance-2026-10-13.json)へ計数・固定版・各工程の時間を保存しました。最終版のローカル検証は93.435秒で、同時browser最大2・検証計数一致。DeepMind69保留/failing/streak2などのsource未完了状態を維持し、性能検証の成功をsourceの全件完了と扱いません。
 
 初回の収集前テスト失敗と全951世代不変・API呼出し0の証拠は[失敗記録](archive/2026-10/web-validation-failed-attempt-2026-10-13.json)に残します。
+
+通信改善も[PR #187の本番受入](web-transport-performance.md)で完了しました。Web108→99秒・全体460→445秒。最初の全体411秒を下回ったとは扱わず、日次全体の安定短縮を後続へ残します。
