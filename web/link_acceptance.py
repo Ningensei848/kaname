@@ -8,7 +8,12 @@ from techkb.publication import ExportError, note_frontmatter
 from techkb.wikilinks import project_wikilinks, spans
 
 
-def audit_search_links(manifest, original, files):
+def parse_html(files):
+    """Parse each verified HTML file once, for this acceptance invocation only."""
+    return {name: BeautifulSoup(data, 'html.parser') for name, data in files.items() if name.endswith('.html')}
+
+
+def audit_search_links(manifest, original, files, parsed=None):
     titles = {}
     for entry in manifest['notes']:
         titles.setdefault(entry['title'], []).append(entry['id'])
@@ -20,7 +25,9 @@ def audit_search_links(manifest, original, files):
             if kind == 'wiki':
                 rendered = project_wikilinks(value, titles, entry['id'])
                 expected.extend(BeautifulSoup(rendered, 'html.parser').select('a.concept-search'))
-        actual = BeautifulSoup(files['notes/' + entry['id'] + '.html'], 'html.parser').select('a.concept-search')
+        path = 'notes/' + entry['id'] + '.html'
+        soup = BeautifulSoup(files[path], 'html.parser') if parsed is None else parsed[path]
+        actual = soup.select('a.concept-search')
         signature = lambda link: (link.get('href'), link.get('aria-label'), link.get_text(' ', strip=True))
         if Counter(map(signature, expected)) != Counter(map(signature, actual)):
             raise ExportError('search_link_mismatch')
@@ -36,9 +43,10 @@ def audit_search_links(manifest, original, files):
     return count
 
 
-def audit_note_anchors(files):
+def audit_note_anchors(files, parsed=None):
     base = 'http://127.0.0.1/kaname/'
-    parsed = {name: BeautifulSoup(data, 'html.parser') for name, data in files.items() if name.endswith('.html')}
+    parsed = parse_html(files) if parsed is None else parsed
+    identifiers = {name: {tag['id'] for tag in soup.find_all(id=True)} for name, soup in parsed.items()}
     for name, soup in parsed.items():
         for link in soup.select('a[href]'):
             target = urlsplit(urljoin(base + name, link['href']))
@@ -49,7 +57,7 @@ def audit_note_anchors(files):
                 path += 'index.html'
             if path not in parsed:
                 path += '.html'
-            if path in parsed and not parsed[path].find(id=unquote(target.fragment)):
+            if path in parsed and unquote(target.fragment) not in identifiers[path]:
                 raise ExportError('missing_note_anchor')
 
 
