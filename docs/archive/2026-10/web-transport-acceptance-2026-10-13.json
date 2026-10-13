@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "accepted_on": "2026-10-13 JST",
+  "code_pr": 187,
+  "code_head": "49198cbb61ac29745508d51700263a1f3dd92229",
+  "main_ci": {
+    "conclusion": "success",
+    "headSha": "49198cbb61ac29745508d51700263a1f3dd92229",
+    "status": "completed"
+  },
+  "tests": {
+    "python": 733,
+    "web_browser": 5,
+    "related": 23
+  },
+  "http_protocol": "HTTP/1.1",
+  "persistent_connection_verified": true,
+  "tcp_nodelay": true,
+  "image_roundtrips_per_image": 1,
+  "state": {
+    "status": "success",
+    "index": 438,
+    "pending": 126,
+    "body_http": 0,
+    "logical_calls": 0,
+    "http_attempts": 0,
+    "saved": 0,
+    "api_usd": "0",
+    "protected_objects": 951,
+    "note_index_receipt_usage_generations_crc_unchanged": true,
+    "all_prior_pending_preserved": true,
+    "pending_same_bytes": true,
+    "cost_report_exactly_unchanged": true,
+    "audit_state_and_run_success": true,
+    "release_count": 3,
+    "asset_count": 6,
+    "release_asset_ids_sizes_digests_unchanged": true,
+    "public_site_manifest_exactly_unchanged": true,
+    "source_health": [
+      {
+        "source_id": "apple-ml-research",
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 13
+      },
+      {
+        "source_id": "aws-news",
+        "health": "disabled",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 0
+      },
+      {
+        "source_id": "cloudflare-security",
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 20
+      },
+      {
+        "source_id": "github-blog",
+        "health": "incomplete",
+        "consecutive_failures": 0,
+        "success_rows": 35,
+        "pending_candidates": 1
+      },
+      {
+        "source_id": "google-deepmind",
+        "health": "failing",
+        "consecutive_failures": 2,
+        "success_rows": 31,
+        "pending_candidates": 69
+      },
+      {
+        "source_id": "google-research",
+        "health": "healthy",
+        "consecutive_failures": 0,
+        "success_rows": 372,
+        "pending_candidates": 0
+      },
+      {
+        "source_id": "meta-engineering",
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 12
+      },
+      {
+        "source_id": "microsoft-research",
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 11
+      }
+    ],
+    "overall_health": "degraded",
+    "rss_discovered": 259,
+    "known_articles_skipped": 140
+  },
+  "public": {
+    "status": "success",
+    "run": 38400686121,
+    "all_stages_success": true,
+    "release_input": true,
+    "public_notes": 156,
+    "search_links": 1377,
+    "original_public155_unchanged": true,
+    "latest_note_receipt_index_and_snapshot_match": true,
+    "live_recovered_note_checked": true,
+    "release_snapshot_equal": true,
+    "kind": "delta",
+    "depth": 2,
+    "changed": 1,
+    "deleted": 0,
+    "content_commit": "33c0530da3249e839db715277e22f193f1baa761",
+    "dataset_digest": "a9d739ac32bedd5de2978ea0157a1e9a78b57ae690ee93a05c1a1ffc083c184d",
+    "artifact_digest": "585223543660d3ae8d748053f9b924f030ec2ebf2d99386455b6e734b952751c",
+    "asset_sizes": {
+      "notes.zip": 33475,
+      "release.json": 744
+    },
+    "recovered_public_note_id": "beeae4c33783c7dc89c1a225fb7c174e40737fd99c6f08592620baa0b4581132",
+    "live_manifest_index_snapshot_and_version_equal": true
+  },
+  "browser": {
+    "status": "passed",
+    "notes": 156,
+    "content_commit": "33c0530da3249e839db715277e22f193f1baa761",
+    "dataset_digest": "a9d739ac32bedd5de2978ea0157a1e9a78b57ae690ee93a05c1a1ffc083c184d",
+    "external_requests": 0,
+    "search_links": 1377,
+    "offline_search_clicks": 1,
+    "approved_image_requests": 259,
+    "image_notes": 102,
+    "image_workers": 2
+  },
+  "timing": {
+    "before": {
+      "run": 38395575197,
+      "total_seconds": 460,
+      "jobs": {
+        "collect": 177,
+        "publish": 32,
+        "pages / build": 192,
+        "pages / deploy": 43
+      },
+      "steps": {
+        "Collect": 33,
+        "Audit saved state": 59,
+        "Export only validated public Notes": 13,
+        "Run ./.github/actions/setup-web": 61,
+        "Restore the fixed Release checkpoint and deltas": 13,
+        "Build and verify the public artifact": 108
+      }
+    },
+    "after": {
+      "run": 38400686121,
+      "total_seconds": 445,
+      "jobs": {
+        "collect": 168,
+        "publish": 43,
+        "pages / build": 177,
+        "pages / deploy": 43
+      },
+      "steps": {
+        "Collect": 29,
+        "Audit saved state": 47,
+        "Export only validated public Notes": 10,
+        "Run ./.github/actions/setup-web": 59,
+        "Restore the fixed Release checkpoint and deltas": 11,
+        "Build and verify the public artifact": 99
+      }
+    },
+    "web_reduction_seconds": 9,
+    "web_reduction_percent": 8.33
+  },
+  "pipeline_initial": {
+    "run": 38364553083,
+    "total_seconds": 411,
+    "web_seconds": 111
+  },
+  "additional_gemini_usd": "0",
+  "remaining_authorized_usd": "0.7077698",
+  "limits": [
+    "One run per implementation; runner preparation, network and queue times vary.",
+    "All image/loading/uniqueness/scroll/four-width checks are retained; image loading is not forced eager.",
+    "Earlier pool-only acceptance is recorded separately, including its increased total time."
+  ]
+}
