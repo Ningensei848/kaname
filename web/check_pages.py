@@ -6,7 +6,6 @@ import sys
 from threading import Thread
 from urllib.parse import unquote, urljoin, urlsplit
 
-from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, expect
 
 from serve import server
@@ -14,15 +13,16 @@ from kaname_web.public_input import public_input
 from kaname_web.artifact import load_artifact
 from techkb.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
-from image_acceptance import approved_images, image_guard, check_images
-from link_acceptance import audit_search_links, audit_note_anchors, check_search_click
+from image_acceptance import approved_images, image_guard, check_image_pages
+from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
 
 
-def check(content, commit, artifact, release_receipt=None):
+def check(content, commit, artifact, release_receipt=None, image_workers=2):
     manifest, original, _ = public_input(content, commit, release_receipt)
     marker, files = load_artifact(artifact)
-    search_links = audit_search_links(manifest, original, files)
-    audit_note_anchors(files)
+    parsed = parse_html(files)
+    search_links = audit_search_links(manifest, original, files, parsed)
+    audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, original)
     approved = {image['url'] for images in image_entries.values() for image in images}
     if (not public_version_matches(marker, commit) or
@@ -30,10 +30,7 @@ def check(content, commit, artifact, release_receipt=None):
         raise ExportError('pages_provenance_mismatch')
     # Resolve every static local navigation/asset link against the same artifact.
     base = 'http://127.0.0.1/kaname/'
-    for name, data in files.items():
-        if not name.endswith('.html'):
-            continue
-        soup = BeautifulSoup(data, 'html.parser')
+    for name, soup in parsed.items():
         if soup.select('.fixture-banner') or soup.select('meta[name="robots"][content*="noindex"]'):
             raise ExportError('fixture_in_pages')
         for tag in soup.select('[href], [src]'):
@@ -51,7 +48,7 @@ def check(content, commit, artifact, release_receipt=None):
             if path not in files and path + '.html' not in files:
                 raise ExportError('missing_pages_link')
     for entry in manifest['notes']:
-        soup = BeautifulSoup(files['notes/' + entry['id'] + '.html'], 'html.parser')
+        soup = parsed['notes/' + entry['id'] + '.html']
         if not soup.find('a', class_='source-link', href=entry['canonical_url']):
             raise ExportError('missing_pages_source')
     httpd = server(artifact, 0)
@@ -84,10 +81,6 @@ def check(content, commit, artifact, release_receipt=None):
                 search_clicks = check_search_click(context, page)
                 response = context.request.get(home + 'markdown/' + entry['path'])
                 assert response.ok and response.body() == original[entry['path']], 'pages_note_bytes_mismatch'
-            for entry in manifest['notes']:
-                if image_entries[entry['id']]:
-                    page.goto(home + 'notes/' + entry['id'])
-                    check_images(page, image_entries[entry['id']])
             page.goto(home + 'about/snapshot')
             expect(page.locator('article')).to_contain_text(commit)
             expect(page.locator('article')).to_contain_text(manifest['dataset_digest'])
@@ -100,12 +93,15 @@ def check(content, commit, artifact, release_receipt=None):
             assert not errors, 'pages_browser_error'
             assert not external, 'pages_external_resource_request'
             browser.close()
+        # Finish the navigation browser before starting the bounded image pool.
+        images_checked = check_image_pages(origin, image_entries, image_workers)
     finally:
         httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status='passed', notes=len(manifest['notes']), content_commit=commit,
                 dataset_digest=manifest['dataset_digest'], external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
-                approved_image_requests=len(image_requests))
+                approved_image_requests=len(image_requests) + images_checked['requests'],
+                image_notes=images_checked['notes'], image_workers=images_checked['workers'])
 
 
 if __name__ == '__main__':
@@ -114,9 +110,10 @@ if __name__ == '__main__':
     parser.add_argument('--content-commit', required=True)
     parser.add_argument('--artifact', required=True, type=Path)
     parser.add_argument('--release-receipt', type=Path)
+    parser.add_argument('--image-workers', type=int, choices=(1, 2), default=2)
     args = parser.parse_args()
     try:
-        print(json.dumps(check(args.content, args.content_commit, args.artifact, args.release_receipt)))
+        print(json.dumps(check(args.content, args.content_commit, args.artifact, args.release_receipt, args.image_workers)))
     except ExportError as exc:
         print(json.dumps(dict(status='failed', code=str(exc))), file=sys.stderr); sys.exit(1)
     except Exception:

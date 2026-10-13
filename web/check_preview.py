@@ -12,7 +12,7 @@ from serve import WEB, server
 from kaname_web.artifact import load_artifact
 from techkb.publication import sha256
 from image_acceptance import approved_images, image_guard, check_images
-from link_acceptance import audit_search_links, audit_note_anchors, check_search_click
+from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
 
 
 def check(artifact, screenshots=None):
@@ -21,8 +21,9 @@ def check(artifact, screenshots=None):
         raise ValueError("fixture_required")
     manifest = json.loads(files["markdown/manifest.json"])
     note_files = {name.removeprefix('markdown/'): data for name, data in files.items() if name.startswith('markdown/')}
-    search_links = audit_search_links(manifest, note_files, files)
-    audit_note_anchors(files)
+    parsed = parse_html(files)
+    search_links = audit_search_links(manifest, note_files, files, parsed)
+    audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, note_files)
     approved = {image['url'] for images in image_entries.values() for image in images}
     httpd = server(artifact, 0)
