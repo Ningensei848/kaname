@@ -39,7 +39,7 @@ def selected(expression, inputs, *, success=True, ref='refs/heads/main', outcome
 def inputs(**overrides):
     return dict(batch_preflight=False, publish_only=False, verification_run_id='',
                 diagnostic_batch_id='', expected_success_before='',
-                collection_mode='configured', max_calls='', image_repair_plan='', image_repair_apply=False) | overrides
+                collection_mode='configured', max_calls='', max_cost_usd='', max_output_tokens='', image_repair_plan='', image_repair_apply=False) | overrides
 
 
 @pytest.mark.parametrize('success', [True, False])
@@ -69,7 +69,7 @@ def test_preflight_skips_paid_work_writes_and_publication_even_on_failure(workfl
 @pytest.mark.parametrize('override', [
     {'publish_only': 'true'}, {'verification_run_id': 'saved-run'},
     {'diagnostic_batch_id': 'saved-batch'}, {'expected_success_before': '0'},
-    {'max_calls': '0'}, {'collection_mode': 'standard'}, {'collection_mode': 'batch'},
+    {'max_calls': '0'}, {'max_output_tokens':'4096'}, {'collection_mode': 'standard'}, {'collection_mode': 'batch'},
 ])
 def test_preflight_conflicting_inputs_are_rejected_before_auth(workflow, override):
     steps = workflow['jobs']['batch-preflight']['steps']
