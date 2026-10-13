@@ -11,6 +11,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 |---|---|---|---|
 | 通常運用で継続 | 収集保留126件 | 2026-10-13通常日次の29件に加え、出力打切り1件も復旧・保存。成功index438。元未処理とRSSの追加候補を含む。日次・全source合計30件で順次処理 | DeepMind69/GitHub1/Microsoft11/Meta12/Apple13/Cloudflare20。通常日次USD 0.076561と復旧USD 0.0017218を承認台帳へ合算し、残額USD 0.7077698。[現状](output-recovery.md) |
 | 実装・受入中 | Web検証の短縮 | 最新156件の生成0 runでWeb準備62秒/build検証111秒。HTML解析/アンカー探索を共有、画像入り102ページの実ブラウザ検証を最大2並列へ | 関連72件成功。実156件の比較、全回帰・CI・生成0の日次と保存/費用/公開版不変を受入。[進捗](web-validation-performance.md) |
+| 修正・受入中／Open維持 | [#185 収集jobのテスト依存](https://github.com/Ningensei848/kaname/issues/185) | PR #184後の生成0試行は通常pytestでPlaywright不在により停止。GCS認証/収集/生成/保存/配信は未実行 | 実ブラウザテストをWeb CIへ分離。Python732件/Web4件成功、Playwrightなしの通常pytest・CI・生成0の本番受入後にClose |
 | 後続候補 | GCS監査/export・HTMLの追加短縮 | 新規記事限定とRelease差分配布は受入完了。GCS全件監査・Quartz全体buildを維持 | 別run間の差分GCS監査、ReleaseのHTTP重複取得、検索/リンクの無効化を測定して判断。[現状](release-distribution.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |

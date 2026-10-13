@@ -46,6 +46,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-web
+      - name: Test browser validation boundaries
+        run: python -m pytest -q web/tests
       - working-directory: web
         run: |
           npm --silent run fixture

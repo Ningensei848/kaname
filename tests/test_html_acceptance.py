@@ -3,6 +3,7 @@ import pytest
 
 from link_acceptance import parse_html, audit_note_anchors, audit_search_links
 from techkb.publication import ExportError
+from image_acceptance import check_image_pages
 
 
 @pytest.mark.parametrize('href', ['b#%E8%A6%81%E7%B4%84', 'b.html#%E8%A6%81%E7%B4%84', '/kaname/notes/b#%E8%A6%81%E7%B4%84'])
@@ -40,3 +41,15 @@ def test_shared_search_document_still_rejects_wrong_or_unsafe_links(damage, erro
     files['notes/a.html'] = anchor.encode()
     with pytest.raises(ExportError, match=error):
         audit_search_links(manifest, original, files, parse_html(files))
+
+
+@pytest.mark.parametrize('workers', [0, 3, True])
+def test_unbounded_or_noninteger_browser_count_is_rejected(workers):
+    with pytest.raises(ValueError, match='invalid_image_workers'):
+        check_image_pages('http://unused.invalid', {}, workers)
+
+
+def test_empty_image_input_needs_no_browser_import(monkeypatch):
+    import sys
+    monkeypatch.setitem(sys.modules, 'playwright', None)
+    assert check_image_pages('http://unused.invalid', {'a': []}) == dict(notes=0, requests=0, workers=0)

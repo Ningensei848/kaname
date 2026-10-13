@@ -15,7 +15,11 @@ Quartz自体は1 threadを維持します。固定engineの並列処理はMarkdo
 - [x] 関連72件成功。Unicode/相対/絶対/拡張子付きのアンカー、検索リンクの改変・rel/target/graph違反を拒否。実Chromium2つで各Noteを1回訪問し、画像を代替応答で検査。worker JSエラー/外部通信を拒否、直列切戻しを確認。
 - [x] 実156件の同じartifactで1/2画像ブラウザを比較した初期案は113.940→98.937秒。検索1,377リンク・画像入り102ページ・画像259応答・外部通信0・元bytes不変。最終版はpool前に検索のブラウザを閉じて同時数を2に抑え、本番の工程時間はActionsで別途測ります。
 - [x] 全Python735件・actionlint成功。
-- [ ] PR/mainのPython/Web CI。
+- [x] [PR #184](https://github.com/Ningensei848/kaname/pull/184)取込・[最終PR CI](https://github.com/Ningensei848/kaname/actions/runs/38391958012)・[取込後main CI](https://github.com/Ningensei848/kaname/actions/runs/38392516675)のPython/Web成功。
 - [ ] 追加生成0の日次で全工程・GCS保存/費用・Release/公開版不変と実工程時間を受入。
+
+初回の[本番試行](https://github.com/Ningensei848/kaname/actions/runs/38393154698)は、収集前の通常pytestで新しい実ブラウザテストがPlaywright不在により失敗しました。GCS認証・収集・生成・保存・配信はskipです。[通知#185](https://github.com/Ningensei848/kaname/issues/185)は本番受入完了までOpenで管理します。
+
+実ブラウザの4ケースを`web/tests`へ移し、Web CIで必ず実行します。通常の`tests`にはHTML/アンカー/検索と、ブラウザ不要の入力上限/空集合検査を残し、収集jobの依存を増やしません。修正後の全Python732件と実Web4件が成功。Playwrightをimportできない状態の通常pytestも別途再現し、CI/本番で依存境界を確認してから生成0で受入を再試行します。
 
 別run間のprivate GCS cache、ReleaseのHTTP重複取得、Web環境そのものの再利用、差分HTML buildは別の候補です。今回の効果を未測定の候補の効果と混同しません。
