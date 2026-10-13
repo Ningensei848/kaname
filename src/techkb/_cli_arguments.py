@@ -28,6 +28,7 @@ def parse_args(argv):
     parser.add_argument("--llm-mode", choices=["standard", "batch"], help="override configured mode for run/dry-run")
     parser.add_argument("--max-calls", type=int, help="run limit; increases require a standard --max-cost-usd cap")
     parser.add_argument("--max-cost-usd", type=Decimal, help="estimated standard generation cost cap for this run; stops on uncertain usage")
+    parser.add_argument('--max-output-tokens', type=int, help='explicit output recovery limit; standard run with --max-calls 1 and --max-cost-usd only')
     parser.add_argument('--recheck-known', action='store_true', help='re-fetch successful article URLs to detect edits; run/dry-run only')
     return parser.parse_args(argv)
 
@@ -49,6 +50,13 @@ def validate_args(args, app):
         if args.max_calls < 0 or (args.max_cost_usd is None and args.max_calls > app.llm.max_calls_per_run):
             raise ValueError("increasing --max-calls requires a standard cost cap")
         app.llm.max_calls_per_run=args.max_calls
+    if args.max_output_tokens is not None:
+        if (args.command != 'run' or app.llm.mode != 'standard' or args.max_calls != 1 or
+                args.max_cost_usd is None or not 1 <= args.max_output_tokens <= 65536):
+            raise ValueError('output override requires a bounded single standard call')
+        app.llm.max_output_tokens = args.max_output_tokens
+        # Recovery must not turn an ambiguous timeout into another paid request.
+        app.llm.retries = 0
     if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "export-notes"}:
         raise ValueError("--state-dir requires a command supporting read-only snapshots")
     if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:

@@ -30,6 +30,10 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 standardのLLM/compose失敗にはBatchと共通の安全な構造診断を記録します。型・既知field/error code・候補/選択/重複/候補外/配置不適合の件数だけを残し、APIエラー本文・生成文・画像IDを診断へ保存しません。
 
+## 出力打切りの1件復旧
+
+通常2,048 tokensの出力上限を維持し、復旧時だけ`run --llm-mode standard --max-calls 1 --max-cost-usd 0.05 --max-output-tokens 4096`で余地を広げられます。1件と費用capを必須とし、Batch/診断/公開専用とは混在できません。対象が次の未知pendingであることを事前確認し、全pendingを保持します。未完JSONの修復や自動再生成は行いません。実装・受入状態は[出力復旧](output-recovery.md)を参照してください。
+
 ## 既存Noteへの画像補完
 
 要約を再生成せず、レビュー済みの画像URLと配置だけを追加できます。現在の対象はGlucoFM 1件です。

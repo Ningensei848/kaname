@@ -37,7 +37,7 @@ def test_image_repair_never_selects_collection_or_publication(workflow, apply, s
 @pytest.mark.parametrize('override', [
     {'batch_preflight': True}, {'publish_only': True}, {'verification_run_id': 'saved'},
     {'diagnostic_batch_id': 'saved'}, {'expected_success_before': '0'},
-    {'collection_mode': 'standard'}, {'max_calls': '0'},
+    {'collection_mode': 'standard'}, {'max_calls': '0'}, {'max_output_tokens':'4096'},
     {'image_repair_plan': '../private.json'}, {'image_repair_plan': ''},
     {'image_repair_plan': 'config/image-repairs/' + 'a' * 64 + '.json'},
 ])

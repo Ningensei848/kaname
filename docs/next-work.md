@@ -10,7 +10,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
 | 通常運用で継続 | 収集保留127件 | 2026-10-13通常日次は29保存/1生成失敗、成功index437。元未処理とRSSの追加候補を含む。日次・全source合計30件で順次処理 | 独立照合でDeepMind70/GitHub1/Microsoft11/Meta12/Apple13/Cloudflare20を確認。通常日次30呼出しUSD 0.076561も承認台帳へ合算し、残額USD 0.7094916。[現状](release-distribution.md) |
-| 要対応・Open維持 | [#178 DeepMindのJSON打切り](https://github.com/Ningensei848/kaname/issues/178) | 通常日次の1件がMAX_TOKENS/json_invalid。29件は保存/公開済みだが、失敗した1件の成功受入は未完了 | 出力上限・費用/件数capを保った再検証を別途進める。配布成功を収集成功扱いにしない |
+| 修正・検証中／Open維持 | [#178 DeepMindのJSON打切り](https://github.com/Ningensei848/kaname/issues/178) | 通常日次の1件がMAX_TOKENS/json_invalid。29件は保存/公開済み。簡潔な出力指示と、1件/費用cap付きの明示出力overrideを実装 | 107件/actionlint成功。全回帰・CI後、先頭の失敗1件を限定復旧し、保存/公開・生成0の再実行まで受入。[進捗](output-recovery.md) |
 | 後続候補 | GCS監査/export・HTMLの追加短縮 | 新規記事限定とRelease差分配布は受入完了。GCS全件監査・Quartz全体buildを維持 | 別run間の差分GCS監査、ReleaseのHTTP重複取得、検索/リンクの無効化を測定して判断。[現状](release-distribution.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
