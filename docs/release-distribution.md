@@ -48,10 +48,10 @@ gh workflow run pages.yml --repo Ningensei848/kaname --ref main \
 
 公開専用モードではCollect・費用/通知state更新をskipし、GCSはaudit/exportの読取りのみです。今回の配布受入の追加Gemini呼出し/費用は0です。再認証後の独立照合も完了しました。全437 Note/receipt/indexが整合し、再exportした155件は両公開snapshotと同じbytes、元費用は公開前の通常日次後の費用reportと一致。今回の読取り監査前後で全946オブジェクトの世代/CRCが不変、以前からの883オブジェクトと408成功行も保持を確認しました。元の2公開run直前の完全catalogは取得できていないため、その2runを挟む全世代比較を後から実施したとは扱いません。[独立照合JSON](archive/2026-10/release-gcs-independent-acceptance-2026-10-13.json)へ根拠を保存しています。
 
-直前の[通常日次](https://github.com/Ningensei848/kaname/actions/runs/38339836814)でDeepMind29件を保存し、1件は`MAX_TOKENS`/`json_invalid`で拒否しました。公開155件にはその29件を含み、旧126件を変更していません。この収集失敗は[Issue #178](https://github.com/Ningensei848/kaname/issues/178)をOpenで管理し、差分配布成功を生成成功扱いにしません。通常日次の30呼出しは元usageが全件判明、推計USD 0.076561。承認USD 1の台帳へ保守的に合算し、累計USD 0.2905084/残額USD 0.7094916です。
+直前の[通常日次](https://github.com/Ningensei848/kaname/actions/runs/38339836814)でDeepMind29件を保存し、1件は`MAX_TOKENS`/`json_invalid`で拒否しました。公開155件にはその29件を含み、旧126件を変更していません。初回配布受入時点では、この収集失敗を[Issue #178](https://github.com/Ningensei848/kaname/issues/178)のOpenで管理し、差分配布成功を生成成功扱いにしませんでした。後続の[限定復旧](output-recovery.md)で1件を保存・公開・生成0再実行まで受入し、#178をCloseしました。通常日次の30呼出しは元usageが全件判明、推計USD 0.076561。承認USD 1の台帳へ保守的に合算し、累計USD 0.2905084/残額USD 0.7094916です。
 
 別run間の差分GCS監査/exportと差分HTML buildはこの変更の範囲に含めません。Release配布を時間短縮と同義にはせず、Actionsの工程時間で結果を測ります。
 
 実測は公開専用で420秒/412秒（7分/6分52秒）、155 Note/1,359リンクです。以前の126 Note・生成0の通常run351秒とは入力件数とモードが異なり、今回のRelease切替えだけで時間が短縮したと扱いません。工程時間・固定版・検証計数は[受入JSON](archive/2026-10/release-distribution-acceptance-2026-10-13.json)に保存しました。
 
-Source Healthの独立読取りでは、Google Researchはhealthy、GitHubは新規保留1件でincomplete、DeepMindはfailing/streak2・保留70件、Microsoft11/Meta12/Apple13/Cloudflare20はunverifiedです。計127保留、失敗や未処理sourceを配布成功でresetしません。Issue #178の出力打切りはOpenのままです。
+Source Healthの独立読取りでは、Google Researchはhealthy、GitHubは新規保留1件でincomplete、DeepMindはfailing/streak2・保留70件、Microsoft11/Meta12/Apple13/Cloudflare20はunverifiedです。計127保留、失敗や未処理sourceを配布成功でresetしません。これは初回の155件配布受入時点の記録です。後続の限定復旧後はindex438/public156/pending126・DeepMind69保留/failing/streak2、元対象を1件保存した変更1件/depth2の差分Releaseと同版再実行まで受入済みです。推計USD 0.0017218を追加し、承認台帳の累計USD 0.2922302/残額USD 0.7077698。現在の[復旧受入](output-recovery.md)で追跡し、過去の値を現在値で上書きしません。
