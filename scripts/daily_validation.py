@@ -4,6 +4,7 @@ Configuration and all operational state/publication checks still run daily.
 Only the duplicate unit test suite can be satisfied by the CI result.
 """
 import argparse
+from http.client import HTTPException
 import json
 import os
 import re
@@ -60,7 +61,7 @@ def checks_evidence(environment, fetch=github_json):
                 raise ValueError('required check missing')
         return {'unit_tests': 'checks', 'reason': 'same_main_commit_passed',
                 'checks_run_id': run['id'], 'checks_run_attempt': run['run_attempt']}
-    except (URLError, OSError, ValueError, KeyError, TypeError):
+    except (HTTPException, URLError, OSError, ValueError, KeyError, TypeError):
         # Do not log API exceptions: request details may contain credentials.
         return {'unit_tests': 'local', 'reason': 'checks_not_confirmed'}
 

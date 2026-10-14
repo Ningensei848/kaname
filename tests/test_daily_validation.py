@@ -1,5 +1,6 @@
 """Daily may reuse only a complete, successful CI result for the running code."""
 import copy
+from http.client import IncompleteRead
 import importlib.util
 from pathlib import Path
 import subprocess
@@ -86,8 +87,10 @@ def test_malformed_or_paginated_response_falls_back(response):
     assert module.checks_evidence(ENV, lambda *_: response)['unit_tests'] == 'local'
 
 
-def test_api_failure_does_not_log_credentials(capsys):
-    def fail(*_): raise URLError('secret-fixture')
+@pytest.mark.parametrize('error', [URLError('secret-fixture'), IncompleteRead(b'secret-fixture'),
+                                 TimeoutError('secret-fixture')])
+def test_api_failure_does_not_log_credentials(capsys, error):
+    def fail(*_): raise error
     assert module.checks_evidence(ENV, fail)['unit_tests'] == 'local'
     assert capsys.readouterr() == ('', '')
 
