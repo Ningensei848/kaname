@@ -1,0 +1,124 @@
+{
+  "samples": [
+    {
+      "objects": 999,
+      "downloads": 999,
+      "cache_hits": 0,
+      "workers": 8,
+      "load_seconds": 10.942,
+      "aligned_pool": false,
+      "verified_seconds": 12.786,
+      "audit": {
+        "status": "success",
+        "success_rows": 498,
+        "pending": 80,
+        "truncated_rows": 254,
+        "issues": []
+      },
+      "connection_pools": [
+        {
+          "connections": 8,
+          "requests": 1008
+        }
+      ]
+    },
+    {
+      "objects": 999,
+      "downloads": 999,
+      "cache_hits": 0,
+      "workers": 16,
+      "load_seconds": 3.844,
+      "aligned_pool": false,
+      "verified_seconds": 4.9,
+      "audit": {
+        "status": "success",
+        "success_rows": 498,
+        "pending": 80,
+        "truncated_rows": 254,
+        "issues": []
+      },
+      "connection_pools": [
+        {
+          "connections": 16,
+          "requests": 1008
+        }
+      ]
+    },
+    {
+      "objects": 999,
+      "downloads": 999,
+      "cache_hits": 0,
+      "workers": 16,
+      "load_seconds": 3.386,
+      "aligned_pool": true,
+      "verified_seconds": 4.523,
+      "audit": {
+        "status": "success",
+        "success_rows": 498,
+        "pending": 80,
+        "truncated_rows": 254,
+        "issues": []
+      },
+      "connection_pools": [
+        {
+          "connections": 16,
+          "requests": 1007
+        }
+      ]
+    },
+    {
+      "objects": 999,
+      "downloads": 999,
+      "cache_hits": 0,
+      "workers": 8,
+      "load_seconds": 7.106,
+      "aligned_pool": false,
+      "verified_seconds": 8.414,
+      "audit": {
+        "status": "success",
+        "success_rows": 498,
+        "pending": 80,
+        "truncated_rows": 254,
+        "issues": []
+      },
+      "connection_pools": [
+        {
+          "connections": 8,
+          "requests": 1008
+        }
+      ]
+    },
+    {
+      "objects": 999,
+      "downloads": 999,
+      "cache_hits": 0,
+      "workers": 16,
+      "load_seconds": 3.128,
+      "aligned_pool": true,
+      "verified_seconds": 4.12,
+      "audit": {
+        "status": "success",
+        "success_rows": 498,
+        "pending": 80,
+        "truncated_rows": 254,
+        "issues": []
+      },
+      "connection_pools": [
+        {
+          "connections": 16,
+          "requests": 1007
+        }
+      ]
+    }
+  ],
+  "same_generations_crc_bytes": true,
+  "date_jst": "2026-10-15",
+  "cold_byte_cache": true,
+  "gcs_writes": 0,
+  "gemini_requests": 0,
+  "limits": [
+    "Local host timings are not GitHub runner timings.",
+    "Initial transport/DNS/server warmup varies; repeat 8/16 comparison is included.",
+    "Pool alignment effect is not statistically isolated from request timing."
+  ]
+}

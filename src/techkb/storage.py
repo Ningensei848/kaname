@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Protocol
+from requests.adapters import HTTPAdapter
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
 
@@ -39,9 +40,30 @@ class GCSStore:
                                 if_generation_match=self.generations[name])
         self.generations[name] = int(blob.generation)
 
-    def read_snapshot(self, prefixes, *, cache_dir=None):
-        from .read_snapshot import read_snapshot
-        return read_snapshot(self, prefixes, cache_dir=cache_dir)
+    def read_snapshot(self, prefixes, *, cache_dir=None, workers=None):
+        from .read_snapshot import read_snapshot, read_workers, validate_workers
+        workers = read_workers() if workers is None else workers
+        validate_workers(workers)
+        self._configure_read_pool(workers)
+        return read_snapshot(self, prefixes, cache_dir=cache_dir, workers=workers)
+
+    def _configure_read_pool(self, workers):
+        """Keep SDK auth, retries, TLS and non-Storage transports unchanged."""
+        if getattr(self, '_read_pool_workers', None) == workers:
+            return
+        session = self.client._http
+        endpoint = self.client._connection.API_BASE_URL.rstrip('/') + '/'
+        current = session.get_adapter(endpoint)
+        # Preserve custom/mTLS adapter subclasses and their certificate policy.
+        if type(current) is not HTTPAdapter:
+            return
+        adapter = HTTPAdapter(pool_connections=workers, pool_maxsize=workers,
+                              max_retries=current.max_retries, pool_block=False)
+        previous = getattr(self, '_read_adapter', None)
+        session.mount(endpoint, adapter)
+        self._read_adapter, self._read_pool_workers = adapter, workers
+        if previous is not None:
+            previous.close()
 
     def close(self):
         self.client.close()

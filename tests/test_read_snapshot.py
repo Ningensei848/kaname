@@ -10,6 +10,7 @@ import pytest
 
 from techkb.read_snapshot import GCSReadSnapshot, GenerationCache, SnapshotChangedError, read_snapshot
 from techkb.publication import ExportError, export_notes
+from techkb.read_snapshot import read_workers
 
 
 def checksum(data):
@@ -71,6 +72,87 @@ def test_bounded_parallel_downloads_without_per_object_metadata_requests():
             view.write('notes/a.md', b'no')
         with pytest.raises(ValueError, match='outside'):
             view.read('raw/private.html')
+
+
+@pytest.mark.parametrize('workers', [8, 16])
+def test_all_worker_slots_used_without_changing_byte_or_catalog_checks(workers):
+    remote = Remote({f'notes/{i}.md': str(i).encode() for i in range(workers * 2)})
+    remote.barrier = Barrier(workers)
+    with pytest.raises(SnapshotChangedError):
+        with read_snapshot(remote, ('notes/',), workers=workers) as view:
+            assert remote.peak == workers
+            assert view.metrics['downloads'] == workers * 2
+            assert all(view.read(name) == remote.objects[name][1] for name in view.list('notes/'))
+            remote.replace('notes/0.md')
+
+
+@pytest.mark.parametrize('value', ['0', '17', '32', '08', '+8', ' 8', '', 'true'])
+def test_invalid_worker_environment_is_rejected(monkeypatch, value):
+    monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', value)
+    with pytest.raises(ValueError, match='invalid read workers'): read_workers()
+
+
+def test_default_and_operator_rollback(monkeypatch):
+    monkeypatch.delenv('TECHKB_GCS_READ_WORKERS', raising=False)
+    assert read_workers() == 16
+    for workers in (1, 8, 16):
+        monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', str(workers))
+        assert read_workers() == workers
+
+
+@pytest.mark.parametrize('workers', [True, 0, 17, 1.5, '16'])
+def test_invalid_worker_argument_fails_before_remote_reads(workers):
+    class Unavailable:
+        def __getattr__(self, _): pytest.fail('invalid workers must not access remote state')
+    with pytest.raises(ValueError, match='invalid read workers'):
+        GCSReadSnapshot(Unavailable(), ('notes/',), workers=workers)
+
+
+def test_storage_pool_preserves_auth_retries_and_other_endpoints(monkeypatch):
+    import requests
+    from techkb.storage import GCSStore
+    from urllib3.util.retry import Retry
+    session = requests.Session()
+    session.headers['Authorization'] = 'Bearer fixture'
+    original = session.get_adapter('https://storage.googleapis.com/')
+    original.max_retries = Retry(total=2)
+    store = GCSStore.__new__(GCSStore)
+    store.client = SimpleNamespace(_http=session,
+                                   _connection=SimpleNamespace(API_BASE_URL='https://storage.googleapis.com'))
+    try:
+        store._configure_read_pool(16)
+        adapter = session.get_adapter('https://storage.googleapis.com/storage/v1/')
+        assert adapter._pool_maxsize == 16
+        assert adapter.max_retries is original.max_retries
+        assert session.get_adapter('https://oauth2.googleapis.com/token') is original
+        assert session.headers['Authorization'] == 'Bearer fixture'
+        store._configure_read_pool(16)
+        assert session.get_adapter('https://storage.googleapis.com/') is adapter
+        closed = []
+        monkeypatch.setattr(adapter, 'close', lambda: closed.append(True))
+        store._configure_read_pool(8)
+        assert closed == [True]
+        assert session.get_adapter('https://storage.googleapis.com/')._pool_maxsize == 8
+    finally:
+        session.close()
+
+
+def test_storage_pool_does_not_replace_custom_tls_adapter():
+    import requests
+    from requests.adapters import HTTPAdapter
+    from techkb.storage import GCSStore
+    class CertificateAdapter(HTTPAdapter): pass
+    session = requests.Session()
+    adapter = CertificateAdapter()
+    session.mount('https://', adapter)
+    store = GCSStore.__new__(GCSStore)
+    store.client = SimpleNamespace(_http=session,
+                                   _connection=SimpleNamespace(API_BASE_URL='https://storage.googleapis.com'))
+    try:
+        store._configure_read_pool(16)
+        assert session.get_adapter('https://storage.googleapis.com/') is adapter
+    finally:
+        session.close()
 
 
 def test_warm_cache_downloads_only_changed_generation_and_repairs_corrupt_bytes(tmp_path):

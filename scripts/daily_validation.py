@@ -14,6 +14,8 @@ from urllib.error import URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+from techkb.read_snapshot import read_workers
+
 
 def github_json(path, token):
     request = Request('https://api.github.com' + path, headers={
@@ -72,6 +74,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     # Production configuration is checked on every run, before API/GCS auth.
     subprocess.run([sys.executable, '-m', 'techkb', 'validate-config'], check=True)
+    read_workers()  # Reject invalid operational bounds before auth or generation.
     evidence = ({'unit_tests': 'local', 'reason': 'explicit_full_tests'} if args.full_tests else
                 checks_evidence(os.environ))
     print(json.dumps(evidence), flush=True)

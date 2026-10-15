@@ -170,6 +170,8 @@ jobs:
       audit_outcome: ${{ steps.audit.outcome }}
       export_outcome: ${{ steps.export.outcome }}
     runs-on: ubuntu-latest
+    env:
+      TECHKB_GCS_READ_WORKERS: ${{ vars.GCS_READ_WORKERS || '16' }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5

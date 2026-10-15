@@ -1,6 +1,6 @@
 # 次の作業と優先順位
 
-2026-10-15 JST、指定されたP4: Parallel Processingまでの作業と、NS1・通常収集の復旧・追加4社の有効化は本番受入まで完了しています。現在は有効7 source・index468/public186/pending110です。日次の新規記事限定・Release差分配布・Web解析共有/画像並列/通信短縮・CI検査再利用まで受入済みです。直近の同じ186記事・生成0の比較は重複検査38→3秒、collect207→171秒でした。Pages配信工程が延び、全体は434→450秒（16秒増）です。別run間の測定で、日次全体の継続的な安定短縮とGCS/Release通信は後続として管理します。
+2026-10-15 JST、指定されたP4: Parallel Processingまでの作業と、NS1・通常収集の復旧・追加4社の有効化は本番受入まで完了しています。2026-10-15通常日次後は有効7 source・index498/public216/pending80です。日次の新規記事限定・Release差分配布・Web解析共有/画像並列/通信短縮・CI検査再利用まで受入済みです。直近の同じ186記事・生成0の比較は重複検査38→3秒、collect207→171秒でした。Pages配信工程が延び、全体は434→450秒（16秒増）です。別run間の測定で、日次全体の継続的な安定短縮とGCS/Release通信は後続として管理します。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
 P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
 2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
@@ -9,8 +9,8 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 通常運用で継続 | 収集保留110件 | 2026-10-14通常日次で30件保存、成功index468/public186。その後の生成0比較で新RSS候補を保持。日次・全source合計30件で順次処理 | DeepMind43/GitHub4/Google Research3/Microsoft11/Meta13/Apple16/Cloudflare20。旧103候補保持。追加承認累積USD 0.3749107、残額USD 0.6250893。[現状](daily-ci-reuse.md) |
-| 次の優先 | GCS監査の取得短縮・日次全体の安定短縮 | 直近はGCS全件監査70秒（939個を最大8並列で64.565秒）。CI重複は解消。全件監査・Quartz全体buildを維持 | 同じ世代固定の8/16並列を比較し、接続pool・通信待ちを測定。run間private cacheの無効化条件、Releaseの重複HTTP、Pages配信待ちは別の課題として追跡。[実測](daily-ci-reuse.md) |
+| 通常運用で継続 | 収集保留80件 | 2026-10-15通常日次で30件保存、成功index498/public216。日次・全source合計30件で順次処理 | 30 API試行/30保存・不明usage0、推計USD 0.0711413を一度だけ合算。追加承認累積USD 0.4460520、残額USD 0.5539480。独立読取りでDeepMind13/GitHub4/Google Research3/Microsoft11/Meta13/Apple16/Cloudflare20を確認。全体degradedを維持 |
+| 着手中 | GCS監査の取得短縮・日次全体の安定短縮 | 直近はGCS全件監査70秒（939個を最大8並列で64.565秒）。CI重複は解消。全件監査・Quartz全体buildを維持 | 全999件の世代/CRC/内容一致のローカル再比較で8並列7.106→16並列3.128秒。接続poolを揃え、1/8へ戻せる実装候補。PR/main CI・216記事の生成0で本番受入へ進む。run間cache・Release・Pages待ちは後続。[設計/検証](gcs-read-performance.md) |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
