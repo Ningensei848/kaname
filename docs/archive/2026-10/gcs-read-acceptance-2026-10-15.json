@@ -1,0 +1,768 @@
+{
+  "date_jst": "2026-10-15",
+  "status": "accepted",
+  "pull_request": 191,
+  "pr_ci": 38730656694,
+  "main_ci": 38734191415,
+  "python_tests": 786,
+  "web_tests": 5,
+  "targeted_tests": 78,
+  "before": {
+    "run_id": 38730037020,
+    "url": "https://github.com/Ningensei848/kaname/actions/runs/38730037020",
+    "head_sha": "de3773bf7a7f4b8760344371149922c97a2f6d0c",
+    "inputs": {
+      "collection_mode": "standard",
+      "max_calls": "0",
+      "max_cost_usd": "0.05"
+    },
+    "total_seconds": 469,
+    "jobs": [
+      {
+        "name": "collect",
+        "seconds": 156,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Run ./.github/actions/setup-python",
+            "seconds": 16
+          },
+          {
+            "name": "Validate configuration and confirm tested code",
+            "seconds": 2
+          },
+          {
+            "name": "Configure private read cache",
+            "seconds": 0
+          },
+          {
+            "name": "Validate execution mode",
+            "seconds": 0
+          },
+          {
+            "name": "Install browser when configured",
+            "seconds": 1
+          },
+          {
+            "name": "Run google-github-actions/auth@v3",
+            "seconds": 0
+          },
+          {
+            "name": "Collect",
+            "seconds": 32
+          },
+          {
+            "name": "Audit saved state",
+            "seconds": 62
+          },
+          {
+            "name": "Cost and notification plan",
+            "seconds": 16
+          },
+          {
+            "name": "Publish necessary notifications",
+            "seconds": 6
+          },
+          {
+            "name": "Export only validated public Notes",
+            "seconds": 13
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "seconds": 1
+          },
+          {
+            "name": "Post Run google-github-actions/auth@v3",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-python",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "publish",
+        "seconds": 47,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 0
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Run ./.github/actions/setup-python",
+            "seconds": 13
+          },
+          {
+            "name": "Run actions/download-artifact@v8",
+            "seconds": 1
+          },
+          {
+            "name": "Advance only the content branch and verify remote bytes",
+            "seconds": 10
+          },
+          {
+            "name": "Publish verified Note checkpoint or delta assets",
+            "seconds": 20
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-python",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "pages / build",
+        "seconds": 209,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Pin the requested public version",
+            "seconds": 0
+          },
+          {
+            "name": "Run ./.github/actions/setup-web",
+            "seconds": 56
+          },
+          {
+            "name": "Restore the fixed Release checkpoint and deltas",
+            "seconds": 18
+          },
+          {
+            "name": "Build and verify the public artifact",
+            "seconds": 126
+          },
+          {
+            "name": "Run actions/configure-pages@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Check the configured Pages URL matches the fixed site base",
+            "seconds": 0
+          },
+          {
+            "name": "Run actions/upload-pages-artifact@v3",
+            "seconds": 2
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-web",
+            "seconds": 1
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "pages / deploy",
+        "seconds": 43,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "seconds": 5
+          },
+          {
+            "name": "Deploy the verified artifact",
+            "seconds": 7
+          },
+          {
+            "name": "Verify the deployed version",
+            "seconds": 24
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      }
+    ],
+    "report": {
+      "status": "success",
+      "fetched": 0,
+      "discovered": 259,
+      "known_articles_skipped": 191,
+      "llm_calls": 0,
+      "llm_http_attempts": 0,
+      "saved": 0,
+      "pending_before": 80,
+      "pending_after": 80,
+      "total_input_tokens": 0,
+      "total_output_tokens": 0,
+      "total_thinking_tokens": 0,
+      "llm_usage_unavailable": 0
+    },
+    "audit": {
+      "status": "success",
+      "success_rows": 498,
+      "pending": 80,
+      "truncated_rows": 254,
+      "issues": []
+    },
+    "web": {
+      "status": "passed",
+      "notes": 216,
+      "content_commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "external_requests": 0,
+      "search_links": 2158,
+      "offline_search_clicks": 1,
+      "approved_image_requests": 327,
+      "image_notes": 134,
+      "image_workers": 2
+    },
+    "deploy": {
+      "status": "passed",
+      "content_commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "artifact_digest": "eb51a9822e1ea5dcf2cd20e952d6ccb9852189d9d42ba873b6cc422ef7754912",
+      "notes": 216
+    },
+    "release": {
+      "status": "success",
+      "tag": "notes-33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "notes": 216,
+      "kind": "delta",
+      "depth": 3
+    },
+    "validation": [
+      {
+        "unit_tests": "checks",
+        "reason": "same_main_commit_passed",
+        "checks_run_id": 38638243797,
+        "checks_run_attempt": 1
+      }
+    ],
+    "snapshots": [
+      {
+        "objects": 999,
+        "downloads": 999,
+        "cache_hits": 0,
+        "workers": 8,
+        "load_seconds": 56.405
+      },
+      {
+        "objects": 81,
+        "downloads": 81,
+        "cache_hits": 0,
+        "workers": 8,
+        "load_seconds": 8.111
+      },
+      {
+        "objects": 81,
+        "downloads": 0,
+        "cache_hits": 81,
+        "workers": 8,
+        "load_seconds": 2.087
+      },
+      {
+        "objects": 81,
+        "downloads": 0,
+        "cache_hits": 81,
+        "workers": 8,
+        "load_seconds": 2.091
+      },
+      {
+        "objects": 998,
+        "downloads": 0,
+        "cache_hits": 998,
+        "workers": 8,
+        "load_seconds": 3.546
+      }
+    ]
+  },
+  "after": {
+    "run_id": 38734712249,
+    "url": "https://github.com/Ningensei848/kaname/actions/runs/38734712249",
+    "head_sha": "0989275e0e1b9e775c41664d27bd28881ea85ab8",
+    "inputs": {
+      "collection_mode": "standard",
+      "max_calls": "0",
+      "max_cost_usd": "0.05"
+    },
+    "total_seconds": 422,
+    "jobs": [
+      {
+        "name": "collect",
+        "seconds": 104,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 2
+          },
+          {
+            "name": "Run ./.github/actions/setup-python",
+            "seconds": 13
+          },
+          {
+            "name": "Validate configuration and confirm tested code",
+            "seconds": 2
+          },
+          {
+            "name": "Configure private read cache",
+            "seconds": 0
+          },
+          {
+            "name": "Validate execution mode",
+            "seconds": 0
+          },
+          {
+            "name": "Install browser when configured",
+            "seconds": 0
+          },
+          {
+            "name": "Run google-github-actions/auth@v3",
+            "seconds": 1
+          },
+          {
+            "name": "Collect",
+            "seconds": 28
+          },
+          {
+            "name": "Audit saved state",
+            "seconds": 27
+          },
+          {
+            "name": "Cost and notification plan",
+            "seconds": 9
+          },
+          {
+            "name": "Publish necessary notifications",
+            "seconds": 5
+          },
+          {
+            "name": "Export only validated public Notes",
+            "seconds": 10
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "seconds": 1
+          },
+          {
+            "name": "Post Run google-github-actions/auth@v3",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-python",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "publish",
+        "seconds": 48,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 1
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Run ./.github/actions/setup-python",
+            "seconds": 13
+          },
+          {
+            "name": "Run actions/download-artifact@v8",
+            "seconds": 1
+          },
+          {
+            "name": "Advance only the content branch and verify remote bytes",
+            "seconds": 10
+          },
+          {
+            "name": "Publish verified Note checkpoint or delta assets",
+            "seconds": 21
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-python",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "pages / build",
+        "seconds": 189,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 2
+          },
+          {
+            "name": "Pin the requested public version",
+            "seconds": 0
+          },
+          {
+            "name": "Run ./.github/actions/setup-web",
+            "seconds": 65
+          },
+          {
+            "name": "Restore the fixed Release checkpoint and deltas",
+            "seconds": 20
+          },
+          {
+            "name": "Build and verify the public artifact",
+            "seconds": 94
+          },
+          {
+            "name": "Run actions/configure-pages@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Check the configured Pages URL matches the fixed site base",
+            "seconds": 0
+          },
+          {
+            "name": "Run actions/upload-pages-artifact@v3",
+            "seconds": 2
+          },
+          {
+            "name": "Post Run ./.github/actions/setup-web",
+            "seconds": 1
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 0
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      },
+      {
+        "name": "pages / deploy",
+        "seconds": 64,
+        "steps": [
+          {
+            "name": "Set up job",
+            "seconds": 2
+          },
+          {
+            "name": "Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "seconds": 6
+          },
+          {
+            "name": "Deploy the verified artifact",
+            "seconds": 34
+          },
+          {
+            "name": "Verify the deployed version",
+            "seconds": 18
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "seconds": 0
+          },
+          {
+            "name": "Post Run actions/checkout@v5",
+            "seconds": 1
+          },
+          {
+            "name": "Complete job",
+            "seconds": 0
+          }
+        ]
+      }
+    ],
+    "report": {
+      "status": "success",
+      "fetched": 0,
+      "discovered": 259,
+      "known_articles_skipped": 191,
+      "llm_calls": 0,
+      "llm_http_attempts": 0,
+      "saved": 0,
+      "pending_before": 80,
+      "pending_after": 80,
+      "total_input_tokens": 0,
+      "total_output_tokens": 0,
+      "total_thinking_tokens": 0,
+      "llm_usage_unavailable": 0
+    },
+    "audit": {
+      "status": "success",
+      "success_rows": 498,
+      "pending": 80,
+      "truncated_rows": 254,
+      "issues": []
+    },
+    "web": {
+      "status": "passed",
+      "notes": 216,
+      "content_commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "external_requests": 0,
+      "search_links": 2158,
+      "offline_search_clicks": 1,
+      "approved_image_requests": 327,
+      "image_notes": 134,
+      "image_workers": 2
+    },
+    "deploy": {
+      "status": "passed",
+      "content_commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "artifact_digest": "eb51a9822e1ea5dcf2cd20e952d6ccb9852189d9d42ba873b6cc422ef7754912",
+      "notes": 216
+    },
+    "release": {
+      "status": "success",
+      "tag": "notes-33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477",
+      "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+      "notes": 216,
+      "kind": "delta",
+      "depth": 3
+    },
+    "validation": [
+      {
+        "unit_tests": "checks",
+        "reason": "same_main_commit_passed",
+        "checks_run_id": 38734191415,
+        "checks_run_attempt": 1
+      }
+    ],
+    "snapshots": [
+      {
+        "objects": 999,
+        "downloads": 999,
+        "cache_hits": 0,
+        "workers": 16,
+        "load_seconds": 22.501
+      },
+      {
+        "objects": 82,
+        "downloads": 82,
+        "cache_hits": 0,
+        "workers": 16,
+        "load_seconds": 3.619
+      },
+      {
+        "objects": 82,
+        "downloads": 0,
+        "cache_hits": 82,
+        "workers": 16,
+        "load_seconds": 0.67
+      },
+      {
+        "objects": 82,
+        "downloads": 0,
+        "cache_hits": 82,
+        "workers": 16,
+        "load_seconds": 1.027
+      },
+      {
+        "objects": 998,
+        "downloads": 0,
+        "cache_hits": 998,
+        "workers": 16,
+        "load_seconds": 1.99
+      }
+    ]
+  },
+  "state": {
+    "status": "passed",
+    "baseline_objects": 1080,
+    "protected_generations": 1079,
+    "removed_objects": 0,
+    "added_zero_generation_reports": 1,
+    "pending_generation_rewritten": true,
+    "pending_bytes_unchanged": true,
+    "preserved_pending_candidates": 80,
+    "added_pending_candidates": 0,
+    "success_rows": 498,
+    "notes": 216,
+    "canonical_public_files": 218,
+    "cost_unchanged": true,
+    "original_usage_unchanged": true,
+    "releases_unchanged": true,
+    "releases": 5,
+    "assets": 10,
+    "source_health": "degraded",
+    "source_health_changes": [],
+    "sources": [
+      {
+        "source_id": "apple-ml-research",
+        "enabled": true,
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 16
+      },
+      {
+        "source_id": "aws-news",
+        "enabled": false,
+        "health": "disabled",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 0
+      },
+      {
+        "source_id": "cloudflare-security",
+        "enabled": true,
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 20
+      },
+      {
+        "source_id": "github-blog",
+        "enabled": true,
+        "health": "incomplete",
+        "consecutive_failures": 0,
+        "success_rows": 35,
+        "pending_candidates": 4
+      },
+      {
+        "source_id": "google-deepmind",
+        "enabled": true,
+        "health": "failing",
+        "consecutive_failures": 2,
+        "success_rows": 91,
+        "pending_candidates": 13
+      },
+      {
+        "source_id": "google-research",
+        "enabled": true,
+        "health": "incomplete",
+        "consecutive_failures": 0,
+        "success_rows": 372,
+        "pending_candidates": 3
+      },
+      {
+        "source_id": "meta-engineering",
+        "enabled": true,
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 13
+      },
+      {
+        "source_id": "microsoft-research",
+        "enabled": true,
+        "health": "unverified",
+        "consecutive_failures": 0,
+        "success_rows": 0,
+        "pending_candidates": 11
+      }
+    ]
+  },
+  "public_tree": {
+    "status": "passed",
+    "notes": 216,
+    "public_files": 218,
+    "git_files": 219,
+    "content_commit": "33552e16708f1d9e15ba0f79cec6ba8ec2b4b477"
+  },
+  "post_public": {
+    "status": "passed",
+    "public_snapshot_files": 218,
+    "snapshot_bytes_unchanged": true,
+    "release_catalog_unchanged": true,
+    "gcs_post_audit_catalog_unchanged": true
+  },
+  "cost": {
+    "additional_gemini_usd": "0",
+    "daily_usd": "0.0711413",
+    "monthly_usd": "1.54402705",
+    "uncertain_runs": 0,
+    "incomplete_standard_runs": 0,
+    "pending_batch_items": 0,
+    "cumulative_authorized_estimate_usd": "0.4460520",
+    "remaining_authorized_usd": "0.5539480"
+  },
+  "limits": [
+    "One pair of independent GitHub runners, not a long-term runtime guarantee.",
+    "Same 216 published Notes; live RSS can add pending candidates without generation.",
+    "Private GCS baseline captured after the before collection checkpoint and before the optimized run.",
+    "All generation/CRC/catalog/state/publication/link/image/four-width checks remain enabled.",
+    "Only standard Storage HTTP adapters are replaced; custom TLS adapters are preserved."
+  ]
+}

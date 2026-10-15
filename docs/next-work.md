@@ -1,6 +1,6 @@
 # 次の作業と優先順位
 
-2026-10-15 JST、指定されたP4: Parallel Processingまでの作業と、NS1・通常収集の復旧・追加4社の有効化は本番受入まで完了しています。2026-10-15通常日次後は有効7 source・index498/public216/pending80です。日次の新規記事限定・Release差分配布・Web解析共有/画像並列/通信短縮・CI検査再利用まで受入済みです。直近の同じ186記事・生成0の比較は重複検査38→3秒、collect207→171秒でした。Pages配信工程が延び、全体は434→450秒（16秒増）です。別run間の測定で、日次全体の継続的な安定短縮とGCS/Release通信は後続として管理します。
+2026-10-15 JST、指定P4までの作業・NS1・通常収集復旧・追加4社の有効化は受入済みです。現在は有効7 source・index498/public216/pending80。日次の新規限定・Release差分配布・Web検査短縮・CI検査再利用に加え、GCS読取り16並列/接続再利用も本番受入完了しました。同じ216記事・生成0でGCS取得56.405→22.501秒、監査62→27秒、全体469→422秒（10.02%短縮）です。継続的な全体時間の安定・Release通信・Pages配信待ちは後続として管理します。
 通常schedule、Pages切戻し・復帰、T0/O1/O2とR1〜R5は受入・取込済みです。
 P1、P3のcorpus、P4のParallelは実装・実CI検証完了、P3のSource Healthは実GCS読取り受入済みです。
 2026-10-12 JST、P2の画像型/候補外IDを解消し、実Batchの3画像入りNoteを保存・公開済みです。追加生成0の再実行・監査/費用/Git/Pagesまで受入完了です。
@@ -9,8 +9,8 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 優先 | 作業 | 理由・開始条件 | 次に必要な判断 |
 |---|---|---|---|
-| 通常運用で継続 | 収集保留80件 | 2026-10-15通常日次で30件保存、成功index498/public216。日次・全source合計30件で順次処理 | 30 API試行/30保存・不明usage0、推計USD 0.0711413を一度だけ合算。追加承認累積USD 0.4460520、残額USD 0.5539480。独立読取りでDeepMind13/GitHub4/Google Research3/Microsoft11/Meta13/Apple16/Cloudflare20を確認。全体degradedを維持 |
-| 着手中 | GCS監査の取得短縮・日次全体の安定短縮 | 直近はGCS全件監査70秒（939個を最大8並列で64.565秒）。CI重複は解消。全件監査・Quartz全体buildを維持 | 全999件の世代/CRC/内容一致のローカル再比較で8並列7.106→16並列3.128秒。接続poolを揃え、1/8へ戻せる実装候補。PR/main CI・216記事の生成0で本番受入へ進む。run間cache・Release・Pages待ちは後続。[設計/検証](gcs-read-performance.md) |
+| 通常運用で継続 | 収集保留80件 | 2026-10-15通常日次で30件保存、index498/public216。日次・全source合計30件で順次処理 | 生成0比較でも旧候補保持。追加承認累積USD 0.4460520、残額USD 0.5539480。全体degraded・DeepMind failing/streak2は維持。[内訳/費用](gcs-read-performance.md) |
+| 次の候補 | Release重複通信・日次全体の安定短縮 | GCS16並列とCI再利用は本番受入済み。GCS全件監査・Quartz全体build・全Web検証を維持 | Release作成時の基底asset重複取得を計測し、fresh metadata/ID/digest照合を維持して改善を判断。Pages待ち・run間private cache・Web環境/artifact再利用の無効化条件も別課題として追跡 |
 | 費用推定完了・確定照合待ち | [#116 確定請求照合](https://github.com/Ningensei848/kaname/issues/116) | スクショとDaily履歴33回から月500〜550円程度、25%増なら625〜690円を推定。確定明細は未提供。推定は当時の2 source基準で、7 sourceの月額確定値ではない | 実請求との差額は明細提供後に照合。推定を確定請求扱いしない |
 | 対象指定後 | browser source・利用者Vault/NTFSの受入 | 実装済み機能の環境別受入。人力Vaultの管理は利用側の責務 | 検証するsourceまたはVaultと操作範囲を確認 |
 
@@ -20,6 +20,7 @@ READMEの古い未完了記載を理由に再実装しません。進捗は[検�
 
 | 状態 | 作業 | 受入証拠 | 継続時の注意 |
 |---|---|---|---|
+| 完了（実Actions受入） | [PR #191 GCSの16並列/接続再利用](https://github.com/Ningensei848/kaname/pull/191) | Python786件/Web5件・PR/main CI成功。同じ216記事で取得56.405→22.501秒・監査62→27秒・全体469→422秒。999 download維持、export追加download0 | 生成/Gemini費用0。既存1079世代/CRC・全498行・元費用/公開全bytes・5 Release/10 assets/配信版保持。1/8へ切戻し可能。保留80・degraded維持。[受入](gcs-read-performance.md) |
 | 完了（実Actions受入） | [PR #189 日次のCI検査再利用](https://github.com/Ningensei848/kaname/pull/189) | Python767件/Web5件・PR/main CI成功。同じmainのChecks成功を照合し、設定検証/重複単体テスト38→3秒、186記事の全体434→450秒。GCS既存1,015世代/CRC・元usage/費用・4 Release/8 assets・公開全bytes/配信版不変 | 生成/API費用0。照合不能時は従来の全テストへ戻る。GCS全件/全リンク/画像/4幅の検証維持。新RSS7候補を加えて保留110、全体degraded。[受入](daily-ci-reuse.md) |
 | 完了（実Actions受入） | [PR #187 Web検証の通信短縮](https://github.com/Ningensei848/kaname/pull/187) | 持続HTTP接続と画像のブラウザ往復3→1。Python733件/Web5件・PR/main CI成功。実156件のWeb108→99秒、全体460→445秒、保存/費用/951既存世代/Release/配信版不変 | 追加Gemini USD 0。全画像/リンク/4幅維持。最初の全体411秒には届かず、日次全体の安定短縮は後続。[受入](web-transport-performance.md) |
 | 完了（実Actions受入） | [PR #184 Web検証の短縮](https://github.com/Ningensei848/kaname/pull/184) | HTML解析共有・実画像ブラウザ最大2並列。Python732件/Web4件・PR #184/#186とmain CI成功。156 Note/1,377リンク/画像入り102頁を維持し、build検証111→108秒、全体411→460秒。保存/費用/Release/公開版不変 | 追加Gemini USD 0。Quartz1 thread維持。全リンク/画像/4幅の検証継続、`--image-workers 1`で直列へ戻せる。[受入](web-validation-performance.md) |
