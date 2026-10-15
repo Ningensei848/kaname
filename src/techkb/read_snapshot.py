@@ -11,10 +11,26 @@ import hashlib
 import logging
 import os
 from pathlib import Path
+import re
 import tempfile
 import time
 
 log = logging.getLogger(__name__)
+DEFAULT_READ_WORKERS = 16
+
+
+def read_workers(value=None):
+    """Bound operational parallelism; allow 8/1 as immediate rollback options."""
+    if value is None:
+        value = os.environ.get('TECHKB_GCS_READ_WORKERS', str(DEFAULT_READ_WORKERS))
+    if not isinstance(value, str) or not re.fullmatch(r'(?:[1-9]|1[0-6])', value):
+        raise ValueError('invalid read workers')
+    return int(value)
+
+
+def validate_workers(workers):
+    if type(workers) is not int or not 1 <= workers <= 16:
+        raise ValueError('invalid read workers')
 
 
 class SnapshotChangedError(RuntimeError):
@@ -79,9 +95,8 @@ class GenerationCache:
 
 class GCSReadSnapshot:
     """Read-only view; no paid operations, storage writes or public cache."""
-    def __init__(self, store, prefixes, *, cache_dir=None, workers=8):
-        if not 1 <= workers <= 16:
-            raise ValueError('invalid read workers')
+    def __init__(self, store, prefixes, *, cache_dir=None, workers=DEFAULT_READ_WORKERS):
+        validate_workers(workers)
         self.store = store
         self.prefixes = tuple(sorted(set(prefixes), key=lambda p: (p.startswith('state/index/'), p)))
         if not self.prefixes or any(not p for p in self.prefixes):
@@ -148,7 +163,7 @@ class GCSReadSnapshot:
 
 
 @contextmanager
-def read_snapshot(store, prefixes, *, cache_dir=None, workers=8):
+def read_snapshot(store, prefixes, *, cache_dir=None, workers=DEFAULT_READ_WORKERS):
     snapshot = GCSReadSnapshot(store, prefixes, cache_dir=cache_dir, workers=workers)
     yield snapshot
     snapshot.verify()

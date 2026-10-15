@@ -114,6 +114,16 @@ def test_failed_configuration_stops_before_ci_lookup(monkeypatch):
     with pytest.raises(subprocess.CalledProcessError): module.main([])
 
 
+def test_invalid_gcs_parallelism_stops_before_ci_lookup_or_generation(monkeypatch):
+    commands = []
+    monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', '17')
+    monkeypatch.setattr(module.subprocess, 'run', lambda command, **_: commands.append(command))
+    monkeypatch.setattr(module, 'checks_evidence', lambda _: pytest.fail('invalid bounds must stop first'))
+    with pytest.raises(ValueError, match='invalid read workers'):
+        module.main([])
+    assert commands == [[module.sys.executable, '-m', 'techkb', 'validate-config']]
+
+
 def test_workflow_validation_precedes_auth_and_collection():
     workflow = yaml.safe_load((Path(__file__).resolve().parents[1] / '.github/workflows/daily.yml').read_text())
     job = workflow['jobs']['collect']
