@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "3c3d98ae79697de2b71e695597fe2bb6193f978b18c7edf575560e529a8cf9af",
+  "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -24,6 +24,30 @@
       "sha256": "6dd7fbc1a20722d2b8449e7b5f139c7d71caa337e13c2ce63c064eef9cd609e1",
       "source_id": "google-deepmind",
       "title": "Gemini 3 Flash: 高速性能とフロンティア級の知性を両立させた最新モデル"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/unlocking-uk-house-building-with-ai-accelerated-planning/",
+      "category": "ai-llm",
+      "id": "06a533ffc87618fa311d23c9eeba35b1490a60bd6485f19ae23f6aee25db8643",
+      "llm_input_truncated": false,
+      "path": "notes/06a533ffc87618fa311d23c9eeba35b1490a60bd6485f19ae23f6aee25db8643.md",
+      "processed_at": "2026-10-15T00:34:30.622041+00:00",
+      "published": "2026-06-16",
+      "sha256": "072f91a583006e8fbacc69434089a6c54cbe69a7d5166ef082132a35c7ba4dd1",
+      "source_id": "google-deepmind",
+      "title": "Geminiを活用した英国のAI計画プロトタイプ：住宅建設の迅速化に向けた取り組み"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/",
+      "category": "ai-llm",
+      "id": "0763ba87a2c5f42f9562df1e47ddebb23b6aedb45bcfff75c0edb604dd35ba9d",
+      "llm_input_truncated": false,
+      "path": "notes/0763ba87a2c5f42f9562df1e47ddebb23b6aedb45bcfff75c0edb604dd35ba9d.md",
+      "processed_at": "2026-10-15T00:34:06.061122+00:00",
+      "published": "2026-06-30",
+      "sha256": "b20afc90083e5f9d2818c41d8bae198351bbcaebdbf5dd7c52a82aca983dc567",
+      "source_id": "google-deepmind",
+      "title": "Nano Banana 2 LiteとGemini Omni Flashを活用したAI開発の開始"
     },
     {
       "canonical_url": "https://deepmind.google/blog/accelerating-discovery-in-india-through-ai-powered-science-and-education/",
@@ -60,6 +84,18 @@
       "sha256": "0a4327a1378d740c3d4e8d30d6ff88b84d9ad501d08642fa0cc1f307d0ddb2ba",
       "source_id": "google-research",
       "title": "Google Researchが「Empirical Research Assistance」を用いて科学的発見を加速させた4つの事例"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/safety-security/fairwind-program/",
+      "category": "cybersecurity",
+      "id": "0b4c5458822607421a15aa53a1636129fe1674b1c781784e8f8615cd9e62e324",
+      "llm_input_truncated": false,
+      "path": "notes/0b4c5458822607421a15aa53a1636129fe1674b1c781784e8f8615cd9e62e324.md",
+      "processed_at": "2026-10-15T00:33:24.098232+00:00",
+      "published": "2026-09-02",
+      "sha256": "cf643937b010358ed89fb499b6e3de0b21ff698bba203984cd690c32d2ea8339",
+      "source_id": "google-deepmind",
+      "title": "政府および企業向けプロアクティブ・サイバー防衛プログラム「Fairwind Program」の発表"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/",
@@ -170,6 +206,18 @@
       "title": "リニア弾力キャッシュによるクラウド経済性の最適化"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/",
+      "category": "ai-llm",
+      "id": "1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b",
+      "llm_input_truncated": false,
+      "path": "notes/1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b.md",
+      "processed_at": "2026-10-15T00:34:18.597279+00:00",
+      "published": "2025-11-11",
+      "sha256": "6da1cd93972d540e2fe4f19ad14c9490246a9238f5d32b20f9886fba3dd47d82",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindが発表：人間の知覚と一致するビジョンAIの構築手法「AligNet」"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
       "category": "ai-llm",
       "id": "18577726f5fa231033daba0479c37e1eabda3e0db864f16d5990a28756fd0cc4",
@@ -228,6 +276,18 @@
       "sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
       "source_id": "google-deepmind",
       "title": "Nano Banana Pro（Gemini 3 Pro Imageモデル）の開発者向け提供開始"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/",
+      "category": "ai-llm",
+      "id": "1fdc2fc1a8b71396d765f48cc84f93487a847bf3355be601763564a4fa86d9b2",
+      "llm_input_truncated": false,
+      "path": "notes/1fdc2fc1a8b71396d765f48cc84f93487a847bf3355be601763564a4fa86d9b2.md",
+      "processed_at": "2026-10-15T00:33:12.077154+00:00",
+      "published": "2026-04-21",
+      "sha256": "2b1a2e89588027397466ade8d524f23acf199247aa8b1b89a1a4ce9229332536",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、業界リーダーとの提携で企業のAIトランスフォーメーションを加速"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
@@ -302,6 +362,18 @@
       "title": "コードとしてのマーケティングOps：GitHubでのイベント企画からフォローアップまでの自動化"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "category": "ai-llm",
+      "id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "llm_input_truncated": false,
+      "path": "notes/24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440.md",
+      "processed_at": "2026-10-15T00:32:23.147506+00:00",
+      "published": "2026-09-03",
+      "sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、最先端のグローバル気象AIモデル「WeatherNext 3」を発表"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
       "category": "cybersecurity",
       "id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
@@ -360,6 +432,30 @@
       "sha256": "c5573f8bc1b5889958c659577d1e51aae0a86202b4c75c476bd8fe41097e556c",
       "source_id": "google-deepmind",
       "title": "Gemini 3.1 Flash-Lite: 大規模なインテリジェンスを実現"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+      "category": "ai-llm",
+      "id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+      "llm_input_truncated": false,
+      "path": "notes/2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18.md",
+      "processed_at": "2026-10-15T00:32:39.410339+00:00",
+      "published": "2026-05-17",
+      "sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+      "source_id": "google-deepmind",
+      "title": "Google、コンテンツの作成・編集履歴を理解しやすくする透明性・検証ツールを拡大"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/opening-new-paths-in-aging-research/",
+      "category": "ai-llm",
+      "id": "2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2",
+      "llm_input_truncated": false,
+      "path": "notes/2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2.md",
+      "processed_at": "2026-10-15T00:33:01.367579+00:00",
+      "published": "2026-05-16",
+      "sha256": "da3fd860bd5368ce150035ad0d6acb3342b7060f70d52ea1a902a18562d83896",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindのCo-Scientistが老化研究の新たな扉を開く"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
@@ -470,6 +566,18 @@
       "title": "Google DeepMindがGemma Scope 2を発表：大規模言語モデルの複雑な挙動理解を支援するオープンな解釈可能性ツール群"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/",
+      "category": "ai-llm",
+      "id": "34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981",
+      "llm_input_truncated": false,
+      "path": "notes/34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981.md",
+      "processed_at": "2026-10-15T00:34:26.578155+00:00",
+      "published": "2026-05-16",
+      "sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
+      "source_id": "google-deepmind",
+      "title": "筋萎縮性側索硬化症(ALS)研究におけるCo-Scientistを活用した異分野融合の試み"
+    },
+    {
       "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
       "category": "cloud",
       "id": "3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82",
@@ -552,6 +660,18 @@
       "sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
       "source_id": "google-deepmind",
       "title": "Co-Scientist: 研究を加速させるマルチエージェント型AIパートナー"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/",
+      "category": "ai-llm",
+      "id": "45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28",
+      "llm_input_truncated": false,
+      "path": "notes/45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28.md",
+      "processed_at": "2026-10-15T00:33:40.982815+00:00",
+      "published": "2025-11-25",
+      "sha256": "797e6eb564acbd50cd650acfc878dbe4eb24778fc52e6b403ecd62a14981b232",
+      "source_id": "google-deepmind",
+      "title": "AlphaFoldが解き明かした心疾患の原因となる悪玉コレステロールの主要タンパク質構造"
     },
     {
       "canonical_url": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
@@ -926,6 +1046,18 @@
       "title": "GitHub Universe 2026で注目している10のテクニカルセッション"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/project-genie-expands/",
+      "category": "ai-llm",
+      "id": "706c713a7afee904bb1248c064e4af07f47396102ab46ad66128a2c2894ea2b3",
+      "llm_input_truncated": false,
+      "path": "notes/706c713a7afee904bb1248c064e4af07f47396102ab46ad66128a2c2894ea2b3.md",
+      "processed_at": "2026-10-15T00:33:57.239408+00:00",
+      "published": "2026-05-17",
+      "sha256": "97b00ab0c02d686e1eb69528d23515179cb558bc4b03fb1b0683752ffe1b39cc",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、Project GenieとGoogleストリートビューを連携し現実の場所をシミュレーション可能に"
+    },
+    {
       "canonical_url": "https://research.google/blog/gemini-provides-automated-feedback-for-theoretical-computer-scientists-at-stoc-2026/",
       "category": "ai-llm",
       "id": "7106bfdee62fcd6aa136ac172b31a0325f0282c340c6b6dcae21a796bba96dd3",
@@ -972,6 +1104,18 @@
       "sha256": "4722a1885e1aa89fb5636079c90443d018638c6b437304cbb9aaa0bca947835d",
       "source_id": "google-deepmind",
       "title": "Gemini 3.8 Live with Live Avatarの発表"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/project-genie/",
+      "category": "ai-llm",
+      "id": "796eae0852d53aefe41b3fe352be43ae937dad515c39268692ada46bf2a84919",
+      "llm_input_truncated": false,
+      "path": "notes/796eae0852d53aefe41b3fe352be43ae937dad515c39268692ada46bf2a84919.md",
+      "processed_at": "2026-10-15T00:33:28.165320+00:00",
+      "published": "2026-01-29",
+      "sha256": "efd688aa3316948872fb6396ed71fd4c5b05b7d72927d6e5e9bc61ac4914668b",
+      "source_id": "google-deepmind",
+      "title": "Project Genie：無限のインタラクティブな世界を実験するGoogle DeepMindの新プロトタイプ"
     },
     {
       "canonical_url": "https://research.google/blog/catalyzing-scientific-impact-through-global-partnerships-and-open-resources/",
@@ -1032,6 +1176,18 @@
       "sha256": "99c5f7a43dfe280ef94d89b54a4606ccc7432213b380a54cc226a68f4a716ff3",
       "source_id": "google-deepmind",
       "title": "AI時代のマウスポインターの再構想"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/protecting-people-from-harmful-manipulation/",
+      "category": "ai-llm",
+      "id": "7f1f789f187f05822078f627156741c0b0033b358fcd1b85bfd80ddff3c2b581",
+      "llm_input_truncated": false,
+      "path": "notes/7f1f789f187f05822078f627156741c0b0033b358fcd1b85bfd80ddff3c2b581.md",
+      "processed_at": "2026-10-15T00:33:32.430583+00:00",
+      "published": "2026-03-25",
+      "sha256": "8e7f35b0bdfd498183376caf9d1e0403f3960bc32a00ba114d17cd1ba5725927",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindが発表、AIの有害な操作（マニピュレーション）を防ぐための新たな研究と評価手法"
     },
     {
       "canonical_url": "https://research.google/blog/mapping-global-methane-emissions-from-space-with-deep-learning/",
@@ -1190,6 +1346,18 @@
       "title": "Science One Framework：Chain-of-Evidenceによる検証可能な自律研究フレームワーク"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/",
+      "category": "ai-llm",
+      "id": "89b23225ea7b37888ff454885a300933f43b40d593d12e2fafc6954afb1122b2",
+      "llm_input_truncated": false,
+      "path": "notes/89b23225ea7b37888ff454885a300933f43b40d593d12e2fafc6954afb1122b2.md",
+      "processed_at": "2026-10-15T00:33:16.081820+00:00",
+      "published": "2026-08-27",
+      "sha256": "4d0db42f3788c104a92a919ae639733733028477a31865a5c7345e7a958f3a6f",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindが世界初となるAIモデルの二重盲検評価のパイロットを実施"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-tts/",
       "category": "ai-llm",
       "id": "89bd843d59d9e1d4548a42f683631507504d37e449b851d02c36305752fc8638",
@@ -1236,6 +1404,42 @@
       "sha256": "dd60050c0c43b81bf6dac901983bb497da8692aadfaf16d4709a609118781813",
       "source_id": "google-deepmind",
       "title": "Google DeepMind、米エネルギー省の「ジェネシス・ミッション」を支援し科学的発見を加速"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/putting-sign-language-ai-into-users-hands/",
+      "category": "ai-llm",
+      "id": "902f4a4046cc97184904423a94c50820e63a14a89bdf00a1710743f1d8b59855",
+      "llm_input_truncated": false,
+      "path": "notes/902f4a4046cc97184904423a94c50820e63a14a89bdf00a1710743f1d8b59855.md",
+      "processed_at": "2026-10-15T00:33:36.845323+00:00",
+      "published": "2026-08-12",
+      "sha256": "ca10ac5eab6f142acb8178b514bb2ea2ee2f4513094e126d561689eef9fa00c5",
+      "source_id": "google-deepmind",
+      "title": "ユーザーの手元に届く手話AI：Google DeepMindのSL2Tモデル"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/",
+      "category": "ai-llm",
+      "id": "90e5d9aadf0cf7f9fa3d6ad750a08cf99244f92f5540a74726a2e8688e8fdd4f",
+      "llm_input_truncated": false,
+      "path": "notes/90e5d9aadf0cf7f9fa3d6ad750a08cf99244f92f5540a74726a2e8688e8fdd4f.md",
+      "processed_at": "2026-10-15T00:32:28.477316+00:00",
+      "published": "2026-06-10",
+      "sha256": "4a6a9d2a511efa984589f514db885c24e9da98250a6ba3a420b52180dacc44db",
+      "source_id": "google-deepmind",
+      "title": "マルチエージェントAIの安全性研究に向けた最大1000万ドルの研究資金調達プログラムの発表"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/sima-2-an-agent-that-plays-reasons-and-learns-with-you-in-virtual-3d-worlds/",
+      "category": "ai-llm",
+      "id": "911cb91eddccce858c71c7c06ac6bd6d06f1c302afe6c27640189635c1cc6bab",
+      "llm_input_truncated": false,
+      "path": "notes/911cb91eddccce858c71c7c06ac6bd6d06f1c302afe6c27640189635c1cc6bab.md",
+      "processed_at": "2026-10-15T00:33:53.452891+00:00",
+      "published": "2025-11-13",
+      "sha256": "7e9be6fd3abb7720ea534c078ba7902b1f8cc548c128688c41e14ffc3cdbfcb3",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindが「SIMA 2」を発表：仮想3D世界で人間と一緒に遊び、推論し、学習するAIエージェント"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/research/gemini-for-science-io-2026/",
@@ -1332,6 +1536,18 @@
       "sha256": "db886a8c3ea36055d9c2837f10c4b27e4f18655afd6472622a2d022185e8bcb7",
       "source_id": "google-research",
       "title": "JAX-Privacy：JAXを活用した大規模な差分プライバシー機械学習ツールキット"
+    },
+    {
+      "canonical_url": "https://blog.google/topics/google-europe/powering-the-future-of-robotics-in-europe/",
+      "category": "ai-llm",
+      "id": "996d71c8bd8c6338e5f4f5911311cfa99ad0859a04b3c41af0f5267af20f38b4",
+      "llm_input_truncated": false,
+      "path": "notes/996d71c8bd8c6338e5f4f5911311cfa99ad0859a04b3c41af0f5267af20f38b4.md",
+      "processed_at": "2026-10-15T00:33:20.039575+00:00",
+      "published": "2026-06-09",
+      "sha256": "f0a03f9b88e0d0c60a2571474c0217a3c9889ca03513b15ab35b927ca7401af6",
+      "source_id": "google-deepmind",
+      "title": "ヨーロッパにおけるロボット工学の未来を推進：Google DeepMindがアクセラレータープログラムの採択企業15社を発表"
     },
     {
       "canonical_url": "https://deepmind.google/blog/how-weathernext-helped-the-national-hurricane-center-better-predict-hurricane-melissas-historic-landfall-in-jamaica/",
@@ -1550,6 +1766,18 @@
       "title": "TimesFM-3：多変量予測のためのゼロショット基盤モデル"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/",
+      "category": "ai-llm",
+      "id": "aee5c30b29b3f6a44c19414d4a8f63d3f74a13f19c44bea3f8b1c3c0e0ed5c59",
+      "llm_input_truncated": false,
+      "path": "notes/aee5c30b29b3f6a44c19414d4a8f63d3f74a13f19c44bea3f8b1c3c0e0ed5c59.md",
+      "processed_at": "2026-10-15T00:32:56.217749+00:00",
+      "published": "2026-02-26",
+      "sha256": "f7fe8317033c07a03f706ea2b2d29710d3eac6203d1088283e9f34c0b3e00584",
+      "source_id": "google-deepmind",
+      "title": "Nano Banana 2：Proの性能と超高速性を融合した最新画像生成モデル"
+    },
+    {
       "canonical_url": "https://research.google/blog/private-analytics-via-zero-trust-aggregation/",
       "category": "cybersecurity",
       "id": "af5ed97639220a60acd515c72d575e558a68c6261129038e869aa1f0cb82561f",
@@ -1620,6 +1848,18 @@
       "sha256": "f628a815a7c21ead3d3e1a62046e9b35d2eddf708643329fb8f435cd025dd7ef",
       "source_id": "google-research",
       "title": "グローバル公衆衛生に向けたGoogle Earth AIの惑星規模地理空間基盤モデルの活用"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/introducing-synthid-bio/",
+      "category": "ai-llm",
+      "id": "b5fcd0864651f869c80540ea5ce3e8801541ecf16808df366e034e35e846c41f",
+      "llm_input_truncated": false,
+      "path": "notes/b5fcd0864651f869c80540ea5ce3e8801541ecf16808df366e034e35e846c41f.md",
+      "processed_at": "2026-10-15T00:32:17.294766+00:00",
+      "published": "2026-09-30",
+      "sha256": "26b9deb6bf52492a6c81f5d6ecedc27e965dd90cc2818fe14323d9e83acd8df2",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、生体機能の維持とバイオセキュリティ強化を両立するAI生成タンパク質向け電子透かし技術「SynthID Bio」を発表"
     },
     {
       "canonical_url": "https://research.google/blog/accelerating-the-magic-cycle-of-research-breakthroughs-and-real-world-applications/",
@@ -1814,6 +2054,30 @@
       "title": "Diffusion ControllerによるAI画像生成の統合と簡素化の仕組み"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/measuring-agi-cognitive-framework/",
+      "category": "ai-llm",
+      "id": "c8673116c1ddb1a3adc9ecd66427c47c43737612ecd3be0d8f5a56151986de3f",
+      "llm_input_truncated": false,
+      "path": "notes/c8673116c1ddb1a3adc9ecd66427c47c43737612ecd3be0d8f5a56151986de3f.md",
+      "processed_at": "2026-10-15T00:32:44.826712+00:00",
+      "published": "2026-03-17",
+      "sha256": "39e303b7dae52b8713696012810bfdbf45cc7a1800ce833119e2e879411a3dbb",
+      "source_id": "google-deepmind",
+      "title": "AGIに向けた進捗測定：認知フレームワークの提案とKaggleハッカソンの開催"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/ai/lyria-3-pro/",
+      "category": "ai-llm",
+      "id": "c963fff2405a13d550c216c458c109509225feda902398a4d4b719d80eddc8ef",
+      "llm_input_truncated": false,
+      "path": "notes/c963fff2405a13d550c216c458c109509225feda902398a4d4b719d80eddc8ef.md",
+      "processed_at": "2026-10-15T00:32:33.880333+00:00",
+      "published": "2026-03-25",
+      "sha256": "9ba1500b309582f9fcc278acb42df1926c443a6ff5a6eca855f2f2ab1b2a7ce1",
+      "source_id": "google-deepmind",
+      "title": "Lyria 3 Pro: より長い楽曲生成と多様なGoogle製品への展開"
+    },
+    {
       "canonical_url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
       "category": "ai-llm",
       "id": "cae5ea92fa95fb2eb02f2873745ac18969259aafe0acaf16fad72dc0a307bc04",
@@ -1838,6 +2102,18 @@
       "title": "細胞老化を逆転させるための遺伝的リードの迅速化"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/our-approach-to-bioresilience/",
+      "category": "ai-llm",
+      "id": "d001f02592f8d70c6609f4dd9045b9169f611500533da81b422d902c0f2514be",
+      "llm_input_truncated": false,
+      "path": "notes/d001f02592f8d70c6609f4dd9045b9169f611500533da81b422d902c0f2514be.md",
+      "processed_at": "2026-10-15T00:33:06.821659+00:00",
+      "published": "2026-07-16",
+      "sha256": "730461bab62f8674302d05cec48c58664b36be069434ba2b26f20bb56ee6021d",
+      "source_id": "google-deepmind",
+      "title": "バイオレジリエンスへのアプローチ：Google DeepMindとIsomorphic Labsの取り組み"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/products/2025-research-breakthroughs/",
       "category": "ai-llm",
       "id": "d04f93126383fcb29777da53f24bb2508881fbfb79afd5da69d247f0221fa389",
@@ -1848,6 +2124,18 @@
       "sha256": "0a92edd54fba8cd838df249c4cac289b1767f23d4fe21612b0759bf5cfca42c7",
       "source_id": "google-deepmind",
       "title": "Googleの2025年総括：AI研究と製品における8つのブレイクスルー分野"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+      "category": "ai-llm",
+      "id": "d3340ad360b0a316e74e1a082f912661a15d8207fc4c97910a28f813760f933b",
+      "llm_input_truncated": false,
+      "path": "notes/d3340ad360b0a316e74e1a082f912661a15d8207fc4c97910a28f813760f933b.md",
+      "processed_at": "2026-10-15T00:33:49.213176+00:00",
+      "published": "2026-06-16",
+      "sha256": "8cff612e5309ce7d679e28a94d65f268455f79bd54878ca3417c77228ca0b5cb",
+      "source_id": "google-deepmind",
+      "title": "AIエージェントの未来を守る：Google DeepMindのAIコントロールロードマップ"
     },
     {
       "canonical_url": "https://research.google/blog/an-ai-tool-for-prioritizing-candidate-biomarkers-from-wearable-sensor-data/",
@@ -1886,6 +2174,18 @@
       "title": "Gemini Deep Thinkによる数学および科学の発見の加速"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/strengthening-our-partnership-with-the-uk-government-to-support-prosperity-and-security-in-the-ai-era/",
+      "category": "ai-llm",
+      "id": "d572e63829e3b6ab36d315f1a54108e3dd6a581730a3f9fc3d40b77521232e8a",
+      "llm_input_truncated": false,
+      "path": "notes/d572e63829e3b6ab36d315f1a54108e3dd6a581730a3f9fc3d40b77521232e8a.md",
+      "processed_at": "2026-10-15T00:34:10.095588+00:00",
+      "published": "2025-12-10",
+      "sha256": "4a442bd32ec4ea29330318989d90c17f0ead372d3ccb7b3940f80eb735fd9bec",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、英国政府とのパートナーシップを強化しAI時代における繁栄と安全性を支援"
+    },
+    {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/when-chat-is-the-wrong-ui/",
       "category": "ai-llm",
       "id": "d6be45a3c9c7ee34d93010d9867c2cc19ef4c4d69bf85835b9866157a6c3cce3",
@@ -1896,6 +2196,18 @@
       "sha256": "213bf1bebda6262e3c84c4c8f52a872c5e66f5f18048337b546423f3c2bae7d3",
       "source_id": "github-blog",
       "title": "チャットが不適切なUIである理由とキャンバスの活用"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/",
+      "category": "ai-llm",
+      "id": "d9dc5c6f57d262c2e0e2a3ccd1d56135edbc66cd0340df4ca3467053e6102193",
+      "llm_input_truncated": false,
+      "path": "notes/d9dc5c6f57d262c2e0e2a3ccd1d56135edbc66cd0340df4ca3467053e6102193.md",
+      "processed_at": "2026-10-15T00:32:50.426066+00:00",
+      "published": "2026-06-08",
+      "sha256": "464eff46db819e4ce5d8479e8cd7f2a9f00add05202628d80fd34c3596264791",
+      "source_id": "google-deepmind",
+      "title": "シエラレオネにおけるAI学習のインパクト計測：Google DeepMindの研究成果"
     },
     {
       "canonical_url": "https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/",
@@ -1944,6 +2256,18 @@
       "sha256": "f3d4f79e891a2207832981d9b828ef1b8360e14ab6a24555e606564cd393b159",
       "source_id": "google-deepmind",
       "title": "Google DeepMindが「Gemini 3.7 Flash」を発表：コーディングとエージェント向けの新モデル"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/",
+      "category": "ai-llm",
+      "id": "de8ab1f8596dc0b03f8a26e5ccd8beb279979c6b6b5e02d48d557fe2692c8401",
+      "llm_input_truncated": false,
+      "path": "notes/de8ab1f8596dc0b03f8a26e5ccd8beb279979c6b6b5e02d48d557fe2692c8401.md",
+      "processed_at": "2026-10-15T00:33:45.161721+00:00",
+      "published": "2026-09-23",
+      "sha256": "04e2d74b8917ca9b18f2f7c7d5971623583694337d8210124a9f0626ac0d6907",
+      "source_id": "google-deepmind",
+      "title": "Google、表現力を高めた新しい音声生成モデル「Gemini 3.8 Flash TTS」および「Gemini 3.8 Flash-Lite TTS」を発表"
     },
     {
       "canonical_url": "https://research.google/blog/dynamic-surface-codes-open-new-avenues-for-quantum-error-correction/",
@@ -2066,6 +2390,18 @@
       "title": "実臨床における対話型診断AIの実現可能性に関する臨床研究"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/",
+      "category": "ai-llm",
+      "id": "efe2eb2ede08fb153f0afb915bb5455339073af5fba5ea0f6a75b1d152a113e3",
+      "llm_input_truncated": false,
+      "path": "notes/efe2eb2ede08fb153f0afb915bb5455339073af5fba5ea0f6a75b1d152a113e3.md",
+      "processed_at": "2026-10-15T00:34:13.974864+00:00",
+      "published": "2026-05-16",
+      "sha256": "054eb4d3776d1d9eae94ae9ba41dffb26dd59932f7c0d699d671c594566788b3",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindがシンガポール政府と新しい国家AIパートナーシップを締結し、医療や教育、持続可能性を推進"
+    },
+    {
       "canonical_url": "https://research.google/blog/glucofm-foundation-model-for-continuous-glucose-monitoring/",
       "category": "ai-llm",
       "id": "eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419",
@@ -2148,6 +2484,30 @@
       "sha256": "edf9e79f2411eed0a542b6a66998d867df33f2c3c067f83b0b65fa98f28e37de",
       "source_id": "google-research",
       "title": "凍結されたマルチトークン予測によるPixelでのGemini Nanoモデルの高速化"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-developers/",
+      "category": "ai-llm",
+      "id": "f8ca7c42cb83320aa04dcd35b72828283290242e7b4d097b5d3ae79cd4eff2f8",
+      "llm_input_truncated": false,
+      "path": "notes/f8ca7c42cb83320aa04dcd35b72828283290242e7b4d097b5d3ae79cd4eff2f8.md",
+      "processed_at": "2026-10-15T00:34:01.458574+00:00",
+      "published": "2025-11-18",
+      "sha256": "1289daa013c8943e70c91ef979599dd8eaa01632a1c27590cf8f357e08334324",
+      "source_id": "google-deepmind",
+      "title": "Googleが最新AIモデル「Gemini 3 Pro」を発表、エージェント型開発プラットフォーム「Google Antigravity」も公開"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/uncovering-repurposed-medicines-to-fight-liver-fibrosis/",
+      "category": "ai-llm",
+      "id": "f983afdea3b0ae0cc180247a1594e0bfd34f125f685640e52f17fc6b47731e25",
+      "llm_input_truncated": false,
+      "path": "notes/f983afdea3b0ae0cc180247a1594e0bfd34f125f685640e52f17fc6b47731e25.md",
+      "processed_at": "2026-10-15T00:34:22.721414+00:00",
+      "published": "2026-05-16",
+      "sha256": "4182d4cd9a44d3c623ec3fb926c3883420a714b28b1dcc7361d6c5d90c0e2c0d",
+      "source_id": "google-deepmind",
+      "title": "肝線維症治療に向けた既存薬の再利用をGoogle DeepMindのCo-Scientistで探索"
     },
     {
       "canonical_url": "https://deepmind.google/blog/deepening-our-partnership-with-the-uk-ai-security-institute/",
