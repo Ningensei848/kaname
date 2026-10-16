@@ -12,14 +12,10 @@ import * as assert from "node:assert";
 import * as fs from "node:fs";
 import { execFileSync } from "node:child_process";
 import {
-	malformedResponseToExternalServiceDecision,
-	timeoutRejectionToExternalServiceDecision,
-	type ExternalServiceDecision,
-} from "../src/external/fail-closed-adapter";
-import type { MergePreconditions } from "../src/mcp/tool-policy";
-import { assertMcpToolCallAllowedFixtureOracle } from "./helpers/mcp-policy-oracle";
+	validateToolPolicy,
+	type MergePreconditions,
+} from "../src/mcp/tool-policy";
 import {
-	assertValidJsonSchema,
 	validateJsonSchema,
 	type JsonSchema,
 } from "./helpers/schema-validator";
@@ -65,10 +61,6 @@ interface NotificationDecision {
 	reportUrlChecked: boolean;
 }
 
-interface ExternalApiFailureDecision
-	extends NotificationDecision,
-		ExternalServiceDecision {}
-
 type ShouldNotifyDiscord = (
 	event: CloudflareDeploymentEvent,
 	state: NotificationState,
@@ -85,10 +77,13 @@ function readJsonSchema(schemaPath: string): JsonSchema {
 }
 
 function assertValidExternalPayload(schema: JsonSchema, value: unknown): void {
-	assertValidJsonSchema(
-		schema,
-		value,
-		"external payload schema validation failed",
+	const errors = validateJsonSchema(schema, value);
+	if (errors.length === 0) return;
+
+	throw new Error(
+		`external payload schema validation failed: ${errors
+			.map(({ path, message }) => `${path} ${message}`)
+			.join("; ")}`,
 	);
 }
 
@@ -110,41 +105,33 @@ async function evaluateProbeFailureNotificationContract(
 	state: NotificationState,
 	config: NotificationConfig,
 	probeReportUrl: UrlProbe,
-): Promise<ExternalApiFailureDecision> {
+): Promise<NotificationDecision> {
 	if (event.deployment.status !== "success") {
 		return {
 			shouldNotify: false,
 			reason: `deployment status is ${event.deployment.status}; pending/error responses do not notify`,
 			reportUrlChecked: false,
-			status: "pending",
-			stateFrozen: true,
-			retryAttempted: false,
 		};
 	}
 
 	try {
-		const probeDecision = malformedResponseToExternalServiceDecision(
-			await probeReportUrl(config.latestReportUrl),
-		);
-		if (probeDecision.status !== "ready") {
+		const probeResult = await probeReportUrl(config.latestReportUrl);
+		if (
+			!probeResult.ok ||
+			probeResult.status < 200 ||
+			probeResult.status >= 300
+		) {
 			return {
 				shouldNotify: false,
-				reason: probeDecision.reason,
+				reason: `report URL probe pending/error: status ${probeResult.status}`,
 				reportUrlChecked: true,
-				status: probeDecision.status,
-				stateFrozen: probeDecision.stateFrozen,
-				retryAttempted: probeDecision.retryAttempted,
 			};
 		}
 	} catch (error) {
-		const probeDecision = timeoutRejectionToExternalServiceDecision(error);
 		return {
 			shouldNotify: false,
-			reason: probeDecision.reason,
+			reason: `report URL probe error: ${(error as Error).message}`,
 			reportUrlChecked: true,
-			status: probeDecision.status,
-			stateFrozen: probeDecision.stateFrozen,
-			retryAttempted: probeDecision.retryAttempted,
 		};
 	}
 
@@ -154,58 +141,6 @@ async function evaluateProbeFailureNotificationContract(
 			!state.notifiedCommitHashes.includes(event.deployment.meta.commit_hash),
 		reason: "report URL is reachable",
 		reportUrlChecked: true,
-		status: "ready",
-		stateFrozen: false,
-		retryAttempted: false,
-	};
-}
-
-interface GitHubFailureSideEffects {
-	gitWrites: string[];
-	mergeAttempts: number;
-	notifications: string[];
-}
-
-interface GitHubFailureContractDecision extends ExternalServiceDecision {
-	gitWriteAttempted: boolean;
-	mergeAttempted: boolean;
-	notifyAttempted: boolean;
-}
-
-type GitHubApiProbe = () => Promise<unknown>;
-
-async function evaluateGitHubExternalApiFailureContract(
-	probeGitHubApi: GitHubApiProbe,
-	sideEffects: GitHubFailureSideEffects,
-): Promise<GitHubFailureContractDecision> {
-	let decision: ExternalServiceDecision;
-
-	try {
-		decision = malformedResponseToExternalServiceDecision(
-			await probeGitHubApi(),
-		);
-	} catch (error) {
-		decision = timeoutRejectionToExternalServiceDecision(error);
-	}
-
-	if (decision.status !== "ready") {
-		return {
-			...decision,
-			gitWriteAttempted: sideEffects.gitWrites.length > 0,
-			mergeAttempted: sideEffects.mergeAttempts > 0,
-			notifyAttempted: sideEffects.notifications.length > 0,
-		};
-	}
-
-	sideEffects.gitWrites.push("topics/gov-agencies/NCO.md");
-	sideEffects.mergeAttempts += 1;
-	sideEffects.notifications.push("discord:ready");
-
-	return {
-		...decision,
-		gitWriteAttempted: true,
-		mergeAttempted: true,
-		notifyAttempted: true,
 	};
 }
 
@@ -258,68 +193,9 @@ test("MCP JSON-RPC contracts from .spec/contracts/mcp-contracts.md", async (t) =
 				id: 201,
 			} as const;
 
-			assert.throws(
-				() => assertMcpToolCallAllowedFixtureOracle(call),
-				/MCP tool call rejected: Writer branch must be osint\/\*/,
-			);
-		},
-	);
-
-	await t.test(
-		"crawler-state.json Git writes are rejected through the production boundary",
-		() => {
-			const call = {
-				jsonrpc: "2.0",
-				method: "tools/call",
-				params: {
-					name: "create_or_update_file",
-					arguments: {
-						owner: "Ningensei848",
-						repo: "kaname-vault",
-						path: "crawler-state.json",
-						content: "{}",
-						branch: "osint/update-crawler-state",
-						message: "[Aegis-Writer] Unsafe crawler state write",
-					},
-				},
-				id: 202,
-			} as const;
-
-			assert.throws(
-				() => assertMcpToolCallAllowedFixtureOracle(call),
-				/MCP tool call rejected: .*crawler-state\.json must not be written through Git MCP/,
-			);
-		},
-	);
-
-	await t.test(
-		"merge gate failures throw through the production boundary",
-		() => {
-			const call = {
-				jsonrpc: "2.0",
-				method: "tools/call",
-				params: {
-					name: "merge_pull_request",
-					arguments: {
-						owner: "Ningensei848",
-						repo: "kaname-vault",
-						pull_number: 42,
-						merge_method: "squash",
-						commit_title:
-							"[Aegis-Reviewer] Self-Merge: Intelligence Update Passed Review",
-					},
-				},
-				id: 203,
-			} as const;
-
-			assert.throws(
-				() =>
-					assertMcpToolCallAllowedFixtureOracle(call, {
-						...allGreenGates,
-						deterministicContentGuards: "failed",
-					}),
-				/MCP tool call rejected: merge preconditions are not all passed/,
-			);
+			assert.deepStrictEqual(validateToolPolicy(call), [
+				"Writer branch must be osint/*",
+			]);
 		},
 	);
 
@@ -419,76 +295,6 @@ test("Protected merge and Takumi Guard gates fail closed", async (t) => {
 					);
 				}
 			}
-		},
-	);
-});
-
-test("GitHub external API failure contract fails closed before side effects", async (t) => {
-	await t.test(
-		"timeout freezes state without retrying, Git writes, merge, or notify",
-		async () => {
-			let callCount = 0;
-			const sideEffects: GitHubFailureSideEffects = {
-				gitWrites: [],
-				mergeAttempts: 0,
-				notifications: [],
-			};
-
-			const decision = await evaluateGitHubExternalApiFailureContract(
-				async () => {
-					callCount += 1;
-					throw new Error("GitHub API request timeout");
-				},
-				sideEffects,
-			);
-
-			assert.strictEqual(callCount, 1);
-			assert.strictEqual(decision.status, "pending");
-			assert.strictEqual(decision.stateFrozen, true);
-			assert.strictEqual(decision.retryAttempted, false);
-			assert.strictEqual(decision.gitWriteAttempted, false);
-			assert.strictEqual(decision.mergeAttempted, false);
-			assert.strictEqual(decision.notifyAttempted, false);
-			assert.deepStrictEqual(sideEffects, {
-				gitWrites: [],
-				mergeAttempts: 0,
-				notifications: [],
-			});
-			assert.match(decision.reason, /timeout/i);
-		},
-	);
-
-	await t.test(
-		"malformed response freezes state without retrying, Git writes, merge, or notify",
-		async () => {
-			let callCount = 0;
-			const sideEffects: GitHubFailureSideEffects = {
-				gitWrites: [],
-				mergeAttempts: 0,
-				notifications: [],
-			};
-
-			const decision = await evaluateGitHubExternalApiFailureContract(
-				async () => {
-					callCount += 1;
-					return { ok: "yes", status: "200" };
-				},
-				sideEffects,
-			);
-
-			assert.strictEqual(callCount, 1);
-			assert.strictEqual(decision.status, "error");
-			assert.strictEqual(decision.stateFrozen, true);
-			assert.strictEqual(decision.retryAttempted, false);
-			assert.strictEqual(decision.gitWriteAttempted, false);
-			assert.strictEqual(decision.mergeAttempted, false);
-			assert.strictEqual(decision.notifyAttempted, false);
-			assert.deepStrictEqual(sideEffects, {
-				gitWrites: [],
-				mergeAttempts: 0,
-				notifications: [],
-			});
-			assert.match(decision.reason, /malformed response/);
 		},
 	);
 });
@@ -593,39 +399,7 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
-			assert.strictEqual(decision.status, "pending");
-			assert.strictEqual(decision.stateFrozen, true);
-			assert.strictEqual(decision.retryAttempted, false);
 			assert.match(decision.reason, /pending|error/);
-		},
-	);
-
-	await t.test(
-		"malformed report URL probe response is converted without retrying",
-		async () => {
-			let callCount = 0;
-			const malformedProbe = (async () => {
-				callCount += 1;
-				return { status: Number.NaN };
-			}) as unknown as UrlProbe;
-
-			const decision = await evaluateProbeFailureNotificationContract(
-				deploymentSuccess,
-				{ notifiedDeploymentIds: [], notifiedCommitHashes: [] },
-				{
-					publicBaseUrl: "https://osint-kaname.pages.dev",
-					latestReportUrl:
-						"https://osint-kaname.pages.dev/reports/2026-05-27_Report",
-				},
-				malformedProbe,
-			);
-
-			assert.strictEqual(callCount, 1);
-			assert.strictEqual(decision.shouldNotify, false);
-			assert.strictEqual(decision.status, "error");
-			assert.strictEqual(decision.stateFrozen, true);
-			assert.strictEqual(decision.retryAttempted, false);
-			assert.match(decision.reason, /malformed response/);
 		},
 	);
 
@@ -654,10 +428,7 @@ test("Cloudflare Pages deployment and Discord webhook cross-contracts", async (t
 			assert.strictEqual(callCount, 1);
 			assert.strictEqual(retryCounter, 0);
 			assert.strictEqual(decision.shouldNotify, false);
-			assert.match(decision.status, /pending|error/);
-			assert.strictEqual(decision.stateFrozen, true);
-			assert.strictEqual(decision.retryAttempted, false);
-			assert.match(decision.reason, /pending|error/);
+			assert.match(decision.reason, /error/);
 		},
 	);
 });

@@ -23,14 +23,12 @@ SSoT から公式情報源を収集し、正規化済み本文ハッシュと条
 
 ### F001-R1: State storage
 
-`crawler-state.json` は Git repository に commit しない。Cloud Run Jobs は Cloud Storage の object として state を読み書きする。Crawler state、notification state、vault metadata state は同じ Cloud Storage backend family を用いるが、generation precondition と責務境界を独立させるため、それぞれ別 object として保存する。
+`crawler-state.json` は Git repository に commit しない。Cloud Run Jobs は Cloud Storage の object として state を読み書きする。
 
 Recommended object layout:
 
 ```text
 gs://<KANAME_STATE_BUCKET>/<environment>/crawler-state.json
-gs://<KANAME_STATE_BUCKET>/<environment>/notification-state.json
-gs://<KANAME_STATE_BUCKET>/<environment>/vault-metadata-state.json
 ```
 
 ### F001-R2: Concurrency control
@@ -40,6 +38,8 @@ state write は Cloud Storage generation precondition を用い、同一 state �
 ### F001-R3: Idempotency gate
 
 前回 state の `content_hash` と今回正規化本文の hash が一致する source は、LLM、commit、PR の対象にしてはならない。
+
+無変更 source では、Writer、LLM、MCP write、commit、PR は起動しない。ただし、運用監視用 heartbeat として `last_execution` と各 source の `last_checked` は GCS state へ保存してよい、または保存しなければならない。この GCS write は Git 副作用ではないため、idempotency gate 違反とは扱わない。書き込みは必ず Cloud Storage generation precondition 付きで行う。
 
 ### F001-R4: Parser dependency policy
 
