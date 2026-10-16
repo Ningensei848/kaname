@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "b63f9c7f713434137e628adbc0f03d8214e94a7b7f89f9bc707a7e813e05e2ad",
+  "dataset_digest": "e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -60,6 +60,18 @@
       "sha256": "e507d4f75d91adfd237dfe779484d2584307163b6fc6b916463977ee28ad84e8",
       "source_id": "google-deepmind",
       "title": "AIを活用した科学と教育によるインドでの発見の加速"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/workers-granular-authorization/",
+      "category": "cloud",
+      "id": "088fc8c07cd026e13b2f56655016431ec0feb10a5b5a510b428fc4b422087d8a",
+      "llm_input_truncated": false,
+      "path": "notes/088fc8c07cd026e13b2f56655016431ec0feb10a5b5a510b428fc4b422087d8a.md",
+      "processed_at": "2026-10-16T00:28:10.381483+00:00",
+      "published": "2026-09-15",
+      "sha256": "be1c9e0c0b12d129b5e88e5fd2717c850409ea61f6cf4c2d3cb9c5cc413e9afd",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare Workersにおけるリソース単位のアクセス制御と4つの新しい権限ロールの導入"
     },
     {
       "canonical_url": "https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/",
@@ -132,6 +144,18 @@
       "sha256": "4cebf5b5f7063255de10e732f882df66560293f61aeced9d557e5ca442a53511",
       "source_id": "google-deepmind",
       "title": "Google、Gemini向けエージェント型動画理解機能を発表"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+      "category": "ai-llm",
+      "id": "0dbef4c64d8e1f9eceb7b1ca0ebd2f6839b07a85661d6aeed87d54e56c57974a",
+      "llm_input_truncated": false,
+      "path": "notes/0dbef4c64d8e1f9eceb7b1ca0ebd2f6839b07a85661d6aeed87d54e56c57974a.md",
+      "processed_at": "2026-10-16T00:25:36.387120+00:00",
+      "published": "2026-08-06",
+      "sha256": "a2acbc9c7607534c85a4344508ddec0e30b32f3786c26614b8820e1865eb32da",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、サイクロン予測で画期的な精度向上を実現したAIモデル「WeatherNext」をオープンソース化"
     },
     {
       "canonical_url": "https://github.blog/developer-skills/career-growth/hack-the-world-why-hackathons-are-still-the-best-place-to-learn-to-build/",
@@ -230,6 +254,18 @@
       "title": "Gemini 3.1 Flash Live：音声AIをより自然で信頼性の高いものに"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/08/24/networking-traffic/mtia-300-meta-training-chip-built-in-nics/",
+      "category": "hardware",
+      "id": "194bd012952193636f7f518bfb42159ec2929aacfd4df6f5c90cb3f9d3a0d253",
+      "llm_input_truncated": false,
+      "path": "notes/194bd012952193636f7f518bfb42159ec2929aacfd4df6f5c90cb3f9d3a0d253.md",
+      "processed_at": "2026-10-16T00:28:29.954800+00:00",
+      "published": "2026-08-24",
+      "sha256": "b4355d85ceefa2babcbbb909f3be4e91b89005b42ab199743e364cd64291a3b9",
+      "source_id": "meta-engineering",
+      "title": "MTIA 300：内蔵NICと通信オフロードエンジンを備えたMeta初のトレーニングチップ"
+    },
+    {
       "canonical_url": "https://research.google/blog/planetary-prediction-engine-automating-global-models-via-earth-ai/",
       "category": "ai-llm",
       "id": "1b979cf8abff836a0e4aa721100620a223f173f543087778f4df1331a054c3f6",
@@ -264,6 +300,18 @@
       "sha256": "098e825731f9817405e17a20bb8512880fc1f7e9f2096c7f93b8d387c561b1e4",
       "source_id": "google-research",
       "title": "モビリティデータが言語モデルに場所のより深い理解をもたらす仕組み"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/vulnerability-discovery-remediation/",
+      "category": "cybersecurity",
+      "id": "1cd31bc3f79615f9d181be12dc5e47f008cb32f858260545a9ba34b2834981b4",
+      "llm_input_truncated": false,
+      "path": "notes/1cd31bc3f79615f9d181be12dc5e47f008cb32f858260545a9ba34b2834981b4.md",
+      "processed_at": "2026-10-16T00:28:02.982478+00:00",
+      "published": "2026-09-03",
+      "sha256": "02c5feb8b6bf1c7c6dfd9654bb97b9e2f6e9c4bd10d8d8332750d5124be2c9f6",
+      "source_id": "cloudflare-security",
+      "title": "CloudflareがManaged DefenseとOpenAI Daybreakモデルを活用したコンテキスト認識型脆弱性発見・修復機能を発表"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
@@ -312,6 +360,18 @@
       "sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
       "source_id": "google-research",
       "title": "スマートフォンカメラを通じた受動的心臓健康モニタリングに向けて"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/oauth-for-all/",
+      "category": "cloud",
+      "id": "226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c",
+      "llm_input_truncated": false,
+      "path": "notes/226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c.md",
+      "processed_at": "2026-10-16T00:27:02.673015+00:00",
+      "published": "2026-06-24",
+      "sha256": "cab3ce2f6fd585aa864334118ad7295f89459374c69ef06c5918d2ff684eba84",
+      "source_id": "cloudflare-security",
+      "title": "全ユーザー向けセルフマネージドOAuthの提供開始とCloudflareのOAuthエンジンのアップグレード"
     },
     {
       "canonical_url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
@@ -470,6 +530,18 @@
       "title": "Google DeepMindが「Nano Banana Pro」を発表：高度な推論と多言語テキスト描画を備えた最先端の画像生成・編集モデル"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "category": "ai-llm",
+      "id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "llm_input_truncated": false,
+      "path": "notes/2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae.md",
+      "processed_at": "2026-10-16T00:25:21.816020+00:00",
+      "published": "2026-01-13",
+      "sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMind、Veo 3.1の「Ingredients to Video」を発表：一貫性、創造性、制御性の向上"
+    },
+    {
       "canonical_url": "https://research.google/blog/coherent-long-form-video-generation/",
       "category": "ai-llm",
       "id": "2d2736001f9b85b07f9d6dd00be27b831ed299d64c1094635d1d4983e3e41f48",
@@ -504,6 +576,18 @@
       "sha256": "c8ff367a449d806b7cf50138022c4706c0725e29ffee4562d7fd7b136111432d",
       "source_id": "github-blog",
       "title": "GitHub Security Lab Taskflow Agentを活用したAI駆動ファジング"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+      "category": "cybersecurity",
+      "id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+      "llm_input_truncated": false,
+      "path": "notes/2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7.md",
+      "processed_at": "2026-10-16T00:26:11.733185+00:00",
+      "published": "2026-09-15",
+      "sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+      "source_id": "cloudflare-security",
+      "title": "CloudflareがAI学習拒否と検索インデックス維持を両立する「Disallow AI Training」設定を発表"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
@@ -626,6 +710,18 @@
       "title": "Gemini 4 Argon：次世代フロンティアインテリジェンスの発表"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/account-abuse-protection-dashboard/",
+      "category": "cybersecurity",
+      "id": "3d15334254e7e6e1416a19a0234fe21d75d5031ed797b9e312589fcb833d3ba2",
+      "llm_input_truncated": false,
+      "path": "notes/3d15334254e7e6e1416a19a0234fe21d75d5031ed797b9e312589fcb833d3ba2.md",
+      "processed_at": "2026-10-16T00:26:04.712206+00:00",
+      "published": "2026-10-02",
+      "sha256": "f7763c8af994cc30465fda3fccb1aa5b28e65022e0ead1da8b7d204f0da8ac8b",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、アカウント不正利用調査のための新しい詐欺対策ダッシュボードを発表"
+    },
+    {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
       "category": "ai-llm",
       "id": "3dbfb8fd9bf925edda9499852cbcdd991badb1a081dcb65c338acb094c1f8c22",
@@ -636,6 +732,18 @@
       "sha256": "123d1351c995fc8b551f63b022d3a267a32832dfca07ae60444fca6209237ad3",
       "source_id": "github-blog",
       "title": "初心者向けGitHub Copilotアプリ：キャンバスを使ったカスタムワークフローの構築方法"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/lyria-3-5/",
+      "category": "ai-llm",
+      "id": "3fc2f12c46a71c1c1fe33f82e2a0c3559535678d09b642c47fdade8e8e254d19",
+      "llm_input_truncated": false,
+      "path": "notes/3fc2f12c46a71c1c1fe33f82e2a0c3559535678d09b642c47fdade8e8e254d19.md",
+      "processed_at": "2026-10-16T00:25:50.712059+00:00",
+      "published": "2026-07-29",
+      "sha256": "4edafad68b46215f445033b6eced8ab03eceead93bbce21a3072a5a4bfe574bb",
+      "source_id": "google-deepmind",
+      "title": "Google、音楽生成モデル「Lyria 3.5」をGoogle Flow Musicで発表"
     },
     {
       "canonical_url": "https://research.google/blog/titans-miras-helping-ai-have-long-term-memory/",
@@ -744,6 +852,18 @@
       "sha256": "40b784e6283d3dc8c4a4068ea0bf9ed7a8c4c7dd14b621f6a1e7e43a1841bd53",
       "source_id": "github-blog",
       "title": "コードを読むべきか、RAGは死んだのか、SkillsはMCPを殺したのか"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/post-quantum-eo-2026/",
+      "category": "cybersecurity",
+      "id": "50ea1f3fb2cee946957134649f6ca73e7ccf0643969c0552bc4491524f3f28ae",
+      "llm_input_truncated": true,
+      "path": "notes/50ea1f3fb2cee946957134649f6ca73e7ccf0643969c0552bc4491524f3f28ae.md",
+      "processed_at": "2026-10-16T00:27:15.879089+00:00",
+      "published": "2026-06-23",
+      "sha256": "29bd5436807b1c57e7d8775bbeacf408a86982a5bfda60362074d04623c2d84b",
+      "source_id": "cloudflare-security",
+      "title": "米大統領のポスト量子暗号大統領令とインターネットの移行"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-live-3-5-translate/",
@@ -890,6 +1010,18 @@
       "title": "北アイルランドの教師がAIを活用して授業時間を確保、Google DeepMindのパイロットプログラム成果"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/ai-driven-cryptography-discovery/",
+      "category": "cybersecurity",
+      "id": "59ef4263b0c403951665968fbaf1e206b852a092cda6fef4ed1fa66270d63ed9",
+      "llm_input_truncated": true,
+      "path": "notes/59ef4263b0c403951665968fbaf1e206b852a092cda6fef4ed1fa66270d63ed9.md",
+      "processed_at": "2026-10-16T00:26:27.266811+00:00",
+      "published": "2026-09-29",
+      "sha256": "dff953c24e5e5d0c8f7d2f4244f318573adc08b2cc090830bc070042c0ea005f",
+      "source_id": "cloudflare-security",
+      "title": "ポスト量子暗号移行に向けたAI活用の内製ツール「CryptoLabe」の取り組み"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
       "category": "ai-llm",
       "id": "5c08c3a7f5dee74678a3b55b1e2b2a412170478a3c37d614201eed9a4606e944",
@@ -948,6 +1080,18 @@
       "sha256": "f2da0fec8febf6bd4b601e95cc49a0a0f8425241d26e1fbeadb3b8bbc82d7b19",
       "source_id": "google-research",
       "title": "Google Earth AI：基盤モデルとクロスモーダル推論による地理空間インサイトの解放"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/post-quantum-visibility/",
+      "category": "cybersecurity",
+      "id": "61ed59eed89a243b8a90d976fc6cffc5f2ea25b3a65c78863677e59eb44b10d8",
+      "llm_input_truncated": false,
+      "path": "notes/61ed59eed89a243b8a90d976fc6cffc5f2ea25b3a65c78863677e59eb44b10d8.md",
+      "processed_at": "2026-10-16T00:27:22.375340+00:00",
+      "published": "2026-09-29",
+      "sha256": "5075b460c4c30aa41397218fad207592f8dd1c9751fd4f6d2557bed861c7cebe",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareがドメイン単位のポスト量子暗号の可視化ツールを導入"
     },
     {
       "canonical_url": "https://research.google/blog/testing-llms-on-superconductivity-research-questions/",
@@ -1010,6 +1154,18 @@
       "title": "開発者はより効率的なソフトウェアを求めている：1,000人以上のGitHubユーザーの調査から判明したニーズ"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/08/12/security/how-were-building-scam-alert-whatsapp/",
+      "category": "cybersecurity",
+      "id": "6f20218859cdde597c8549661db5d62fa73982661e915cd1d6a58c37fa674c4b",
+      "llm_input_truncated": true,
+      "path": "notes/6f20218859cdde597c8549661db5d62fa73982661e915cd1d6a58c37fa674c4b.md",
+      "processed_at": "2026-10-16T00:28:18.301039+00:00",
+      "published": "2026-08-12",
+      "sha256": "49a42d3167416710967ca201289cdcd54bd17fef99c6866bccb125d156ff2eb5",
+      "source_id": "meta-engineering",
+      "title": "WhatsAppにおけるエンドツーエンド暗号化と検証可能性を維持した「Scam Alert」機能の構築"
+    },
+    {
       "canonical_url": "https://research.google/blog/how-we-are-building-the-personal-health-coach/",
       "category": "ai-llm",
       "id": "6f4f8333fad7846e57f21c914f918273196296f6ee0c62f4cdea8bf008905411",
@@ -1020,6 +1176,18 @@
       "sha256": "df3279e2aebe99d143a5993c5f878ee4529d19700c29aa697b8e66a8edda6c91",
       "source_id": "google-research",
       "title": "個人向けヘルスコーチの構築手法"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/attribution-business-insights/",
+      "category": "cloud",
+      "id": "6f50d05ace9f9fd72447aa3d1202c866d02f3d8e0bb3a529f4ac5e3bc1cc72b7",
+      "llm_input_truncated": false,
+      "path": "notes/6f50d05ace9f9fd72447aa3d1202c866d02f3d8e0bb3a529f4ac5e3bc1cc72b7.md",
+      "processed_at": "2026-10-16T00:26:40.699165+00:00",
+      "published": "2026-07-01",
+      "sha256": "7a7d4319cb0791ff4614ba9093b069414d8eda94c389982ce6de14900ed07824",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareが「Attribution Business Insights」ダッシュボードを発表：AIクローラーのトラフィックと影響を可視化"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/deepmind-a24-research-partnership/",
@@ -1056,6 +1224,18 @@
       "sha256": "97b00ab0c02d686e1eb69528d23515179cb558bc4b03fb1b0683752ffe1b39cc",
       "source_id": "google-deepmind",
       "title": "Google DeepMind、Project GenieとGoogleストリートビューを連携し現実の場所をシミュレーション可能に"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/sovereign-ai-choice-one-year-later/",
+      "category": "ai-llm",
+      "id": "70ab989217467649dc0efba5520cbb746f4df60655893f33ae23f0f06249232e",
+      "llm_input_truncated": false,
+      "path": "notes/70ab989217467649dc0efba5520cbb746f4df60655893f33ae23f0f06249232e.md",
+      "processed_at": "2026-10-16T00:27:41.744367+00:00",
+      "published": "2026-10-01",
+      "sha256": "9301e91f5b28445a9eb5e52dcac0bcbf9668f1fe81805da9670f48cc0b0e82cb",
+      "source_id": "cloudflare-security",
+      "title": "1年後の振り返り：ソブリンAIと選択肢をめぐる戦い"
     },
     {
       "canonical_url": "https://research.google/blog/gemini-provides-automated-feedback-for-theoretical-computer-scientists-at-stoc-2026/",
@@ -1310,6 +1490,18 @@
       "title": "AIが変える開発者の仕事：強化すべき3つのスキル"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/pq-ca-with-mtcs/",
+      "category": "cybersecurity",
+      "id": "86c6ea8cdeb2d66262e804ffb3c8b3d7d4199ccfacdc6a537dad3c5d62fb150a",
+      "llm_input_truncated": false,
+      "path": "notes/86c6ea8cdeb2d66262e804ffb3c8b3d7d4199ccfacdc6a537dad3c5d62fb150a.md",
+      "processed_at": "2026-10-16T00:27:29.600794+00:00",
+      "published": "2026-09-29",
+      "sha256": "4becf78bfac4349ffec1d56b5f4553fa1ed5c31f0822f1f79242cfbb11bca2b1",
+      "source_id": "cloudflare-security",
+      "title": "Merkle Tree Certificatesを活用した耐量子認証局（CA）の構築に向けて"
+    },
+    {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-using-the-diff-terminal-and-browser/",
       "category": "ai-llm",
       "id": "86ce7887180fed2e5305c967a6f5dcd0991a9f7986fb2398e04053cb5dc0e9b6",
@@ -1380,6 +1572,18 @@
       "sha256": "588c3300cc53da94ada15e1f91830ec00070f78e8b9b7bc804918655366efdc3",
       "source_id": "google-research",
       "title": "推論のボトルネックを迂 Salvage：Retrieve-for-Trainによる複雑なAI検索の高速化"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/agentic-security-operations/",
+      "category": "cybersecurity",
+      "id": "8b474df855e6032a322d861c7b5e4271cc796102c1b0d61769b19fe9e9cb10cf",
+      "llm_input_truncated": false,
+      "path": "notes/8b474df855e6032a322d861c7b5e4271cc796102c1b0d61769b19fe9e9cb10cf.md",
+      "processed_at": "2026-10-16T00:26:19.338822+00:00",
+      "published": "2026-10-07",
+      "sha256": "a3acdb87686e54b1c83b82ac0cadf58b2596dd665e30daf533a32e91f8c883ec",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareにおける証拠ベースのエージェント型セキュリティ運用の仕組み"
     },
     {
       "canonical_url": "https://research.google/blog/google-research-2025-bolder-breakthroughs-bigger-impact/",
@@ -1512,6 +1716,18 @@
       "sha256": "190434be1d1bd7032499c3a8de2f53538ddfa6da94fefcdb6f17bb4848313d9a",
       "source_id": "google-deepmind",
       "title": "大韓民国とのパートナーシップ締結を発表"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/ml-dsa-will-have-to-do/",
+      "category": "cybersecurity",
+      "id": "9871eb434af2b55caa0f99a468448bc5a6f081f3532e201eb1214e2d8058298d",
+      "llm_input_truncated": true,
+      "path": "notes/9871eb434af2b55caa0f99a468448bc5a6f081f3532e201eb1214e2d8058298d.md",
+      "processed_at": "2026-10-16T00:26:57.371318+00:00",
+      "published": "2026-07-09",
+      "sha256": "b9d119ef0e2e218fabfa46aa40eeb655d2a104fff512d1d7aa4f5234006910c2",
+      "source_id": "cloudflare-security",
+      "title": "ポスト量子署名アルゴリズムを待てない理由と最新動向"
     },
     {
       "canonical_url": "https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/",
@@ -1682,6 +1898,18 @@
       "title": "写真の再構成：アングルを調整する新しい3D認識型画像編集手法"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/application-profiles/",
+      "category": "cybersecurity",
+      "id": "a4a989145bcaecb006f1c74448d403758131bd0b87b0c6ffe89a8a0e16027d82",
+      "llm_input_truncated": false,
+      "path": "notes/a4a989145bcaecb006f1c74448d403758131bd0b87b0c6ffe89a8a0e16027d82.md",
+      "processed_at": "2026-10-16T00:26:34.346106+00:00",
+      "published": "2026-09-29",
+      "sha256": "0a82f3b47dfc4ba704e1c743a19508311f928d5313abffe8b50e50f831edaf3e",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareがアプリケーションプロファイルによるポジティブセキュリティの強制機能を発表"
+    },
+    {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/reviewbench-an-open-benchmark-for-ai-code-review/",
       "category": "ai-llm",
       "id": "a6acd7eed5eea81bdac7ca0ba1e69dab0a6c2ac238a77da25807f9eb7496d920",
@@ -1752,6 +1980,42 @@
       "sha256": "0bb54ad70eb3882a273af7401a369cc05f6e87b43663ae9b74c028ea5359acc6",
       "source_id": "google-research",
       "title": "Google Researchが「The Check Up」で発表した医療分野におけるAIイノベーションと実世界への適用"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/post-quantum-dnssec-1111/",
+      "category": "cybersecurity",
+      "id": "abad988476155994baae327ba9502286217ace826cdfbd7a3c9ee958b60e2976",
+      "llm_input_truncated": false,
+      "path": "notes/abad988476155994baae327ba9502286217ace826cdfbd7a3c9ee958b60e2976.md",
+      "processed_at": "2026-10-16T00:27:08.424096+00:00",
+      "published": "2026-09-10",
+      "sha256": "6f90f0abfd683ffe21f325f5d868587da75e2260ff9b51ca183db0078b1ab493",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareの1.1.1.1がNIST標準の耐量子DNSSEC署名アルゴリズムML-DSA-44の検証をサポート開始"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/containers-cross-tenant-vulnerability/",
+      "category": "cybersecurity",
+      "id": "abe92ec9110cf1653261577a7e83324a97783fa520a14b9be39486f23dc0ea96",
+      "llm_input_truncated": false,
+      "path": "notes/abe92ec9110cf1653261577a7e83324a97783fa520a14b9be39486f23dc0ea96.md",
+      "processed_at": "2026-10-16T00:26:51.433169+00:00",
+      "published": "2026-09-24",
+      "sha256": "43c79069fd0b9c1a5b2eb4a46e524ece6c82d4ac25b09eec6af21392dd1ec9ac",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare Containersにおけるクロステナントデータ露出脆弱性の修正と対応について"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/weathernext-2/",
+      "category": "ai-llm",
+      "id": "ac032901fa517bad056dda37d87fde363d8cd14cdbc9c4b50c738127daa0a8d3",
+      "llm_input_truncated": false,
+      "path": "notes/ac032901fa517bad056dda37d87fde363d8cd14cdbc9c4b50c738127daa0a8d3.md",
+      "processed_at": "2026-10-16T00:25:28.814442+00:00",
+      "published": "2025-11-17",
+      "sha256": "6e3c4457c1189a1acc9e2168267d68691e1d92fbeb97872ba73e31b8afe81e24",
+      "source_id": "google-deepmind",
+      "title": "WeatherNext 2：Google DeepMindの最先端AI天気予報モデル"
     },
     {
       "canonical_url": "https://research.google/blog/timesfm-3-a-zero-shot-foundation-model-for-multivariate-forecasting/",
@@ -1958,6 +2222,18 @@
       "title": "洪水レジリエンスの次の章：Googleの水文学フレームワークのオープンソース化"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/turnstile-spin/",
+      "category": "cybersecurity",
+      "id": "beb13072901f2e4510a66d990839497108085d98713a2870060e2dbe3bf6a412",
+      "llm_input_truncated": false,
+      "path": "notes/beb13072901f2e4510a66d990839497108085d98713a2870060e2dbe3bf6a412.md",
+      "processed_at": "2026-10-16T00:27:55.281660+00:00",
+      "published": "2026-09-25",
+      "sha256": "c6815e13b249a8dd2d555b0b7432e3dac6330c87a4b5ec700eed9eca32e02b9e",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、AIコーディングエージェント向けにWebサイトのセキュリティ設定を自動化する「Turnstile Spin」を発表"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/finding-the-molecular-switches-behind-new-infectious-diseases/",
       "category": "ai-llm",
       "id": "beeae4c33783c7dc89c1a225fb7c174e40737fd99c6f08592620baa0b4581132",
@@ -2028,6 +2304,18 @@
       "sha256": "d2f32f811c3a8b1d3961eebee4a783cd0b5571f6e245ee185ccdc5f0c18d0839",
       "source_id": "github-blog",
       "title": "オープンソースのAIセキュリティエージェントを使用して24件のAndroid脆弱性を発見した方法"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/08/24/networking-traffic/metaroce-rdma-transport-ai-ethernet/",
+      "category": "network",
+      "id": "c4e4b9971193666d1754b0e28ddd5cb22dfb8fdd6be6d3850eddace402e483bc",
+      "llm_input_truncated": false,
+      "path": "notes/c4e4b9971193666d1754b0e28ddd5cb22dfb8fdd6be6d3850eddace402e483bc.md",
+      "processed_at": "2026-10-16T00:28:24.712809+00:00",
+      "published": "2026-08-24",
+      "sha256": "5a5c71ac18ed3c36959683e1b148f16c61e1f0bc2b41499a6886ce2cd7dd058a",
+      "source_id": "meta-engineering",
+      "title": "MetaRoCE: AIスケール向けの新しいイーサネット用RDMAトランスポート"
     },
     {
       "canonical_url": "https://deepmind.google/blog/d4rt-teaching-ai-to-see-the-world-in-four-dimensions/",
@@ -2162,6 +2450,18 @@
       "title": "NeuralGCMによるAIを活用した長期的・地球規模の降水シミュレーションの精度向上"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/protected-quick-tunnels/",
+      "category": "cybersecurity",
+      "id": "d4374d0e771eb925347d2aeb01bb3beadc7efae191ae05f21c3cdacfd3f6ffaa",
+      "llm_input_truncated": false,
+      "path": "notes/d4374d0e771eb925347d2aeb01bb3beadc7efae191ae05f21c3cdacfd3f6ffaa.md",
+      "processed_at": "2026-10-16T00:27:36.466960+00:00",
+      "published": "2026-10-02",
+      "sha256": "2a6ed6c02ea8058e027592f43f16ae13e3792c5759cfbb078deb9be298575eca",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareがアカウント不要で使える保護付きQuick Tunnelsを発表"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/accelerating-mathematical-and-scientific-discovery-with-gemini-deep-think/",
       "category": "ai-llm",
       "id": "d47ace57b485810a56292835a3203f37cd36bf086f06bd4b742a3cb86d722e28",
@@ -2232,6 +2532,18 @@
       "sha256": "c4e9b1f9aacdf29149878537471c737bf5847b871b2bd151c5bffea6c284cc6e",
       "source_id": "google-deepmind",
       "title": "Gemini 3 Deep Thinkの発表：科学、研究、エンジニアリングの高度化"
+    },
+    {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/accelerator-ai-for-the-planet/",
+      "category": "ai-llm",
+      "id": "dbccc42fcebcc5aa8401828f5df142013f3c5fb28555fb3825e1ca535db4382a",
+      "llm_input_truncated": false,
+      "path": "notes/dbccc42fcebcc5aa8401828f5df142013f3c5fb28555fb3825e1ca535db4382a.md",
+      "processed_at": "2026-10-16T00:25:57.416484+00:00",
+      "published": "2026-05-21",
+      "sha256": "6e0a5dc7077283151405ef8fa652e08266a335aca3d98dc27e31f5b945baf6be",
+      "source_id": "google-deepmind",
+      "title": "アジア太平洋地域における環境リスクに対処するための「Google DeepMind Accelerator」プログラムの開始"
     },
     {
       "canonical_url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
@@ -2306,6 +2618,18 @@
       "title": "BMIを超えて：スマートフォン画像による心血管代謝リスクの推定"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/cloudflare-certificate-authority/",
+      "category": "cybersecurity",
+      "id": "e89432d5d0ce044045580f9814eb339065bfc14d97b668dac160457906751897",
+      "llm_input_truncated": false,
+      "path": "notes/e89432d5d0ce044045580f9814eb339065bfc14d97b668dac160457906751897.md",
+      "processed_at": "2026-10-16T00:26:45.955811+00:00",
+      "published": "2026-09-29",
+      "sha256": "413290da84ebbf57b1298d1f26693e13669a0dbfcecbe109b3d9f61b68f7f4cc",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflareがパブリック認証局（CA）への参入を表明、インターネット全体の信頼性と耐量子暗号に対応へ"
+    },
+    {
       "canonical_url": "https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/",
       "category": "ai-llm",
       "id": "e94b933fd023ad7b9fc7fbc0c35b50d4d3e91d2b5333c411c867e497ab4d6e02",
@@ -2364,6 +2688,18 @@
       "sha256": "2d1e498a77442c63a1a8b20d59e43c11cbb94fc717edd1aa48af78d26c1e0d5e",
       "source_id": "google-research",
       "title": "連合学習（Federated Learning）におけるプライバシー保護の強化：信頼できる実行環境（TEE）の活用"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/were-expanding-our-presence-in-singapore-to-advance-ai-in-the-asia-pacific-region/",
+      "category": "ai-llm",
+      "id": "ee2a900a6f188e0e3c8635ff7f39bfe1dc1966ad32aca2c6ed67a244b317b7c1",
+      "llm_input_truncated": false,
+      "path": "notes/ee2a900a6f188e0e3c8635ff7f39bfe1dc1966ad32aca2c6ed67a244b317b7c1.md",
+      "processed_at": "2026-10-16T00:25:43.847575+00:00",
+      "published": "2025-11-18",
+      "sha256": "40f3872020c19fd5bf5580e4dd6dfc71eedc70cde7048391ef5007156c88b928",
+      "source_id": "google-deepmind",
+      "title": "シンガポールにおけるGoogle DeepMindの拠点拡大とアジア太平洋地域でのAI推進"
     },
     {
       "canonical_url": "https://research.google/blog/millemiglia-a-realistic-instance-generator-for-middle-mile-logistics/",
@@ -2426,6 +2762,18 @@
       "title": "実際の仮想ケアにおける医療用AIの全国規模のランダム化試験に向けた提携について"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/09/02/ml-applications/organizational-second-brain-ai-learns-from-experts/",
+      "category": "ai-llm",
+      "id": "f21d70ee2104100f9e44b918cf4807e3a117e6bb53e757c95767ee3612be8894",
+      "llm_input_truncated": true,
+      "path": "notes/f21d70ee2104100f9e44b918cf4807e3a117e6bb53e757c95767ee3612be8894.md",
+      "processed_at": "2026-10-16T00:28:35.574637+00:00",
+      "published": "2026-09-02",
+      "sha256": "4cacaa000ad7bea7d04fb2be56dccc0d7582fb6f42ec56d8d0be4036ba98658f",
+      "source_id": "meta-engineering",
+      "title": "組織のセカンドブレイン：専門家から学ぶAIエージェントの構築"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/10-years-of-alphago/",
       "category": "ai-llm",
       "id": "f2aea78fbc103516201e73af7db0ab5b88e41a6a6166b523d0b2622fbf78f7fb",
@@ -2436,6 +2784,18 @@
       "sha256": "ef83d4d8e49be22b453cf2cc419f1bd007aeaf8da8c1e0e37a620ab978bd3320",
       "source_id": "google-deepmind",
       "title": "ゲームから生物学へ：AlphaGoの衝撃から10年"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/threat-signals/",
+      "category": "cybersecurity",
+      "id": "f397bced1f45ee9b212d429593ef8d44760b1fa67ca256bc0dc6279fcc08906a",
+      "llm_input_truncated": false,
+      "path": "notes/f397bced1f45ee9b212d429593ef8d44760b1fa67ca256bc0dc6279fcc08906a.md",
+      "processed_at": "2026-10-16T00:27:47.931447+00:00",
+      "published": "2026-09-29",
+      "sha256": "e0b96500f3baad36ce18414d8ce01ac78af61f356636adebdfc621e749d23221",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、オープンソース脅威情報の自動化とエージェントスキルを活用する「Threat Signals」を全アカウントへ無償提供開始"
     },
     {
       "canonical_url": "https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/",
