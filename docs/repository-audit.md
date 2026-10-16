@@ -1,7 +1,7 @@
 # リポジトリ整理・残課題監査
 
 2026-10-16 JST。基点は main `abaef1fcbd4421ea6d55776921961e7b6a1932d5`。
-開発を止めて棚卸しし、機能修正・依存更新・有料処理・本番dispatchは行わない。
+これは整理時点の監査基点である。後続の「20項目を継続して進める」というユーザー指示に基づく進捗を末尾で管理する。
 
 ## 調査範囲と制約
 
@@ -9,8 +9,8 @@ GitHub上の追跡ファイル257件を取得して横断検索・静的確認�
 Web lockの571 packageも構造を確認した。TODO検索だけでなく、収集/課金/保存/公開の境界、テスト対象選択、現行文書と過去記録の食い違いを確認した。
 GitHubの全Open Issue/PR、最近のIssue/PR100件と次ページ、Actions直近30 run、最新日次4 jobの結果、最新collectログ、remote branch12本を確認した。
 
-ローカルshellは起動時に `No such file or directory`、Node実行は `sandboxCwd is not a local file URI` で失敗した。
-そのためローカルHEAD、未commit/未追跡/ignoredファイル、.agents/.codex等のローカル指示、生成cache、利用者環境は未調査である。
+前回はローカルshell/Nodeが起動できず、remoteの追跡ファイルだけを監査した。
+後続作業ではローカル実行が復旧し、mainの基点一致・未commit変更なし・適用AGENTSなしを確認した。旧実施記録4ディレクトリ/69ファイルはSHA-256一致を確認してprivateな `local-state/archive/2026-10-16/` へ集約した。空の一時Vaultも削除し、使用中のvenv/npm/engineと生成cacheは開発環境として区別した。
 「リポジトリ全体」は上記remote基点の追跡ファイルを指す。pytest/npm audit/actionlintの新規実行や、GCSの独立照合は今回実施していない。静的な改善候補を再現済み不具合として扱わない。
 
 ## 確認できた現在値
@@ -75,6 +75,8 @@ raw保存の既定無効、外部画像の内容/存続がGitで固定できな�
 
 ## 整理の結果と復元
 
+この節はPR #193の整理時点の状態。後続のコード変更は次節で区別する。
+
 整理前の全257ファイルは専用branch `codex/archive/pre-housekeeping-2026-10-16` に同じcommitで保全した。
 整理差分は `codex/repository-housekeeping-2026-10-16`。mainへは自動mergeしない。
 過去の証拠50件と、完了済み計画/作業記録11件を整理branchの現行ツリーから外す。
@@ -83,3 +85,31 @@ raw保存の既定無効、外部画像の内容/存続がGitで固定できな�
 現行文書の重複した進捗表を整理し、残課題は[次の作業](next-work.md)、保証は[検証基準](verification.md)へ集約する。
 仕様/操作、ADR、合成corpus、互換entrypoint、現役の画像補完plan、コード/設定/lock/workflow/test本体は保持する。
 新しい日次runごとの報告をmainへ追加せず、必要な状態変更だけを反映し、過去の証拠は専用archive branchへ保管する。
+
+## 改善の依存関係と進捗
+
+2026-10-16の継続指示に基づき、次の順に進める。完了は根拠と検証を伴うものだけを記載する。
+
+```mermaid
+flowchart TD
+    A01[ローカル整理 A01] --> CI[CI境界と静的検証 A04/A05]
+    CI --> DEPS[依存監査 A06/A07]
+    DEPS --> REFACTOR[identity・構造・Web検証 A11/A12/A13/A14]
+    REFACTOR --> PERF[Releaseと工程計測 A08/A09]
+    PERF --> CACHE[cache無効化と規模判断 A10/A19]
+    CI --> QUALITY[Graph・画像指標 A15/A16]
+    CI --> OPS[source・予算・環境 A03/A17/A18]
+    INVOICE[明細待ち A02] --> RECONCILE[確定費用照合]
+```
+
+基点の全Python786件は成功。最初の差分はA04/A05/A06/A07/A14で、Web依存境界の回帰、文書の削除/改名/見出し/履歴Git参照、必須CI gate、監査のversion/配置/経路、画像補完計画の一時config配置を検証する。
+
+| 項目 | 状態と根拠 |
+|---|---|
+| A01 | ローカル調査・private記録69件のhash照合/集約・空Vault除去は完了。生成cacheの最終削除はWeb検証後に実施する |
+| A04/A05 | Web入力契約の対象選択を追加。文書path/見出し/旧Git版参照とchecksum固定actionlintを常時CI化し、Daily再利用にも必須化。関連69件・全Python805件/Web5件/actionlint成功 |
+| A06/A07 | npm/公式advisoryを再確認。braces3.0.3/sprintf-js1.1.3にも修正なし。固定lockの9 package・node位置・伝播辺まで許容を限定。Node5件と実npm auditを照合成功。既知2 advisoryは残る |
+| A14 | 完了planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchの元pathを保持。関連36件成功 |
+| A02 | 確定明細の対象期間/保存先を問い合わせ中。推計だけで完了にしない |
+| A03 | GCS読取りで60保留を再確認（Apple19/GitHub6/DeepMind8/Research3/Meta12/Microsoft12、Cloudflare0）。DeepMind failing/streak2、Cloudflareのみhealthy。保留解消は未完了 |
+| A08〜A13/A15〜A20 | 上の依存順に継続。未実施の計測/実環境受入/設計判断を完了扱いしない |

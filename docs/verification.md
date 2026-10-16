@@ -47,5 +47,5 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 ## 今回の整理で実施した確認
 
 remote追跡ファイルの静的確認、削除対象の保全先commit/blob照合、現行Markdownの相対path/見出しとarchive参照、コード/設定/workflow/test/lockの不変を確認する。
-ローカルruntimeが起動できないため、新規pytest/npm audit/actionlintとローカル一時物の調査は未実施。
-既存main Checks成功を今回のテスト再実行とは扱わない。
+継続作業でローカルruntimeが復旧し、基点Python786件、CI/文書関連69件、画像補完関連36件、Node監査5件、実npm auditとactionlintを実行した。
+全20項目の進捗と実行範囲は[監査一覧](repository-audit.md#改善の依存関係と進捗)で追跡し、既存main Checksの成功とは区別する。

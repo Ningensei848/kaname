@@ -19,7 +19,7 @@ RUN = dict(id=123, run_attempt=2, head_sha=SHA, head_branch='main', event='push'
            path='.github/workflows/checks.yml', repository={'full_name': 'owner/repo'},
            status='completed', conclusion='success')
 JOBS = [dict(name=name, head_sha=SHA, status='completed', conclusion='success')
-        for name in ('scope', 'python-checks', 'web-checks', 'test', 'web-preview')]
+        for name in ('repository-checks', 'scope', 'python-checks', 'web-checks', 'test', 'web-preview')]
 
 
 def evidence(runs=None, jobs=None, environment=None):
@@ -40,6 +40,13 @@ def test_reuses_same_commit_and_current_attempt():
                          checks_run_id=123, checks_run_attempt=2)
     assert 'head_sha=' + SHA in calls[0] and 'event=push' in calls[0]
     assert calls[1].endswith('/runs/123/attempts/2/jobs?per_page=100')
+
+
+@pytest.mark.parametrize('conclusion', [None, 'failure', 'skipped'])
+def test_repository_validation_cannot_be_bypassed(conclusion):
+    jobs = copy.deepcopy(JOBS)
+    jobs[0]['conclusion'] = conclusion
+    assert evidence(jobs=jobs)[0]['unit_tests'] == 'local'
 
 
 @pytest.mark.parametrize('field,value', [

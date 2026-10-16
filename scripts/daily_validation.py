@@ -56,7 +56,7 @@ def checks_evidence(environment, fetch=github_json):
                      f'{run["run_attempt"]}/jobs?per_page=100', token)
         if jobs['total_count'] != len(jobs['jobs']):
             raise ValueError('incomplete jobs')
-        for name in ('scope', 'test', 'web-preview'):
+        for name in ('repository-checks', 'scope', 'test', 'web-preview'):
             matches = [job for job in jobs['jobs'] if job['name'] == name]
             if (len(matches) != 1 or matches[0]['status'] != 'completed' or
                     matches[0]['conclusion'] != 'success' or matches[0]['head_sha'] != sha):

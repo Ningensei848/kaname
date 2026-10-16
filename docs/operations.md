@@ -422,5 +422,5 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 `TECHKB_READ_CACHE`は同一runner内の一時privateディレクトリ。世代/CRC一致のbytesだけ再利用し、各CLIでlive catalogと全件を検査する。
 別run間のcache共有・検査省略は行わない。詳細は[日次公開](daily-publication.md#検査読取り性能の設定)。
 
-完了済みのGlucoFM計画は現在workflow回帰の実ファイル入力でもあるため保持している。
-新しい修復対象の承認や一括適用指示には使わず、fixture依存の分離は[監査A14](repository-audit.md#残課題改善候補)で追跡する。
+完了済みGlucoFM計画は実configから除去した。回帰用の固定値は `tests/fixtures/image-repair-plan.json` から一時configへ配置する。
+新しい修復対象には別のレビュー済み計画を用意する。旧planは専用archive branchの元pathから参照できる。
