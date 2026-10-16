@@ -36,7 +36,7 @@ standardのLLM/compose失敗にはBatchと共通の安全な構造診断を記�
 
 ## 既存Noteへの画像補完
 
-要約を再生成せず、レビュー済みの画像URLと配置だけを追加できます。現在の対象はGlucoFM 1件です。
+要約を再生成せず、レビュー済みの画像URLと配置だけを追加できます。GlucoFM 1件の補完は完了済みです。新しい対象には別途レビューした計画を用意します。
 `config/image-repairs/<Note ID>.json`に対象Note・取得した本文MarkdownのSHA256、画像URLと配置を固定します。
 対象は最新の公開revisionで、Noteとreceiptが一致し、既存画像がないことを確認します。
 本文はsourceの通常取得・抽出経路を使い、候補に存在するHTTPS画像だけを採用します。
@@ -196,8 +196,8 @@ gh workflow run daily.yml --repo Ningensei848/kaname --ref main -f batch_preflig
 出力は件数と判定だけで、本文・台帳ID・object path・費用明細を含みません。
 `ready`でも有料提出の個別承認が必要です。`blocked`/`failed`なら提出せず調査します。
 unknown usageの件数は残り、請求照合完了を意味しません。
-具体的な提出・回収・再実行・費用推計は[#94の準備記録](archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
-独立workflowの実WIF拒否と修正は[修正記録](archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
+具体的な提出・回収・再実行・費用推計は[#94の準備記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
+独立workflowの実WIF拒否と修正は[修正記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
 
 ### Source Healthの読取り
 
@@ -387,7 +387,7 @@ host間隔・robots・retryも維持するため、並列数を増やしても�
 本文抽出/画像候補/変換依存を変えた場合は`python scripts/regression_corpus.py`で
 有効7 sourceの8レイアウトの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
 fixtureは原文のコピーや実サイトへの定期アクセスではありません。
-GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
+GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
 
 
 ## Knowledge Graphの品質評価
@@ -415,3 +415,12 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 ## 新規記事限定と既知記事の再検査
 
 日次は`processing.article_policy: new_only`で成功済みURLへの本文HTTPを省き、生成枠を使い切った後の本文取得も停止します。失敗/未完了はpendingに残し、保存済みNoteをGCS/Gitから公開します。同じURLの変更は日次で自動検知せず、`python -m techkb dry-run --recheck-known`で無生成/無保存の検査、`python -m techkb run --recheck-known`で通常の件数/費用制限内の更新を行います。詳細と差分配布の設計は[記録](incremental-collection.md)を参照してください。
+
+## GCS読取り並列数とprivate cache
+
+日次のrepository variable `GCS_READ_WORKERS`、ローカルの`TECHKB_GCS_READ_WORKERS`は1〜16、省略時16。8/1で切戻せる。
+`TECHKB_READ_CACHE`は同一runner内の一時privateディレクトリ。世代/CRC一致のbytesだけ再利用し、各CLIでlive catalogと全件を検査する。
+別run間のcache共有・検査省略は行わない。詳細は[日次公開](daily-publication.md#検査読取り性能の設定)。
+
+完了済みのGlucoFM計画は現在workflow回帰の実ファイル入力でもあるため保持している。
+新しい修復対象の承認や一括適用指示には使わず、fixture依存の分離は[監査A14](repository-audit.md#残課題改善候補)で追跡する。

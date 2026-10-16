@@ -4,7 +4,7 @@
 `techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
 実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
 固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
-初回実deployと公開URLの全117件の元Markdown hash照合は完了しました。日次公開pipelineを実装しました。実行受入の状態は[日次公開手順](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。
+Pages初回公開・通常schedule・切戻し/復帰を受入済みです。操作は[日次公開](daily-publication.md)・[Pages](pages.md)、現在の保証は[検証基準](verification.md)を参照してください。
 
 公開検証・読取り・配置・Git snapshot照合は`techkb.publication`配下へまとめ、従来の公開importを維持します。
 HTML成果物の処理はWeb側です。責務の境界は[仕様書](specification.md#pythonとwebの境界)を参照してください。

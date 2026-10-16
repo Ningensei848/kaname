@@ -3,7 +3,7 @@
 - 状態: 採用
 - 決定日: 2026-10-04（JST）
 - 起点: ユーザーの新要求。git submoduleを基本とし、同じ公開Note群をVaultとPagesで参照する選択を確認済み
-- 実装状態: 収集基盤・互換sync・公開snapshot export・Git配布・Web buildは実装済み。117件のGit初回公開を受入。同じ配布版の117件をPagesへ初回公開し、公開URLの元Markdown hashを照合済み。日次公開pipelineを実装。実行受入は[日次公開手順](../daily-publication.md)で管理
+- 実装状態: 収集・公開snapshot・Git/Release・Web/Pages・日次公開・切戻しは受入済み。現在の保証は[検証基準](../verification.md)、当時の証拠は[archive索引](../archive/README.md)へ分離。
 
 ## 背景
 
@@ -72,7 +72,7 @@ Git配布とWeb buildの受入状態は[検証・受入](../verification.md)で�
 
 同じsnapshot digest/Note hashを使うこと、submoduleが通常のGitとして版を固定できること、
 Pagesがそのsnapshotだけから再構築できることを受入条件とします。
-具体的な契約と工程は[仕様書](../specification.md)、[公開・配布](../publication.md)、[実装計画](../implementation-plan.md)へ記載します。
+具体的な契約と工程は[仕様書](../specification.md)、[公開・配布](../publication.md)、[検証基準](../verification.md)へ記載します。
 
 - [Gitのsubmoduleモデル](https://git-scm.com/docs/gitsubmodules): 独立した履歴を持つrepoを親から特定commitで参照する
 - [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages): 静的サイトの配信先

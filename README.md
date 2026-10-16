@@ -39,7 +39,7 @@ Windowsでは対応するvenvのPowerShell activateを使います。
 | 設定 | 役割 |
 |---|---|
 | `config/app.yaml` | モデル、呼出し/入力/出力上限、カテゴリ、保存・費用・通知 |
-| `config/sources.yaml` | 情報源と取得方式。Google Research/GitHub Blog/DeepMind/Microsoft Research/Meta/Apple/Cloudflare有効、AWS News無効。[追加4社の状態](docs/four-source-activation.md)を参照 |
+| `config/sources.yaml` | 情報源と取得方式。Google Research/GitHub Blog/DeepMind/Microsoft Research/Meta/Apple/Cloudflare有効、AWS News無効。[source方針](docs/source-policy.md)を参照 |
 | `prompts/enrich.txt` | 本文を命令として扱わない要約・分類指示 |
 | `GCS_BUCKET` | 非公開GCS保存先。ローカルADCまたはActions WIFで認証 |
 | `GEMINI_API_KEY` | Gemini認証。環境変数またはGitHub Secretで渡す |
@@ -61,15 +61,14 @@ python -m techkb source-health # 収集元の状態をJSON表示
 
 ## 実装と次の作業
 
-標準収集、公開export、Git配布、Pages、通常schedule、切戻し/復帰、旧R1〜R5は実装・受入済みです。
-画像対応とSource Healthは実装済みです。現在の責務整理は[実装計画](docs/refactoring-plan.md)、
-検証済み範囲と未完了の本番受入は[検証・受入](docs/verification.md)を参照してください。
-画像入り実NoteとBatch成功保存、確定請求照合などの順序は[次の作業](docs/next-work.md)にまとめています。
+標準収集/復旧、画像、実Batch保存/公開/再実行、Git/Release/Pages、通常schedule/切戻し、NS1、Source Health、旧責務整理は受入済みです。
+現在の保証は[検証基準](docs/verification.md)、残課題20項目と根拠は[監査一覧](docs/repository-audit.md)、着手順は[次の作業](docs/next-work.md)を参照してください。
+完了済み計画と過去の受入記録は[専用アーカイブブランチ](docs/archive/README.md)へ分離しました。
 
 ## 資料
 
 [文書の入口](docs/README.md)から、[仕様書](docs/specification.md)、[公開・配布契約](docs/publication.md)、
 [運用手順](docs/operations.md)、[Git配布](docs/git-distribution.md)、[Pages](docs/pages.md)、
 [Web preview](docs/web-preview.md)、[設計補足](docs/design-decisions.md)、[GCP設定](docs/gcp-setup.md)、
-[source方針](docs/source-policy.md)、[バックログ](docs/roadmap.md)へ進めます。
+[source方針](docs/source-policy.md)、[残課題](docs/next-work.md)へ進めます。
 採用した構成の背景は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)、過去の作業証拠は[履歴](docs/archive/README.md)に保存します。

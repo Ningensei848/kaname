@@ -1,8 +1,7 @@
 # 公開NoteのWeb preview
 
-工程2の静的buildです。CIは架空Note 3件で画面を検証します。
-実GCSのexportと`content`branch配布、同じ配布commitの117件からのローカルWeb受入も完了しています。
-GitHub Pagesの初回deployは[専用workflow](pages.md)で受入済みです。日次公開を接続しました。[実行受入](daily-publication.md)を参照してください。人力Vaultは入力にしません。
+公開snapshotからの静的buildです。fixtureと実Git/Release入力をCIで検証し、Pages通常公開/切戻しまで受入済みです。
+入力は生成Note群で、人力Vaultは使用しません。過去の初回受入値は[archive索引](archive/README.md)、現在の保証は[検証基準](verification.md)を参照してください。
 
 ## ローカルで確認する
 
@@ -22,7 +21,7 @@ npm run preview
 previewはloopbackだけで提供します。架空データには全ページでpreview表示と`noindex,nofollow`を付けます。
 Note一覧、出典別・カテゴリ別・日付順、日本語検索、Note本文、出典リンク、AI生成/打切り表示を確認できます。
 一覧・日付順は収集日時（UTC）の降順です。記事自体の公開日はNoteの出典情報に保持します。
-既存のNoteタイトルに一意に対応する検索キーワードだけを内部リンクにし、未存在/同名の概念は文字で表示します。
+検索キーワード/本文のWikiLinkは一意の公開Noteタイトルへ内部リンクし、未存在/同名ならGoogle検索へつなぎます。[検索リンク仕様](ns1-search-fallback.md)を参照してください。
 本番のコンテンツや原文をfixtureと混同しません。
 
 ```bash
@@ -90,7 +89,7 @@ cacheと出力は同一filesystemに置きます。既存出力やcacheを人が
 
 preview serverは完了manifestと各hashを検証し、捕捉した配信bytesだけを提供します。
 ファイルが後から増えても公開されません。非公開state、receipt、root文書、source mapは許可出力ではありません。
-現在のChecksでは収集権限なしでfixtureだけをbuild/検証し、静的previewと画面をActions artifactへ保存します。
+現在のChecksでは収集権限なしでfixtureと実contentのGit/Release両入力を検証し、静的previewと画面をActions artifactへ保存します。
 Pages専用workflowとproduction dispatchの手順は[Pages手順](pages.md)に分離しています。
 Checksでは実contentの公開前検証も行いますが、deploy権限は付けません。WIF/IAMは変更しません。
 
