@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff",
+  "dataset_digest": "a74cbb79b816ffb967866a3800c0111d277850979168466185e0c5d377ec0b95",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -12,6 +12,30 @@
       "sha256": "ddf22c38ec12bc38e6984ee1f99d641d8579abc007222e4891e8e277595a07ed",
       "source_id": "google-research",
       "title": "暗号資産の保護と量子脆弱性の責任ある開示に向けて"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/distributed-gpu-cloud",
+      "category": "cloud",
+      "id": "02bac34ac354a4dd4c4f0ce3c3d78a816e2ae3d2428c01be3788803ec8a717a2",
+      "llm_input_truncated": false,
+      "path": "notes/02bac34ac354a4dd4c4f0ce3c3d78a816e2ae3d2428c01be3788803ec8a717a2.md",
+      "processed_at": "2026-10-16T11:40:07.287165+00:00",
+      "published": "2026-10-12",
+      "sha256": "056a8ea1fe76b8fae136d412606e2c10953d5a5d6698d6bf8e81d118347ddf44",
+      "source_id": "apple-ml-research",
+      "title": "Minions: アイドル状態のApple Siliconデバイスを活用する動的・分散型仮想GPUクラウド"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/language-discrimination-multilingual-learning",
+      "category": "ai-llm",
+      "id": "04422041293690c58e1df731277dd34bb9a8bb2c29c5882f4d41df6838590766",
+      "llm_input_truncated": false,
+      "path": "notes/04422041293690c58e1df731277dd34bb9a8bb2c29c5882f4d41df6838590766.md",
+      "processed_at": "2026-10-16T11:38:29.614025+00:00",
+      "published": "2026-10-02",
+      "sha256": "b60b0c79bc4eb05e84ee336964074e11e4ab370458456ee7090f269072107551",
+      "source_id": "apple-ml-research",
+      "title": "言語識別機能の強化が多言語音声モデルの言語学習を改善する"
     },
     {
       "canonical_url": "https://blog.google/products-and-platforms/products/gemini/gemini-3-flash/",
@@ -182,6 +206,18 @@
       "title": "FACTSベンチマークスイート：大規模言語モデルの事実正確性を体系的に評価する"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/rltl-dr-self-improvement",
+      "category": "ai-llm",
+      "id": "104104b58ffb07ce58c4530e2f8a2d3f0a3a20086ca86f8f7d2cdb0982858b98",
+      "llm_input_truncated": false,
+      "path": "notes/104104b58ffb07ce58c4530e2f8a2d3f0a3a20086ca86f8f7d2cdb0982858b98.md",
+      "processed_at": "2026-10-16T11:38:52.592354+00:00",
+      "published": "2026-10-01",
+      "sha256": "0da54717fee42bf7542116953c51b3bdd0d40583455717197f9609af4077d2a8",
+      "source_id": "apple-ml-research",
+      "title": "RLTL;DR: 自己生成フィードバックの内部化による自己改善"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/",
       "category": "ai-llm",
       "id": "12956c2a08e8b0da15bc192c83dfefbe695743bdf65905005dd875ce9dea86e5",
@@ -218,6 +254,18 @@
       "title": "EmbeddingGemma 2: オープンで軽量なマルチモーダル埋め込みモデル"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/sclate-agent-training-evaluation",
+      "category": "ai-llm",
+      "id": "14e3f0eb4255c1f229bcd647bcf72e6abd8a74759dd7304d8b918bd13cd951c2",
+      "llm_input_truncated": false,
+      "path": "notes/14e3f0eb4255c1f229bcd647bcf72e6abd8a74759dd7304d8b918bd13cd951c2.md",
+      "processed_at": "2026-10-16T11:38:56.673762+00:00",
+      "published": "2026-09-30",
+      "sha256": "a2a443c07660831214c1e06a5970d32171b7799034ba6a7162af34c0dbe95509",
+      "source_id": "apple-ml-research",
+      "title": "SCLATE：継続学習エージェントのトレーニングと評価のための基盤"
+    },
+    {
       "canonical_url": "https://research.google/blog/optimizing-cloud-economics-with-linear-elastic-caching/",
       "category": "cloud",
       "id": "14fb26f59cee6fe836ec102f906fff77a9c627085656911e312d5f7dff8b80d7",
@@ -252,6 +300,18 @@
       "sha256": "e6b5b767b75ab16b4dc723cbc99e614c6f80e06099cca7c5dd3528914ed7013e",
       "source_id": "google-deepmind",
       "title": "Gemini 3.1 Flash Live：音声AIをより自然で信頼性の高いものに"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/introducing-quine-an-ai-research-system-designed-for-the-complexity-of-biology/",
+      "category": "ai-llm",
+      "id": "189ff58f788124a21ceafe81081570e31929f081228d7aa65b4516cc9c01746c",
+      "llm_input_truncated": false,
+      "path": "notes/189ff58f788124a21ceafe81081570e31929f081228d7aa65b4516cc9c01746c.md",
+      "processed_at": "2026-10-16T11:39:27.707827+00:00",
+      "published": "2026-09-29",
+      "sha256": "7f466ad108da369cd447a62305b56c279c10347b3cc93577442049c3035b0ee6",
+      "source_id": "microsoft-research",
+      "title": "生物学の複雑性に対応するAI研究システム「Project Quine」の発表"
     },
     {
       "canonical_url": "https://engineering.fb.com/2026/08/24/networking-traffic/mtia-300-meta-training-chip-built-in-nics/",
@@ -348,6 +408,18 @@
       "sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
       "source_id": "google-deepmind",
       "title": "Gemini Omni 1.1 Flash発表：開発者向けに高精度な制御とビデオ生成機能を提供"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/09/23/security/private-processing-meta-ai-glasses/",
+      "category": "cybersecurity",
+      "id": "20e27079cc0ad624e51e7c7830cce1b42ad1228b3dc9d7dea0b8424baa413d4f",
+      "llm_input_truncated": false,
+      "path": "notes/20e27079cc0ad624e51e7c7830cce1b42ad1228b3dc9d7dea0b8424baa413d4f.md",
+      "processed_at": "2026-10-16T11:38:04.015759+00:00",
+      "published": "2026-09-24",
+      "sha256": "b452a546cb5a6ffabea75a35aa8d2a90f80bfb9a3b18f6b9404dd5f3a9bef51d",
+      "source_id": "meta-engineering",
+      "title": "MetaのAIグラスに向けたプライベート処理：機密コンピューティング基盤の拡張"
     },
     {
       "canonical_url": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
@@ -528,6 +600,18 @@
       "sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
       "source_id": "google-deepmind",
       "title": "Google DeepMindが「Nano Banana Pro」を発表：高度な推論と多言語テキスト描画を備えた最先端の画像生成・編集モデル"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/",
+      "category": "ai-llm",
+      "id": "2c773478e6b1648989eac463461d327ce3bff540f8f1ffd6c5b37f95161e0062",
+      "llm_input_truncated": false,
+      "path": "notes/2c773478e6b1648989eac463461d327ce3bff540f8f1ffd6c5b37f95161e0062.md",
+      "processed_at": "2026-10-16T11:39:01.642257+00:00",
+      "published": "2026-10-07",
+      "sha256": "bf873e1257a67b431f2ec70c7fc7029c660a558460aea46d75c7e7123b97d861",
+      "source_id": "microsoft-research",
+      "title": "Agent Lightning v1.0：実際のハーネスを用いたエージェント学習のための3,500行の軽量エージェント型強化学習フレームワーク"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
@@ -734,6 +818,18 @@
       "title": "初心者向けGitHub Copilotアプリ：キャンバスを使ったカスタムワークフローの構築方法"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/ontological-boundary-negotiation",
+      "category": "ai-llm",
+      "id": "3e7ecdf1b7cc94ec3b7c57c806f78dfb429843bbe9e82a9b59583c704264a991",
+      "llm_input_truncated": false,
+      "path": "notes/3e7ecdf1b7cc94ec3b7c57c806f78dfb429843bbe9e82a9b59583c704264a991.md",
+      "processed_at": "2026-10-16T11:38:43.832767+00:00",
+      "published": "2026-10-05",
+      "sha256": "add4b4a65c3cb64a71ace078157d76b5fa5efb90fe2edaf8a8f637e76a7013da",
+      "source_id": "apple-ml-research",
+      "title": "ユーザー作成型パーソナルセンシングシステムにおける存在論的境界の交渉"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/lyria-3-5/",
       "category": "ai-llm",
       "id": "3fc2f12c46a71c1c1fe33f82e2a0c3559535678d09b642c47fdade8e8e254d19",
@@ -744,6 +840,30 @@
       "sha256": "4edafad68b46215f445033b6eced8ab03eceead93bbce21a3072a5a4bfe574bb",
       "source_id": "google-deepmind",
       "title": "Google、音楽生成モデル「Lyria 3.5」をGoogle Flow Musicで発表"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/12/ml-applications/turning-opportunistic-ai-inference-capacity-into-better-ads-recommendations/",
+      "category": "ai-llm",
+      "id": "3fdcc07c07cdc5d77d9fa96a1d1a2f0274e7294f2874b8e4b474361d8f971ac1",
+      "llm_input_truncated": false,
+      "path": "notes/3fdcc07c07cdc5d77d9fa96a1d1a2f0274e7294f2874b8e4b474361d8f971ac1.md",
+      "processed_at": "2026-10-16T11:39:50.617608+00:00",
+      "published": "2026-10-12",
+      "sha256": "59112079ed080708e3345eb1af5d62dfdc760aa11bc6e05f7e9ddc6f98e85f46",
+      "source_id": "meta-engineering",
+      "title": "Metaが実践する、一時的なAI推論の遊休リソースを活用した広告レコメンデーションの高度化"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/normalizing-trajectory-models",
+      "category": "ai-llm",
+      "id": "3feedfa650e38ebcf1889145120010235e28b5c57db72acafab4912e12a61476",
+      "llm_input_truncated": false,
+      "path": "notes/3feedfa650e38ebcf1889145120010235e28b5c57db72acafab4912e12a61476.md",
+      "processed_at": "2026-10-16T11:38:39.556549+00:00",
+      "published": "2026-10-08",
+      "sha256": "5f0f70ba0c6d4f16347a4413696b3cf49da427e9f58037072cfef5067dec3d00",
+      "source_id": "apple-ml-research",
+      "title": "Normalizing Trajectory Modelsの紹介"
     },
     {
       "canonical_url": "https://research.google/blog/titans-miras-helping-ai-have-long-term-memory/",
@@ -830,6 +950,18 @@
       "title": "実世界に向けた合成データセットの設計：メカニズムデザインと第一原理からの推論"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/09/21/connectivity/petal-petabit-transoceanic-subsea-cable/",
+      "category": "network",
+      "id": "4dc567c65721f554a39cfc1517e2b73d6245320c288d6214290eaa74e0cac631",
+      "llm_input_truncated": false,
+      "path": "notes/4dc567c65721f554a39cfc1517e2b73d6245320c288d6214290eaa74e0cac631.md",
+      "processed_at": "2026-10-16T11:37:52.706604+00:00",
+      "published": "2026-09-21",
+      "sha256": "65d3205b5a32833f1e3cd0070cedcd4450c2f7c341ed3518b32043b848da97c0",
+      "source_id": "meta-engineering",
+      "title": "Metaが発表した世界初のペタビット級大西洋横断海底ケーブル「Petal」"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/gemini-robotics-er-1-6/",
       "category": "ai-llm",
       "id": "4f2acd1f0e88b4eefa85d4010f018cf2166335fc9d99dd1ff02b14ac2f15b2d3",
@@ -840,6 +972,18 @@
       "sha256": "8b060bfa2910ba909aba37920103c8fc5430b083c68c5f6b367cd5a333486770",
       "source_id": "google-deepmind",
       "title": "Google DeepMindが「Gemini Robotics-ER 1.6」を発表：身体化推論を強化したリアルワールド向けロボットモデル"
+    },
+    {
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-teach-copilot-about-your-codebase/",
+      "category": "ai-llm",
+      "id": "505a78cb1531fe4f4de4401d9e1993193700c29e637b692ded5fbc4f8863b99b",
+      "llm_input_truncated": true,
+      "path": "notes/505a78cb1531fe4f4de4401d9e1993193700c29e637b692ded5fbc4f8863b99b.md",
+      "processed_at": "2026-10-16T11:40:03.589817+00:00",
+      "published": "2026-10-12",
+      "sha256": "d24b1045b75eefe95d3a2e2b121b48741fff3e7585e4f5a34b4146234d4644fb",
+      "source_id": "github-blog",
+      "title": "初心者向けGitHub Copilotアプリ：コードベースについてCopilotに学習させる方法"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/should-you-read-the-code-is-rag-dead-and-did-skills-kill-mcp/",
@@ -1022,6 +1166,18 @@
       "title": "ポスト量子暗号移行に向けたAI活用の内製ツール「CryptoLabe」の取り組み"
     },
     {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/gigapath-flash-and-gigatime-flash-toward-population-scale-discovery-with-efficient-pathology-foundation-models/",
+      "category": "ai-llm",
+      "id": "59f8b91f3fbbde31483f87abed6557a3e9325ae9bde3324b44a16979f69cff13",
+      "llm_input_truncated": false,
+      "path": "notes/59f8b91f3fbbde31483f87abed6557a3e9325ae9bde3324b44a16979f69cff13.md",
+      "processed_at": "2026-10-16T11:39:14.666963+00:00",
+      "published": "2026-08-31",
+      "sha256": "6a49b4e93daa4bacd7e2e011276c14959f461c9a25397e704ff0eddc11b43d9a",
+      "source_id": "microsoft-research",
+      "title": "GigaPath-FlashとGigaTIME-Flash：効率的な病理基盤モデルによる人口規模の発見へ向けて"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
       "category": "ai-llm",
       "id": "5c08c3a7f5dee74678a3b55b1e2b2a412170478a3c37d614201eed9a4606e944",
@@ -1044,6 +1200,18 @@
       "sha256": "0578cbb87944642ffe2fe35f3131469ee776f932023211faf9d2c8308c64a320",
       "source_id": "google-research",
       "title": "変化する世界におけるスケジューリング：時間変動するキャパシティによるスループットの最大化"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/09/03/core-infra/zgateway-proxy-zippydb-meta/",
+      "category": "cloud",
+      "id": "5facaf90b7c344885dafa25294e90e94c7b14acf48c258966c9223349cc98e9e",
+      "llm_input_truncated": true,
+      "path": "notes/5facaf90b7c344885dafa25294e90e94c7b14acf48c258966c9223349cc98e9e.md",
+      "processed_at": "2026-10-16T11:37:46.901543+00:00",
+      "published": "2026-09-03",
+      "sha256": "1db8d70e6e21feb5d05cacfecfaf4a9d30d0bca9e070799cb78ade511592f6d6",
+      "source_id": "meta-engineering",
+      "title": "ZGateway：MetaのZippyDBにプロキシを導入して得られた教訓"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/products/gemini-app/lyria-3/",
@@ -1094,6 +1262,18 @@
       "title": "Cloudflareがドメイン単位のポスト量子暗号の可視化ツールを導入"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/10/06/production-engineering/nts-authenticated-time-at-meta/",
+      "category": "cloud",
+      "id": "64e77b06d660c832c0fdadfe7b847f760840b645a686b2a10dca9a8565b35d37",
+      "llm_input_truncated": false,
+      "path": "notes/64e77b06d660c832c0fdadfe7b847f760840b645a686b2a10dca9a8565b35d37.md",
+      "processed_at": "2026-10-16T11:38:09.536996+00:00",
+      "published": "2026-10-06",
+      "sha256": "0ceba9bc293cf09281bf30bce293defd5588a39b6ef90e60d6eba7fc41a7915d",
+      "source_id": "meta-engineering",
+      "title": "Metaが公開した認証付き時刻同期プロトコル「NTS」の導入解説"
+    },
+    {
       "canonical_url": "https://research.google/blog/testing-llms-on-superconductivity-research-questions/",
       "category": "ai-llm",
       "id": "6525306b698216b750748ee1f30fffbae23b53d6195fcf456a426b0a38789167",
@@ -1140,6 +1320,18 @@
       "sha256": "c064aca94408328656e038141bc03e67904ad27744f52134569e5ae10eeec0e3",
       "source_id": "google-research",
       "title": "TabFMの紹介：表形式データ向けゼロショット基盤モデル"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/12/video-engineering/shipping-media-over-quic-at-meta-scale-for-instagram-live-ingest/",
+      "category": "network",
+      "id": "6d0043d36fe715606bab0ba8674b0b3cf1f3d8cd8371fec6d05f88ef4f48db85",
+      "llm_input_truncated": false,
+      "path": "notes/6d0043d36fe715606bab0ba8674b0b3cf1f3d8cd8371fec6d05f88ef4f48db85.md",
+      "processed_at": "2026-10-16T11:39:59.255145+00:00",
+      "published": "2026-10-12",
+      "sha256": "d2c900fb73f6cba9874d7e1ee668605c166fa59999d42b12e02c04394d9d37f4",
+      "source_id": "meta-engineering",
+      "title": "MetaがInstagram Liveのインジェストに「Media over QUIC (MoQ)」を大規模導入"
     },
     {
       "canonical_url": "https://github.blog/news-insights/research/developers-want-more-efficient-software-heres-what-over-1000-github-users-told-us-they-need/",
@@ -1274,6 +1466,18 @@
       "title": "機械学習を用いた乳がんスクリーニングワークフローの改善"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/effectiveness-fluency-llm-conditioning",
+      "category": "ai-llm",
+      "id": "7809dfe4f0aeaafebda411b17962736f50acfe4bfe9184b367d71fa34a8fd0e7",
+      "llm_input_truncated": false,
+      "path": "notes/7809dfe4f0aeaafebda411b17962736f50acfe4bfe9184b367d71fa34a8fd0e7.md",
+      "processed_at": "2026-10-16T11:38:19.079546+00:00",
+      "published": "2026-09-30",
+      "sha256": "4ddbd551ed11437b2f04948bf684985ee0f886cf26bc6ba925512a5d381dc1c2",
+      "source_id": "apple-ml-research",
+      "title": "大規模言語モデルの条件付けにおける有効性と流暢さのトレードオフに関する系統的研究"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-with-live-avatar/",
       "category": "ai-llm",
       "id": "78b197c2d39aeeb95787b2a2f7761680cc8f97dfc1af81eaf306c7cc9abc06c3",
@@ -1334,6 +1538,18 @@
       "title": "Google Research、極端な都市熱対策として50以上の世界的な都市へ「Heat Resilience」データを拡大"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/limits-confidence-diffusion",
+      "category": "ai-llm",
+      "id": "7e07059f8c4793a917100d13daf22f1afed149548e144b3c36d885469abe1ed6",
+      "llm_input_truncated": false,
+      "path": "notes/7e07059f8c4793a917100d13daf22f1afed149548e144b3c36d885469abe1ed6.md",
+      "processed_at": "2026-10-16T11:38:34.663591+00:00",
+      "published": "2026-10-02",
+      "sha256": "003d997f92b38a3a065078389595f3a28725ec994408caa8c09b8f5d6799a260",
+      "source_id": "apple-ml-research",
+      "title": "拡散モデルにおける確信度の限界：離散拡散モデルの特性と制約"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/alphaevolve-impact/",
       "category": "ai-llm",
       "id": "7e465b76d429ffd6d3120e23148d1dc0edf031added74c0b2361b53fd6a01907",
@@ -1368,6 +1584,18 @@
       "sha256": "8e7f35b0bdfd498183376caf9d1e0403f3960bc32a00ba114d17cd1ba5725927",
       "source_id": "google-deepmind",
       "title": "Google DeepMindが発表、AIの有害な操作（マニピュレーション）を防ぐための新たな研究と評価手法"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/one-year-in-how-microsoft-research-asia-singapore-is-advancing-research-partnership-and-talent-for-real-world-impact/",
+      "category": "ai-llm",
+      "id": "80318b65db21017f02bdacaf91b6e9bf7e04176c7e2906c50c4ea603aa940fb4",
+      "llm_input_truncated": false,
+      "path": "notes/80318b65db21017f02bdacaf91b6e9bf7e04176c7e2906c50c4ea603aa940fb4.md",
+      "processed_at": "2026-10-16T11:39:41.565274+00:00",
+      "published": "2026-09-28",
+      "sha256": "7877ad4854c26379d28fae3bb04db4c4b6371d717d8b783a16c938e6b3236652",
+      "source_id": "microsoft-research",
+      "title": "設立1周年を迎えたMicrosoft Research Asia – Singapore：研究、パートナーシップ、人材育成の実績"
     },
     {
       "canonical_url": "https://research.google/blog/mapping-global-methane-emissions-from-space-with-deep-learning/",
@@ -1610,6 +1838,18 @@
       "title": "Google DeepMind、米エネルギー省の「ジェネシス・ミッション」を支援し科学的発見を加速"
     },
     {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/improving-synthesis-prediction-of-small-molecules-at-scale-with-retrochimera/",
+      "category": "ai-llm",
+      "id": "901a735c031b0ba54622a3cd990d8679f6dfb557e3389c69fe945ec9dc6e98d8",
+      "llm_input_truncated": false,
+      "path": "notes/901a735c031b0ba54622a3cd990d8679f6dfb557e3389c69fe945ec9dc6e98d8.md",
+      "processed_at": "2026-10-16T11:39:18.928848+00:00",
+      "published": "2026-09-21",
+      "sha256": "6f9ce6d5ded4834c45a025c1e84a8567555102cfae6fbbe6e5ef9247c76dea4e",
+      "source_id": "microsoft-research",
+      "title": "RetroChimeraによる小分子の合成予測のスケーリング改善"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/putting-sign-language-ai-into-users-hands/",
       "category": "ai-llm",
       "id": "902f4a4046cc97184904423a94c50820e63a14a89bdf00a1710743f1d8b59855",
@@ -1850,6 +2090,18 @@
       "title": "GitHub Copilotアプリにおける巨大なプルリクエストのレンダリング"
     },
     {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/forecasting-space-weather-risks-on-power-grids/",
+      "category": "cloud",
+      "id": "a0582c26aad4dd932ccd6caa9839a8aee28ba898c616176dffc30f10e182876a",
+      "llm_input_truncated": false,
+      "path": "notes/a0582c26aad4dd932ccd6caa9839a8aee28ba898c616176dffc30f10e182876a.md",
+      "processed_at": "2026-10-16T11:39:10.411342+00:00",
+      "published": "2026-09-30",
+      "sha256": "e32df388fac8e89e6475fdc7e1414891044f96c47f3c4ce1da800c276aa4ff34",
+      "source_id": "microsoft-research",
+      "title": "電力網における宇宙天気リスクの予測：機械学習による全米変電所の磁気嵐リスク評価システム"
+    },
+    {
       "canonical_url": "https://research.google/blog/vibe-coding-xr-accelerating-ai-xr-prototyping-with-xr-blocks-and-gemini/",
       "category": "ai-llm",
       "id": "a16387807a86bf05c62d6a06ec581a0697c009cc64c2063229bfa1a03ae70234",
@@ -2076,6 +2328,30 @@
       "sha256": "9e67ceca7b6861c50066f43009f829fc7fb49b93af7067722dba8fcb690ae517",
       "source_id": "google-research",
       "title": "検証可能な量子優位性：Google Quantum AIによる量子エコーとOTOCの実証"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/rised-multi-environment-selection",
+      "category": "ai-llm",
+      "id": "b36cd48c3b5c8a9b25a32d5fef58f9efa9021375c9807de5d97cdd095e82582c",
+      "llm_input_truncated": false,
+      "path": "notes/b36cd48c3b5c8a9b25a32d5fef58f9efa9021375c9807de5d97cdd095e82582c.md",
+      "processed_at": "2026-10-16T11:38:48.049007+00:00",
+      "published": "2026-10-06",
+      "sha256": "8814b892f8fa1bb6041be27b21909cd5ffa502e6acfa41bba358608320254287",
+      "source_id": "apple-ml-research",
+      "title": "RISED: エージェントのマルチ環境選択とセルフディスティレーションのためのルーブリック"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/offloaded-inference-for-real-world-physical-ai-robotics/",
+      "category": "ai-llm",
+      "id": "b40d81151e23505c0bfe3fef8c69b1c4ee49d4e7b08157d3bc29b7bece06d156",
+      "llm_input_truncated": false,
+      "path": "notes/b40d81151e23505c0bfe3fef8c69b1c4ee49d4e7b08157d3bc29b7bece06d156.md",
+      "processed_at": "2026-10-16T11:39:37.019817+00:00",
+      "published": "2026-09-23",
+      "sha256": "4fe60b67842516d41e3eaff7e49d3d633e9456b5765e87381a75939f0ca3034f",
+      "source_id": "microsoft-research",
+      "title": "実世界フィジカルAIロボティクスに向けたオフロード推論の活用"
     },
     {
       "canonical_url": "https://research.google/blog/empty-shelves-or-lost-keys-recall-is-the-bottleneck-for-parametric-factuality/",
@@ -2366,6 +2642,18 @@
       "title": "Lyria 3 Pro: より長い楽曲生成と多様なGoogle製品への展開"
     },
     {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/",
+      "category": "ai-llm",
+      "id": "cac8e9291c22a7083c79d5bca5e01724c77e0a289c8b07c1f309ad42f5d51c90",
+      "llm_input_truncated": false,
+      "path": "notes/cac8e9291c22a7083c79d5bca5e01724c77e0a289c8b07c1f309ad42f5d51c90.md",
+      "processed_at": "2026-10-16T11:39:32.270436+00:00",
+      "published": "2026-08-12",
+      "sha256": "c5d16c852d7db685387bea2251f33602917bc76455930c6bc615ed1d874df0a7",
+      "source_id": "microsoft-research",
+      "title": "MindTopoが明らかにするマルチモーダル大規模言語モデルの空間推論能力"
+    },
+    {
       "canonical_url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
       "category": "ai-llm",
       "id": "cae5ea92fa95fb2eb02f2873745ac18969259aafe0acaf16fad72dc0a307bc04",
@@ -2474,6 +2762,18 @@
       "title": "Gemini Deep Thinkによる数学および科学の発見の加速"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/communication-bottleneck-serialization",
+      "category": "ai-llm",
+      "id": "d4b95ca55c891f5f3aea9ef3f3663f2da98a4ba98bad874635d62426dd501acc",
+      "llm_input_truncated": false,
+      "path": "notes/d4b95ca55c891f5f3aea9ef3f3663f2da98a4ba98bad874635d62426dd501acc.md",
+      "processed_at": "2026-10-16T11:38:14.246450+00:00",
+      "published": "2026-09-29",
+      "sha256": "b1a295ffc744e48e4d63316f0363fa3001511e3d48db48a842ba7668be57b779",
+      "source_id": "apple-ml-research",
+      "title": "通信のボトルネック：言語モデルにおける木構造式シリアライゼーションのラウンドトリップ研究"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/strengthening-our-partnership-with-the-uk-government-to-support-prosperity-and-security-in-the-ai-era/",
       "category": "ai-llm",
       "id": "d572e63829e3b6ab36d315f1a54108e3dd6a581730a3f9fc3d40b77521232e8a",
@@ -2520,6 +2820,18 @@
       "sha256": "ac4dea8955ca8c30a8f77ce8f5b9ffe55510528fe5cfede88a7d2616b57e2572",
       "source_id": "google-research",
       "title": "生成AIを活用した将来に対応するスキルの開発に向けて"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/harness-autonomous-ml-engineering",
+      "category": "ai-llm",
+      "id": "d9ff9125d3cfd2238b1a9b01e749e745e7a48d7156e9055b7493221c7dd07e77",
+      "llm_input_truncated": false,
+      "path": "notes/d9ff9125d3cfd2238b1a9b01e749e745e7a48d7156e9055b7493221c7dd07e77.md",
+      "processed_at": "2026-10-16T11:38:24.521955+00:00",
+      "published": "2026-10-01",
+      "sha256": "69a062d92b8d65584acd6c20fda25201a04fcfccf613a212c8e11ba16fce34d9",
+      "source_id": "apple-ml-research",
+      "title": "自律型機械学習エンジニアリングにおける強力なエージェントに必要なハーネスの検証"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-deep-think/",
@@ -2618,6 +2930,30 @@
       "title": "BMIを超えて：スマートフォン画像による心血管代謝リスクの推定"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/10/12/open-source/ocp-summit-2026-powering-ai-with-open-innovations-in-scale-up-scale-out-and-scale-across-networks/",
+      "category": "network",
+      "id": "e50304fae8c57fa649866f3ac14b66c86e9cc455950870559e7436b94d510145",
+      "llm_input_truncated": true,
+      "path": "notes/e50304fae8c57fa649866f3ac14b66c86e9cc455950870559e7436b94d510145.md",
+      "processed_at": "2026-10-16T11:39:55.103883+00:00",
+      "published": "2026-10-12",
+      "sha256": "256452e1f04dd260b3bf8f52957ac041299e15ab35b3fef263707f3469108a6b",
+      "source_id": "meta-engineering",
+      "title": "OCP Summit 2026: Scale-Up, Scale-Out, Scale-AcrossネットワークにおけるオープンイノベーションによるAI基盤の強化"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/",
+      "category": "ai-llm",
+      "id": "e5cddee7a112167b4df55696c9e2a623370419841318eae2b0fcc029d61f7989",
+      "llm_input_truncated": false,
+      "path": "notes/e5cddee7a112167b4df55696c9e2a623370419841318eae2b0fcc029d61f7989.md",
+      "processed_at": "2026-10-16T11:39:05.968610+00:00",
+      "published": "2026-08-20",
+      "sha256": "17294605d130b44f5c2c12c7ac1b941673bd65a0d4028f1b27eb2a715d51f543",
+      "source_id": "microsoft-research",
+      "title": "予測型密度汎関数理論に向けたSkalaのアクセスの拡大"
+    },
+    {
       "canonical_url": "https://blog.cloudflare.com/cloudflare-certificate-authority/",
       "category": "cybersecurity",
       "id": "e89432d5d0ce044045580f9814eb339065bfc14d97b668dac160457906751897",
@@ -2652,6 +2988,18 @@
       "sha256": "694d410dac12dc4b785c2ca31740d5a536f9b57ae35356ad35ccaa7178d11ad3",
       "source_id": "google-research",
       "title": "AIがユーザーの皮膚疾患の理解をどのように支援できるかに関する研究"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/introducing-care-x-towards-clinically-useful-radiology-vlms-with-auxiliary-supervision-reward-aligned-learning-and-tool-augmented-measurement/",
+      "category": "ai-llm",
+      "id": "ebb3afb723ce06f6c0d0e1b9e49533d8f40751ad10e65cb5e8107691e71c2fb4",
+      "llm_input_truncated": true,
+      "path": "notes/ebb3afb723ce06f6c0d0e1b9e49533d8f40751ad10e65cb5e8107691e71c2fb4.md",
+      "processed_at": "2026-10-16T11:39:23.633842+00:00",
+      "published": "2026-08-11",
+      "sha256": "579fed24e0af53f55190c39cccb328611b2d706f8a4747e72e615b26cdfc2735",
+      "source_id": "microsoft-research",
+      "title": "CARE-X: 補助的監督、報酬アライメント学習、ツール拡張型計測を備えた臨床的に有用な放射線科向けVLMの実現"
     },
     {
       "canonical_url": "https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/",
@@ -2796,6 +3144,18 @@
       "sha256": "e0b96500f3baad36ce18414d8ce01ac78af61f356636adebdfc621e749d23221",
       "source_id": "cloudflare-security",
       "title": "Cloudflare、オープンソース脅威情報の自動化とエージェントスキルを活用する「Threat Signals」を全アカウントへ無償提供開始"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/09/21/open-source/rebalancer-generic-high-performance-library-assignment-problems/",
+      "category": "cloud",
+      "id": "f44fc04cdbde4ba968bb229adaac123c6d46dec312a11cf9910f01bf33d577bd",
+      "llm_input_truncated": false,
+      "path": "notes/f44fc04cdbde4ba968bb229adaac123c6d46dec312a11cf9910f01bf33d577bd.md",
+      "processed_at": "2026-10-16T11:37:58.312353+00:00",
+      "published": "2026-09-21",
+      "sha256": "183cd5e05d49c7436abe7771fef9d3c08ddb863a2ad79a9fc3d29749983ab753",
+      "source_id": "meta-engineering",
+      "title": "Meta、ハードウェアやサービスクラウドの割当問題を解く汎用高性能ライブラリ「Rebalancer」をオープンソース化"
     },
     {
       "canonical_url": "https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/",
