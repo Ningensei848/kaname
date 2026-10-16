@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-16",
+  "tested_code_head": "6fea81e",
+  "scope": "read-only measurements and disposable filesystem acceptance; no invoice reconciliation",
+  "evidence": {
+    "web_before": {
+      "status": "passed",
+      "content_commit": "510dc54a82ebeed360a6f91e07261d45b01f6a75",
+      "dataset_digest": "e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff",
+      "artifact_digest": "0d0b345554b91dfcb89d1351a33e9dac94921657ae883e220e029bd3806840df",
+      "coverage": {
+        "notes": 246,
+        "search_links": 2461,
+        "image_notes": 156,
+        "image_workers": 2,
+        "external_requests": 0,
+        "offline_search_clicks": 1,
+        "approved_image_requests": 380
+      },
+      "samples": [
+        {
+          "build_seconds": 42.105,
+          "check_seconds": 142.075,
+          "total_seconds": 184.18
+        },
+        {
+          "build_seconds": 46.326,
+          "check_seconds": 148.236,
+          "total_seconds": 194.562
+        },
+        {
+          "build_seconds": 44.479,
+          "check_seconds": 146.865,
+          "total_seconds": 191.344
+        }
+      ],
+      "median": {
+        "build_seconds": 44.479,
+        "check_seconds": 146.865,
+        "total_seconds": 191.344
+      },
+      "minimum": {
+        "build_seconds": 42.105,
+        "check_seconds": 142.075,
+        "total_seconds": 184.18
+      },
+      "maximum": {
+        "build_seconds": 46.326,
+        "check_seconds": 148.236,
+        "total_seconds": 194.562
+      }
+    },
+    "web_after": {
+      "status": "passed",
+      "content_commit": "510dc54a82ebeed360a6f91e07261d45b01f6a75",
+      "dataset_digest": "e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff",
+      "artifact_digest": "0d0b345554b91dfcb89d1351a33e9dac94921657ae883e220e029bd3806840df",
+      "coverage": {
+        "notes": 246,
+        "search_links": 2461,
+        "image_notes": 156,
+        "image_workers": 2,
+        "external_requests": 0,
+        "offline_search_clicks": 1,
+        "approved_image_requests": 380
+      },
+      "samples": [
+        {
+          "build_seconds": 40.303,
+          "check_seconds": 143.667,
+          "total_seconds": 183.971
+        },
+        {
+          "build_seconds": 44.917,
+          "check_seconds": 143.273,
+          "total_seconds": 188.19
+        },
+        {
+          "build_seconds": 45.371,
+          "check_seconds": 147.354,
+          "total_seconds": 192.725
+        }
+      ],
+      "median": {
+        "build_seconds": 44.917,
+        "check_seconds": 143.667,
+        "total_seconds": 188.19
+      },
+      "minimum": {
+        "build_seconds": 40.303,
+        "check_seconds": 143.273,
+        "total_seconds": 183.971
+      },
+      "maximum": {
+        "build_seconds": 45.371,
+        "check_seconds": 147.354,
+        "total_seconds": 192.725
+      }
+    },
+    "release": {
+      "commit": "510dc54a82ebeed360a6f91e07261d45b01f6a75",
+      "tag": "notes-510dc54a82ebeed360a6f91e07261d45b01f6a75",
+      "results": {
+        "before": {
+          "seconds": 66.567,
+          "samples": [
+            22.275,
+            19.981,
+            24.31
+          ],
+          "transport": {
+            "api_requests": 30,
+            "asset_downloads": 30,
+            "download_bytes": 2354862
+          },
+          "snapshot_digest": "f289127f58c4cb7c5a36543e00ccee9bd8e06232ecc9d9b8bd080ea2fb9edf5c",
+          "notes": 246
+        },
+        "after": {
+          "seconds": 52.848,
+          "samples": [
+            20.671,
+            16.373,
+            15.804
+          ],
+          "transport": {
+            "api_requests": 30,
+            "asset_downloads": 10,
+            "download_bytes": 784954,
+            "cache_hits": 20,
+            "peak_cache_bytes": 784954,
+            "elapsed_seconds": 52.848
+          },
+          "snapshot_digest": "f289127f58c4cb7c5a36543e00ccee9bd8e06232ecc9d9b8bd080ea2fb9edf5c",
+          "notes": 246
+        }
+      }
+    },
+    "graph": {
+      "status": "success",
+      "normalizer_version": 1,
+      "dataset_digest": "e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff",
+      "notes": 246,
+      "occurrences": {
+        "tags": 2094,
+        "keywords": 1184
+      },
+      "normalized_duplicates": {
+        "tags": 1,
+        "keywords": 0
+      },
+      "variant_groups": {
+        "tags": 4,
+        "keywords": 6
+      },
+      "current_links": {
+        "resolved": 0,
+        "self": 0,
+        "unresolved": 1184,
+        "ambiguous": 0
+      },
+      "proposed_links": {
+        "resolved": 0,
+        "self": 0,
+        "unresolved": 1184,
+        "ambiguous": 0
+      },
+      "current_edges": 0,
+      "proposed_edges": 0,
+      "ambiguous_title_groups": 0,
+      "applied": false
+    },
+    "gcs_scale": {
+      "snapshot": {
+        "objects": 1059,
+        "downloads": 1059,
+        "cache_hits": 0,
+        "workers": 16,
+        "bytes": 6718993,
+        "largest_object_bytes": 302320,
+        "load_seconds": 5.875
+      },
+      "index": {
+        "index_files": 2,
+        "index_rows": 528,
+        "index_bytes": 305512,
+        "load_seconds": 0.005
+      },
+      "audit": {
+        "status": "success",
+        "success_rows": 528,
+        "pending": 60,
+        "truncated_rows": 259,
+        "issues": []
+      },
+      "max_rss_kib": 85628,
+      "total_seconds": 8.851
+    },
+    "browser_source": {
+      "status": "passed",
+      "source_id": "github-blog",
+      "temporary_browser_override": true,
+      "document_status": 200,
+      "original_title_matched": true,
+      "raw_bytes": 308411,
+      "rendered_bytes": 307225,
+      "extracted_characters": 92248,
+      "extracted_sha256": "525fae4358d25d37bb2e306414b4a99cd9c6bd84ca4e49e647ffa1bed40cfadf",
+      "gemini_calls": 0,
+      "gcs_writes": 0,
+      "source_config_changed": false
+    },
+    "native_ntfs": {
+      "status": "passed",
+      "platform": "win32",
+      "filesystem": "NTFS",
+      "note_and_candidate_edits_preserved": true,
+      "exclusive_publish_preserved": true,
+      "simulated_unsupported_link_left_no_partial_file": true,
+      "alias_blocked_before_writes": true
+    }
+  },
+  "validation": {
+    "python_tests": 835,
+    "web_tests": 10,
+    "node_audit_tests": 5,
+    "wheel_new_helpers_present": true
+  },
+  "limitations": [
+    "Web measurement ranges overlap; no demonstrated speedup",
+    "Release measurement is repeated read-only restoration, not a production publish",
+    "NTFS fixture is disposable, not a user Vault",
+    "generation limits default to null; production configuration unchanged"
+  ]
+}
