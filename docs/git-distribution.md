@@ -7,7 +7,6 @@
 ## 公開版を読む
 
 [Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)からMarkdownを参照できます。
-初回公開版はcommit `62ed7f08ec786e1067cc6eecd9bece5e078b8c5c`、117件です。
 dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
 現在のbranchと固定した過去版は別です。固定版は[commitのtree](https://github.com/Ningensei848/kaname/tree/62ed7f08ec786e1067cc6eecd9bece5e078b8c5c/notes)で参照できます。
 
@@ -81,5 +80,5 @@ force/reset/cleanやdirty状態での自動更新を採用せず、人手の注�
 Web buildはこのbranchの固定commitをcheckoutし、公開snapshotを再検証して入力にします。
 `--content-commit`の指定だけではGit由来を証明できません。checkoutのHEADと指定値の一致、
 tracked tree、manifest/Note hashを出版・deploy側で照合する必要があります。
-初回版では実際のGit checkoutからbuildし、117件の元Markdownと配布版が同じbytesであることを確認しました。
-Pages deploy workflowと公開前検証を実装しました。同じ117件の初回Pages公開と公開URLのhash照合は完了しました。日次自動公開を接続しました。[実行受入](daily-publication.md)を参照してください。[Pages手順](pages.md)を参照してください。[Web手順](web-preview.md)と[受入](verification.md)を参照してください。
+Git checkoutのHEADと指定commit、元Markdown bytesをbuild/公開側で照合します。
+Git/Pagesの実公開・日次更新・切戻しは受入済みです。操作は[Pages](pages.md)・[Web](web-preview.md)、現在の保証は[検証基準](verification.md)を参照してください。

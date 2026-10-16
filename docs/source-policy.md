@@ -5,8 +5,8 @@ LLMが生成したcompact Note群を公開する方針はユーザーが指定�
 
 ## 取得と要約
 
-有効sourceはGoogle Research/GitHub Blog/Google DeepMindと、2026-10-12の明示指示で有効化するMicrosoft Research/Meta/Apple/Cloudflareの7つです。
-DeepMindの限定受入は[RSS追加記録](source-onboarding.md)、追加4社の利用条件・本文抽出・本番反映の状態は[4社有効化記録](four-source-activation.md)で管理します。
+有効sourceはGoogle Research/GitHub Blog/Google DeepMindと、2026-10-12の明示指示で有効化したMicrosoft Research/Meta/Apple/Cloudflareの7つです。
+DeepMindの限定受入は[RSS追加記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/source-onboarding.md)、追加4社の利用条件・本文抽出・本番反映の状態は[4社有効化記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/four-source-activation.md)で管理します。
 AWS Newsは利用条件に関する未解決の制約から無効を継続します。
 source追加時は適用される条件と機械可読の指示を確認し、robots拒否・取得不能時は停止します。
 robotsで取得可能であることだけを、要約・再配布に関する権利の根拠とみなしません。
@@ -22,7 +22,7 @@ NoteにはAI生成・入力打切り・生成情報と出典を表示します�
 生成要約、重要ポイント、検索語、資料の位置づけ、出典を持つ成功Noteを共通Git snapshotにします。
 記事原文の再掲、raw HTML、外部画像の転載、認証情報、復旧/課金台帳は含めません。
 2026-10-10のユーザー確認により、新規Noteは本文に関係する画像を出典のHTTPS URLから直接表示できます。
-画像ファイルは取得・保存・転載せず、閲覧時の外部通信を明記します。候補と配置は[次の作業](next-work.md)の#127の範囲に従います。
+画像ファイルは取得・保存・転載せず、閲覧時の外部通信を明記します。候補と配置は[公開契約](publication.md)・[画像操作](operations.md#既存noteへの画像補完)に従います。
 コードのlicenseから元記事や生成Noteの再配布条件を自動推定しません。
 個別の条件や取り下げ要求があれば、該当Noteの配布を明示して扱います。
 ユーザーの公開方針を、第三者から個別許諾を取得した証明としては記録しません。

@@ -37,7 +37,7 @@ standardはAPI呼出し前・usage取得後にprivate usage journalを保存し�
 run reportが失われても元の日付・単価で集計し、reportとの二重計上を防ぎます。
 部分欠落usageは既知countを保持してpartialにします（F4）。応答を失った呼出しの費用は不明として残します。
 費用はrunのmodel/mode/価格snapshotと取得できたusageから推計し、invoice・GCS・Actions費用を含みません。
-予算は通知閾値で、日次の厳格なUSD capは未実装です。
+日/月の予算設定は通知閾値です。standardには明示的なrun単位の推計capがありますが、通常scheduleの既定では未指定で、複数runの総予算・確定請求の上限を自動強制しません。
 
 ## 設定・schema・生成内容
 

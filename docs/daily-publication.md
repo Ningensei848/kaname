@@ -54,23 +54,20 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 呼出し予約のまま応答を失った場合や旧receiptの課金参照欠落はpartialです。APIとGCS間のtransactionやinvoice完全性は保証しません。
 詳細は[運用手順](operations.md)を参照してください。
 
-## 受入状態
+## 検査・読取り性能の設定
 
-- クラウドの全264テストが成功。receipt/Note/index/report保存時の中断、usage保存失敗、月跨ぎ/価格変更、部分欠落usage、未処理source、remote競合、Issue重複抑止を検証。
-- workflowのactionlintとshell構文を検査。依存manifest/lockは変更なし。
-- PR #105取込後のmain `2d33e0cf018c4c9986a19252725d4bc7875cfa99`で、2026-10-06の[公開専用run 37434000683](https://github.com/Ningensei848/kaname/actions/runs/37434000683)が成功。
-- 既存WIFの認証、保存状態audit、読取りexport、artifact受渡し、Git配布とremote照合、Pages build/deploy、runnerの配信版照合がすべて成功。Collect・費用/通知state更新はskip、障害通知jobもskip。
-- content commitは`4205590eb588f0e0ddc991ef478c1bb2033746da`、Note数117。初回版から最新成功版へ通常pushで進め、同じcommitからPagesを更新。
-- dataset digestは`7c5b877882e32855634a1706ef3b7f924a915e31750355d545d970bf0001e08f`、公開artifact digestは`0f9e212bbf8861d1667d8e62746a589b854a8d7efd698fd971651a9008e909f2`。
-- クラウドからもHTTPSで公開manifestのbytesと検証済みGit manifestを一致照合し、全117件の元Markdown・トップ・版表示・代表Note HTMLのhashを検証。追加Gemini呼出し/記事取得/GCS書込みなし。
-- 通常scheduleの初回連続実行は2026-10-07に受入済み。収集・usage保存・audit・export・Git配布・Pages・全元Markdown配信照合の証拠は[月別受入記録](archive/2026-10/schedule-acceptance-2026-10-07.md)に保存。実Batch/F3 browserの受入と実障害Issue投稿の故意の試験は未実施。
-- 初回Pagesの117件公開は[従来の受入](verification.md)で確認済み。今回の実行結果とは区別します。
-- O2の切戻し117件/復帰118件は個別承認後、2026-10-07に両版の実deployと全元Markdown配信照合まで受入済み。現行118件版への復帰も確認した。実行runと期待digestの一致は[月別受入記録](archive/2026-10/pages-rollback-acceptance-2026-10-07.md)に保存。
+設定検証は毎回実行し、`scripts/daily_validation.py`で同じmain SHAの最新Checks push run/attemptとscope/test/web-preview成功を確認する。
+照合不能・失敗・実行中・別SHA・不完全応答では従来の全単体テストへ戻る。`--full-tests`でも全実行できる。
+GCS/費用/全Web/配信版の実検査は省略しない。
 
-## GCS読取りの並列化と再利用
-
-監査/export/費用/通知はliveの世代catalogに基づく読取り専用viewを使い、本文downloadを最大8件並列化します。同じrunnerのprivateな一時cacheで変更のないbytesを再利用し、毎回の検査とlive catalogの再確認は維持します。書込み・Gemini生成は単一writerです。cacheを削除してもcold取得に戻るだけで、GCS正本や公開版は変わりません。性能の実測と受入状態は[所要時間短縮](daily-performance.md)に記録します。
+監査/export/費用/通知はlive世代catalogを使い、本文downloadは最大16並列。日次のrepository variable `GCS_READ_WORKERS`、ローカルの`TECHKB_GCS_READ_WORKERS`で1〜16を選べる。
+省略は16、8で旧並列数、1で逐次へ戻す。不正値は認証・生成前に拒否する。
+SDK認証/retry/custom TLSを維持し、標準Storage接続poolをworker数へ合わせる。書込み/生成は単一writerのままである。
+`TECHKB_READ_CACHE`は同じprivate runner内の世代/CRC一致bytesだけを再利用し、検査結果やcatalogをcacheしない。
+毎回の全件検査とlive catalog再確認を維持し、private bytesをActions cache/artifactへ保存しない。
 
 ## Release差分配布
 
-完全版checkpointと最大7段の差分から公開Note全体を復元します。同じcontent commitではReleaseを増やさず、asset欠損・改変・基底不一致で停止します。契約・実装状態と受入は[Release配布](release-distribution.md)へ記録します。
+完全版checkpointと最大7段の差分から公開Note全体を復元する。同じcontent commitではReleaseを増やさず、asset欠損/改変/基底不一致で停止する。
+契約は[Release配布](release-distribution.md)、現在の受入範囲は[検証基準](verification.md)を参照。
+通常schedule・切戻し/復帰・CI再利用・GCS16並列は受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/daily-publication.md)と[archive索引](archive/README.md)へ当時のrun/件数を保全した。
