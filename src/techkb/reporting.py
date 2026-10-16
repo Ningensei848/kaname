@@ -22,6 +22,7 @@ class RunReport:
     llm_mode: str = "standard"
     token_price: dict | None = None
     max_cost_usd: str | None = None
+    generation_budget: dict | None = None
     budget_deferred: int = 0
     budget_stop_reason: str | None = None
     source_ids: list[str] = field(default_factory=list)
@@ -52,7 +53,24 @@ class RunReport:
     total_output_tokens: int = 0
     total_thinking_tokens: int = 0
     source_counts: dict[str, dict[str, int]] = field(default_factory=dict)
+    image_observations: dict[str, int] = field(default_factory=lambda: dict(
+        articles=0, with_candidates=0, candidates=0, selected=0,
+        zero_selected_with_candidates=0, input_truncated=0))
     failures: list[dict] = field(default_factory=list)
+
+    def observe_images(self, candidate_count, selected_count, input_truncated):
+        """Count validated results only; never retain URLs, text or image bytes."""
+        if (type(candidate_count) is not int or not 0 <= candidate_count <= 12 or
+                type(selected_count) is not int or not 0 <= selected_count <= min(6, candidate_count) or
+                type(input_truncated) is not bool):
+            raise ValueError('invalid image observation')
+        counts = self.image_observations
+        counts['articles'] += 1
+        counts['with_candidates'] += bool(candidate_count)
+        counts['candidates'] += candidate_count
+        counts['selected'] += selected_count
+        counts['zero_selected_with_candidates'] += candidate_count > 0 and selected_count == 0
+        counts['input_truncated'] += input_truncated
 
     def count_source(self, source_id, counter, count=1):
         if counter not in SOURCE_COUNTERS or type(count) is not int or count < 0:

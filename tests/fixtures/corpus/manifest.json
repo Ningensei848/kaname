@@ -164,6 +164,22 @@
       ]
     },
     {
+      "id": "apple-ml-research-featured",
+      "source_id": "apple-ml-research",
+      "html": "tests/fixtures/corpus/apple_featured.html",
+      "markdown": "tests/fixtures/corpus/apple_ml_research.md",
+      "url": "https://example.com/research/announcement",
+      "images": [
+        {
+          "image_id": "img-1",
+          "url": "https://example.com/apple_ml_research-method.png",
+          "alt": "Method diagram",
+          "caption": "Measured method and limitations.",
+          "context": "A synthetic research team evaluates a method with measured limitations."
+        }
+      ]
+    },
+    {
       "id": "cloudflare-security-body",
       "source_id": "cloudflare-security",
       "html": "tests/fixtures/corpus/cloudflare_security.html",

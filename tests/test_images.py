@@ -32,6 +32,9 @@ def test_standard_places_images_and_exports_same_bytes_without_extra_calls(harne
     select(h, after)
     result = h.pipeline.run()
     assert result.saved == 1 and len(h.sdk.calls) == 1
+    assert result.image_observations == dict(articles=1, with_candidates=1, candidates=1,
+        selected=1, zero_selected_with_candidates=0, input_truncated=0)
+    assert 'architecture.png' not in result.to_bytes().decode()
     row = State(h.store).rows[0]
     data = h.store.read(row['note_object'])
     text = data.decode()
@@ -53,6 +56,29 @@ def test_standard_places_images_and_exports_same_bytes_without_extra_calls(harne
     entry = json.loads((output / 'manifest.json').read_bytes())['notes'][0]
     assert (output / entry['path']).read_bytes() == data
     assert h.pipeline.run().saved == 0 and len(h.sdk.calls) == 1
+
+
+@pytest.mark.parametrize('batch', [False, True])
+def test_zero_image_selection_is_observed_without_failure_or_retry(harness, batch):
+    h = harness
+    h.fetcher.pages['https://example.com/a'] = ARTICLE
+    sdk = setup(h) if batch else None
+    result = h.pipeline.run()
+    if batch:
+        sdk.finish()
+        h.app.llm.max_calls_per_run = 0
+        result = h.pipeline.run()
+        usage = [json.loads(h.store.read(name)) for name in h.store.list('runs/')
+                 if json.loads(h.store.read(name))['record_kind'] == 'batch_usage']
+        observed = usage[0]['image_observations']
+        assert result.image_observations['articles'] == 0  # Not counted twice on collection.
+    else:
+        observed = result.image_observations
+    assert result.status == 'success'
+    assert observed == dict(articles=1, with_candidates=1, candidates=1,
+        selected=0, zero_selected_with_candidates=1, input_truncated=0)
+    assert h.pipeline.run().saved == 0
+    assert len(sdk.created if batch else h.sdk.calls) == 1
 
 
 def test_batch_retains_candidates_through_recovery_and_no_double_charge(harness, tmp_path):

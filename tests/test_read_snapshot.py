@@ -67,6 +67,7 @@ def test_bounded_parallel_downloads_without_per_object_metadata_requests():
     with read_snapshot(remote, ('notes/',), workers=4) as view:
         assert [view.read(name) for name in view.list('notes/')] == [remote.objects[name][1] for name in view.list('notes/')]
         assert view.metrics['downloads'] == 12
+        assert view.metrics['bytes'] == 14 and view.metrics['largest_object_bytes'] == 2
         assert remote.peak == 4
         with pytest.raises(RuntimeError, match='read-only'):
             view.write('notes/a.md', b'no')

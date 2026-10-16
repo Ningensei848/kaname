@@ -5,7 +5,20 @@ from pathlib import Path
 import subprocess
 
 SOURCES_TESTS = ['test_extraction', 'test_google_research', 'test_deepmind', 'test_new_rss_sources', 'test_html_cleaner', 'test_images', 'test_fetcher', 'test_regression_corpus']
-APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery']
+APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery', 'test_standard_budget', 'test_generation_budget', 'test_operations']
+
+# These modules are consumed directly by the renderer or its fixed Git/Release
+# input. Include their regression tests: a test-only change can alter acceptance.
+WEB_CONTRACTS = (
+    'src/techkb/publication/', 'src/techkb/pages', 'src/techkb/site',
+    'src/techkb/composer', 'src/techkb/markup', 'src/techkb/wikilinks',
+    'src/techkb/models', 'src/techkb/config', 'src/techkb/normalize',
+    'src/techkb/hashes', 'src/techkb/images', 'src/techkb/release_bundle',
+    'src/techkb/release_publication', 'src/techkb/distribution',
+    'src/techkb/remote_publication', 'tests/test_publication', 'tests/test_site',
+    'tests/test_pages', 'tests/test_wikilinks', 'tests/test_release_notes',
+    'tests/test_distribution', 'tests/test_remote_publication',
+)
 
 
 def classify(paths):
@@ -24,7 +37,7 @@ def classify(paths):
             pass
         elif path.startswith(('src/', 'tests/')) or path in {'pyproject.toml', 'requirements.lock', 'requirements-browser.lock'}:
             scopes.add('full')
-            if path.startswith(('src/techkb/publication/', 'src/techkb/pages', 'src/techkb/site', 'src/techkb/composer', 'src/techkb/markup', 'src/techkb/wikilinks', 'src/techkb/models', 'src/techkb/config', 'src/techkb/normalize', 'src/techkb/hashes', 'src/techkb/images', 'tests/test_publication', 'tests/test_site', 'tests/test_pages', 'tests/test_wikilinks')):
+            if path.startswith(WEB_CONTRACTS):
                 web = True
         else:
             scopes.add('full'); web = True

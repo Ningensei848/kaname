@@ -5,7 +5,7 @@ from .preparation import prepared_articles
 from .images import article_images
 from ._receipts import build_receipt
 from ._standard import StandardRequest, request_metadata
-from .budget import validate_budget, request_reserve, measured_cost
+from .budget import validate_budget, request_reserve, measured_cost, validate_generation_mode, generation_allowance
 from .dedupe import Dedupe
 from .feeds import parse_feed
 from .hashes import content_hash
@@ -16,13 +16,15 @@ from .state import State
 from .fetcher import audit_url
 from .extraction import parse_listing, relevance
 from .batch import BatchManager, failure_diagnostics
-from .usage import checkpoint, has_usage_record
+from .usage import has_usage_record
 from .discovery import KnownArticles
+from .collection_progress import partition_known, completed_sources, failure_stop_reason, batch_submission_allowed
 
 log = logging.getLogger(__name__)
 
 class Pipeline:
     def __init__(self, app, sources, store, fetcher, converter, gemini=None, *, max_cost_usd=None):
+        validate_generation_mode(app)
         self.max_cost_usd = validate_budget(app, max_cost_usd) if max_cost_usd is not None else None
         self.app, self.sources, self.store = app, sources, store
         self.fetcher, self.converter, self.gemini = fetcher, converter, gemini
@@ -37,6 +39,19 @@ class Pipeline:
         report.saved += 1
         report.count_source(row['source_id'], 'saved')
 
+    def _recover_receipts(self, state, dedupe, report):
+        for name in self.store.list('state/receipts/'):
+            digest = name.rsplit('/', 1)[-1].removesuffix('.json')
+            if digest in dedupe.content:
+                continue
+            receipt = json.loads(self.store.read(name))
+            self._save_receipt(receipt, state, dedupe, report)
+            report.recovered += 1
+            report.count_source(receipt['row']['source_id'], 'recovered')
+            if not has_usage_record(self.store, receipt.get('usage_run_id')):
+                # Legacy receipts do not establish an original billing identity.
+                report.llm_usage_unavailable += 1
+
     def run(self, dry_run=False):
         price = self.app.costs.prices.get(self.app.llm.model, {}).get(self.app.llm.mode)
         report = RunReport(dry_run=dry_run, llm_model=self.app.llm.model, llm_mode=self.app.llm.mode,
@@ -47,27 +62,25 @@ class Pipeline:
         state, candidates, done = None, None, set()
         batch, prepared, active = None, [], set()
         feeds_complete = {}
+        run_budget = self.max_cost_usd
         try:
             state = State(self.store)
             dedupe = Dedupe(state.rows)
             previous = state.pending()
             report.pending_before = len(previous)
             if not dry_run:
-                for name in self.store.list("state/receipts/"):
-                    digest = name.rsplit("/", 1)[-1].removesuffix(".json")
-                    if digest in dedupe.content:
-                        continue
-                    receipt = json.loads(self.store.read(name))
-                    self._save_receipt(receipt, state, dedupe, report)
-                    report.recovered += 1
-                    report.count_source(receipt['row']['source_id'], 'recovered')
-                    if not has_usage_record(self.store, receipt.get("usage_run_id")):
-                        # Legacy receipts have no original price/run identity.
-                        # Do not invent a billing date or claim complete costs.
-                        report.llm_usage_unavailable += 1
+                self._recover_receipts(state, dedupe, report)
                 batch = BatchManager(self.store, self.gemini)
                 batch.settle(self._save_receipt, state, dedupe, report, done)
                 active = batch.active_hashes()
+                report.generation_budget = generation_allowance(self.store, self.app, report.started_at)
+                if report.generation_budget is not None:
+                    if report.generation_budget['reason']:
+                        report.budget_stop_reason = report.generation_budget['reason']
+                    else:
+                        remaining = validate_budget(self.app, report.generation_budget['remaining_usd'])
+                        run_budget = remaining if run_budget is None else min(run_budget, remaining)
+                        report.max_cost_usd = str(run_budget)
             discovered = []
             for source in self.sources:
                 if not source.enabled:
@@ -95,16 +108,13 @@ class Pipeline:
             if new_only:
                 known = KnownArticles(state.rows, self.app.tracking_parameters)
                 enabled = {s.id for s in self.sources if s.enabled}
-                to_fetch = []
-                for candidate in candidates:
-                    if candidate.source_id in enabled and known.contains(candidate):
-                        done.add(candidate.url)
-                        report.known_articles_skipped += 1
-                    else:
-                        to_fetch.append(candidate)
+                to_fetch, skipped = partition_known(candidates, known, enabled)
+                done.update(candidate.url for candidate in skipped)
+                report.known_articles_skipped += len(skipped)
             def can_fetch():
-                return (dry_run or not new_only or
-                        report.llm_calls + len(prepared) < self.app.llm.max_calls_per_run)
+                return (dry_run or (report.budget_stop_reason not in
+                        {'aggregate_usage_uncertain', 'aggregate_limit_reached'} and (not new_only or
+                        report.llm_calls + len(prepared) < self.app.llm.max_calls_per_run)))
             attempted_content = set()
             with prepared_articles(self, to_fetch, dedupe.raw, can_continue=can_fetch) as articles:
                 for candidate, source, article in articles:
@@ -170,13 +180,13 @@ class Pipeline:
                             prepared.append(batch.prepare(candidate, source, markdown, canon, rh, ch, authors, images))
                             attempted_content.add(ch)
                             continue
-                        if self.max_cost_usd is not None:
+                        if run_budget is not None:
                             if report.llm_usage_unavailable:
                                 report.budget_stop_reason = "usage_uncertain"
                                 break
                             metadata = request_metadata(candidate, source, truncated, authors, images)
                             reserve = request_reserve(self.gemini, metadata, markdown, price)
-                            if measured_cost(report, price) + reserve > self.max_cost_usd:
+                            if measured_cost(report, price) + reserve > run_budget:
                                 report.budget_deferred += 1
                                 report.budget_stop_reason = "estimated_cost_limit"
                                 continue
@@ -198,15 +208,16 @@ class Pipeline:
                                                 input_char_limit=self.app.llm.max_input_chars,
                                                 usage_run_id=report.run_id, compose_note=compose,
                                                 image_candidates=images)
+                        report.observe_images(len(images), len(enrichment.images), truncated)
                         stage = "receipt_save"
                         self.store.write(f"state/receipts/{ch}.json", json.dumps(receipt, ensure_ascii=False).encode("utf-8"), "application/json")
                         stage = "note_or_index_save"
                         self._save_receipt(receipt, state, dedupe, report)
                         done.add(candidate.url)
-                        if self.max_cost_usd is not None and report.llm_usage_unavailable:
+                        if run_budget is not None and report.llm_usage_unavailable:
                             report.budget_stop_reason = "usage_uncertain"
                             break
-                        if self.max_cost_usd is not None and measured_cost(report, price) > self.max_cost_usd:
+                        if run_budget is not None and measured_cost(report, price) > run_budget:
                             report.budget_stop_reason = "measured_cost_limit"
                             break
                     except Exception as exc:
@@ -216,12 +227,12 @@ class Pipeline:
                         if stage == "llm":
                             report.llm_failed += 1
                         log.error("%s failed source=%s error=%s", stage, source.id, type(exc).__name__)
-                        if self.max_cost_usd is not None and stage in {"llm", "compose"}:
-                            report.budget_stop_reason = "generation_failed"
+                        stop = failure_stop_reason(stage, run_budget is not None)
+                        if stop:
+                            if stop == 'generation_failed':
+                                report.budget_stop_reason = stop
                             break
-                        if stage in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"}:
-                            break  # Stop paid work if durability is unavailable.
-            if prepared and not dry_run and not any(f["stage"] in {"receipt_save", "note_or_index_save", "raw_save", "usage_reserve", "usage_save"} for f in report.failures):
+            if prepared and not dry_run and batch_submission_allowed(report.failures):
                 batch.submit(prepared, self.app, report)
         except Exception as exc:
             report.fail("state_or_recovery", "", "", exc)
@@ -235,8 +246,7 @@ class Pipeline:
                 except Exception as exc:
                     report.fail("pending_save", "", "", exc)
             if candidates is not None:
-                report.source_completed_ids = sorted(sid for sid in feeds_complete
-                    if (feeds_complete[sid] | {c.url for c in candidates if c.source_id == sid}) <= done)
+                report.source_completed_ids = completed_sources(feeds_complete, candidates, done)
             report.finish()
             if not dry_run:
                 try:

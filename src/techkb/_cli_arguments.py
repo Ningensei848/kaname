@@ -2,7 +2,7 @@
 
 import argparse
 from decimal import Decimal
-from .budget import validate_budget
+from .budget import validate_budget, validate_generation_mode
 
 
 def parse_args(argv):
@@ -42,6 +42,8 @@ def validate_args(args, app):
         raise ValueError("LLM overrides require run or dry-run")
     if args.llm_mode:
         app.llm.mode=args.llm_mode
+    if args.command in {'run', 'dry-run', 'validate-config'}:
+        validate_generation_mode(app)
     if args.max_cost_usd is not None:
         if args.command != "run":
             raise ValueError("--max-cost-usd requires standard run")

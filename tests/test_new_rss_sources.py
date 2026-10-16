@@ -13,14 +13,16 @@ ROOT = Path(__file__).resolve().parents[1]
 CASES = ['microsoft-research', 'meta-engineering', 'apple-ml-research', 'cloudflare-security']
 
 
-@pytest.mark.parametrize('source_id', CASES)
-def test_body_and_figure_reach_model_without_navigation(harness, source_id):
+@pytest.mark.parametrize('layout', [*CASES, 'apple-featured'])
+def test_body_and_figure_reach_model_without_navigation(harness, layout):
+    source_id = 'apple-ml-research' if layout == 'apple-featured' else layout
     app, sources = load_config(ROOT / 'config/app.yaml', ROOT / 'config/sources.yaml')
     source = next(s for s in sources if s.id == source_id)
     h = harness
     h.source.extract_main = source.extract_main
     h.source.content_selector = source.content_selector
-    raw = (ROOT / f'tests/fixtures/corpus/{source_id.replace("-", "_")}.html').read_bytes()
+    fixture = 'apple_featured' if layout == 'apple-featured' else source_id.replace('-', '_')
+    raw = (ROOT / f'tests/fixtures/corpus/{fixture}.html').read_bytes()
     raw = raw.replace(b'Navigation outside article', b'Navigation outside article ' * 1000)
     h.fetcher.pages['https://example.com/a'] = raw
     response = json.loads(h.sdk.text)
@@ -50,7 +52,9 @@ def test_missing_body_keeps_pending_without_generation(harness, source_id):
     h = harness
     h.source.extract_main = source.extract_main
     h.source.content_selector = source.content_selector
-    h.fetcher.pages['https://example.com/a'] = b'<main><article class="card">Related posts</article></main>'
+    h.fetcher.pages['https://example.com/a'] = (
+        b'<main><article class="card">Related posts</article>'
+        b'<div class="post-article">Related posts outside a featured main</div></main>')
     report = h.pipeline.run()
     assert report.status == 'failed' and report.pending_after == 1
     assert not h.sdk.calls and not h.store.list('notes/')

@@ -37,7 +37,7 @@ standardはAPI呼出し前・usage取得後にprivate usage journalを保存し�
 run reportが失われても元の日付・単価で集計し、reportとの二重計上を防ぎます。
 部分欠落usageは既知countを保持してpartialにします（F4）。応答を失った呼出しの費用は不明として残します。
 費用はrunのmodel/mode/価格snapshotと取得できたusageから推計し、invoice・GCS・Actions費用を含みません。
-日/月の予算設定は通知閾値です。standardには明示的なrun単位の推計capがありますが、通常scheduleの既定では未指定で、複数runの総予算・確定請求の上限を自動強制しません。
+`daily_budget_usd`/`monthly_budget_usd`は通知閾値です。standardには明示的なrun単位capと任意のUTC日/月generation limitがあります。通常scheduleではいずれも未指定です。期間limitも元usage/単価による推計で、確定請求の上限を保証しません。設定・unknown usage・Batchとの関係は[運用手順](operations.md#任意のutc日月生成上限)を参照してください。
 
 ## 設定・schema・生成内容
 
@@ -77,3 +77,36 @@ sourceは実際に処理を完了したrunだけでstreakをresetします（F6�
 audit/export/Git/Pagesの障害はrunごとにIssue通知します。[日次公開](daily-publication.md)を参照してください。
 
 未実装項目・残余制約を[検証・受入](verification.md)へ集約し、過去のrunの結果を現在の保証に置き換えません。
+
+## cacheの採否と無効化条件
+
+| 対象 | 再利用時に必要な条件 | 現在の判断 |
+|---|---|---|
+| 同一runのGCS bytes | live bucket/name/generation/CRCと前後catalog、全件検査 | 既存private runner cacheを継続 |
+| 同一Release処理のasset bytes | fresh tag/metadata・ID/size/SHA-256/updated_at/name、処理内32MiB上限 | 計測で重複転送を確認して採用 |
+| 別runのprivate GCS bytes | 権限境界・暗号化/失効・世代/CRC/live catalog・削除検出 | 現規模では永続化を採用しない。全件検査を維持 |
+| Web環境 | engine/plugin/font/native依存とlock/integrity、Node/Python版、config/theme、cache所有/破損/並行setup | npm/pipの既存download cacheだけを利用。検証済み環境全体の再利用は未採用 |
+| 静的artifact | 全Note/manifest/commit/dataset、全renderer/helper/config/theme/lock、UTC・footer年・runtime、tag/search/link全体、取下げ/rollback | 全体buildと全Web/配信照合を維持。単純なNote差分だけの再利用は不可 |
+
+A10の設計評価として、metadataや検査結果のrun跨ぎreuse、部分HTMLだけの再buildは採用しない。最適化は同一処理内の検証済みbytesに限定し、固定入力の複数回計測を先に行う。
+
+### 固定Web入力の反復計測
+
+`python scripts/benchmark_web.py --content <clean-content-checkout> --content-commit <full-SHA>` は全build/全受入を3回実行し、各回の入力Git状態・dataset/artifact digest・検査件数を照合する。工程のsample/中央値/最小/最大をJSONで出す。検査を間引かず、出力は同じfilesystemの一時領域で作成・削除する。
+
+2026-10-16のcontent `510dc54a82ebeed360a6f91e07261d45b01f6a75`、246記事を共通基点としてWeb共通化前後で各3回計測した。全回dataset `e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff`、artifact `0d0b345554b91dfcb89d1351a33e9dac94921657ae883e220e029bd3806840df` が一致した。
+
+| 秒 | 共通化前（中央値 / 範囲） | 共通化後（中央値 / 範囲） |
+|---|---|---|
+| build | 44.479 / 42.105–46.326 | 44.917 / 40.303–45.371 |
+| 全受入 | 146.865 / 142.075–148.236 | 143.667 / 143.273–147.354 |
+| 合計 | 191.344 / 184.180–194.562 | 188.190 / 183.971–192.725 |
+
+各回246記事・2,461検索リンク・画像あり156記事・承認画像要求380件・4幅・offline検索クリック1件、外部要求0、画像browser最大2を維持した。範囲は重なり、速度改善は立証していない。runner準備・収集・Release・deployを含む日次全体の計測とは区別する。
+
+## 現規模と移行判断
+
+2026-10-16の実GCS読取りは1,059 object/6,718,993 bytes（最大302,320 bytes）、成功528行・保留60。月次indexは2ファイル/305,512 bytesで、memory上からの読込み0.005秒だった。
+全件auditは整合、読取り16並列5.875秒、全体8.851秒、当該SDK/監査専用プロセスの最大RSSは85,628KiB。CLI全体やGitHub runnerの恒久上限ではなく、一度のローカル観測である。
+現在はDB/stream化を先行させず、snapshot logにbytes/largest_object_bytes、State logにindex_files/index_rows/index_bytes/load_secondsを追加して規模を継続観測する。
+メモリ/時間の実制約が現れた時点で、全件整合性・世代/catalog再照合と公開前gateを維持できる分割/stream化を再評価する。

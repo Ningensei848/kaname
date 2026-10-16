@@ -8,7 +8,7 @@ import re
 from .common import (ExportError, PUBLIC_README, sha256, json_bytes,
                                   object_path, reject_symlinks, PUBLIC_ATTRIBUTES, digest_matches, digest_value)
 from .note import note_frontmatter, validate_note, instant
-from ..normalize import normalize_url
+from .identity import note_identity
 from ..state import INDEX_COLUMNS, decode_tsv
 from ..read_snapshot import SnapshotChangedError
 
@@ -110,9 +110,7 @@ def snapshot_files(store, tracking=(), categories=None, exclude_ids=()):
         seen_hashes.add(row["content_sha256"])
         if not re.fullmatch(r"[A-Za-z0-9_-]+", row["source_id"]):
             raise ExportError("invalid_source_id")
-        canonical = normalize_url(row["canonical_url"], tracking)
-        identity = (row["source_id"], canonical)
-        note_id = sha256(json.dumps(identity, ensure_ascii=False, separators=(",", ":")).encode())
+        identity, note_id = note_identity(row["source_id"], row["canonical_url"], tracking)
         object_path(row["note_object"], "notes/", ".md")
         data = reader.read(row["note_object"])
         _, _, saved_meta = note_frontmatter(data)
@@ -201,9 +199,8 @@ def load_snapshot(root, tracking=()):
                 type(entry["llm_input_truncated"]) is not bool):
             raise ExportError("invalid_manifest_entry")
         instant(entry["processed_at"])
-        canonical = normalize_url(entry["canonical_url"], tracking)
-        identity = json.dumps([entry["source_id"], canonical], ensure_ascii=False, separators=(",", ":")).encode()
-        if canonical != entry["canonical_url"] or sha256(identity) != entry["id"]:
+        identity, expected_id = note_identity(entry["source_id"], entry["canonical_url"], tracking)
+        if identity[1] != entry["canonical_url"] or expected_id != entry["id"]:
             raise ExportError("note_identity_mismatch")
         data = reader.read(entry["path"])
         if data is None or not digest_matches(data, entry["sha256"]):

@@ -116,3 +116,7 @@ js-yamlのライブラリ入口はargparseを読み込まず、argparseを使う
 KaTeXは修正版0.18.2に固定します。`node --test audit.test.mjs`で未知の警告・配置/version変更を拒否することを検証します。
 `npm run audit`は上記2 advisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
 glob/ignore設定の拡張や依存更新時には、この到達性判断を見直し、修正版が出たら更新してください。
+
+2026-10-16の再監査でもbraces3.0.3とsprintf-js1.1.3に修正版はなく、実lockの警告は上記2 advisoryの伝播9件でした。
+既知例外は9 packageの固定version/単一node配置と親子の伝播辺を確認し、新version・新配置・新親・不完全な監査応答を拒否します。
+既存の固定glob/生成filename・YAMLライブラリ経路の制約は維持します。

@@ -43,3 +43,12 @@ gh workflow run pages.yml --repo Ningensei848/kaname --ref main \
 実ActionsでGit/Release両入力の公開、全元Markdown/検索/リンク/画像/4幅/配信版、同版再実行でRelease/asset/content不変を受入済み。
 [整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/release-distribution.md)へ初回のrun/件数/費用・独立GCS照合を保全した。
 Release重複HTTPと日次全体の安定短縮は[監査A08/A09](repository-audit.md#残課題改善候補)で追跡する。配布成功をsource健全性や時間短縮の達成と混同しない。
+
+## 同一処理内のasset bytes再利用
+
+Release/tag/asset metadataは復元のたびに取得する。assetのID/size/SHA-256/updated_at/nameが一致し、実bytesのsize/digest検査が成功した場合だけ、同じpublish/restore処理内で再利用する。digest欠損・ID/世代相当metadata変更・別処理には再利用しない。
+cacheは最大32MiBのLRUで、処理終了時に破棄する。`ReleaseClient(..., cache_bytes=0)` で従来の全downloadへ戻せる。GCS/private原文やmetadata/検査結果を永続cacheへ置かない。
+CLI出力のtransportにAPI要求数・asset取得数/bytes・cache hit・最大cache bytes・経過秒を追加する。公開descriptor/ZIP/Note/receiptの形式とbytesは変更しない。
+
+固定246 Note（content `510dc54a82ebeed360a6f91e07261d45b01f6a75`）の同一chainを一処理内で3回復元した読取り専用比較では、metadata API30回を維持し、asset30→10回・転送2,354,862→784,954 bytes・66.567→52.848秒だった。全復元bytes/dataset/snapshot digestは一致した。
+これは公開前/後に重なるchainの再利用を模した一組のローカル比較で、実日次全体の短縮率を保証しない。実publishのfixtureでもmetadata/書込み/asset bytesを変えず、改変・tag変更・欠損digest・上限・処理跨ぎを拒否する回帰を検証する。
