@@ -3,17 +3,15 @@ import argparse
 import json
 from pathlib import Path
 import sys
-from threading import Thread
-from urllib.parse import unquote, urljoin, urlsplit
 
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import expect
 
-from serve import server
 from kaname_web.public_input import public_input
 from kaname_web.artifact import load_artifact
 from techkb.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
-from image_acceptance import approved_images, image_guard, check_image_pages
+from image_acceptance import approved_images, check_image_pages
+from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
 from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
 
 
@@ -28,45 +26,18 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
     if (not public_version_matches(marker, commit) or
             not snapshot_matches(marker, manifest, files, original)):
         raise ExportError('pages_provenance_mismatch')
-    # Resolve every static local navigation/asset link against the same artifact.
-    base = 'http://127.0.0.1/kaname/'
-    for name, soup in parsed.items():
+    for soup in parsed.values():
         if soup.select('.fixture-banner') or soup.select('meta[name="robots"][content*="noindex"]'):
             raise ExportError('fixture_in_pages')
-        for tag in soup.select('[href], [src]'):
-            value = tag.get('href', tag.get('src'))
-            target = urlsplit(urljoin(base + name, value))
-            if target.netloc != '127.0.0.1':
-                continue
-            if target.path == '/kaname':
-                continue  # Project Pages redirects its bare base path to /kaname/.
-            if not target.path.startswith('/kaname/'):
-                raise ExportError('pages_link_escapes_base')
-            path = unquote(target.path.removeprefix('/kaname/')) or 'index.html'
-            if path.endswith('/'):
-                path += 'index.html'
-            if path not in files and path + '.html' not in files:
-                raise ExportError('missing_pages_link')
+    verify_local_links(files, parsed)
     for entry in manifest['notes']:
         soup = parsed['notes/' + entry['id'] + '.html']
         if not soup.find('a', class_='source-link', href=entry['canonical_url']):
             raise ExportError('missing_pages_source')
-    httpd = server(artifact, 0)
-    thread = Thread(target=httpd.serve_forever, daemon=True); thread.start()
-    origin = f'http://127.0.0.1:{httpd.server_port}'
-    home = origin + '/kaname/'
-    errors, external, image_requests = [], [], []
     search_clicks = 0
-    try:
-        with sync_playwright() as runtime:
-            browser = runtime.chromium.launch()
-            context = browser.new_context(viewport={'width': 1440, 'height': 1000})
-            def guard(route):
-                image_guard(route, origin, approved, external, image_requests)
-            context.route('**/*', guard)
-            page = context.new_page()
-            page.on('pageerror', lambda error: errors.append(str(error)))
-            page.on('console', lambda message: errors.append(message.type) if message.type == 'error' else None)
+    with served_artifact(artifact) as origin:
+        home = origin + '/kaname/'
+        with browser_session(origin, approved, error_prefix='pages_') as (context, page, observed):
             page.goto(home)
             expect(page.locator('.note-card')).to_have_count(len(manifest['notes']))
             if manifest['notes']:
@@ -90,17 +61,12 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
                 assert page.evaluate('document.documentElement.scrollWidth') <= width, 'horizontal_overflow'
             for path in ('.env', '.git/config', 'state/index.json', 'README.md'):
                 assert context.request.get(home + path).status == 404
-            assert not errors, 'pages_browser_error'
-            assert not external, 'pages_external_resource_request'
-            browser.close()
         # Finish the navigation browser before starting the bounded image pool.
         images_checked = check_image_pages(origin, image_entries, image_workers)
-    finally:
-        httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status='passed', notes=len(manifest['notes']), content_commit=commit,
                 dataset_digest=manifest['dataset_digest'], external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
-                approved_image_requests=len(image_requests) + images_checked['requests'],
+                approved_image_requests=len(observed.image_requests) + images_checked['requests'],
                 image_notes=images_checked['notes'], image_workers=images_checked['workers'])
 
 

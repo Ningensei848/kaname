@@ -11,6 +11,12 @@ def digest(content):
     return hashlib.sha256(content).hexdigest()
 
 
+def path_alias(path):
+    # Windows directory junctions are reparse points, but is_symlink() is false.
+    # Reject them before mkdir/locks/writes just like POSIX symbolic links.
+    return path.is_symlink() or path.is_junction()
+
+
 def atomic(path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, name = tempfile.mkstemp(prefix='.techkb-', dir=path.parent)
@@ -49,7 +55,7 @@ def safe_destination(root, name):
         raise ValueError('invalid note object path')
     path = root.joinpath(*pure.parts)
     for part in (path, *path.parents):
-        if part.is_symlink():
+        if path_alias(part):
             raise ValueError('symlink in sync path')
         if part == root:
             break
@@ -62,14 +68,14 @@ def sync_vault(store, vault, dry_run=False):
     base = Path(vault).absolute()
     # Keep remote paths under a dedicated vault folder; no .obsidian mutations.
     root = base / 'TechKB'
-    if any(p.is_symlink() for p in (root, base, *base.parents)):
+    if any(path_alias(p) for p in (root, base, *base.parents)):
         raise ValueError('vault symlink is not supported')
     root.mkdir(parents=True, exist_ok=True)
     lock = root / '.techkb-sync.lock'
     fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     try:
         manifest_path = root / '.techkb-sync.json'
-        if manifest_path.is_symlink():
+        if path_alias(manifest_path):
             raise ValueError('manifest symlink')
         manifest = json.loads(manifest_path.read_bytes()) if manifest_path.exists() else {}
         if not isinstance(manifest, dict) or any(not isinstance(k,str) or not isinstance(v,str) or

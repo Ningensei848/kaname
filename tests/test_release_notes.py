@@ -195,6 +195,81 @@ def test_partial_upload_keeps_draft_and_resumes_without_overwriting(snapshots):
     finally: client.close()
 
 
+def test_operation_cache_reduces_bytes_without_reusing_metadata_or_changing_publication(snapshots):
+    results = []
+    for limit in (0, 32 * 1024 * 1024):
+        api = GitHub(snapshots)
+        client = ReleaseClient('owner/repo', 'private-token',
+                               httpx.Client(transport=httpx.MockTransport(api.handle)), cache_bytes=limit)
+        try:
+            publish_release(snapshots[0], '1' * 40, client)
+            api.calls.clear()
+            result = publish_release(snapshots[1], '2' * 40, client)
+            metadata = [(m, p) for m, p in api.calls if not p.startswith('/repos/owner/repo/releases/assets/')]
+            results.append((result, metadata, dict(api.data), dict(api.tags)))
+            assert client._cache is None  # No bytes live past a publication.
+        finally:
+            client.close()
+    before, after = results
+    assert {k: v for k, v in before[0].items() if k != 'transport'} == {k: v for k, v in after[0].items() if k != 'transport'}
+    assert before[1:] == after[1:]  # Fresh metadata calls, writes, tags and asset bytes are identical.
+    assert after[0]['transport']['asset_downloads'] < before[0]['transport']['asset_downloads']
+    assert after[0]['transport']['download_bytes'] < before[0]['transport']['download_bytes']
+    assert after[0]['transport']['cache_hits'] > 0
+
+
+@pytest.mark.parametrize('change', ['digest', 'size', 'id', 'state', 'missing_digest', 'tag'])
+def test_fresh_identity_changes_are_rejected_even_with_warm_bytes(snapshots, change):
+    api = GitHub(snapshots)
+    client = api.client()
+    try:
+        tag = publish_release(snapshots[0], '1' * 40, client)['tag']
+        with client.operation():
+            client.restore_files(tag)
+            archive = next(a for a in api.releases[tag]['assets'] if a['name'] == ARCHIVE)
+            old = api.data[archive['id']]
+            if change == 'digest': archive['digest'] = 'sha256:' + 'f' * 64
+            elif change == 'size': archive['size'] += 1
+            elif change == 'state': archive['state'] = 'new'
+            elif change == 'tag': api.tags[tag] = 'f' * 40
+            else:
+                if change == 'id': archive['id'] += 1000
+                if change == 'missing_digest': archive.pop('digest')
+                api.data[archive['id']] = b'x' * len(old)
+            with pytest.raises(ExportError):
+                client.restore_files(tag)
+    finally:
+        client.close()
+
+
+def test_asset_cache_is_bounded_and_missing_digest_is_never_reused():
+    calls = []
+    def handle(request):
+        calls.append(request.url.path)
+        return httpx.Response(200, content=b'bytes')
+    client = ReleaseClient('owner/repo', client=httpx.Client(transport=httpx.MockTransport(handle)), cache_bytes=8)
+    def asset(number, digest=True):
+        result = dict(id=number, state='uploaded', size=5)
+        if digest: result['digest'] = 'sha256:' + sha256(b'bytes')
+        return result
+    try:
+        with client.operation():
+            client.download(asset(1), 100)
+            client.download(asset(1), 100)
+            assert len(calls) == 1
+            client.download(asset(2), 100)  # Evicts asset 1 at the byte cap.
+            client.download(asset(1), 100)
+            client.download(asset(3, False), 100)
+            client.download(asset(3, False), 100)
+            assert len(calls) == 5
+            assert client.metrics['peak_cache_bytes'] <= 8
+        with client.operation():
+            client.download(asset(1), 100)
+            assert len(calls) == 6  # The previous operation cannot supply bytes.
+    finally:
+        client.close()
+
+
 def test_published_conflict_cannot_mutate_or_deploy(snapshots, tmp_path):
     api = GitHub(snapshots)
     client = api.client()

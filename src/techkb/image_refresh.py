@@ -11,9 +11,10 @@ from .extraction import extract_main
 from .html_cleaner import canonical_url, clean_html
 from .images import article_images, image_url
 from .models import ImageSelection
-from .normalize import normalize_markdown, normalize_url
+from .normalize import normalize_markdown
 from .publication.common import json_bytes, object_path, sha256
 from .publication.note import instant, note_frontmatter, validate_note
+from .publication.identity import note_identity
 from .publication.snapshot import CheckedReads, index_catalog
 from .state import INDEX_COLUMNS, decode_tsv
 
@@ -96,8 +97,7 @@ def repair_images(store, fetcher, sources, app, plan, *, apply=False, output=Non
             for row in decode_tsv(reader.read(name), INDEX_COLUMNS[:12]):
                 if row["status"] != "success":
                     continue
-                identity = [row["source_id"], normalize_url(row["canonical_url"], app.tracking_parameters)]
-                note_id = sha256(json.dumps(identity, ensure_ascii=False, separators=(",", ":")).encode())
+                _, note_id = note_identity(row["source_id"], row["canonical_url"], app.tracking_parameters)
                 if note_id == plan.note_id:
                     candidates.append(row)
         if not candidates:

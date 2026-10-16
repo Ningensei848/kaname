@@ -26,7 +26,15 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 生成前に実際の入力・system/schemaのUTF-8 bytes、1,024 framing token相当、出力上限の2倍と全HTTP再試行回数から保守的に予約額を計算し、計測済みinput/output/thinking費用との合計が上限を越える記事は保留します。単価未定義・非有限/正でない上限はクライアント生成前に拒否します。APIが返したusageが欠ける、再試行が起きる、結果が厳格検証/画像組立てで拒否される場合は、次の有料呼出しへ進みません。既存のusage checkpoint・receipt・保存耐久性の停止条件も維持します。
 
-これは保存された単価とtoken見積りによるrun単位の制御で、確定請求・GCS/Actions費用や複数runの総上限を保証しません。複数runでは各runの実測usageを元単価で集計し、承認枠の残額を次の`max_cost_usd`に渡します。不明usageがあれば追加生成を停止して確認します。予算停止で保留が残るsourceは復旧完了になりません。`max_cost_usd`・`budget_deferred`・固定`budget_stop_reason`をrun reportに残します。`audit-run`もこの上限を元単価・確定usageで照合し、費用制限付きstandardの件数拡大を認識します。不明usage・再試行・元単価の欠損・上限超過や不正な上限は監査を失敗させます。
+これは保存された単価とtoken見積りによるrun単位の制御で、確定請求・GCS/Actions費用や複数runの総上限を保証しません。期間limit未指定の複数runでは各runの実測usageを元単価で集計し、承認枠の残額を次の`max_cost_usd`に渡します。不明usageがあれば追加生成を停止して確認します。予算停止で保留が残るsourceは復旧完了になりません。`max_cost_usd`・`budget_deferred`・固定`budget_stop_reason`をrun reportに残します。`audit-run`もこの上限を元単価・確定usageで照合し、費用制限付きstandardの件数拡大を認識します。不明usage・再試行・元単価の欠損・上限超過や不正な上限は監査を失敗させます。
+
+### 任意のUTC日/月生成上限
+
+`costs.generation_daily_limit_usd` と `costs.generation_monthly_limit_usd` は正の有限USDかnullを受け付けます。既定はnullで、本番設定は変更していません。通知用の `daily_budget_usd`/`monthly_budget_usd` とは別です。明示的に有効化するとstandard modeだけを許可し、Batch指定はclient作成前に拒否します。
+
+単一writerのもと、receipt復旧/既存Batch決済後にruns・standard usage journal・Batch ledgerの整合snapshotを読み、元runのUTC日付と記録済み単価で残額を計算します。日/月両方の残額と明示run capの最小値を今回の推計capにします。元単価/モデル欠損、unknown usage、未計上Batchがあれば `aggregate_usage_uncertain`、残額0なら `aggregate_limit_reached` で新規本文処理・生成を止めます。旧価格への再計算や保留の完了扱いはしません。対象期間より前の確定usageはその期間の残額に含めません。未計上Batchは期間を問わず停止条件です。
+
+既存の保守的なrequest予約（入力bytes・出力/thinking・全HTTP試行）と実測usageの停止規則を使い、`generation_budget` にUTC期間/既知推計/残額/停止理由を記録します。期間はrun開始UTC基準で、日付を跨ぐrunも同じ会計日です。別writerの同時生成は許可しません。設定した推計capでも、応答消失やAPI側の挙動による請求額・GCS/Actions費用を保証できません。
 
 standardのLLM/compose失敗にはBatchと共通の安全な構造診断を記録します。型・既知field/error code・候補/選択/重複/候補外/配置不適合の件数だけを残し、APIエラー本文・生成文・画像IDを診断へ保存しません。
 
@@ -424,3 +432,9 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 
 完了済みGlucoFM計画は実configから除去した。回帰用の固定値は `tests/fixtures/image-repair-plan.json` から一時configへ配置する。
 新しい修復対象には別のレビュー済み計画を用意する。旧planは専用archive branchの元pathから参照できる。
+
+## 画像選択の匿名集計
+
+新しいrun reportの `image_observations` は、厳格検証と組立てを通った結果のarticles/with_candidates/candidates/selected/zero_selected_with_candidates/input_truncatedを集計する。URL・画像bytes・alt・原文は保持しない。
+standardはcollection report、Batchは安定billing IDのbatch_usage reportだけを正本とし、回収collectionで二重計上しない。旧台帳に観測がなければarticles=0（未観測）で、画像を選ばなかったと推定しない。
+候補あり/選択0は品質サンプルの指標であり、失敗・自動再生成・追加課金の条件にしない。

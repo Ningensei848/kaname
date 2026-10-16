@@ -103,3 +103,15 @@ git restore --source=FETCH_HEAD -- docs/archive/2026-10/対象ファイル.md
 
 GlucoFMの単発計画は[元configの保全版](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/config/image-repairs/eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419.json)を参照。
 現行の実configからは除去し、schema/workflow回帰だけを `tests/fixtures/image-repair-plan.json` に固定した。
+
+## Closedの旧TypeScript提案
+
+[legacy-proposals-2026-10-16](https://github.com/Ningensei848/kaname/tree/codex/archive/legacy-proposals-2026-10-16)（commit `2dc4acac16c654ca434631ef2aa27b5725c78c1d`）にClosed/未マージのPR #51/#53をまとめた。
+原コミット `2777b0c40f191a70a101440f4ee890e6aa6d46e1` / `6fa854f6c73019c924b0ebb241a3a6bce0c0cf1b` はarchiveの親として保持し、提案した2ファイルのblob一致を確認した。現行Python製品への取込みではない。
+
+同じarchiveの後続commit `7357f855f8e8116056eef3ee37ffd434f1611334` は、未マージのローカル草稿 `bacb5268edd8cb7fcdb701a48f2cc9a3dffbe7ad`（issue triage）と `c6115501d9b68f565e03ff739faec00bb24cafae`（source scope確認）も親として保持する。草稿を現在のtreeへ適用せず、元commitの全ファイルを到達可能にした。
+main祖先のremote作業branch7本、同じarchiveへ保全したremote別名2本、mergedローカル38本と保全済みローカル別名2本を整理した。main/content/legacy・公開tag・作業中PR・専用archiveは保持している。
+mainに到達済みの旧remote7本と上記の旧名2本はlease付きで削除し、stale tracking77本とmain祖先の旧ローカル38本も整理した。復元用のローカル対応はprivateな `local-state/archive/2026-10-16/` に保持する。main/content/legacy・現在のPR・archive refは保持した。
+
+アーカイブにはさらにローカル旧計画 `bacb5268edd8cb7fcdb701a48f2cc9a3dffbe7ad` と設定CI試行 `c6115501d9b68f565e03ff739faec00bb24cafae` を親として保全し、tipを `7357f855f8e8116056eef3ee37ffd434f1611334` へ進めた。
+この2つのローカル別名もremote保全確認後に除去し、整理した旧ローカルbranchは計40本となった。

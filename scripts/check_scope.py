@@ -5,7 +5,7 @@ from pathlib import Path
 import subprocess
 
 SOURCES_TESTS = ['test_extraction', 'test_google_research', 'test_deepmind', 'test_new_rss_sources', 'test_html_cleaner', 'test_images', 'test_fetcher', 'test_regression_corpus']
-APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery']
+APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery', 'test_standard_budget', 'test_generation_budget', 'test_operations']
 
 # These modules are consumed directly by the renderer or its fixed Git/Release
 # input. Include their regression tests: a test-only change can alter acceptance.

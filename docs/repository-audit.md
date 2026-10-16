@@ -11,7 +11,7 @@ GitHubの全Open Issue/PR、最近のIssue/PR100件と次ページ、Actions直�
 
 前回はローカルshell/Nodeが起動できず、remoteの追跡ファイルだけを監査した。
 後続作業ではローカル実行が復旧し、mainの基点一致・未commit変更なし・適用AGENTSなしを確認した。旧実施記録4ディレクトリ/69ファイルはSHA-256一致を確認してprivateな `local-state/archive/2026-10-16/` へ集約した。空の一時Vaultも削除し、使用中のvenv/npm/engineと生成cacheは開発環境として区別した。
-「リポジトリ全体」は上記remote基点の追跡ファイルを指す。pytest/npm audit/actionlintの新規実行や、GCSの独立照合は今回実施していない。静的な改善候補を再現済み不具合として扱わない。
+「リポジトリ全体」は上記remote基点の追跡ファイルを指す。初回の静的監査ではpytest/npm audit/actionlintの新規実行・GCSの独立照合は未実施だった。後続の実行結果は末尾で更新する。静的な改善候補を再現済み不具合として扱わない。
 
 ## 確認できた現在値
 
@@ -25,7 +25,7 @@ GitHubの全Open Issue/PR、最近のIssue/PR100件と次ページ、Actions直�
 
 ## 残課題・改善候補
 
-P1は次の開発再開時に先に扱う事項、P2は計測/必要条件を満たして着手する事項、P3は将来判断である。セキュリティ緊急度やIssueの新規登録を意味しない。
+以下は監査基点の20項目であり、現在の完了/未完了は末尾の進捗表を参照する。P1は次の開発再開時に先に扱う事項、P2は計測/必要条件を満たして着手する事項、P3は将来判断である。セキュリティ緊急度やIssueの新規登録を意味しない。
 
 | ID / 優先 | 課題・根拠 | 次の一手と完了条件 |
 |---|---|---|
@@ -106,10 +106,23 @@ flowchart TD
 
 | 項目 | 状態と根拠 |
 |---|---|
-| A01 | ローカル調査・private記録69件のhash照合/集約・空Vault除去は完了。生成cacheの最終削除はWeb検証後に実施する |
-| A04/A05 | Web入力契約の対象選択を追加。文書path/見出し/旧Git版参照とchecksum固定actionlintを常時CI化し、Daily再利用にも必須化。関連69件・全Python805件/Web5件/actionlint成功 |
-| A06/A07 | npm/公式advisoryを再確認。braces3.0.3/sprintf-js1.1.3にも修正なし。固定lockの9 package・node位置・伝播辺まで許容を限定。Node5件と実npm auditを照合成功。既知2 advisoryは残る |
-| A14 | 完了planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchの元pathを保持。関連36件成功 |
-| A02 | 確定明細の対象期間/保存先を問い合わせ中。推計だけで完了にしない |
-| A03 | GCS読取りで60保留を再確認（Apple19/GitHub6/DeepMind8/Research3/Meta12/Microsoft12、Cloudflare0）。DeepMind failing/streak2、Cloudflareのみhealthy。保留解消は未完了 |
-| A08〜A13/A15〜A20 | 上の依存順に継続。未実施の計測/実環境受入/設計判断を完了扱いしない |
+| A01 | 完了。private旧記録4ディレクトリ69ファイルをhash一致で集約。生成cache/buildの51 path・33,232ファイル（見掛け613,769,903 bytes）を削除。実行環境と現在のWeb出力2版・有効last-build pointerは保持 |
+| A02 | 外部入力待ち。確定明細が見つからず、対象期間/保存先を問い合わせ済み。元usage63行・元単価/unknown/legacyをprivate照合CSVへ準備し、明細欄は空欄のまま。#116を閉じない |
+| A03 | 継続中。開始前60保留（Apple19/GitHub6/DeepMind8/Research3/Meta12/Microsoft12）。既存mainの通常30件・USD0.20推計capで[手動run](https://github.com/Ningensei848/kaname/actions/runs/38894931577)を開始。既存追加枠の残額0.4719722を超えて追加実行しない。結果/usage/source-healthを再照合して更新 |
+| A04/A05 | 完了。Web入力契約の対象選択を追加。文書path/見出し/旧Git版参照とchecksum固定actionlintを常時CI化し、Daily再利用にも必須化。[初回CI全gate成功](https://github.com/Ningensei848/kaname/actions/runs/38891217687) |
+| A06/A07 | 再監査・例外限定は完了。braces3.0.3/sprintf-js1.1.3にも修正なし。固定lockの9 package・node位置・伝播辺まで許容を限定。Node5件と実npm auditを照合。既知2 advisoryは継続制約 |
+| A08 | 実装/ローカル検証完了。同一操作内だけ検証済みasset bytesをbounded LRUへ保持。fresh metadata/tag/全chain検証は維持。改変/欠損/上限/操作跨ぎを含む42件成功。実246記事の読取り比較でmetadata30回不変、転送2,354,862→784,954 bytes。実日次速度の保証とはしない（[配布仕様](release-distribution.md#同一処理内のasset-bytes再利用)） |
+| A09 | 評価完了。同一246記事・lockのbuild/全受入を前後各3回計測。全生成物digest/検査件数一致、中央値191.344→188.190秒・範囲重複。速度改善は未立証（[計測条件](design-decisions.md#固定web入力の反復計測)） |
+| A10 | 設計評価完了。private run間cache/環境全体/差分HTMLは無効化条件と境界を定義し未採用。全件監査/全体buildを維持（[採否](design-decisions.md#cacheの採否と無効化条件)） |
+| A11 | 実装/ローカル検証完了。候補既知判定/完了/障害停止を純粋helperへ分離、receipt復旧を独立methodへ、Batch診断をwriterから分離。保存障害/usage/receipt/入力順の既存回帰を保持 |
+| A12 | 完了。identity生成を純粋helperへ統一。実公開246件の元ID・全非Gitファイルhash/dataset不変、関連130件成功 |
+| A13 | 完了。server/browser通信guard/リンク検査を共通化。異常時cleanupの実browser回帰を追加。Web10件成功、固定実版の全受入6回で全画像/アンカー/4幅・最大2browserを維持 |
+| A14 | 完了。planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchに元pathを保持。関連36件成功 |
+| A15 | 評価完了。同じ公開246件を2回読取り評価。tags2,094/keywords1,184、未解決1,184/曖昧0/内部辺0、提案適用後の辺も0。正規化/元Note書換えは未適用（[Graph評価](graph-quality.md)） |
+| A16 | 完了。候補数/選択数/候補あり0選択/打切りを成功composeで匿名集計。Batchは保存outcomeから固定billing reportへ計上し二重計上しない。旧outcomeの欠損指標は推定補完しない |
+| A17 | 限定環境で受入、利用者環境待ち。既存GitHub Blog記事を一時browser overrideで取得し原題/本文を照合、LLM/GCS書込み0。実Windows Python3.12.14・一時NTFSで編集/候補保持・排他公開・非対応hard link失敗・junction拒否を確認し、junctionの検出漏れを修正。`scripts/verify_sync_filesystem.py`で再現可能。利用者Vault/他sourceは未指定で未受入 |
+| A18 | 任意機能の実装/ローカル検証完了。UTC日/月残額・元価格・unknown/未計上Batch停止・run capとの最小値を定義し、複数run/月境界を回帰検証。既定null、本番通知/30件を変更しない（[運用](operations.md#任意のutc日月生成上限)） |
+| A19 | 評価/計測指標追加は完了。実GCS1,059 object/6,718,993 bytes、index2/305,512 bytes・0.005秒、専用auditプロセス最大RSS85,628KiB。DB移行を先行せず継続観測（[規模判断](design-decisions.md#現規模と移行判断)） |
+| A20 | 完了。main祖先remote7本を整理、Closed/未マージremote2本とローカル草稿2本を同じarchiveの親commitに保全。mergedローカル38本/保全済み別名2本、stale tracking77本を整理。[保全先](archive/README.md#closedの旧typescript提案) |
+
+後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。いずれもmainへ未merge。後続の最終head CIは確認中であり、初回CIの成功を新しい変更へ流用しない。

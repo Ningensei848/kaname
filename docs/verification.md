@@ -18,8 +18,9 @@ runごとの計数・commit・費用・測定結果は[archive索引](archive/RE
 | 検索・graph | NS1本文WikiLink/内部Note優先/Google検索fallbackを本番受入。Graph評価CLIは読取り専用、正規化は評価案のみ |
 | GCS読取り | 16並列/接続pool再利用、世代条件/CRC、同一runner内private byte cache、live catalog再検証を受入。1/8へ切戻し可能 |
 | 日次CI再利用 | 同じmain SHAの最新成功Checks/attempt・scope/aggregate jobsをAPI照合。不一致/不完全/照合不能時は全単体テストへfallback。設定/本番状態/公開検査は毎回実行 |
-| CI対象選択 | Docs/設定/コード/Webを分類し、未知path/比較失敗は全検査。Web依存境界の追加見直しは監査A04で追跡 |
-| 互換sync/browser | 人の編集保持・候補別保存、実Chromiumのredirect/robots/host制限を回帰検証。利用者NTFSと指定browser source実運用は未受入 |
+| CI対象選択 | Docs/設定/コード/Webを分類し、Release/配布入力契約とその回帰もWeb対象。未知path/比較失敗は全検査。Docs/actionlintは常時必須gate |
+| 互換sync/browser | 人の編集保持・候補別保存、実Chromiumのredirect/robots/host制限を回帰検証。実Windows一時NTFSで編集/候補保持・排他作成・junction拒否を確認。GitHub Blogの一時browser取得も確認。利用者Vaultへの受入は未実施 |
+| 任意の推計生成上限 | standardのrun capと任意のUTC日/月残額を回帰検証。unknown/元価格欠損/未計上Batchでは停止。既定null、本番設定への適用は未実施 |
 
 F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証拠に置き換わっている。
 当時のテスト件数や単一runの短縮率を、現在の全suite件数・恒久性能保証として転記しない。
@@ -28,7 +29,7 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 
 - #116の確定請求照合、legacy/unknownの説明。usage推計と実請求を区別する。
 - source別の保留/最終成功/失敗streakの観測。日次の成功だけで全source healthyとしない。
-- 指定browser source・利用者Vault/NTFSの受入。模擬環境の成功で代用しない。
+- 利用者が指定するbrowser source運用・実Vaultの受入。既存GitHub記事の一時取得と一時NTFSの成功で、未指定の利用者環境を代用しない。
 - npm既知advisoryの例外。詳細は[Web依存](web-preview.md#固定依存と残る制約)。
 - APIとGCSは単一transactionでなく、timeout/retryを含む厳密なexactly-once課金は保証しない。
 - 出典画像の内容/存続と全Noteの日本語事実確認は固定hashや自動検査だけでは保証しない。
@@ -46,6 +47,6 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 
 ## 今回の整理で実施した確認
 
-remote追跡ファイルの静的確認、削除対象の保全先commit/blob照合、現行Markdownの相対path/見出しとarchive参照、コード/設定/workflow/test/lockの不変を確認する。
+最初の整理ではremote追跡ファイルの静的確認、削除対象の保全先commit/blob照合、現行Markdownの相対path/見出しとarchive参照、コード/設定/workflow/test/lockの不変を確認した。
 継続作業でローカルruntimeが復旧し、基点Python786件、CI/文書関連69件、画像補完関連36件、Node監査5件、実npm auditとactionlintを実行した。
 全20項目の進捗と実行範囲は[監査一覧](repository-audit.md#改善の依存関係と進捗)で追跡し、既存main Checksの成功とは区別する。

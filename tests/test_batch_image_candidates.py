@@ -93,4 +93,27 @@ def test_candidate_validation_inspection_save_and_single_billing(harness, violat
     billing = [json.loads(h.store.read(n)) for n in h.store.list('runs/')
                if json.loads(h.store.read(n))['record_kind'] == 'batch_usage']
     assert len(billing) == 1 and billing[0]['llm_calls'] == 1
+    assert billing[0]['image_observations']['articles'] == (0 if violation else 1)
+    assert billing[0]['image_observations']['selected'] == (0 if violation else 4)
     assert len(sdk.created) == 1 and not h.sdk.calls
+
+
+def test_legacy_settled_outcome_does_not_invent_image_observations(harness):
+    h = harness
+    sdk = setup(h)
+    assert h.pipeline.run().batch_submitted == 1
+    sdk.finish()
+    h.store.fail_prefix = 'runs/'
+    assert h.pipeline.run().status == 'failed'
+    path = h.store.list('state/batches/')[0]
+    ledger = json.loads(h.store.read(path))
+    assert ledger['outcomes'][0].pop('image_observation') is not None
+    h.store.data[path] = json.dumps(ledger).encode()
+    h.store.fail_prefix = None
+    h.app.llm.max_calls_per_run = 0
+    assert h.pipeline.run().batch_saved == 1
+    billed = [json.loads(h.store.read(name)) for name in h.store.list('runs/')
+              if json.loads(h.store.read(name))['record_kind'] == 'batch_usage']
+    assert len(billed) == 1 and billed[0]['llm_calls'] == 1
+    assert billed[0]['image_observations']['articles'] == 0
+    assert h.pipeline.run().batch_saved == 0 and len(sdk.created) == 1
