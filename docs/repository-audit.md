@@ -116,7 +116,7 @@ flowchart TD
 | A10 | 設計評価完了。private run間cache/環境全体/差分HTMLは無効化条件と境界を定義し未採用。全件監査/全体buildを維持（[採否](design-decisions.md#cacheの採否と無効化条件)） |
 | A11 | 実装/ローカル検証完了。候補既知判定/完了/障害停止を純粋helperへ分離、receipt復旧を独立methodへ、Batch診断をwriterから分離。保存障害/usage/receipt/入力順の既存回帰を保持 |
 | A12 | 完了。identity生成を純粋helperへ統一。実公開246件の元ID・全非Gitファイルhash/dataset不変、関連130件成功 |
-| A13 | 完了。server/browser通信guard/リンク検査を共通化。異常時cleanupの実browser回帰を追加。Web10件成功、固定実版の全受入6回で全画像/アンカー/4幅・最大2browserを維持 |
+| A13 | 完了。server/browser通信guard/リンク検査を共通化。異常時cleanupとeditable installなしのCLI起動回帰を追加。Web11件成功、固定実版の全受入6回で全画像/アンカー/4幅・最大2browserを維持 |
 | A14 | 完了。planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchに元pathを保持。関連36件成功 |
 | A15 | 評価完了。同じ公開246件を2回読取り評価。tags2,094/keywords1,184、未解決1,184/曖昧0/内部辺0、提案適用後の辺も0。正規化/元Note書換えは未適用（[Graph評価](graph-quality.md)） |
 | A16 | 完了。候補数/選択数/候補あり0選択/打切りを成功composeで匿名集計。Batchは保存outcomeから固定billing reportへ計上し二重計上しない。旧outcomeの欠損指標は推定補完しない |

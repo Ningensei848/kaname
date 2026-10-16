@@ -99,6 +99,10 @@ git restore --source=FETCH_HEAD -- docs/archive/2026-10/対象ファイル.md
 専用archive branchはこの整理の保全先であり、通常のmerged作業branch削除の対象へ混ぜない。
 新しい日次記録はmainへ蓄積せず、保存が必要な証拠だけarchive branchへ追記して索引を更新する。
 
+## 整理後の計測証拠
+
+[2026-10-16の集約JSON](https://github.com/Ningensei848/kaname/blob/c66485ff057162001271a366b6027d1a48193be0/docs/archive/2026-10/remaining-work-evidence-2026-10-16.json) にWeb前後各3回・Release転送・Graph・GCS規模・一時browser/NTFS受入を保存した。元の257 blobを一切変更せず同じ専用archive branchへ追加している。原文・請求明細・GCS catalogや認証情報は含めない。
+
 ## 完了した画像補完計画
 
 GlucoFMの単発計画は[元configの保全版](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/config/image-repairs/eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419.json)を参照。

@@ -2,12 +2,35 @@
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
+from pathlib import Path
+import os
+import subprocess
+import sys
 
 import pytest
 from bs4 import BeautifulSoup
 
 import kaname_web.browser_acceptance as acceptance
 from techkb.publication import ExportError
+
+
+def test_pages_cli_starts_without_editable_install_or_pythonpath(tmp_path):
+    root = Path(__file__).resolve().parents[2]
+    script = root / 'web/check_pages.py'
+    # setup-web installs dependencies without the app. pytest/editable installs
+    # must not hide a CLI's reliance on another module's sys.path side effect.
+    bootstrap = (
+        'import runpy, sys; '
+        f'sys.path[:] = [p for p in sys.path if p != {str(root / "src")!r}]; '
+        f'sys.path.insert(0, {str(root / "web")!r}); '
+        f'sys.argv = [{str(script)!r}, "--help"]; '
+        f'runpy.run_path({str(script)!r}, run_name="__main__")'
+    )
+    env = {key: value for key, value in os.environ.items() if key != 'PYTHONPATH'}
+    result = subprocess.run([sys.executable, '-c', bootstrap], cwd=tmp_path,
+                            env=env, capture_output=True, text=True, timeout=20)
+    assert result.returncode == 0, result.stderr
+    assert '--content-commit' in result.stdout
 
 
 @contextmanager
