@@ -80,7 +80,7 @@ sources:
     base_url: https://machinelearning.apple.com/
     article_domains: [machinelearning.apple.com]
     extract_main: true
-    content_selector: ".postBody"
+    content_selector: ".postBody, main.main-featured .post-article"
     request_interval_seconds: 2
     tags: [ai-llm, research]
 

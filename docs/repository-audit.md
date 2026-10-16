@@ -13,7 +13,9 @@ GitHubの全Open Issue/PR、最近のIssue/PR100件と次ページ、Actions直�
 後続作業ではローカル実行が復旧し、mainの基点一致・未commit変更なし・適用AGENTSなしを確認した。旧実施記録4ディレクトリ/69ファイルはSHA-256一致を確認してprivateな `local-state/archive/2026-10-16/` へ集約した。空の一時Vaultも削除し、使用中のvenv/npm/engineと生成cacheは開発環境として区別した。
 「リポジトリ全体」は上記remote基点の追跡ファイルを指す。初回の静的監査ではpytest/npm audit/actionlintの新規実行・GCSの独立照合は未実施だった。後続の実行結果は末尾で更新する。静的な改善候補を再現済み不具合として扱わない。
 
-## 確認できた現在値
+<a id="確認できた現在値"></a>
+
+## 監査基点で確認した値
 
 - Open Issueは[#116 請求照合](https://github.com/Ningensei848/kaname/issues/116)のみ。整理前のOpen PRは0件。
 - [main Checks](https://github.com/Ningensei848/kaname/actions/runs/38736067455)はsuccess。
@@ -107,8 +109,8 @@ flowchart TD
 | 項目 | 状態と根拠 |
 |---|---|
 | A01 | 完了。private旧記録4ディレクトリ69ファイルをhash一致で集約。生成cache/buildの51 path・33,232ファイル（見掛け613,769,903 bytes）を削除。実行環境と現在のWeb出力2版・有効last-build pointerは保持 |
-| A02 | 外部入力待ち。確定明細が見つからず、対象期間/保存先を問い合わせ済み。元usage63行・元単価/unknown/legacyをprivate照合CSVへ準備し、明細欄は空欄のまま。#116を閉じない |
-| A03 | 継続中。開始前60保留（Apple19/GitHub6/DeepMind8/Research3/Meta12/Microsoft12）。既存mainの通常30件・USD0.20推計capで[手動run](https://github.com/Ningensei848/kaname/actions/runs/38894931577)を開始。既存追加枠の残額0.4719722を超えて追加実行しない。結果/usage/source-healthを再照合して更新 |
+| A02 | 外部入力待ち。ローカル/対象メール/Driveの関連検索で確定明細が見つからず、対象期間/保存先を問い合わせ済み。元usage65行・元単価/unknown/legacyをprivate照合CSVへ準備し、明細欄は空欄のまま。#116を閉じない |
+| A03 | 修正の本番適用待ち。[1回目](https://github.com/Ningensei848/kaname/actions/runs/38894931577)30保存/保留60→27・276公開/配信照合まで成功。[2回目](https://github.com/Ningensei848/kaname/actions/runs/38896314973)25保存/保留27→1、Appleの新Featured構造に既存selectorが一致せずconvert失敗（[#195](https://github.com/Ningensei848/kaname/issues/195)）。6 sourceはhealthyへ回復、Appleのみstreak1/failing。状態583行/保留1は監査整合。2 run計55呼出し/55試行、usage欠損0・追加推計USD0.1444626、既存枠残額0.3275096。新selectorと旧/新9-layout回帰、実本文18,897文字の無課金抽出をPRへ用意したがmain未変更。保存済み25件は[追加生成0のpublish-only](https://github.com/Ningensei848/kaname/actions/runs/38897233994)で公開確認中。未merge修正を本番適用する認証経路は使わない |
 | A04/A05 | 完了。Web入力契約の対象選択を追加。文書path/見出し/旧Git版参照とchecksum固定actionlintを常時CI化し、Daily再利用にも必須化。[初回CI全gate成功](https://github.com/Ningensei848/kaname/actions/runs/38891217687) |
 | A06/A07 | 再監査・例外限定は完了。braces3.0.3/sprintf-js1.1.3にも修正なし。固定lockの9 package・node位置・伝播辺まで許容を限定。Node5件と実npm auditを照合。既知2 advisoryは継続制約 |
 | A08 | 実装/ローカル検証完了。同一操作内だけ検証済みasset bytesをbounded LRUへ保持。fresh metadata/tag/全chain検証は維持。改変/欠損/上限/操作跨ぎを含む42件成功。実246記事の読取り比較でmetadata30回不変、転送2,354,862→784,954 bytes。実日次速度の保証とはしない（[配布仕様](release-distribution.md#同一処理内のasset-bytes再利用)） |
@@ -125,4 +127,4 @@ flowchart TD
 | A19 | 評価/計測指標追加は完了。実GCS1,059 object/6,718,993 bytes、index2/305,512 bytes・0.005秒、専用auditプロセス最大RSS85,628KiB。DB移行を先行せず継続観測（[規模判断](design-decisions.md#現規模と移行判断)） |
 | A20 | 完了。main祖先remote7本を整理、Closed/未マージremote2本とローカル草稿2本を同じarchiveの親commitに保全。mergedローカル38本/保全済み別名2本、stale tracking77本を整理。[保全先](archive/README.md#closedの旧typescript提案) |
 
-後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。いずれもmainへ未merge。後続の最終head CIは確認中であり、初回CIの成功を新しい変更へ流用しない。
+後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。いずれもmainへ未merge。CLI起動修正後の[6 gate CI](https://github.com/Ningensei848/kaname/actions/runs/38895961647)は成功。Apple selectorの追加後は再検証し、以前のCI成功を新しい設定へ流用しない。

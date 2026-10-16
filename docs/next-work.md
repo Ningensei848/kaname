@@ -17,9 +17,9 @@
 ## 継続作業の現在地
 
 A01/A04〜A16/A18〜A20の整理・実装・評価はローカル検証まで完了。A06の既知advisory、A09の性能未立証、A10のcache未採用は、評価の結論として制約を保持する。
-全Python835件・Web11件、実246記事の前後各3回の全Web受入、Release同一chain読取り比較、Graph再評価、実GCS規模計測、Windows一時NTFSの受入を実施した。
+全Python837件・Web11件、実246記事の前後各3回の全Web受入、Release同一chain読取り比較、Graph再評価、実GCS規模計測、Windows一時NTFSの受入を実施した。
 
-残る進行中作業は、専用Draft PR #194の新しいheadに対するCI、A03の通常30件/cap付き実行後のusage/source-health/公開照合、A02の確定明細、A17の利用者指定環境である。
+残る進行中作業は、専用Draft PR #194の新しいheadに対するCI、A03のApple Featured抽出修正の本番適用と残る1件の処理、追加生成0の公開照合、A02の確定明細、A17の利用者指定環境である。
 整理Draft PR #193と改善Draft PR #194はいずれもmainへ未merge。元の監査基点を残し、進捗は[監査一覧の表](repository-audit.md#改善の依存関係と進捗)だけを更新する。
 
 ## 完了済み機能の扱い
