@@ -815,5 +815,28 @@
     "Graph normalization was evaluated and not applied",
     "Optional period generation limits remain disabled by default",
     "No exactly-once billing guarantee between API and persistence"
-  ]
+  ],
+  "final_workflow": {
+    "url": "https://github.com/Ningensei848/kaname/actions/runs/39606366786",
+    "status": "success",
+    "publication": [
+      {
+        "status": "passed",
+        "content_commit": "35356be99e8c687193b043c76ff77e4c136fb568",
+        "dataset_digest": "4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f",
+        "artifact_digest": "5e41db6d4e7cc64a25e6e62753b1ab7a75411b91d32fe260adb1c8fc8582922c",
+        "notes": 311
+      }
+    ]
+  },
+  "closed_resolved_issues": [
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201
+  ],
+  "closeout_documentation_pr": "https://github.com/Ningensei848/kaname/pull/202"
 }
