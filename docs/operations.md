@@ -204,8 +204,8 @@ gh workflow run daily.yml --repo Ningensei848/kaname --ref main -f batch_preflig
 出力は件数と判定だけで、本文・台帳ID・object path・費用明細を含みません。
 `ready`でも有料提出の個別承認が必要です。`blocked`/`failed`なら提出せず調査します。
 unknown usageの件数は残り、請求照合完了を意味しません。
-具体的な提出・回収・再実行・費用推計は[#94の準備記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
-独立workflowの実WIF拒否と修正は[修正記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
+具体的な提出・回収・再実行・費用推計は[#94の準備記録](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-acceptance-preparation-2026-10-07.md)、
+独立workflowの実WIF拒否と修正は[修正記録](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/batch-preflight-workflow-fix-2026-10-08.md)を参照してください。
 
 ### Source Healthの読取り
 
@@ -395,7 +395,7 @@ host間隔・robots・retryも維持するため、並列数を増やしても�
 本文抽出/画像候補/変換依存を変えた場合は`python scripts/regression_corpus.py`で
 有効7 sourceの9レイアウトの合成fixtureを比較します。差分があると失敗するので、本文/末尾/画像/captionをレビューしてからgoldenを更新します。
 fixtureは原文のコピーや実サイトへの定期アクセスではありません。
-GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
+GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/p1-p4-implementation-2026-10-11.md)で区別します。
 
 
 ## Knowledge Graphの品質評価
@@ -431,7 +431,7 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 別run間のcache共有・検査省略は行わない。詳細は[日次公開](daily-publication.md#検査読取り性能の設定)。
 
 完了済みGlucoFM計画は実configから除去した。回帰用の固定値は `tests/fixtures/image-repair-plan.json` から一時configへ配置する。
-新しい修復対象には別のレビュー済み計画を用意する。旧planは専用archive branchの元pathから参照できる。
+新しい修復対象には別のレビュー済み計画を用意する。旧planは保全tagの元pathから参照できる。
 
 ## 画像選択の匿名集計
 

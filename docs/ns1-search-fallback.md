@@ -21,4 +21,4 @@
 ## 受入状態
 
 本文/検索語のWikiLink、内部Note優先、未解決時検索、保護構文と元Markdown不変をCI・本番Pagesで受入済み。
-[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/ns1-search-fallback.md)は専用branchへ保全した。Graph正規化の適用とは別の機能である。
+[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/ns1-search-fallback.md)は保全tagから参照できる。Graph正規化の適用とは別の機能である。

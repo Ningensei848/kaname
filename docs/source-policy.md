@@ -6,7 +6,7 @@ LLMが生成したcompact Note群を公開する方針はユーザーが指定�
 ## 取得と要約
 
 有効sourceはGoogle Research/GitHub Blog/Google DeepMindと、2026-10-12の明示指示で有効化したMicrosoft Research/Meta/Apple/Cloudflareの7つです。
-DeepMindの限定受入は[RSS追加記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/source-onboarding.md)、追加4社の利用条件・本文抽出・本番反映の状態は[4社有効化記録](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/four-source-activation.md)で管理します。
+DeepMindの限定受入は[RSS追加記録](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/source-onboarding.md)、追加4社の利用条件・本文抽出・本番反映の状態は[4社有効化記録](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/four-source-activation.md)で管理します。
 AWS Newsは利用条件に関する未解決の制約から無効を継続します。
 source追加時は適用される条件と機械可読の指示を確認し、robots拒否・取得不能時は停止します。
 robotsで取得可能であることだけを、要約・再配布に関する権利の根拠とみなしません。
