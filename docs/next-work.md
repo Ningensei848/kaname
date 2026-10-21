@@ -17,7 +17,7 @@
 
 ## 今回の実施結果と本番への反映
 
-N01〜N06の実装・ローカル受入は完了。変更はレビュー用ブランチ `codex/pagination-tags-kaname` へ集約し、ドラフトPRで審査する。mainへのmerge/本番deployとIssueのCloseはまだ行っていない。#204〜#206はOpenのままである。反映時は[名称移行](naming-migration.md)の旧writer終了確認と、通常Checks/固定公開版の検証を行い、公開後の配信版を照合する。
+N01〜N06の実装・ローカル受入は完了。変更はレビュー用ブランチ `codex/pagination-tags-kaname` へ集約し、[ドラフトPR #207](https://github.com/Ningensei848/kaname/pull/207)で審査中。mainへのmerge/本番deployとIssueのCloseはまだ行っていない。#204〜#206はOpenのままである。反映時は[名称移行](naming-migration.md)の旧writer終了確認と、通常Checks/固定公開版の検証を行い、公開後の配信版を照合する。
 
 - Python/Web888件、Node7件、初回Ctrl/Cmd+K・Ctrl/Cmd+Shift+Kの実ブラウザ4通り、設定検証、checksum固定actionlint、全現行Docsのpath/見出し検査、wheel62モジュール/新CLIを確認した。旧distributionを開発venvから除去し、リポジトリ外からの新CLI起動も成功。
 - content `35356be99e8c687193b043c76ff77e4c136fb568`、dataset `4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f`、311 Noteを固定。Git入力と実Release差分深度6の復元bytesが一致。各入力で61一覧・3,153検索リンク・画像付き186 Note/453画像要求・4幅・外部要求0を検証した。

@@ -65,7 +65,7 @@ python -m kaname source-health # 収集元の状態をJSON表示
 現在の保証は[検証基準](docs/verification.md)、次の開発は[作業一覧](docs/next-work.md)を参照してください。
 完了済み20項目の判定と根拠は[過去の監査一覧](docs/archive/2026-10/completed-audit-2026-10-21.md)へ分離しました。
 パッケージとCLIは`kaname`へ統一しています。既存環境の更新は[名称移行](docs/naming-migration.md)を参照してください。
-完了済み計画と過去の受入記録は[専用アーカイブブランチ](docs/archive/README.md)へ分離しました。
+完了済み計画と過去の受入記録は[履歴ファイルと保全タグ](docs/archive/README.md)へ分離しました。
 
 ## 資料
 
