@@ -3,7 +3,7 @@
 `pages.yml`は固定した公開版からbuildし、検証済みの公開artifactだけをGitHub Pagesへ渡します。日次は`release_tag`で[完全版＋差分を復元](release-distribution.md)し、手動でtagを省略した場合は従来のGit入力を使います。
 実装・ローカル検証・GitHub上の初回deployと公開URLの受入を完了しました。
 公開URL: [kaname](https://ningensei848.github.io/kaname/)。過去のrun/固定版は[archive索引](archive/README.md)へ保全しています。
-日次公開経路は接続し、通常scheduleを受入済みです。[履歴版への実切戻し・現行版復帰](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/pages-rollback-acceptance-2026-10-07.md)も2026-10-07に受入済みです。
+日次公開経路は接続し、通常scheduleを受入済みです。[履歴版への実切戻し・現行版復帰](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/archive/2026-10/pages-rollback-acceptance-2026-10-07.md)も2026-10-07に受入済みです。
 
 ## 権限と設定
 
@@ -73,7 +73,7 @@ npm run check:pages -- --content "$CONTENT_CHECKOUT" \
 upload先は新しいディレクトリにします。同一artifactの再実行は`unchanged`、別版や編集済み出力は拒否します。
 別版の検証には新しい`--output`を指定してください。成功版や処理中lockを自動削除しません。
 Git/Releaseの固定版から元Note bytes・検索・リンク・画面幅を検証します。
-初回/通常schedule/切戻し/復帰は受入済み。最新の保証は[検証基準](verification.md)、当時のhash/runは[整理前の全文](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/pages.md)を参照してください。
+初回/通常schedule/切戻し/復帰は受入済み。最新の保証は[検証基準](verification.md)、当時のhash/runは[整理前の全文](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/pages.md)を参照してください。
 
 ## 日次公開
 

@@ -79,14 +79,14 @@ raw保存の既定無効、外部画像の内容/存続がGitで固定できな�
 
 この節はPR #193の整理時点の状態。後続のコード変更は次節で区別する。
 
-整理前の全257ファイルは専用branch `codex/archive/pre-housekeeping-2026-10-16` に同じcommitで保全した。
+整理前の全257ファイルは元blobを維持して保全した。現在は保全tag `archive/pre-housekeeping-2026-10-16` から参照できる。
 整理差分は `codex/repository-housekeeping-2026-10-16`。mainへは自動mergeしない。
 過去の証拠50件と、完了済み計画/作業記録11件を整理branchの現行ツリーから外す。
 履歴の本文/元blobは書き換えず、[archive索引](archive/README.md)から復元できる。
 
 現行文書の重複した進捗表を整理し、残課題は[次の作業](next-work.md)、保証は[検証基準](verification.md)へ集約する。
 仕様/操作、ADR、合成corpus、互換entrypoint、現役の画像補完plan、コード/設定/lock/workflow/test本体は保持する。
-新しい日次runごとの報告をmainへ追加せず、必要な状態変更だけを反映し、過去の証拠は専用archive branchへ保管する。
+新しい日次runごとの報告をmainへ追加せず、必要な状態変更だけを反映し、過去の証拠は保全tagへ保管する。
 
 ## 改善の依存関係と進捗
 
@@ -119,7 +119,7 @@ flowchart TD
 | A11 | 完了。候補既知判定/完了/障害停止を純粋helperへ分離、receipt復旧を独立methodへ、Batch診断をwriterから分離。保存障害/usage/receipt/入力順の既存回帰を保持 |
 | A12 | 完了。identity生成を純粋helperへ統一。実公開246件の元ID・全非Gitファイルhash/dataset不変、関連130件成功 |
 | A13 | 完了。server/browser通信guard/リンク検査を共通化。異常時cleanupとeditable installなしのCLI起動回帰を追加。Web11件成功、固定実版の全受入6回で全画像/アンカー/4幅・最大2browserを維持 |
-| A14 | 完了。planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchに元pathを保持。関連36件成功 |
+| A14 | 完了。planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、保全tagに元pathを保持。関連36件成功 |
 | A15 | 評価完了。同じ公開246件を2回読取り評価。tags2,094/keywords1,184、未解決1,184/曖昧0/内部辺0、提案適用後の辺も0。正規化/元Note書換えは未適用（[Graph評価](graph-quality.md)） |
 | A16 | 完了。候補数/選択数/候補あり0選択/打切りを成功composeで匿名集計。Batchは保存outcomeから固定billing reportへ計上し二重計上しない。旧outcomeの欠損指標は推定補完しない |
 | A17 | 完了。ユーザー指定の「現在のsourceと一時領域」で10/21に再受入。有効7 source全件の見出し/本文/HTTP200を照合し、GitHubは一時browser overrideも成功。LLM/GCS書込み0、source設定変更0。Linuxと実Windows Python3.12.14・一時NTFSで編集/候補保持・排他公開・非対応hard link失敗・junction拒否を確認。実Vaultは今回の指定範囲に含めない。`scripts/verify_sync_filesystem.py`で再現可能 |
@@ -130,3 +130,5 @@ flowchart TD
 後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。10/21の明示承認で順にmainへmerge済み（`351202f` / `8b861a1`）。Apple selectorを含む[6 gate CI](https://github.com/Ningensei848/kaname/actions/runs/38897433859)も成功。mainへのmerge後は独立した本番runで再受入する。
 
 2026-10-21のユーザー指定により、A02は既存資料で照合できる範囲と未確定部分の判断、A17は現在のsourceと一時領域を受入範囲とした。完全な請求一致や実Vault一般への保証へ拡張しない。最終の状態・環境証拠は[archive索引](archive/README.md#整理後の計測証拠)に保存する。
+
+2026-10-21の追加整理では、保全用2ブランチも同じ先端commitの注釈付きtagへ移し、常設ブランチを `main`・`legacy`・`content` に集約した。旧資料と未マージ草稿の全履歴は[archive索引](archive/README.md#ブランチを3本へ集約2026-10-21)から参照・復元できる。公開済みtagは保持する。

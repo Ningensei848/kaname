@@ -70,4 +70,4 @@ SDK認証/retry/custom TLSを維持し、標準Storage接続poolをworker数へ�
 
 完全版checkpointと最大7段の差分から公開Note全体を復元する。同じcontent commitではReleaseを増やさず、asset欠損/改変/基底不一致で停止する。
 契約は[Release配布](release-distribution.md)、現在の受入範囲は[検証基準](verification.md)を参照。
-通常schedule・切戻し/復帰・CI再利用・GCS16並列は受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/daily-publication.md)と[archive索引](archive/README.md)へ当時のrun/件数を保全した。
+通常schedule・切戻し/復帰・CI再利用・GCS16並列は受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/daily-publication.md)と[archive索引](archive/README.md)へ当時のrun/件数を保全した。

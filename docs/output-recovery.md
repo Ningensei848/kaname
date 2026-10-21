@@ -19,4 +19,4 @@ Googleの[公開モデル定義](https://ai.google.dev/gemini-api/docs/models/ge
 
 元のDeepMind打切り1件を限定1論理生成/1HTTPで保存・公開し、追加生成0の再実行まで受入済み。#178はClosed。
 通常出力2,048・30件/run・HTTP retry3の既定を維持する。将来の打切りを完全に防ぐ保証はない。
-[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/output-recovery.md)へ元usage/費用・固定公開版・保存不変の照合を保全した。
+[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/output-recovery.md)へ元usage/費用・固定公開版・保存不変の照合を保全した。

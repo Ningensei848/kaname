@@ -35,5 +35,5 @@ GCSの「正本」は生成Noteと運用記録です。原記事HTML/原文を�
 
 ## 受入状態
 
-新規限定収集とRelease配布は実Actionsで受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/incremental-collection.md)へ初回の計数/短縮/保存照合を保全した。
+新規限定収集とRelease配布は実Actionsで受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/incremental-collection.md)へ初回の計数/短縮/保存照合を保全した。
 現在の保留件数は[監査一覧](repository-audit.md#確認できた現在値)を参照。別run間の差分GCS監査/exportと差分HTML buildは未採用である。

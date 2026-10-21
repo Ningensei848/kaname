@@ -56,4 +56,4 @@ NFKC、大文字小文字のcasefold、連続空白の統一だけを表記比�
 | 正規化後の曖昧タイトル群 | 0 |
 
 技術語と記事タイトルが一致しないため、辞書/表記正規化だけの自動適用を採用しない。タグ重複1件も既存Noteの自動書換えや再生成の理由としない。NS1の検索fallbackは本番受入済みで、内部の概念辺とは区別する。
-過去の125件/612語の評価は[整理前の全文](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/graph-quality.md)へ保全している。
+過去の125件/612語の評価は[整理前の全文](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/graph-quality.md)へ保全している。
