@@ -40,14 +40,8 @@ NFKC、大文字小文字のcasefold、連続空白の統一だけを表記比�
 
 一意な公開タイトルだけを解決候補とします。同名複数・正規化衝突はambiguousで、任意のNoteを選びません。自分自身への参照はselfとして分け、Note間の辺に加えません。除外されたNoteはmanifestに存在しないため解決候補になりません。
 
-## 固定実contentの評価結果
+## 評価基点と更新
 
-content commit `b6800161a0f51f07104d1927bf51ead7b7aff4f6`、125 Note、dataset digest `53c7ca546d75abfdca08e802c56f79f19d3e9f917c42fc1c7141b010d1a7f9a1`を評価しました。
-
-- タグ1029件、検索キーワード612件。各Note内の正規化重複は双方0。
-- タグ・検索語の表記群は各3組。
-- 現行のタイトル完全一致で612件すべてunresolved、Note間の辺0。同義語・表記正規化案を適用しても解決0。正規化だけでリンク品質が改善するとは判定しません。
-- 典型的な技術名のキーワードと記事タイトルが一致しないことを示す基点です。NS1の未解決語の検索導線と、一意な内部Note優先を別途実装します。
-- 評価前後の全snapshotファイルhashは一致。保存Note・receipt・index・課金・公開版を変更していません。
-
-レビュー可能な16組の良い/悪い例をfixtureに固定し、曖昧さ、自己参照、辺の重複、順序不変、改変snapshot拒否、無通信・無書込みCLIを含む27件を検証しました。Python全503件も成功しています。CLI互換性・CI分類との関連90件、Source Health/Web投影との関連60件も成功しています。
+過去の固定125 Noteでは検索語612件が全件unresolved、内部辺0で、正規化案でも解決は増えなかった。
+これは当時の基点であり、現在の246 Noteの評価結果ではない。再評価は[監査A15](repository-audit.md#残課題改善候補)で追跡する。
+元hash不変の測定・同義語の良い/悪い16例を含む当時の回帰は[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/codex/archive/pre-housekeeping-2026-10-16/docs/graph-quality.md)を参照。
