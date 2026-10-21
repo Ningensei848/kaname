@@ -108,23 +108,25 @@ flowchart TD
 
 | 項目 | 状態と根拠 |
 |---|---|
-| A01 | 完了。private旧記録4ディレクトリ69ファイルをhash一致で集約。生成cache/buildの51 path・33,232ファイル（見掛け613,769,903 bytes）を削除。実行環境と現在のWeb出力2版・有効last-build pointerは保持 |
-| A02 | 外部入力待ち。ローカル/対象メール/Driveの関連検索で確定明細が見つからず、対象期間/保存先を問い合わせ済み。元usage65行・元単価/unknown/legacyをprivate照合CSVへ準備し、明細欄は空欄のまま。#116を閉じない |
-| A03 | 修正の本番適用待ち。[1回目](https://github.com/Ningensei848/kaname/actions/runs/38894931577)30保存/保留60→27・276公開/配信照合まで成功。[2回目](https://github.com/Ningensei848/kaname/actions/runs/38896314973)25保存/保留27→1、Appleの新Featured構造に既存selectorが一致せずconvert失敗（[#195](https://github.com/Ningensei848/kaname/issues/195)）。6 sourceはhealthyへ回復、Appleのみstreak1/failing。状態583行/保留1は監査整合。2 run計55呼出し/55試行、usage欠損0・追加推計USD0.1444626、既存枠残額0.3275096。新selectorと旧/新9-layout回帰、実本文18,897文字の無課金抽出をPRへ用意したがmain未変更。保存済み25件は[追加生成0のpublish-only](https://github.com/Ningensei848/kaname/actions/runs/38897233994)で公開確認中。未merge修正を本番適用する認証経路は使わない |
+| A01 | 完了。private旧記録4ディレクトリ69ファイルをhash一致で集約。生成cache/buildの51 path・33,232ファイル（見掛け613,769,903 bytes）を削除。検証後のcacheも追加10 path/225ファイル除去。実行環境と現在のWeb出力2版・有効last-build pointerは保持 |
+| A02 | 既存資料による照合判断完了（10/21のユーザー指示）。提供された9月/10月account activities CSVの取引残高は両方整合。前払い/税/利用料を分離し、UTC usage・元価格/legacy9件・Batch IDと照合した。JPY→USD換算レート・project/service/SKU・請求timezoneがなく、usageとの完全一致や差額は未確定と判定。原文/支払識別子/照合表はprivateに保持。追加資料待ちにはせず、完全照合未達の制約を#116へ追記してOpenを維持 |
+| A03 | 完了。保留60→27→1を進め、Apple Featured本文selectorを本番適用。[10/21復旧run](https://github.com/Ningensei848/kaname/actions/runs/39604474178)で1呼出し/1試行/1保存、Appleのstreak6→0、311公開Noteの配信照合まで成功。追加推計USD0.0034714。[続くrun](https://github.com/Ningensei848/kaname/actions/runs/39606366786)は新規発見3件を既存規則の許可domain外として無課金で判定し、保留0・有効7 sourceすべてhealthy/streak0。状態593成功行、state/run監査整合、unknown/未計上Batch0。既存追加枠の保守的残額USD0.2980108。関連失敗通知#195〜#201は解決済み |
 | A04/A05 | 完了。Web入力契約の対象選択を追加。文書path/見出し/旧Git版参照とchecksum固定actionlintを常時CI化し、Daily再利用にも必須化。[初回CI全gate成功](https://github.com/Ningensei848/kaname/actions/runs/38891217687) |
 | A06/A07 | 再監査・例外限定は完了。braces3.0.3/sprintf-js1.1.3にも修正なし。固定lockの9 package・node位置・伝播辺まで許容を限定。Node5件と実npm auditを照合。既知2 advisoryは継続制約 |
-| A08 | 実装/ローカル検証完了。同一操作内だけ検証済みasset bytesをbounded LRUへ保持。fresh metadata/tag/全chain検証は維持。改変/欠損/上限/操作跨ぎを含む42件成功。実246記事の読取り比較でmetadata30回不変、転送2,354,862→784,954 bytes。実日次速度の保証とはしない（[配布仕様](release-distribution.md#同一処理内のasset-bytes再利用)） |
+| A08 | 完了。同一操作内だけ検証済みasset bytesをbounded LRUへ保持。fresh metadata/tag/全chain検証は維持。改変/欠損/上限/操作跨ぎを含む42件成功。実246記事の読取り比較でmetadata30回不変、転送2,354,862→784,954 bytes。実日次速度の保証とはしない（[配布仕様](release-distribution.md#同一処理内のasset-bytes再利用)） |
 | A09 | 評価完了。同一246記事・lockのbuild/全受入を前後各3回計測。全生成物digest/検査件数一致、中央値191.344→188.190秒・範囲重複。速度改善は未立証（[計測条件](design-decisions.md#固定web入力の反復計測)） |
 | A10 | 設計評価完了。private run間cache/環境全体/差分HTMLは無効化条件と境界を定義し未採用。全件監査/全体buildを維持（[採否](design-decisions.md#cacheの採否と無効化条件)） |
-| A11 | 実装/ローカル検証完了。候補既知判定/完了/障害停止を純粋helperへ分離、receipt復旧を独立methodへ、Batch診断をwriterから分離。保存障害/usage/receipt/入力順の既存回帰を保持 |
+| A11 | 完了。候補既知判定/完了/障害停止を純粋helperへ分離、receipt復旧を独立methodへ、Batch診断をwriterから分離。保存障害/usage/receipt/入力順の既存回帰を保持 |
 | A12 | 完了。identity生成を純粋helperへ統一。実公開246件の元ID・全非Gitファイルhash/dataset不変、関連130件成功 |
 | A13 | 完了。server/browser通信guard/リンク検査を共通化。異常時cleanupとeditable installなしのCLI起動回帰を追加。Web11件成功、固定実版の全受入6回で全画像/アンカー/4幅・最大2browserを維持 |
 | A14 | 完了。planを `tests/fixtures/image-repair-plan.json` へ移し、一時configでworkflow入口を検証。実configから除去し、専用archive branchに元pathを保持。関連36件成功 |
 | A15 | 評価完了。同じ公開246件を2回読取り評価。tags2,094/keywords1,184、未解決1,184/曖昧0/内部辺0、提案適用後の辺も0。正規化/元Note書換えは未適用（[Graph評価](graph-quality.md)） |
 | A16 | 完了。候補数/選択数/候補あり0選択/打切りを成功composeで匿名集計。Batchは保存outcomeから固定billing reportへ計上し二重計上しない。旧outcomeの欠損指標は推定補完しない |
-| A17 | 限定環境で受入、利用者環境待ち。既存GitHub Blog記事を一時browser overrideで取得し原題/本文を照合、LLM/GCS書込み0。実Windows Python3.12.14・一時NTFSで編集/候補保持・排他公開・非対応hard link失敗・junction拒否を確認し、junctionの検出漏れを修正。`scripts/verify_sync_filesystem.py`で再現可能。利用者Vault/他sourceは未指定で未受入 |
-| A18 | 任意機能の実装/ローカル検証完了。UTC日/月残額・元価格・unknown/未計上Batch停止・run capとの最小値を定義し、複数run/月境界を回帰検証。既定null、本番通知/30件を変更しない（[運用](operations.md#任意のutc日月生成上限)） |
+| A17 | 完了。ユーザー指定の「現在のsourceと一時領域」で10/21に再受入。有効7 source全件の見出し/本文/HTTP200を照合し、GitHubは一時browser overrideも成功。LLM/GCS書込み0、source設定変更0。Linuxと実Windows Python3.12.14・一時NTFSで編集/候補保持・排他公開・非対応hard link失敗・junction拒否を確認。実Vaultは今回の指定範囲に含めない。`scripts/verify_sync_filesystem.py`で再現可能 |
+| A18 | 任意機能の完了。UTC日/月残額・元価格・unknown/未計上Batch停止・run capとの最小値を定義し、複数run/月境界を回帰検証。既定null、本番通知/30件を変更しない（[運用](operations.md#任意のutc日月生成上限)） |
 | A19 | 評価/計測指標追加は完了。実GCS1,059 object/6,718,993 bytes、index2/305,512 bytes・0.005秒、専用auditプロセス最大RSS85,628KiB。DB移行を先行せず継続観測（[規模判断](design-decisions.md#現規模と移行判断)） |
-| A20 | 完了。main祖先remote7本を整理、Closed/未マージremote2本とローカル草稿2本を同じarchiveの親commitに保全。mergedローカル38本/保全済み別名2本、stale tracking77本を整理。[保全先](archive/README.md#closedの旧typescript提案) |
+| A20 | 完了。main祖先remote7本とmerge済み整理/改善PRの2 branchを整理、Closed/未マージremote2本とローカル草稿2本を同じarchiveの親commitに保全。mergedローカル38本/保全済み別名2本、stale tracking77本を整理。[保全先](archive/README.md#closedの旧typescript提案) |
 
-後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。いずれもmainへ未merge。CLI起動修正後の[6 gate CI](https://github.com/Ningensei848/kaname/actions/runs/38895961647)は成功。Apple selectorの追加後は再検証し、以前のCI成功を新しい設定へ流用しない。
+後続の変更は[Draft PR #194](https://github.com/Ningensei848/kaname/pull/194)にまとめ、整理[Draft PR #193](https://github.com/Ningensei848/kaname/pull/193)をbaseとする。10/21の明示承認で順にmainへmerge済み（`351202f` / `8b861a1`）。Apple selectorを含む[6 gate CI](https://github.com/Ningensei848/kaname/actions/runs/38897433859)も成功。mainへのmerge後は独立した本番runで再受入する。
+
+2026-10-21のユーザー指定により、A02は既存資料で照合できる範囲と未確定部分の判断、A17は現在のsourceと一時領域を受入範囲とした。完全な請求一致や実Vault一般への保証へ拡張しない。最終の状態・環境証拠は[archive索引](archive/README.md#整理後の計測証拠)に保存する。
