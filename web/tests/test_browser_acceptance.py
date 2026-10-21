@@ -11,7 +11,7 @@ import pytest
 from bs4 import BeautifulSoup
 
 import kaname_web.browser_acceptance as acceptance
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 
 
 def test_pages_cli_starts_without_editable_install_or_pythonpath(tmp_path):

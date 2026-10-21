@@ -6,12 +6,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-from techkb.config import load_config
-from techkb.converter import Converter
-from techkb.extraction import extract_main
-from techkb.html_cleaner import clean_html
-from techkb.images import article_images
-from techkb.normalize import normalize_markdown
+from kaname.config import load_config
+from kaname.converter import Converter
+from kaname.extraction import extract_main
+from kaname.html_cleaner import clean_html
+from kaname.images import article_images
+from kaname.normalize import normalize_markdown
 
 
 def project(case):

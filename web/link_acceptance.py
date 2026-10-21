@@ -4,8 +4,8 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 from bs4 import BeautifulSoup
 
-from techkb.publication import ExportError, note_frontmatter
-from techkb.wikilinks import project_wikilinks, spans
+from kaname.publication import ExportError, note_frontmatter
+from kaname.wikilinks import project_wikilinks, spans
 
 
 def parse_html(files):

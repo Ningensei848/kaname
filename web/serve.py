@@ -9,7 +9,7 @@ from urllib.parse import unquote, urlsplit
 
 WEB = Path(__file__).resolve().parent
 sys.path.insert(0, str(WEB.parent / "src"))
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 from kaname_web.artifact import load_artifact
 
 
@@ -18,6 +18,12 @@ def server(artifact, port=8765):
     class Handler(BaseHTTPRequestHandler):
         protocol_version = 'HTTP/1.1'
         disable_nagle_algorithm = True
+        def handle(self):
+            try:
+                super().handle()
+            except (BrokenPipeError, ConnectionResetError):
+                # A browser can abandon a speculative request on navigation.
+                self.close_connection = True
         def do_HEAD(self):
             self.respond(False)
         def do_GET(self):

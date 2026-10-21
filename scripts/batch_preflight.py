@@ -5,9 +5,9 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from techkb.batch import preflight
-from techkb.config import load_config
-from techkb.storage import GCSStore
+from kaname.batch import preflight
+from kaname.config import load_config
+from kaname.storage import GCSStore
 
 
 def main():

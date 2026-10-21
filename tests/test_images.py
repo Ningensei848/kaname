@@ -3,11 +3,11 @@ import json
 import pytest
 import yaml
 
-from techkb.images import article_images, image_url
-from techkb.composer import image_block
-from techkb.publication import export_notes, ExportError
-from techkb.state import State
-from techkb.publication.snapshot import load_snapshot
+from kaname.images import article_images, image_url
+from kaname.composer import image_block
+from kaname.publication import export_notes, ExportError
+from kaname.state import State
+from kaname.publication.snapshot import load_snapshot
 from kaname_web.artifact import finish_html
 from bs4 import BeautifulSoup
 from test_batch import setup
@@ -114,9 +114,9 @@ def test_extracts_body_images_resolves_lazy_url_and_respects_input_cut():
 @pytest.mark.parametrize('alt', ['ConvApparel1_Counterfactual', 'metric*score',
                                   r'array\_value', 'Array[0]', 'cost_$5'])
 def test_candidate_matches_converted_escaped_alt_without_changing_it(alt):
-    from techkb.converter import Converter
-    from techkb.html_cleaner import clean_html
-    from techkb.normalize import normalize_markdown
+    from kaname.converter import Converter
+    from kaname.html_cleaner import clean_html
+    from kaname.normalize import normalize_markdown
 
     raw = f'<article><p>Measured results</p><img src="/plot.png" alt="{alt}"></article>'.encode()
     markdown = normalize_markdown(Converter().convert(clean_html(raw)))
@@ -126,9 +126,9 @@ def test_candidate_matches_converted_escaped_alt_without_changing_it(alt):
 
 
 def test_google_media_captions_match_inline_emphasis_and_stay_with_their_image():
-    from techkb.converter import Converter
-    from techkb.html_cleaner import clean_html
-    from techkb.normalize import normalize_markdown
+    from kaname.converter import Converter
+    from kaname.html_cleaner import clean_html
+    from kaname.normalize import normalize_markdown
 
     raw = b'''<main><div class="blog-detail-wrapper">
         <div class="dynamic_media"><picture><img src="/plot-1.png" alt="First_plot"></picture>
@@ -144,9 +144,9 @@ def test_google_media_captions_match_inline_emphasis_and_stay_with_their_image()
 
 
 def test_escaped_alt_and_media_caption_still_respect_input_cut():
-    from techkb.converter import Converter
-    from techkb.html_cleaner import clean_html
-    from techkb.normalize import normalize_markdown
+    from kaname.converter import Converter
+    from kaname.html_cleaner import clean_html
+    from kaname.normalize import normalize_markdown
 
     raw = b'''<main>
         <div class="dynamic_media"><img src="/first.png" alt="First_plot">

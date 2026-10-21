@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from techkb import cli
-from techkb.graph_quality import graph_quality, term_key
-from techkb.publication import export_notes
-from techkb.publication.snapshot import load_snapshot
+from kaname import cli
+from kaname.graph_quality import graph_quality, term_key
+from kaname.publication import export_notes
+from kaname.publication.snapshot import load_snapshot
 
 
 CASES = json.loads((Path(__file__).parent / "fixtures/graph_quality.json").read_text())

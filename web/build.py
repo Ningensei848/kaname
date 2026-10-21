@@ -10,8 +10,8 @@ import yaml
 
 WEB = Path(__file__).resolve().parent
 sys.path.insert(0, str(WEB.parent / "src"))
-from techkb.publication import ExportError, json_bytes, reject_symlinks
-from techkb.site import load_snapshot, project_content
+from kaname.publication import ExportError, json_bytes, reject_symlinks
+from kaname.site import load_snapshot, project_content
 from kaname_web.artifact import seal_artifact, install_artifact
 
 

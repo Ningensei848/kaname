@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 
 from serve import server
 from image_acceptance import image_guard
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 
 
 @contextmanager

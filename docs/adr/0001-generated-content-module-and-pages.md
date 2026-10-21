@@ -47,7 +47,7 @@ kanameは本体Vaultに対してsubmoduleとして参照でき、同時に独立
 | Quartz公開はVault同期後の別課題 | 同じ配布snapshotから独立したPagesを作り、人力Vaultに依存しない |
 | Phase 2完了後にだけ後続機能へ着手 | 新しい配布・Web工程を優先し、既存の品質/復旧課題は別の受入軸で継続 |
 
-`techkb sync --vault`とPR #98の編集保護は互換経路として残します。
+`kaname sync --vault`とPR #98の編集保護は互換経路として残します。
 生成モジュールの自動更新に候補の手動統合を要求する旧sync方式は使いません。
 互換syncをsubmodule checkoutへ向けず、標準Git更新も利用側の変更があれば停止する契約にします。
 既存CLI、日次収集、GCS IAM/lifecycle、heartbeatはこのADR改訂で変更しません。

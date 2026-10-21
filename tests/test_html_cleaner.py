@@ -1,4 +1,4 @@
-from techkb.html_cleaner import article_authors
+from kaname.html_cleaner import article_authors
 
 
 def test_article_authors_from_meta():

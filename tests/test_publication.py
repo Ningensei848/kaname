@@ -3,13 +3,13 @@ from pathlib import Path
 
 import pytest
 
-from techkb.cli import main
-from techkb.composer import compose
-from techkb.metadata_refresh import refresh_note_metadata
-from techkb.models import ArticleEnrichment
-from techkb.pending import Candidate
-from techkb.publication import export_notes, ExportError, ExportDirectorySnapshot, sha256
-from techkb.state import INDEX_COLUMNS, encode_tsv, decode_tsv
+from kaname.cli import main
+from kaname.composer import compose
+from kaname.metadata_refresh import refresh_note_metadata
+from kaname.models import ArticleEnrichment
+from kaname.pending import Candidate
+from kaname.publication import export_notes, ExportError, ExportDirectorySnapshot, sha256
+from kaname.state import INDEX_COLUMNS, encode_tsv, decode_tsv
 
 
 def add_note(harness, url="https://example.com/a", at="2026-10-01T00:00:00Z", title="公開Note", truncated=False):
@@ -138,7 +138,7 @@ def test_legacy_truncated_bytes_preserved_with_unknown_scope(harness, tmp_path):
     assert entry["llm_input_truncated"] is True
     original = harness.store.data[row["note_object"]]
     assert (tmp_path / "public" / entry["path"]).read_bytes() == original
-    from techkb.site import load_snapshot, project_content
+    from kaname.site import load_snapshot, project_content
     rendered = project_content(*load_snapshot(tmp_path / "public"))[entry["path"]].decode()
     assert "上限文字数は記録されていません" in rendered
     assert "20,000" not in rendered
@@ -284,7 +284,7 @@ def test_rerun_is_unchanged_and_existing_files_are_never_replaced(harness, tmp_p
 
 def test_interrupted_install_has_no_completion_manifest(harness, tmp_path, monkeypatch):
     add_note(harness)
-    import techkb.publication.install as publication
+    import kaname.publication.install as publication
     real_link = publication.os.link
     calls = 0
     def interrupted(source, target, **kwargs):
@@ -363,7 +363,7 @@ def test_cli_offline_constructs_no_network_clients_or_prints_content(harness, tm
     def forbidden(*args, **kwargs):
         pytest.fail("export must not construct collection/network clients")
     for cls in ("Fetcher", "SourceFetcher", "Gemini", "Converter", "GCSStore"):
-        monkeypatch.setattr("techkb.cli." + cls, forbidden)
+        monkeypatch.setattr("kaname.cli." + cls, forbidden)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     assert main(["export-notes", "--state-dir", str(snapshot), "--output", str(tmp_path / "public")]) == 0
     output = capsys.readouterr().out
@@ -428,7 +428,7 @@ def test_directory_swap_cannot_redirect_note_writes(harness, tmp_path, monkeypat
     add_note(harness)
     output, external = tmp_path / "public", tmp_path / "external"
     external.mkdir()
-    import techkb.publication.install as publication
+    import kaname.publication.install as publication
     real_link = publication.os.link
     swapped = False
     def swap_directory(source, target, **kwargs):
@@ -450,9 +450,9 @@ def test_gcs_cli_needs_no_gemini_credentials_and_never_writes(harness, tmp_path,
     def forbidden(*args, **kwargs):
         pytest.fail("export must not write GCS or construct collection clients")
     for cls in ("Fetcher", "SourceFetcher", "Gemini", "Converter"):
-        monkeypatch.setattr("techkb.cli." + cls, forbidden)
+        monkeypatch.setattr("kaname.cli." + cls, forbidden)
     monkeypatch.setattr(harness.store, "write", forbidden)
-    monkeypatch.setattr("techkb.cli.GCSStore", lambda bucket: harness.store)
+    monkeypatch.setattr("kaname.cli.GCSStore", lambda bucket: harness.store)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     assert main(["export-notes", "--output", str(tmp_path / "public")]) == 0
     assert json.loads(capsys.readouterr().out)["notes"] == 1

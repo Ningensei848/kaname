@@ -3,10 +3,10 @@ import re
 
 import pytest
 
-from techkb.markup import concept, plain, valid_saved_concept
-from techkb.publication import export_notes, ExportError
-from techkb.publication.snapshot import load_snapshot
-from techkb import composer
+from kaname.markup import concept, plain, valid_saved_concept
+from kaname.publication import export_notes, ExportError
+from kaname.publication.snapshot import load_snapshot
+from kaname import composer
 
 
 @pytest.mark.parametrize('raw,expected', [
@@ -40,7 +40,7 @@ def test_saved_legacy_note_exports_without_rewriting_note_or_receipt(harness, mo
     payload['related_concepts'] = ['Alpha / Beta', 'GlucoFM']
     harness.sdk.text = json.dumps(payload)
     monkeypatch.setattr(composer, 'concept', legacy)
-    monkeypatch.setattr('techkb.pipeline.article_authors', lambda _: ['First / Last'])
+    monkeypatch.setattr('kaname.pipeline.article_authors', lambda _: ['First / Last'])
     assert harness.pipeline.run().saved == 1
     note = next(harness.store.read(n) for n in harness.store.list('notes/'))
     assert b'- [[Alpha   Beta]]' in note

@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'web')]
 from build_pages import build_pages
 from check_pages import check
-from techkb.publication.git_snapshot import content_snapshot
+from kaname.publication.git_snapshot import content_snapshot
 
 
 def benchmark(content, commit, repeats=3):

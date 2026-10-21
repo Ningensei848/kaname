@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from techkb.publication import export_notes, ExportError, json_bytes, sha256
-from techkb.site import load_snapshot, project_content, collection_path
+from kaname.publication import export_notes, ExportError, json_bytes, sha256
+from kaname.site import load_snapshot, project_content, collection_path
 from kaname_web.artifact import seal_artifact, load_artifact, install_artifact
 
 

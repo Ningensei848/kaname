@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from techkb.operations import publish_issues
+from kaname.operations import publish_issues
 
 
 def failure_event(run_id, repository, collect, audit, export, publish, pages, collection_outcome=""):

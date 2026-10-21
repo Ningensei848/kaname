@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from techkb.batch import inspect_batch
-from techkb.cli import main
+from kaname.batch import inspect_batch
+from kaname.cli import main
 from test_batch import setup
 
 
@@ -81,9 +81,9 @@ def test_snapshot_cli_does_not_construct_network_clients(harness, tmp_path, monk
     path.write_bytes(h.store.read(name))
     def forbidden(*args, **kwargs):
         pytest.fail('ledger inspection must not construct network clients')
-    monkeypatch.setattr('techkb.cli.GCSStore', forbidden)
-    monkeypatch.setattr('techkb.cli.Gemini', forbidden)
-    monkeypatch.setattr('techkb.cli.Fetcher', forbidden)
+    monkeypatch.setattr('kaname.cli.GCSStore', forbidden)
+    monkeypatch.setattr('kaname.cli.Gemini', forbidden)
+    monkeypatch.setattr('kaname.cli.Fetcher', forbidden)
     monkeypatch.delenv('GEMINI_API_KEY', raising=False)
     assert main(['batch-inspect', '--batch-id', batch_id, '--state-dir', str(tmp_path)]) == 0
     assert json.loads(capsys.readouterr().out)['items'] == 1
@@ -100,10 +100,10 @@ def test_remote_cli_uses_only_get_and_closes_client(harness, monkeypatch, capsys
     def forbidden(*args, **kwargs):
         pytest.fail('remote inspection must not fetch articles or submit work')
     client = SimpleNamespace(batches=SimpleNamespace(get=get))
-    monkeypatch.setattr('techkb.cli.GCSStore', lambda _: h.store)
-    monkeypatch.setattr('techkb.cli.Gemini', lambda *args: SimpleNamespace(client=client, close=lambda: calls.append('close')))
-    monkeypatch.setattr('techkb.cli.Fetcher', forbidden)
-    monkeypatch.setattr('techkb.cli.Converter', forbidden)
+    monkeypatch.setattr('kaname.cli.GCSStore', lambda _: h.store)
+    monkeypatch.setattr('kaname.cli.Gemini', lambda *args: SimpleNamespace(client=client, close=lambda: calls.append('close')))
+    monkeypatch.setattr('kaname.cli.Fetcher', forbidden)
+    monkeypatch.setattr('kaname.cli.Converter', forbidden)
     monkeypatch.setenv('GEMINI_API_KEY', 'fixture-only')
     before = dict(h.store.data)
     assert main(['batch-inspect', '--batch-id', batch_id, '--remote']) == 0
@@ -120,7 +120,7 @@ def test_remote_cli_uses_only_get_and_closes_client(harness, monkeypatch, capsys
 def test_invalid_cli_combinations_fail_before_network(arguments, monkeypatch):
     def forbidden(*args, **kwargs):
         pytest.fail('invalid inspection arguments must fail before network')
-    monkeypatch.setattr('techkb.cli.GCSStore', forbidden)
+    monkeypatch.setattr('kaname.cli.GCSStore', forbidden)
     assert main(arguments) == 1
 
 
@@ -152,7 +152,7 @@ def test_remote_inspection_reports_image_types_without_values_or_writes(harness,
 
 
 def test_image_diagnostics_bound_items_and_hide_unknown_nested_values():
-    from techkb.batch import image_response_shape
+    from kaname.batch import image_response_shape
     response = SimpleNamespace(text=json.dumps({"images": [
         {"image_id": {"PRIVATE_KEY": "PRIVATE_VALUE"}, "after": ["PRIVATE"]}
     ] * 20}))

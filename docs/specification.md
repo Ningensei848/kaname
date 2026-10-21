@@ -28,7 +28,7 @@ Pages buildは人力Vault、収集state、rootの文書archiveを入力にしま
 
 ## PythonとWebの境界
 
-Pythonの`techkb`は収集・要約・非公開stateと、公開snapshot検証・Quartz入力Markdownの生成を担います。
+Pythonの`kaname`は収集・要約・非公開stateと、公開snapshot検証・Quartz入力Markdownの生成を担います。
 受渡しは[公開・配布契約](publication.md)の`manifest.json`と`notes/<id>.md`です。
 Quartz入力は実行ごとの専用stagingへ生成し、共有の`web/content/`を状態管理に使いません。
 `web/kaname_web`はHTML後処理、成果物のseal/検証/配置、Pages準備、配信後検証を担います。
@@ -82,7 +82,7 @@ Pagesの表示中のcommit/digestを確認でき、利用側も同じ版を取�
 
 ## 収集基盤との互換性
 
-既存のstandard収集、CLI/パッケージ名`techkb`、設定、GCS保存形式、重複判定を維持します。
+standard収集、設定、GCS保存形式、重複判定を維持します。Issue #206によりCLI/パッケージ名を`kaname`へ統一します。旧環境変数・同期state・Batch/通知識別子の互換読取りは[名称移行](naming-migration.md)に従います。
 有効sourceはGoogle Research/GitHub Blog/Google DeepMind/Microsoft Research/Meta/Apple/Cloudflareの7つ、HTTP/RSS、standard、全source合計30件/run、minimalです。
 追加4社は公式記事hostとsource固有の本文セレクタで範囲を限定します。AI要約専用User-Agentを示し、robots拒否や本文不一致では生成前に停止します。
 DeepMindは最終article hostを`deepmind.google`/`blog.google`に限定し、対象外redirectは本文変換・生成前にfilterします。

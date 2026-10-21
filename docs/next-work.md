@@ -1,35 +1,36 @@
-# 作業順と完了状況
+# 次に進める作業
 
-2026-10-21 JST更新。10/16に洗い出した20項目を、以下の依存順に整理・改善・評価した。
-元の20項目の根拠/完了条件と、依存関係・検証済み進捗は[監査一覧](repository-audit.md#改善の依存関係と進捗)で管理する。
+2026-10-22 JST。旧A01〜A20は整理・改善・評価を完了した。[旧作業記録](archive/2026-10/completed-work-2026-10-21.md)と[旧監査一覧](archive/2026-10/completed-audit-2026-10-21.md)へ分離した。完了は各項目の受入範囲での判断であり、残余制約の解消を意味しない。
 
-| 順序 | 作業と依存 |
-|---|---|
-| 1 | A01: ローカル基点/指示/一時物を調査し、private記録を保全して環境を確立 |
-| 2 | A04/A05: Web契約のCI対象抜けを埋め、Docs/Actionsの静的検証を必須gateにする |
-| 3 | A06/A07: 現行依存を再監査し、既知例外のversion/配置/経路を固定 |
-| 4 | A12/A14 → A11/A13: identity/fixture依存を先に分離し、収集状態遷移とWeb検証を整理 |
-| 5 | A08/A09 → A10/A19: 同一版のHTTP/bytes/工程/メモリを計測し、cache再利用と規模判断を行う |
-| 6 | A15/A16: 新公開版のGraph評価と画像候補/選択の匿名指標を整える |
-| 並行 | A03/A17/A18: source保留/実環境/総予算の条件を確認して受入。A20の旧branchは祖先・独自commitを保全して整理 |
-| 並行評価 | A02: 提供資料と元usage/価格/legacy/unknownを対応付ける。既存資料で判断するユーザー指示に基づき、残高整合と差額未確定を区別 |
+## 実行するタスク
 
-## 継続作業の現在地
+| ID / 順序 | 内容・完了条件 | 状態 |
+|---|---|---|
+| N01 | 完了済み20項目を履歴へ改名・移動し、現行Docsのリンクと一時NTFS受入範囲を整合させる | 完了。現行24文書のリンク検査成功 |
+| N02 / [#204](https://github.com/Ningensei848/kaname/issues/204) | トップ・日付順・出典/カテゴリ別一覧を静的ページ分割。全Noteへ重複/欠落なく到達でき、2ページ目以降の直接URL・戻る・4幅・JS無効も動作する。次ページだけを低優先度で先読みし、低速回線/節約設定では抑制。初期HTML/DOM/転送とブラウザ性能を同じ公開版で比較する | ローカル完了。24件/ページ、311 Note・61一覧の全受入。検索index/初期化も遅延。[反復計測](web-preview.md#初期表示の反復計測)で初期転送76.8%・LCP中央値71.7%減 |
+| N03 / [#205](https://github.com/Ningensei848/kaname/issues/205) | タグの正規化・明示同義語をWeb検索とタグ導線に適用。ai-egent / ai-agent / AIエージェントで同じNote集合を返す。C/C++/C#などは区別。既存元Markdown/Note ID/datasetは変更しない。新規生成タグも同じ辞書で統一する | ローカル完了。27 Noteの実ブラウザで5別名の検索結果一致、通常検索保持、C++/C#の生成前変換を検証。元Note bytes不変 |
+| N04 / [#206](https://github.com/Ningensei848/kaname/issues/206) | 現行パッケージ/CLI/import/環境変数/Actions/通知/Docsをkanameへ統一。旧同期state・Batch照合・通知markerを読める移行互換を残し、二重課金/通知や編集消失を防ぐ。履歴資料と過去の公開版を一括改変しない | ローカル完了。全Python/Web888件・旧識別子の回帰5件・新CLI導入/設定検証・Linux同期受入成功。[移行](naming-migration.md) |
+| N05 | npm依存を再監査し、既知2 advisoryの修正可否と固定例外を確認。変更時はlock/integrityとWeb全受入を更新し、未知警告は拒否する | 完了。実監査は既知2件だけ。公開最新版braces3.0.3/sprintf-js1.1.3に修正なし。lock/例外不変、Node7件成功 |
+| N06 | 現在の7 sourceのhealth・保留・画像観測・GCS規模を読取り確認。公開版を固定して新機能の全Web受入とGit/Release同一性を確認し、根拠と未確認範囲を記録する | 完了。7 source healthy/保留0、593成功行、GCS audit問題0。固定311 NoteをGitと実Releaseで照合し、両入力の全Web受入成功 |
 
-20項目の今回の整理・改善・評価は完了。整理PR #193と改善PR #194を承認に基づいてmainへmergeした。全Python837件・Web11件・6 gate CI、固定246記事の前後各3回の全Web受入、Release読取り比較、Graph/GCS規模評価、現在の7 sourceとLinux/Windows一時NTFSを検証した。
+各実装では全元Markdown・秘密境界・検索・リンク/アンカー・画像・375/768/1024/1440pxの既存gateを維持する。ローカル実装/受入、本番配信、IssueのClosedを区別して記録する。通常生成設定を変更せず、追加の有料生成をタスク検証に使わない。
 
-A03は保留0・有効7 sourceがhealthy、593成功行のstate/run監査整合。復旧した311 Noteの公開・配信照合も成功した。失敗通知Issue #195〜#201を解決済みとした。
-A02は既存CSVの取引残高整合と未照合範囲の判断までを完了。適用換算レート/対象project・SKU/請求timezoneがなく、usageと請求の完全一致や差額は未確定で、#116にはその制約を残す。
-A17はユーザー指定の現在のsource・一時領域で受入済み。実Vaultへの書込みは今回の範囲に含めない。
+## 今回の実施結果と本番への反映
 
-今後の保守では、npm既知2 advisory、性能改善未立証、run間cache/差分buildの未採用、請求の帰属/価格仮定、APIと保存の非transaction境界を維持して判断する。これらの制約を、今回の判定を超えた保証へ置き換えない。
-詳細な項目別証拠と過去基点は[監査一覧](repository-audit.md#改善の依存関係と進捗)、保存した計測記録は[archive索引](archive/README.md#整理後の計測証拠)を参照する。
+N01〜N06の実装・ローカル受入は完了。変更はレビュー用ブランチ `codex/pagination-tags-kaname` へ集約し、ドラフトPRで審査する。mainへのmerge/本番deployとIssueのCloseはまだ行っていない。#204〜#206はOpenのままである。反映時は[名称移行](naming-migration.md)の旧writer終了確認と、通常Checks/固定公開版の検証を行い、公開後の配信版を照合する。
 
-## 完了済み機能の扱い
+- Python/Web888件、Node7件、初回Ctrl/Cmd+K・Ctrl/Cmd+Shift+Kの実ブラウザ4通り、設定検証、checksum固定actionlint、全現行Docsのpath/見出し検査、wheel62モジュール/新CLIを確認した。旧distributionを開発venvから除去し、リポジトリ外からの新CLI起動も成功。
+- content `35356be99e8c687193b043c76ff77e4c136fb568`、dataset `4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f`、311 Noteを固定。Git入力と実Release差分深度6の復元bytesが一致。各入力で61一覧・3,153検索リンク・画像付き186 Note/453画像要求・4幅・外部要求0を検証した。
+- GCSは読取りだけで1,288 object/7,742,281 bytes、最大340,679 bytes。新しい画像観測のあるreportは1件/1記事で候補0・選択0。過去の未観測を0選択とみなさず、品質一般への結論は出さない。GCS書込み・新規Gemini呼出しは0。
+- 任意の期間生成上限は有効化せず、standard・30件・入力20,000文字・出力2,048 tokensを維持した。実Vaultや本番stateの移行は行っていない。
 
-標準収集/復旧、公開snapshot、Git/Release/Pages、通常schedule/切戻し、実Batch保存/公開/生成0再実行、画像対応、NS1、Source Health、corpus/並列化、旧R1〜R5、CI再利用、GCS16並列は受入済み。
-古い「未完了」記述を理由に再実装しない。保証は[検証基準](verification.md)、当時のrun/commit/件数/費用は[archive索引](archive/README.md)を参照する。
+## 残余制約と条件付きの作業
+
+- [#116](https://github.com/Ningensei848/kaname/issues/116)：既存CSVの残高照合と判断は完了。project/SKU・適用換算レート・請求時間帯の不足により完全照合/差額は未確定。新たな明細が得られた時に再照合し、汎用取込基盤を先行実装しない。
+- Graphの内部辺：タグ検索とは別。旧246 Noteでは正規化後も内部辺0。概念と記事タイトルの対応設計が必要になった時に再評価する。
+- run間private cache・差分HTML build・DB移行は現規模で未採用。全件整合検査と全体buildを維持し、実測で制約が出た時に再判断する。
+- 同期の編集/候補保持はLinux/実Windowsの一時NTFSで受入済み。今回追加した旧名との移行互換はLinuxで検証し、実Windowsでは再実行していない。実Vaultと利用者プラグインは対象外。APIと保存のtransaction、厳密なexactly-once課金、全要約の事実確認は保証しない。
 
 <a id="ns1-google-search-fallback"></a>
 
-NS1の動作は[検索リンク仕様](ns1-search-fallback.md)。Graphの正規化/同義語適用は別の改善候補である。
+受入済みの検索リンクは[NS1仕様](ns1-search-fallback.md)。現在の保証は[検証基準](verification.md)、操作は[運用手順](operations.md)を正本とする。

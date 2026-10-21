@@ -42,7 +42,7 @@ gh workflow run pages.yml --repo Ningensei848/kaname --ref main \
 完全版/差分/追加/更新/削除、深度上限、破損拒否、draft再開、公開済み版の変更拒否、redirect認証剥離を検証した。
 実ActionsでGit/Release両入力の公開、全元Markdown/検索/リンク/画像/4幅/配信版、同版再実行でRelease/asset/content不変を受入済み。
 [整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/release-distribution.md)へ初回のrun/件数/費用・独立GCS照合を保全した。
-Release重複HTTPと日次全体の安定短縮は[監査A08/A09](repository-audit.md#残課題改善候補)で追跡する。配布成功をsource健全性や時間短縮の達成と混同しない。
+Releaseの重複転送削減は受入済みで、日次全体の安定短縮は未立証である。[旧監査A08/A09](archive/2026-10/completed-audit-2026-10-21.md#改善の依存関係と進捗)へ当時の判定を保全し、次の開発は[作業一覧](next-work.md)で追跡する。配布成功をsource健全性や時間短縮の達成と混同しない。
 
 ## 同一処理内のasset bytes再利用
 

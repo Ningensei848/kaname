@@ -3,8 +3,8 @@ from types import SimpleNamespace as NS
 import httpx
 import pytest
 from google.genai import errors
-from techkb.operations import cost_report
-from techkb.audit import audit_state, audit_run
+from kaname.operations import cost_report
+from kaname.audit import audit_state, audit_run
 
 
 class BatchSDK:
@@ -125,8 +125,8 @@ def test_definitive_batch_rejection_does_not_block_standard_collection(harness):
 def test_standard_and_batch_preserve_note_bytes_and_receipt_schema(harness, monkeypatch, limit):
     h = harness
     instant = '2026-09-30T23:59:59+00:00'
-    monkeypatch.setattr('techkb.pipeline.now', lambda: instant)
-    monkeypatch.setattr('techkb.batch.now', lambda: instant)
+    monkeypatch.setattr('kaname.pipeline.now', lambda: instant)
+    monkeypatch.setattr('kaname.batch.now', lambda: instant)
     h.app.llm.max_input_chars = limit
     h.fetcher.pages['https://example.com/a'] = (
         b'<html><head><meta name="author" content="Alice Example"></head>'

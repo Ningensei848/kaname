@@ -7,7 +7,7 @@ import sys
 from build import build
 from kaname_web.public_input import public_input
 from kaname_web.pages import prepare_pages
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 
 
 def build_pages(content, commit, output, release_receipt=None):

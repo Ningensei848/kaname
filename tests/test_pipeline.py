@@ -1,5 +1,5 @@
 import json
-from techkb.state import State
+from kaname.state import State
 
 def test_identical_raw_skips_before_converter(harness):
     h = harness

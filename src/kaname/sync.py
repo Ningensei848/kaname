@@ -5,6 +5,7 @@ import os
 from pathlib import Path, PurePosixPath
 import tempfile
 import re
+from .compat import LEGACY_SYNC_ROOT, LEGACY_SYNC_PREFIX
 
 
 def digest(content):
@@ -19,7 +20,7 @@ def path_alias(path):
 
 def atomic(path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(prefix='.techkb-', dir=path.parent)
+    fd, name = tempfile.mkstemp(prefix='.kaname-', dir=path.parent)
     try:
         with os.fdopen(fd, 'wb') as stream:
             stream.write(content); stream.flush(); os.fsync(stream.fileno())
@@ -32,7 +33,7 @@ def atomic(path, content):
 def publish_new(path, content):
     """Publish complete bytes without replacing a concurrently created file."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(prefix='.techkb-', dir=path.parent)
+    fd, name = tempfile.mkstemp(prefix='.kaname-', dir=path.parent)
     try:
         with os.fdopen(fd, 'wb') as stream:
             stream.write(content); stream.flush(); os.fsync(stream.fileno())
@@ -67,14 +68,22 @@ def safe_destination(root, name):
 def sync_vault(store, vault, dry_run=False):
     base = Path(vault).absolute()
     # Keep remote paths under a dedicated vault folder; no .obsidian mutations.
-    root = base / 'TechKB'
+    root = base / 'kaname'
+    legacy = base / LEGACY_SYNC_ROOT
+    if path_alias(legacy):
+        raise ValueError('vault symlink is not supported')
+    if legacy.exists() and root.exists():
+        raise ValueError('multiple sync roots; preserve edits and choose one before syncing')
+    prefix = '.kaname-sync'
+    if legacy.exists():
+        root, prefix = legacy, LEGACY_SYNC_PREFIX
     if any(path_alias(p) for p in (root, base, *base.parents)):
         raise ValueError('vault symlink is not supported')
     root.mkdir(parents=True, exist_ok=True)
-    lock = root / '.techkb-sync.lock'
+    lock = root / (prefix + '.lock')
     fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     try:
-        manifest_path = root / '.techkb-sync.json'
+        manifest_path = root / (prefix + '.json')
         if path_alias(manifest_path):
             raise ValueError('manifest symlink')
         manifest = json.loads(manifest_path.read_bytes()) if manifest_path.exists() else {}

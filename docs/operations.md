@@ -13,7 +13,7 @@ GCSへの認証・読取り・保存・exportに失敗したrunは失敗とし�
 保存失敗を警告だけに変えて新規収集を継続する経路や、ローカル代替保存はありません。
 
 1. Actionsのstageと固定error codeを確認し、GCS認証・通信・世代競合の原因を解消します。同じbucketのwriterを重ねません。
-2. GCS復旧後は`python -m techkb audit-state`で保存状態を確認します。receipt/usageの回収が必要な場合は、通常writerと重ならない時間に`python -m techkb run --max-calls 0`を使います。この操作にはHTTP通信、GCS更新と既存Batchの照合・回収があり、新規の有料提出はありません。
+2. GCS復旧後は`python -m kaname audit-state`で保存状態を確認します。receipt/usageの回収が必要な場合は、通常writerと重ならない時間に`python -m kaname run --max-calls 0`を使います。この操作にはHTTP通信、GCS更新と既存Batchの照合・回収があり、新規の有料提出はありません。
 3. 保存状態が正常になったら[日次公開の公開専用再実行](daily-publication.md#公開だけを再実行)でaudit/export/Git/Pagesへ進めます。これはGCS読取りが必要です。
 4. GCS停止中に公開済みGit版を再build/deployする場合は、[Pages手順](pages.md)の固定`content_commit`を使います。この経路はGCS、記事取得、Geminiを使いません。ローカルbuild/検証と本番deployは別の操作です。
 
@@ -22,7 +22,7 @@ Git履歴からのPages切戻しは非公開GCS/indexを巻き戻しません。
 
 ## 費用を限定したstandard収集
 
-`python -m techkb run --llm-mode standard --max-calls 30 --max-cost-usd 1`で、このrunの新規standard生成に費用推計上限を指定できます。Daily Actionsでも`max_cost_usd`を指定します。正の費用上限を指定したstandard runでは`--max-calls`を設定値より増やし、保留をまとめて処理できます。上限未指定では従来どおり件数を減らすだけです。通常scheduleは空欄で従来どおりです。Batch・公開専用・読取り専用モードとは併用できません。
+`python -m kaname run --llm-mode standard --max-calls 30 --max-cost-usd 1`で、このrunの新規standard生成に費用推計上限を指定できます。Daily Actionsでも`max_cost_usd`を指定します。正の費用上限を指定したstandard runでは`--max-calls`を設定値より増やし、保留をまとめて処理できます。上限未指定では従来どおり件数を減らすだけです。通常scheduleは空欄で従来どおりです。Batch・公開専用・読取り専用モードとは併用できません。
 
 生成前に実際の入力・system/schemaのUTF-8 bytes、1,024 framing token相当、出力上限の2倍と全HTTP再試行回数から保守的に予約額を計算し、計測済みinput/output/thinking費用との合計が上限を越える記事は保留します。単価未定義・非有限/正でない上限はクライアント生成前に拒否します。APIが返したusageが欠ける、再試行が起きる、結果が厳格検証/画像組立てで拒否される場合は、次の有料呼出しへ進みません。既存のusage checkpoint・receipt・保存耐久性の停止条件も維持します。
 
@@ -58,7 +58,7 @@ python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json 
 python scripts/repair_note_images.py --plan config/image-repairs/<Note ID>.json --output /tmp/image-apply --apply
 ```
 
-ActionsではDaily TechKBの`image_repair_plan`に上記パスを指定します。
+ActionsではDaily kanameの`image_repair_plan`に上記パスを指定します。
 `image_repair_apply=false`がプレビュー、`true`が適用です。他の実行mode・上限指定とは併用しません。
 mainのレビュー済み計画だけを許可し、日次writerと同じconcurrencyで直列化します。
 収集・公開jobは実行せず、検証済みNoteと判定JSONを7日間のartifactへ保存し、最後に`audit-state`を実行します。
@@ -118,17 +118,17 @@ HTTPのDNS検査と接続は別処理であり、厳密なネットワーク隔�
 ## 互換機能: Obsidian Vaultへの直接同期
 
 ```bash
-python -m techkb sync --vault /absolute/path/to/vault --dry-run
-python -m techkb sync --vault /absolute/path/to/vault
+python -m kaname sync --vault /absolute/path/to/vault --dry-run
+python -m kaname sync --vault /absolute/path/to/vault
 # GCSの代わりに取得済みsnapshotを利用
-python -m techkb sync --state-dir local-snapshot --vault /absolute/path/to/vault
+python -m kaname sync --state-dir local-snapshot --vault /absolute/path/to/vault
 ```
 
-Vaultの`TechKB/notes/`へ片方向で保存し、`TechKB/.techkb-sync.json`に前回hashを記録します。
+Vaultの`kaname/notes/`へ片方向で保存し、`kaname/.kaname-sync.json`に前回hashを記録します。
 GCSへは書込みません。既存Noteは管理対象でも自動置換しません。
 新しいsubmodule配布経路は別の契約です。このCLIをsubmodule checkoutへ向けず、コピー同期とGit更新を重ねません。
 ローカル編集・未管理ファイル・リモート更新は、元Noteを保持して競合（終了コード1）として返します。
-更新候補は`TechKB/incoming/notes/<object-pathのSHA-256>/<remote-contentのSHA-256>.md`へ別保存します。
+更新候補は`kaname/incoming/notes/<object-pathのSHA-256>/<remote-contentのSHA-256>.md`へ別保存します。
 結果の`updates`に元Noteと候補の相対path、`created/unchanged/conflict`を表示します。
 同じ候補は再作成せず、候補側に編集があればそのファイルも保持して`conflict`を表示します。
 候補内容を確認して利用者が手動で統合してください。候補が元Noteと一致すれば次回はunchangedです。
@@ -139,10 +139,10 @@ manifestは候補保存時に元Noteを更新済みとして扱いません。`w
 新規ファイルは同じディレクトリに完成bytesを用意し、hard linkで上書きせずatomicに公開します。
 途中でローカルファイルが作られた場合も置換せず、更新候補へ回します。manifestは最後に更新します。
 hard linkを使えないfilesystemでは安全に失敗し、部分的なNoteや無条件置換へfallbackしません。
-Linuxの実行環境で検証済み。Windows/NTFSや利用者Vaultでの実検証は別の受入項目です。
+Linuxと実Windowsの一時NTFSで、編集/候補保持・排他作成・junction拒否を受入済みです。利用者の実Vaultとコミュニティプラグインは受入対象外です。
 中断時は未追跡ファイルが競合として残る場合があり、自動上書きより保護を優先します。
 同一Vaultの同時同期はlockで拒否します。プロセス強制終了後は稼働していないことを確認してlockを手動削除。
-symlinkを含むVaultパスは拒否します。dry-runはlock用のTechKBディレクトリだけ作成し、Note/manifestを更新しません。
+symlinkを含むVaultパスは拒否します。dry-runはlock用のkanameディレクトリだけ作成し、Note/manifestを更新しません。
 編集アプリとの共通lockはありません。確認後の編集は上書きしませんが、その回のconflict判定に
 間に合わない場合は次の同期で検出します。外部プロセスによる親ディレクトリ差替えまでの隔離は保証しません。
 
@@ -152,10 +152,10 @@ symlinkを含むVaultパスは拒否します。dry-runはlock用のTechKBディ
 ## 非同期Gemini Batch
 
 ```bash
-python -m techkb run --llm-mode batch --max-calls 1
-python -m techkb batch-status
+python -m kaname run --llm-mode batch --max-calls 1
+python -m kaname batch-status
 # 新規の有料処理を増やさず、既存ジョブを照合・保存
-python -m techkb run --max-calls 0
+python -m kaname run --max-calls 0
 ```
 
 恒常的に使う場合は`llm.mode: batch`をapp.yamlへ設定。既定は`standard`です。
@@ -172,7 +172,7 @@ API作成がtimeoutした場合は同じdisplay nameのjobを探します。0件
 400/401/403/404/422の明確な作成拒否は予約を終了し、standard収集を妨げません。
 
 ```bash
-python -m techkb batch-bind --batch-id YYYYMMDDTHHMMSSZ-xxxxxxxx --job-name batches/JOB_ID
+python -m kaname batch-bind --batch-id YYYYMMDDTHHMMSSZ-xxxxxxxx --job-name batches/JOB_ID
 ```
 
 曖昧な予約を手で消すと二重課金の可能性があるため、submitの成否を確認してから復旧してください。
@@ -190,7 +190,7 @@ compact結果を先に永続化してから保存し、usageは専用`record_kin
 ### 実Batch受入の事前検査
 
 `daily.yml`をmainから`batch_preflight=true`で手動実行すると、
-判定は`techkb.batch.preflight(store, app)`へ集約し、既存スクリプトは薄い入口として使用します。
+判定は`kaname.batch.preflight(store, app)`へ集約し、既存スクリプトは薄い入口として使用します。
 既存WIFと通常収集のwriterロック内で、GCSのaudit・未決済/未計上Batch・未完了standard usageを読み取ります。
 検査専用jobは`contents: read`と`id-token: write`だけを持ち、通常のcollect/publish/pages/notify jobはskipします。
 他の実行モード、verification/diagnostic ID、baseline、collection mode変更、max_callsとの同時指定は認証前に拒否します。
@@ -210,8 +210,8 @@ unknown usageの件数は残り、請求照合完了を意味しません。
 ### Source Healthの読取り
 
 ```bash
-python -m techkb source-health
-python -m techkb source-health --state-dir /path/to/private-snapshot
+python -m kaname source-health
+python -m kaname source-health --state-dir /path/to/private-snapshot
 ```
 
 source設定、保存済みrun、index、pendingからJSONを返します。GCSまたはローカルsnapshotの読取りだけを行い、
@@ -240,11 +240,11 @@ source設定、保存済みrun、index、pendingからJSONを返します。GCS�
 
 ```bash
 # completeを含む指定台帳を読むだけ。Gemini認証は不要
-python -m techkb batch-inspect --batch-id "$BATCH_ID"
+python -m kaname batch-inspect --batch-id "$BATCH_ID"
 # 取得済みsnapshotでも実行可能
-python -m techkb batch-inspect --batch-id "$BATCH_ID" --state-dir local-snapshot
+python -m kaname batch-inspect --batch-id "$BATCH_ID" --state-dir local-snapshot
 # 環境変数に正規のGEMINI_API_KEYが設定された環境で、既存job結果をGET
-python -m techkb batch-inspect --batch-id "$BATCH_ID" --remote
+python -m kaname batch-inspect --batch-id "$BATCH_ID" --remote
 ```
 
 `batch-status`と異なり、completeになった失敗も確認できます。`--remote`は台帳に紐付いたjobの
@@ -269,8 +269,8 @@ Issue投稿をskipします。両診断入力の同時指定はWIF認証前に�
 ## 実測usageと予算
 
 ```bash
-python -m techkb cost-report
-python -m techkb cost-report --as-of YYYY-MM-DD --state-dir local-snapshot
+python -m kaname cost-report
+python -m kaname cost-report --as-of YYYY-MM-DD --state-dir local-snapshot
 ```
 
 run reportをIDで重複排除し、入力 + 出力/thinkingの実測トークンから日次/月次USDを計算します。
@@ -306,8 +306,8 @@ costs:
 ## 連続失敗とIssue通知
 
 ```bash
-python -m techkb notify          # planだけ。投稿なし
-python -m techkb notify --apply  # GITHUB_TOKENで設定repositoryへ必要時だけ投稿
+python -m kaname notify          # planだけ。投稿なし
+python -m kaname notify --apply  # GITHUB_TOKENで設定repositoryへ必要時だけ投稿
 ```
 
 `notifications.consecutive_failures`（既定3）以上のsource/collector失敗と予算到達を対象にします。
@@ -338,8 +338,8 @@ sourceのopt-in rawを`raw/<source-id>/YYYY/MM/<hash>.html`へ保存します。
 保存期間未設定は保持。既存`raw/YYYY/MM/`はsourceを識別できないため削除ruleに含めません。
 
 ```bash
-python -m techkb raw-lifecycle          # 現在rulesとsource設定から計画
-python -m techkb raw-lifecycle --apply  # bucket更新権限を持つ管理者が適用
+python -m kaname raw-lifecycle          # 現在rulesとsource設定から計画
+python -m kaname raw-lifecycle --apply  # bucket更新権限を持つ管理者が適用
 ```
 
 GCSのDelete/age/matchesPrefix ruleによって期限後に自動削除されます。
@@ -352,13 +352,13 @@ bucket metagenerationで競合を検出。source prefixに対する単純な既�
 ## 通常収集・検査・metadata更新
 
 ```bash
-python -m techkb run                 # 有料生成、GCS更新
-python -m techkb dry-run             # GCS読取り、記事通信あり、Gemini/GCS更新なし
-python -m techkb audit-state         # GCS読取りだけ、記事通信なし
-python -m techkb audit-state --state-dir local-snapshot
-python -m techkb audit-run --run-id "$RUN_ID" --expected-success-before N
-python -m techkb refresh-metadata    # 原記事通信あり。既定は計画だけ
-python -m techkb refresh-metadata --apply
+python -m kaname run                 # 有料生成、GCS更新
+python -m kaname dry-run             # GCS読取り、記事通信あり、Gemini/GCS更新なし
+python -m kaname audit-state         # GCS読取りだけ、記事通信なし
+python -m kaname audit-state --state-dir local-snapshot
+python -m kaname audit-run --run-id "$RUN_ID" --expected-success-before N
+python -m kaname refresh-metadata    # 原記事通信あり。既定は計画だけ
+python -m kaname refresh-metadata --apply
 ```
 
 `RUN_ID`と`N`は対象runの値に置き換えます。auditはNote/receipt/index/hash/pendingの整合性を検査し、
@@ -403,8 +403,8 @@ GitHub Blogの全ページ変換など現行baselineの限界も[検証記録](h
 固定公開contentを読取り専用で評価します。
 
 ```bash
-python -m techkb graph-quality --public-snapshot /path/to/public-content
-python -m techkb graph-quality --public-snapshot /path/to/public-content --details
+python -m kaname graph-quality --public-snapshot /path/to/public-content
+python -m kaname graph-quality --public-snapshot /path/to/public-content --details
 ```
 
 認証・API呼出し・GCS/Note書込みは不要です。既定出力は件数のみ、`--details`は公開語句とNote IDも含みます。評価成功とリンク解決を区別し、曖昧候補や未解決語を任意のNoteへ結び付けません。正規化規則・指標・固定実contentの結果は[品質評価](graph-quality.md)を参照してください。
@@ -422,12 +422,12 @@ SSG時に一意な公開Noteタイトルへ解決し、未解決のWikiLinkはGo
 
 ## 新規記事限定と既知記事の再検査
 
-日次は`processing.article_policy: new_only`で成功済みURLへの本文HTTPを省き、生成枠を使い切った後の本文取得も停止します。失敗/未完了はpendingに残し、保存済みNoteをGCS/Gitから公開します。同じURLの変更は日次で自動検知せず、`python -m techkb dry-run --recheck-known`で無生成/無保存の検査、`python -m techkb run --recheck-known`で通常の件数/費用制限内の更新を行います。詳細と差分配布の設計は[記録](incremental-collection.md)を参照してください。
+日次は`processing.article_policy: new_only`で成功済みURLへの本文HTTPを省き、生成枠を使い切った後の本文取得も停止します。失敗/未完了はpendingに残し、保存済みNoteをGCS/Gitから公開します。同じURLの変更は日次で自動検知せず、`python -m kaname dry-run --recheck-known`で無生成/無保存の検査、`python -m kaname run --recheck-known`で通常の件数/費用制限内の更新を行います。詳細と差分配布の設計は[記録](incremental-collection.md)を参照してください。
 
 ## GCS読取り並列数とprivate cache
 
-日次のrepository variable `GCS_READ_WORKERS`、ローカルの`TECHKB_GCS_READ_WORKERS`は1〜16、省略時16。8/1で切戻せる。
-`TECHKB_READ_CACHE`は同一runner内の一時privateディレクトリ。世代/CRC一致のbytesだけ再利用し、各CLIでlive catalogと全件を検査する。
+日次のrepository variable `GCS_READ_WORKERS`、ローカルの`KANAME_GCS_READ_WORKERS`は1〜16、省略時16。8/1で切戻せる。
+`KANAME_READ_CACHE`は同一runner内の一時privateディレクトリ。世代/CRC一致のbytesだけ再利用し、各CLIでlive catalogと全件を検査する。
 別run間のcache共有・検査省略は行わない。詳細は[日次公開](daily-publication.md#検査読取り性能の設定)。
 
 完了済みGlucoFM計画は実configから除去した。回帰用の固定値は `tests/fixtures/image-repair-plan.json` から一時configへ配置する。

@@ -6,8 +6,8 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from techkb.publication import ExportError
-from techkb.release_publication import ReleaseClient, publish_release, restore_release
+from kaname.publication import ExportError
+from kaname.release_publication import ReleaseClient, publish_release, restore_release
 
 
 def main():

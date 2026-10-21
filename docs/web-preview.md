@@ -21,6 +21,10 @@ npm run preview
 previewはloopbackだけで提供します。架空データには全ページでpreview表示と`noindex,nofollow`を付けます。
 Note一覧、出典別・カテゴリ別・日付順、日本語検索、Note本文、出典リンク、AI生成/打切り表示を確認できます。
 一覧・日付順は収集日時（UTC）の降順です。記事自体の公開日はNoteの出典情報に保持します。
+トップ・日付順・出典/カテゴリ別の各一覧は24件ずつの静的ページです。トップの続きは `page/2`、他の一覧の続きはそのURLの `page/2` から参照でき、前後・ページ番号の通常リンクで移動します。ページの直接参照とJS無効時の移動も検証します。
+初期のloadイベント後のidle時に、同じサイトの次ページHTMLだけを低優先度で先読みします。節約設定・2G/slow-2Gでは行わず、先読み先からさらにページを連鎖取得しません。
+検索indexの取得とQuartz検索の初期化は、検索ボタンまたはCtrl/Cmd+Kを初めて使った時だけです。日本語tokenizer・順位付け・プレビュー・キーボード操作は固定したQuartz実装を使い、取得失敗時は再試行できます。
+タグはWeb投影時にNFKC・小文字・空白のハイフン化と明示辞書で統一します。`#ai-egent` / `#ai-agent` / `#AIエージェント`、LLM/大規模言語モデル、RAG/検索拡張生成を同じタグで探せます。`#`で指定した別名は正規タグへ変換して入力欄にも表示します。通常の文章検索は書き換えず、タグを含む絞込みもQuartzへ渡します。C/C++/C#、RAG/GraphRAG、階層タグとハイフンタグは区別します。元Markdown・Note ID・dataset digestとWikiLink解決規則は変更しません。
 検索キーワード/本文のWikiLinkは一意の公開Noteタイトルへ内部リンクし、未存在/同名ならGoogle検索へつなぎます。[検索リンク仕様](ns1-search-fallback.md)を参照してください。
 本番のコンテンツや原文をfixtureと混同しません。
 
@@ -49,6 +53,8 @@ npm run check:preview -- --screenshots .cache/fixture-new-screenshots
 `--fixture`は指定したsynthetic snapshotをpreviewとして表示し、Pages用の公開検査では拒否されます。
 `audit`は依存脆弱性監査、`check:preview`/`check:pages`はリンク・画面・画像・版の受入です。
 HTML後処理と成果物検証は`kaname_web`が担当します。
+既定fixtureは27 Noteで、ページ境界とタグ別名検索を含みます。以前の3 Note fixtureは保持し、新規の `--output` を指定して作り直してください。
+新規生成Noteでも、タグの安全な文字への置換前に同じ辞書を適用します。C++は `c-plus-plus`、C#は `c-sharp` としてCと区別します。旧処理ですでに記号を失ったタグの意味は推測して補完しません。
 
 ## 保存済み公開snapshotを入力にする
 
@@ -120,3 +126,22 @@ glob/ignore設定の拡張や依存更新時には、この到達性判断を見
 2026-10-16の再監査でもbraces3.0.3とsprintf-js1.1.3に修正版はなく、実lockの警告は上記2 advisoryの伝播9件でした。
 既知例外は9 packageの固定version/単一node配置と親子の伝播辺を確認し、新version・新配置・新親・不完全な監査応答を拒否します。
 既存の固定glob/生成filename・YAMLライブラリ経路の制約は維持します。
+
+2026-10-21の実npm監査も既知2 advisoryだけで、公開最新版はbraces3.0.3/sprintf-js1.1.3でした。lockと例外は拡大せず、Nodeの監査/検索起動hook検査7件を通しています。
+
+## 初期表示の反復計測
+
+`python scripts/benchmark_frontend.py --before <旧artifact> --after <新artifact> --output <JSON>` は同じNote集合・content commitの検証済み成果物を比較します。375px、cold cache、150ms RTT、下り1.6Mbps、CPU 4倍制限のChromiumで各3回測定し、HTML/DOM/転送量・DCL/FCP/LCP/CLSを返します。次ページの先読み転送は初期転送と分けます。Lighthouse/PageSpeedや実利用者のCore Web Vitalsの測定とは区別してください。
+
+2026-10-22、同じ311 Note・content `35356be99e8c687193b043c76ff77e4c136fb568` を変更前main `b5e540f` と変更後で比較しました。旧コードも別の一時ツリーから同じ固定npm依存でbuildしています。
+
+| 指標 | 変更前 | 変更後 |
+|---|---:|---:|
+| トップHTML bytes | 524,274 | 50,352 |
+| 表示後DOM要素 / Noteカード | 1,958 / 311 | 246 / 24 |
+| 初期転送 bytes（各回同値） | 5,660,493 | 1,311,306 |
+| LCP中央値（範囲）、秒 | 17.272（8.556–17.624） | 4.892（4.752–5.044） |
+| DOMContentLoaded中央値、秒 | 38.993 | 4.916 |
+| 初期の検索index要求 | 1 | 0 |
+
+初期転送は76.8%、この条件のLCP中央値は71.7%減りました。変更後の次ページ先読み49,854 bytesは上表の初期転送から分けています。初回の検索操作ではindex取得・構築の待ち時間が発生し、準備中表示を出します。Ctrl/Cmd+KとCtrl/Cmd+Shift+Kの通常/タグ検索も、読み込み後に同じモードで開きます。測定したartifactは旧 `5e41db6d4e7cc64a25e6e62753b1ab7a75411b91d32fe260adb1c8fc8582922c`、新 `0e890be3e2546859d3d7b89a5109f46cb40c0d2c42e82835c2766c29bd1cf1fc` です。日次build/検査/deploy時間や本番CDNの速度保証へは拡張しません。

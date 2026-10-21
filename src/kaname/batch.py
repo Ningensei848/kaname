@@ -157,7 +157,7 @@ class BatchManager:
             raise ValueError('inline batch exceeds conservative size limit')
         key=report.run_id
         price=app.costs.prices.get(app.llm.model,{}).get('batch')
-        job=dict(id=key,status='submitting',display_name='techkb-'+key,name=None,model=app.llm.model,
+        job=dict(id=key,status='submitting',display_name='kaname-'+key,name=None,model=app.llm.model,
                  categories=app.categories,input_char_limit=app.llm.max_input_chars,created_at=now(),
                  token_price=price.model_dump() if price else None,items=[item for item,_ in prepared])
         name='state/batches/'+key+'.json'

@@ -6,11 +6,11 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from techkb.budget import generation_allowance
-from techkb.config import CostConfig
-from techkb.reporting import RunReport
-from techkb.pipeline import Pipeline
-from techkb._cli_arguments import parse_args, validate_args
+from kaname.budget import generation_allowance
+from kaname.config import CostConfig
+from kaname.reporting import RunReport
+from kaname.pipeline import Pipeline
+from kaname._cli_arguments import parse_args, validate_args
 
 
 def stored_usage(h, stamp=None, identity='a' * 8, **changes):
@@ -110,7 +110,7 @@ def test_next_run_deducts_original_usage_and_respects_smaller_manual_cap(harness
     assert Decimal(result['periods']['daily']['spent_usd']) == spent
     assert Decimal(result['remaining_usd']) == Decimal('1') - spent
     h.fetcher.pages['https://example.com/b'] = b'<article><p>Different original article</p></article>'
-    monkeypatch.setattr('techkb.pipeline.request_reserve', lambda *args: Decimal('0.0001'))
+    monkeypatch.setattr('kaname.pipeline.request_reserve', lambda *args: Decimal('0.0001'))
     second = Pipeline(h.app, [h.source], h.store, h.fetcher, h.converter, h.gemini,
                       max_cost_usd=Decimal('0.000001')).run()
     assert second.llm_calls == 0 and second.pending_after == 1 and len(h.sdk.calls) == 1

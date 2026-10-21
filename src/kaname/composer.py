@@ -1,4 +1,5 @@
 import re
+from .tags import canonical_tag
 import unicodedata
 from urllib.parse import urlsplit
 import yaml
@@ -54,7 +55,7 @@ def compose(candidate, source, enrichment, markdown, canonical, fetched_at, raw_
             authors=(), input_char_limit=None, source_word_count=None, image_candidates=()):
     tags = []
     for tag in ["clippings", *source.tags, *enrichment.tags]:
-        cleaned = re.sub(r"[^\w/-]", "-", plain(tag), flags=re.UNICODE).strip("-/")
+        cleaned = re.sub(r"[^\w/-]", "-", canonical_tag(plain(tag)), flags=re.UNICODE).strip("-/")
         if cleaned and cleaned not in tags:
             tags.append(cleaned)
     author_names = list(dict.fromkeys(c for value in authors if (c := concept(value))))

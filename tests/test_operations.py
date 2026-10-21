@@ -3,8 +3,8 @@ from decimal import Decimal
 from types import SimpleNamespace
 import httpx
 import pytest
-from techkb.operations import cost_report,notification_plan,publish_issues
-from techkb.lifecycle import configure_lifecycle
+from kaname.operations import cost_report,notification_plan,publish_issues
+from kaname.lifecycle import configure_lifecycle
 
 
 def report(h,index,day='2026-10-01',failed=False,**extra):

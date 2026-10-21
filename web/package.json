@@ -13,6 +13,7 @@
     "build": "python3 build.py",
     "preview": "python3 serve.py",
     "audit": "node audit.mjs",
+    "test:frontend": "node --test audit.test.mjs lazy-search.test.mjs",
     "build:pages": "python3 build_pages.py",
     "check:preview": "python3 check_preview.py",
     "check:pages": "python3 check_pages.py",

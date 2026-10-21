@@ -1,5 +1,5 @@
 import pytest
-from techkb.normalize import normalize_url, normalize_markdown
+from kaname.normalize import normalize_url, normalize_markdown
 
 def test_url_keeps_semantics():
     assert normalize_url("HTTPS://EXAMPLE.COM:443/a?x=a%20b&utm_source=r&x=2&gclid=y#ref") == "https://example.com/a?x=a%20b&x=2"

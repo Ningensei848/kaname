@@ -7,7 +7,7 @@ import json
 from pathlib import PurePosixPath
 import re
 
-from techkb.publication.common import sha256, json_bytes, digest_matches, digest_value
+from kaname.publication.common import sha256, json_bytes, digest_matches, digest_value
 
 
 def hash_manifest(hashes):
@@ -50,11 +50,12 @@ def artifact_path(name):
         return False
     if pure.suffix == ".html":
         return (name in {"index.html", "404.html", "about/snapshot.html", "tags/index.html"} or
+                bool(re.fullmatch(r"(?:browse/(?:dates|(?:sources|categories)/[0-9a-f]{64})/)?page/(?:[2-9]|[1-9][0-9]+)\.html", name)) or
                 bool(re.fullmatch(r"notes/[0-9a-f]{64}\.html", name)) or
                 bool(re.fullmatch(r"browse/(sources|categories|dates)\.html", name)) or
                 bool(re.fullmatch(r"browse/(sources|categories)/[0-9a-f]{64}\.html", name)) or
                 name.startswith("tags/"))
-    if name in {"index.css", "prescript.js", "postscript.js", "static/contentIndex.json", "markdown/manifest.json"}:
+    if name in {"index.css", "prescript.js", "postscript.js", "static/pagination.js", "static/search-aliases.js", "static/contentIndex.json", "markdown/manifest.json"}:
         return True
     if re.fullmatch(r"markdown/notes/[0-9a-f]{64}\.md", name):
         return True
