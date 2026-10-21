@@ -1,7 +1,10 @@
 """GitHub Release transport, with drafts, fixed tags and bounded reconstruction."""
 import base64
+from collections import OrderedDict
+from contextlib import contextmanager
 from pathlib import Path
 import re
+import time
 from urllib.parse import urlsplit
 
 import httpx
@@ -13,17 +16,40 @@ from .release_bundle import (ARCHIVE, DESCRIPTOR, MAX_ARCHIVE, MAX_DEPTH, apply_
 
 
 class ReleaseClient:
-    def __init__(self, repository, token=None, client=None):
+    def __init__(self, repository, token=None, client=None, *, cache_bytes=32 * 1024 * 1024):
         if not isinstance(repository, str) or not re.fullmatch(r'[A-Za-z0-9_-][A-Za-z0-9_.-]*/[A-Za-z0-9_-][A-Za-z0-9_.-]*', repository):
             raise ExportError('invalid_release_repository')
+        if type(cache_bytes) is not int or not 0 <= cache_bytes <= 128 * 1024 * 1024:
+            raise ExportError('invalid_release_cache_limit')
         self.repository, self.token = repository, token
         self.client = client or httpx.Client(timeout=120, follow_redirects=False)
         self.prefix = 'https://api.github.com/repos/' + repository
+        self.cache_limit, self._cache, self._cache_size = cache_bytes, None, 0
+        self.metrics = {}
+
+    @contextmanager
+    def operation(self):
+        """Reuse verified bytes only within one operation; never cache metadata."""
+        if self._cache is not None:
+            yield
+            return
+        self._cache, self._cache_size = OrderedDict(), 0
+        self.metrics = dict(api_requests=0, asset_downloads=0, download_bytes=0,
+                            cache_hits=0, peak_cache_bytes=0)
+        started = time.monotonic()
+        try:
+            yield
+        finally:
+            self.metrics['elapsed_seconds'] = round(time.monotonic() - started, 3)
+            self._cache.clear()
+            self._cache, self._cache_size = None, 0
 
     def close(self):
         self.client.close()
 
     def request(self, method, path, *, missing=False, **kwargs):
+        if self._cache is not None:
+            self.metrics['api_requests'] += 1
         headers = {'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2026-03-10'}
         if self.token:
             headers['Authorization'] = 'Bearer ' + self.token
@@ -102,6 +128,16 @@ class ReleaseClient:
         if (type(asset.get('id')) is not int or asset['id'] <= 0 or asset.get('state') != 'uploaded' or
                 type(asset.get('size')) is not int or not 0 < asset['size'] <= limit):
             raise ExportError('invalid_release_asset')
+        digest = asset.get('digest')
+        key = (asset['id'], asset['size'], digest, asset.get('updated_at'), asset.get('name'))
+        cacheable = (self._cache is not None and self.cache_limit > 0 and
+                     isinstance(digest, str) and re.fullmatch(r'sha256:[0-9a-f]{64}', digest))
+        if cacheable and key in self._cache:
+            self._cache.move_to_end(key)
+            self.metrics['cache_hits'] += 1
+            return self._cache[key]
+        if self._cache is not None:
+            self.metrics['asset_downloads'] += 1
         url = self.prefix + '/releases/assets/' + str(asset['id'])
         headers = {'Accept': 'application/octet-stream', 'X-GitHub-Api-Version': '2026-03-10'}
         if self.token:
@@ -123,14 +159,22 @@ class ReleaseClient:
                     result = bytearray()
                     for chunk in response.iter_bytes():
                         result.extend(chunk)
+                        if self._cache is not None:
+                            self.metrics['download_bytes'] += len(chunk)
                         if len(result) > limit:
                             raise ExportError('release_download_limit')
                     packed = bytes(result)
                     if len(packed) != asset['size']:
                         raise ExportError('release_asset_size_mismatch')
-                    digest = asset.get('digest')
                     if digest is not None and digest != 'sha256:' + sha256(packed):
                         raise ExportError('release_asset_digest_mismatch')
+                    if cacheable and len(packed) <= self.cache_limit:
+                        while self._cache and self._cache_size + len(packed) > self.cache_limit:
+                            _, previous = self._cache.popitem(last=False)
+                            self._cache_size -= len(previous)
+                        self._cache[key] = packed
+                        self._cache_size += len(packed)
+                        self.metrics['peak_cache_bytes'] = max(self.metrics['peak_cache_bytes'], self._cache_size)
                     return packed
             raise ExportError('release_redirect_limit')
         except (httpx.HTTPError, ValueError):
@@ -187,6 +231,12 @@ class ReleaseClient:
 
 
 def publish_release(root, commit, client):
+    with client.operation():
+        result = _publish_release(root, commit, client)
+    return dict(result, transport=dict(client.metrics))
+
+
+def _publish_release(root, commit, client):
     tag = release_tag(commit)
     existing = client.get(tag, missing=True, include_draft=True)
     # Recompute target bytes before trusting an existing version or staging data.
@@ -253,6 +303,12 @@ def publish_release(root, commit, client):
 
 
 def restore_release(tag, commit, output, receipt, client):
+    with client.operation():
+        result = _restore_release(tag, commit, output, receipt, client)
+    return dict(result, transport=dict(client.metrics))
+
+
+def _restore_release(tag, commit, output, receipt, client):
     if tag != release_tag(commit):
         raise ExportError('release_commit_mismatch')
     root, receipt_path = Path(output).absolute(), Path(receipt).absolute()

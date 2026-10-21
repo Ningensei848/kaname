@@ -1,6 +1,8 @@
 import csv
 import io
 import re
+import logging
+import time
 from .pending import Candidate, COLUMNS as PENDING_COLUMNS
 
 INDEX_COLUMNS = ["processed_at", "source_id", "source_url", "canonical_url", "published_at",
@@ -27,16 +29,22 @@ def decode_tsv(data, required):
 
 class State:
     def __init__(self, store):
+        started, loaded_bytes = time.monotonic(), 0
         self.store = store
         self.months = {}
         for name in store.list("state/index/"):
             if name.endswith(".tsv"):
-                rows = decode_tsv(store.read(name), INDEX_COLUMNS[:12])
+                data = store.read(name)
+                loaded_bytes += len(data or b'')
+                rows = decode_tsv(data, INDEX_COLUMNS[:12])
                 for row in rows:
                     if row["status"] == "success" and any(not re.fullmatch(r"[0-9a-f]{64}", row[c]) for c in ("raw_html_sha256", "content_sha256")):
                         raise ValueError("invalid success hash")
                 self.months[name] = rows
         self.rows = [r for rows in self.months.values() for r in rows]
+        self.load_metrics = dict(index_files=len(self.months), index_rows=len(self.rows),
+                                 index_bytes=loaded_bytes, load_seconds=round(time.monotonic() - started, 3))
+        logging.getLogger(__name__).info('State index load %s', self.load_metrics)
 
     def pending(self):
         return [Candidate(**{c: row[c] for c in PENDING_COLUMNS}) for row in

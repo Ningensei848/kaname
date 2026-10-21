@@ -122,6 +122,8 @@ class GCSReadSnapshot:
         self.data = {name: data for name, data, _ in results}
         self.metrics = dict(objects=len(results), downloads=sum(not hit for _, _, hit in results),
                             cache_hits=sum(hit for _, _, hit in results), workers=workers,
+                            bytes=sum(len(data) for _, data, _ in results),
+                            largest_object_bytes=max((len(data) for _, data, _ in results), default=0),
                             load_seconds=round(time.monotonic() - started, 3))
         log.info('GCS read snapshot %s', self.metrics)
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import subprocess
 
 import pytest
@@ -6,7 +7,16 @@ import pytest
 from test_daily_preflight import inputs, selected, workflow
 
 
-PLAN = 'config/image-repairs/eff25c6d47cbba54dd762e9318eeffd267970fbff2b9359427e3000d08ac7419.json'
+FIXTURE = Path(__file__).parent / 'fixtures/image-repair-plan.json'
+PLAN = 'config/image-repairs/' + json.loads(FIXTURE.read_bytes())['note_id'] + '.json'
+
+
+@pytest.fixture
+def plan_workspace(tmp_path):
+    plan = tmp_path / PLAN
+    plan.parent.mkdir(parents=True)
+    plan.write_bytes(FIXTURE.read_bytes())
+    return tmp_path
 
 
 @pytest.mark.parametrize('apply', [False, True])
@@ -41,7 +51,7 @@ def test_image_repair_never_selects_collection_or_publication(workflow, apply, s
     {'image_repair_plan': '../private.json'}, {'image_repair_plan': ''},
     {'image_repair_plan': 'config/image-repairs/' + 'a' * 64 + '.json'},
 ])
-def test_conflicting_or_unreviewed_image_plans_fail_before_auth(workflow, override):
+def test_conflicting_or_unreviewed_image_plans_fail_before_auth(workflow, override, plan_workspace):
     steps = workflow['jobs']['image-repair']['steps']
     validation = next(step for step in steps if step.get('name') == 'Validate image repair inputs before authentication')
     assert steps.index(validation) < next(i for i, step in enumerate(steps) if step.get('id') == 'gcp_auth')
@@ -49,18 +59,18 @@ def test_conflicting_or_unreviewed_image_plans_fail_before_auth(workflow, overri
     env = {key.upper(): str(value).lower() for key, value in config.items()}
     env['VERIFY_RUN_ID'] = env.pop('VERIFICATION_RUN_ID')
     result = subprocess.run(['/bin/bash', '-c', validation['run']], env=env, capture_output=True,
-                            cwd=Path(__file__).parents[1])
+                            cwd=plan_workspace)
     assert result.returncode == 1
 
 
-def test_reviewed_plan_is_admitted_and_normal_schedule_keeps_collection(workflow):
+def test_reviewed_plan_is_admitted_and_normal_schedule_keeps_collection(workflow, plan_workspace):
     validation = next(step for step in workflow['jobs']['image-repair']['steps']
                       if step.get('name') == 'Validate image repair inputs before authentication')
     config = inputs(image_repair_plan=PLAN)
     env = {key.upper(): str(value).lower() for key, value in config.items()}
     env['VERIFY_RUN_ID'] = env.pop('VERIFICATION_RUN_ID')
     result = subprocess.run(['/bin/bash', '-c', validation['run']], env=env, capture_output=True,
-                            cwd=Path(__file__).parents[1])
+                            cwd=plan_workspace)
     assert result.returncode == 0
     assert selected(workflow['jobs']['collect']['if'], inputs())
     assert not selected(workflow['jobs']['image-repair']['if'], inputs())

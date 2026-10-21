@@ -43,6 +43,10 @@ class CostConfig(StrictModel):
             "batch": TokenPrice(input_usd_per_million=0.15, output_usd_per_million=1.25)}})
     daily_budget_usd: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     monthly_budget_usd: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    # Separate from notification thresholds. Optional generation limits use
+    # original recorded prices and UTC run dates, never an invoice estimate.
+    generation_daily_limit_usd: float | None = Field(default=None, gt=0, allow_inf_nan=False, strict=True)
+    generation_monthly_limit_usd: float | None = Field(default=None, gt=0, allow_inf_nan=False, strict=True)
 
 class NotificationConfig(StrictModel):
     consecutive_failures: int = Field(default=3, ge=1)

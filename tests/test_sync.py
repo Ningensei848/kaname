@@ -208,3 +208,14 @@ def test_candidate_symlink_is_rejected_before_any_notes_are_written(harness,tmp_
         sync_vault(store,tmp_path)
     assert not (tmp_path/'TechKB/notes/b.md').exists()
     assert (tmp_path/'TechKB/notes/a.md').read_bytes()==b'first'
+
+
+def test_windows_junction_is_rejected_before_creating_lock_or_reading_state(tmp_path, monkeypatch):
+    from techkb.sync import sync_vault
+    class NoReads:
+        def list(self, *_): pytest.fail('junction must fail before state reads')
+    vault=tmp_path/'vault'
+    monkeypatch.setattr(Path, 'is_junction', lambda path: path == vault/'TechKB')
+    with pytest.raises(ValueError, match='symlink'):
+        sync_vault(NoReads(),vault)
+    assert not vault.exists()

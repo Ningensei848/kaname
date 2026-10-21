@@ -3,15 +3,15 @@ import argparse
 import json
 from pathlib import Path
 import sys
-from threading import Thread
 from urllib.parse import urljoin, urlsplit
 
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import expect
 
-from serve import WEB, server
+from serve import WEB
 from kaname_web.artifact import load_artifact
 from techkb.publication import sha256
-from image_acceptance import approved_images, image_guard, check_images
+from image_acceptance import approved_images, check_images
+from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
 from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
 
 
@@ -26,21 +26,10 @@ def check(artifact, screenshots=None):
     audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, note_files)
     approved = {image['url'] for images in image_entries.values() for image in images}
-    httpd = server(artifact, 0)
-    thread = Thread(target=httpd.serve_forever, daemon=True); thread.start()
-    origin = f"http://127.0.0.1:{httpd.server_port}"
-    home = origin + "/kaname/"
-    errors, external, image_requests = [], [], []
-    try:
-        with sync_playwright() as runtime:
-            browser = runtime.chromium.launch()
-            context = browser.new_context(viewport={"width": 1440, "height": 1000})
-            def guard(route):
-                image_guard(route, origin, approved, external, image_requests)
-            context.route("**/*", guard)
-            page = context.new_page()
-            page.on("pageerror", lambda error: errors.append(str(error)))
-            page.on("console", lambda message: errors.append(message.type) if message.type == "error" else None)
+    verify_local_links(files, parsed, skip_not_found=True)
+    with served_artifact(artifact) as origin:
+        home = origin + '/kaname/'
+        with browser_session(origin, approved) as (context, page, observed):
             page.goto(home)
             expect(page.locator(".note-card")).to_have_count(3)
             expect(page.locator(".fixture-banner")).to_be_visible()
@@ -96,14 +85,9 @@ def check(artifact, screenshots=None):
             # Requests for files absent from the completion manifest are refused.
             for path in (".env", "state/index.json", "HANDOFF.md", "markdown/../.env"):
                 assert context.request.get(home + path).status == 404
-            assert not errors, "browser_error"
-            assert not external, "external_resource_request"
-            browser.close()
-    finally:
-        httpd.shutdown(); httpd.server_close(); thread.join(timeout=5)
     return dict(status="passed", notes=len(manifest["notes"]), browser="chromium", external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
-                approved_image_requests=len(image_requests),
+                approved_image_requests=len(observed.image_requests),
                 dataset_digest=marker["dataset_digest"])
 
 

@@ -6,6 +6,27 @@ on:
 permissions:
   contents: read
 jobs:
+  repository-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check documentation paths and anchors
+        run: python3 scripts/check_docs.py
+      - name: Check workflow syntax with pinned actionlint
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl --fail --silent --show-error --location \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            --output "$archive"
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -shellcheck= -pyflakes=
   scope:
     runs-on: ubuntu-latest
     outputs:
@@ -108,7 +129,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   test:
-    needs: [scope, python-checks]
+    needs: [scope, python-checks, repository-checks]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -116,7 +137,9 @@ jobs:
           SCOPE_RESULT: ${{ needs.scope.result }}
           CHECK_RESULT: ${{ needs.python-checks.result }}
           SELECTED: ${{ needs.scope.outputs.python }}
+          REPOSITORY_RESULT: ${{ needs.repository-checks.result }}
         run: |
+          test "$REPOSITORY_RESULT" = success
           test "$SCOPE_RESULT" = success
           if [[ "$SELECTED" == none ]]; then
             test "$CHECK_RESULT" = skipped

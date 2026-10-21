@@ -46,7 +46,7 @@ Windowsでは対応するvenvのPowerShell activateを使います。
 
 既定はstandard、30件/run、入力20,000文字、出力2,048 tokens、minimalです。
 入力上限は記事Markdownの文字数で、打切りNoteにはその範囲を表示します。
-予算設定は通知閾値です。既存Noteは設定変更で自動再要約しません。
+予算通知の閾値と、任意のstandard生成用run/UTC日月上限を分けています（[運用手順](docs/operations.md#任意のutc日月生成上限)）。既定の生成上限設定は変更していません。既存Noteは設定変更で自動再要約しません。
 
 ```bash
 python -m techkb run           # 有料生成・GCS更新を伴う通常収集
