@@ -5,7 +5,7 @@ LLM生成Noteを独立した公開リソースとして管理し、同じNote群
 
 | 文書 | 読む目的 |
 |---|---|
-| [監査一覧](repository-audit.md)・[次の作業](next-work.md) | 残課題20項目の根拠/完了条件と優先順位 |
+| [監査一覧](repository-audit.md)・[作業状況](next-work.md) | 20項目の根拠/判定/実施順と残余制約 |
 | [ADR-0001](adr/0001-generated-content-module-and-pages.md)・[仕様](specification.md) | 採用構成、責務と境界 |
 | [公開・配布契約](publication.md) | Note ID/manifest/snapshotと公開前検査 |
 | [操作手順](operations.md) | CLIの副作用、課金、復旧、画像補完 |

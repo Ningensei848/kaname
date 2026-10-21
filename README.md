@@ -62,7 +62,7 @@ python -m techkb source-health # 収集元の状態をJSON表示
 ## 実装と次の作業
 
 標準収集/復旧、画像、実Batch保存/公開/再実行、Git/Release/Pages、通常schedule/切戻し、NS1、Source Health、旧責務整理は受入済みです。
-現在の保証は[検証基準](docs/verification.md)、残課題20項目と根拠は[監査一覧](docs/repository-audit.md)、着手順は[次の作業](docs/next-work.md)を参照してください。
+現在の保証は[検証基準](docs/verification.md)、20項目の判定と根拠は[監査一覧](docs/repository-audit.md)、実施順と完了状況は[作業記録](docs/next-work.md)を参照してください。
 完了済み計画と過去の受入記録は[専用アーカイブブランチ](docs/archive/README.md)へ分離しました。
 
 ## 資料
@@ -70,5 +70,5 @@ python -m techkb source-health # 収集元の状態をJSON表示
 [文書の入口](docs/README.md)から、[仕様書](docs/specification.md)、[公開・配布契約](docs/publication.md)、
 [運用手順](docs/operations.md)、[Git配布](docs/git-distribution.md)、[Pages](docs/pages.md)、
 [Web preview](docs/web-preview.md)、[設計補足](docs/design-decisions.md)、[GCP設定](docs/gcp-setup.md)、
-[source方針](docs/source-policy.md)、[残課題](docs/next-work.md)へ進めます。
+[source方針](docs/source-policy.md)、[作業状況](docs/next-work.md)へ進めます。
 採用した構成の背景は[ADR-0001](docs/adr/0001-generated-content-module-and-pages.md)、過去の作業証拠は[履歴](docs/archive/README.md)に保存します。
