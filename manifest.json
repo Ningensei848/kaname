@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "49fe0b180bda63c66120d776222241b902c554f30abaf60e308fa1daee3625b6",
+  "dataset_digest": "4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -26,6 +26,18 @@
       "title": "Minions: アイドル状態のApple Siliconデバイスを活用する動的・分散型仮想GPUクラウド"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/",
+      "category": "ai-llm",
+      "id": "03162282c9de7ac1f686a38c6cccd8f57b102b089d59e1d5a6dc965ce06ab279",
+      "llm_input_truncated": false,
+      "path": "notes/03162282c9de7ac1f686a38c6cccd8f57b102b089d59e1d5a6dc965ce06ab279.md",
+      "processed_at": "2026-10-20T01:06:57.592495+00:00",
+      "published": "2026-10-19",
+      "sha256": "9e37985f322586e0c54a6560aa8942f9533e717db1b2c70c944975cfcb8a14bb",
+      "source_id": "meta-engineering",
+      "title": "Metaが実践する「薄いオーケストレータ」：AIエージェントの信頼性を高める設計パターン"
+    },
+    {
       "canonical_url": "https://machinelearning.apple.com/research/language-discrimination-multilingual-learning",
       "category": "ai-llm",
       "id": "04422041293690c58e1df731277dd34bb9a8bb2c29c5882f4d41df6838590766",
@@ -36,6 +48,18 @@
       "sha256": "b60b0c79bc4eb05e84ee336964074e11e4ab370458456ee7090f269072107551",
       "source_id": "apple-ml-research",
       "title": "言語識別機能の強化が多言語音声モデルの言語学習を改善する"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/19/ml-applications/genrecs-tokenization-transforming-ads-recommendation-at-meta-with-stable-model-vocabulary/",
+      "category": "ai-llm",
+      "id": "05660a8f05bb346113069af83e3a1b39d4187ea0a9a341211fe4c4915fc66a46",
+      "llm_input_truncated": false,
+      "path": "notes/05660a8f05bb346113069af83e3a1b39d4187ea0a9a341211fe4c4915fc66a46.md",
+      "processed_at": "2026-10-20T01:06:50.737212+00:00",
+      "published": "2026-10-19",
+      "sha256": "4052a6dcd097195da8dac8e3efa7fddb27854591a51c39e7d9920000801c55b7",
+      "source_id": "meta-engineering",
+      "title": "GenRecsトークン化：安定したモデル語彙によるMetaの広告推薦の変革"
     },
     {
       "canonical_url": "https://blog.google/products-and-platforms/products/gemini/gemini-3-flash/",
@@ -314,6 +338,18 @@
       "title": "Google DeepMindが発表：人間の知覚と一致するビジョンAIの構築手法「AligNet」"
     },
     {
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-3-java-champions-are-using-github-copilot-for-increased-productivity/",
+      "category": "ai-llm",
+      "id": "17f6112c1d55e15628f9e2bcd2e5c60b3bd072d3c556175f98e0b5e2275bf603",
+      "llm_input_truncated": true,
+      "path": "notes/17f6112c1d55e15628f9e2bcd2e5c60b3bd072d3c556175f98e0b5e2275bf603.md",
+      "processed_at": "2026-10-21T00:38:27.972186+00:00",
+      "published": "2026-10-20",
+      "sha256": "6968d175dc1efb4e2ff5220bd012dc9e4bbe6cf581529429ae19818c9619d49f",
+      "source_id": "github-blog",
+      "title": "3人のJavaチャンピオンが語る、GitHub Copilotを活用した生産性向上術"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
       "category": "ai-llm",
       "id": "18577726f5fa231033daba0479c37e1eabda3e0db864f16d5990a28756fd0cc4",
@@ -420,6 +456,18 @@
       "sha256": "02c5feb8b6bf1c7c6dfd9654bb97b9e2f6e9c4bd10d8d8332750d5124be2c9f6",
       "source_id": "cloudflare-security",
       "title": "CloudflareがManaged DefenseとOpenAI Daybreakモデルを活用したコンテキスト認識型脆弱性発見・修復機能を発表"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+      "category": "cybersecurity",
+      "id": "1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be",
+      "llm_input_truncated": false,
+      "path": "notes/1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be.md",
+      "processed_at": "2026-10-21T00:38:12.898588+00:00",
+      "published": "2026-10-20",
+      "sha256": "3226169bfa34fcb65c2a30bfa2e1bf4e97e82fa2beb3a9a9331263f93c54978a",
+      "source_id": "cloudflare-security",
+      "title": "eMudhraの中間証明書8件の侵害に関するCloudflareの対応と顧客向けガイド"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
@@ -998,6 +1046,42 @@
       "title": "StreetReaderAI：文脈を認識するマルチモーダルAIを活用したストリートビューのアクセシビリティ向上"
     },
     {
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-to-continue-a-github-copilot-app-session-in-vs-code/",
+      "category": "software-development",
+      "id": "49e48cd9ec2340b1033c292f1e50c70562f78f6cdb507b55022352270bab049c",
+      "llm_input_truncated": true,
+      "path": "notes/49e48cd9ec2340b1033c292f1e50c70562f78f6cdb507b55022352270bab049c.md",
+      "processed_at": "2026-10-20T01:07:04.003015+00:00",
+      "published": "2026-10-19",
+      "sha256": "136df2c93f361e82e66903ca588f330d8ead4664a79a503dc45dc9667c113587",
+      "source_id": "github-blog",
+      "title": "GitHub CopilotアプリのセッションをVS Codeで継続する方法"
+    },
+    {
+      "canonical_url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "category": "ai-llm",
+      "id": "4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8",
+      "llm_input_truncated": false,
+      "path": "notes/4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8.md",
+      "processed_at": "2026-10-21T13:03:52.874311+00:00",
+      "published": "2026-10-15",
+      "sha256": "f0997538df9f30cf7ba9e9e0548a8b6a4a2bb8f6c08e27388e38b34d1c8135f1",
+      "source_id": "apple-ml-research",
+      "title": "Mac StudioとMLX、RDMAを活用したローカルおよび分散環境での大規模LLM推論"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "category": "cybersecurity",
+      "id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "llm_input_truncated": false,
+      "path": "notes/4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986.md",
+      "processed_at": "2026-10-20T01:06:28.871437+00:00",
+      "published": "2026-10-19",
+      "sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "source_id": "cloudflare-security",
+      "title": "パッチの向こう側：NetScalerゲートウェイを将来の脆弱性から保護する"
+    },
+    {
       "canonical_url": "https://machinelearning.apple.com/research/plan-retrieve-tool-discovery",
       "category": "ai-llm",
       "id": "4aa510d0ed13abcfe56c9f8c69a9944d2e4cbea721e4713899e2f73ec769b867",
@@ -1418,6 +1502,30 @@
       "title": "Google DeepMindがインドの次世代イノベーター支援に向け「ATL Saathi」のライブパイロット版を発表"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/verified-bots-accountability/",
+      "category": "cybersecurity",
+      "id": "66c3dd0ac4bd773d7e1156efa8ea3f8c99b62ee52e315adceac88011bfec1a37",
+      "llm_input_truncated": false,
+      "path": "notes/66c3dd0ac4bd773d7e1156efa8ea3f8c99b62ee52e315adceac88011bfec1a37.md",
+      "processed_at": "2026-10-17T00:29:39.124980+00:00",
+      "published": "2026-10-16",
+      "sha256": "e881095bc87296322c2def5d1f853980c550f7152ea88bf59c356baeffe7317c",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、検証済みボットの継続的なアカウンタビリティを評価する新システムを発表"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/19/data-center-engineering/inside-prometheus-meta-gigawatt-scale-supercluster/",
+      "category": "cloud",
+      "id": "6851d37fcc938159313899110f51a8e426e12fbfed69ae3d754d4fb6c2289fdd",
+      "llm_input_truncated": true,
+      "path": "notes/6851d37fcc938159313899110f51a8e426e12fbfed69ae3d754d4fb6c2289fdd.md",
+      "processed_at": "2026-10-20T01:06:43.617921+00:00",
+      "published": "2026-10-19",
+      "sha256": "1441cfe7af5ac635ffbdfe76df26326bd32306e9ec9a8756098f3e64df61950f",
+      "source_id": "meta-engineering",
+      "title": "Metaのギガワット級AIスーパークラスター「Prometheus」の内部構造と進化"
+    },
+    {
       "canonical_url": "https://research.google/blog/introducing-tabfm-a-zero-shot-foundation-model-for-tabular-data/",
       "category": "ai-llm",
       "id": "6955b404c79c4fa5df58891c15ecfac8b21b6edba7a93149e3438ef82951f054",
@@ -1524,6 +1632,18 @@
       "sha256": "97b00ab0c02d686e1eb69528d23515179cb558bc4b03fb1b0683752ffe1b39cc",
       "source_id": "google-deepmind",
       "title": "Google DeepMind、Project GenieとGoogleストリートビューを連携し現実の場所をシミュレーション可能に"
+    },
+    {
+      "canonical_url": "https://research.google/blog/grounding-ai-agents-in-biological-reality-building-blocks-for-autonomous-wet-labs/",
+      "category": "ai-llm",
+      "id": "70775b25d3c9b6f884a3b6b0599aea7c2dc143d46c1e97c0a73c7daf21a0b980",
+      "llm_input_truncated": false,
+      "path": "notes/70775b25d3c9b6f884a3b6b0599aea7c2dc143d46c1e97c0a73c7daf21a0b980.md",
+      "processed_at": "2026-10-17T00:29:52.329518+00:00",
+      "published": "2026-10-16",
+      "sha256": "81851a6bc1ab9a095272e0ee0f3dc4c9ea0a1e6cd9f2dad749e1fa63d7e44dbe",
+      "source_id": "google-research",
+      "title": "生物学の現実におけるAIエージェントのグラウンディング：自律型ウェットラボ向けビルディングブロック"
     },
     {
       "canonical_url": "https://blog.cloudflare.com/sovereign-ai-choice-one-year-later/",
