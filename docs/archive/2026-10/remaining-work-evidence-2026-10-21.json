@@ -1,0 +1,819 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-21",
+  "functional_main_commit": "8b861a16fe9ad376372f958db1f230f890d71a6a",
+  "main_checks": {
+    "url": "https://github.com/Ningensei848/kaname/actions/runs/39604472910",
+    "python_tests": 837,
+    "web_tests": 11,
+    "gate_count": 6,
+    "status": "success"
+  },
+  "current_sources": {
+    "status": "passed",
+    "date": "2026-10-21",
+    "source_config_modified": false,
+    "gemini_calls": 0,
+    "gcs_writes": 0,
+    "sources": [
+      {
+        "source_id": "google-research",
+        "status": "passed",
+        "public_url": "https://research.google/blog/grounding-ai-agents-in-biological-reality-building-blocks-for-autonomous-wet-labs/",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 13828,
+        "input_truncated": false,
+        "body_sha256": "cd7e105decacbf4899d80df660250fcc7e6da7d57ce215154d4c9089d513aefe",
+        "image_candidates": 3
+      },
+      {
+        "source_id": "github-blog",
+        "status": "passed",
+        "public_url": "https://github.blog/ai-and-ml/github-copilot/how-3-java-champions-are-using-github-copilot-for-increased-productivity/",
+        "fetcher": "playwright",
+        "temporary_browser_override": true,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 45514,
+        "input_truncated": true,
+        "body_sha256": "c9d51dd3acfcf253c51aef716c601149bbc4dc1b2a5f40fb31909303e155d850",
+        "image_candidates": 1
+      },
+      {
+        "source_id": "google-deepmind",
+        "status": "passed",
+        "public_url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 6755,
+        "input_truncated": false,
+        "body_sha256": "ebe055c6208cc91db88335dbd57af0598acba044db280c1c0dcad7a221aa12df",
+        "image_candidates": 0
+      },
+      {
+        "source_id": "microsoft-research",
+        "status": "passed",
+        "public_url": "https://www.microsoft.com/en-us/research/blog/proof-based-general-purpose-computing-with-magnetar/",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 12842,
+        "input_truncated": false,
+        "body_sha256": "bed50bf70ce0c93503283cf08e4746495dc19ca90455aee8d0e290c0fe5e0765",
+        "image_candidates": 3
+      },
+      {
+        "source_id": "meta-engineering",
+        "status": "passed",
+        "public_url": "https://engineering.fb.com/2026/10/19/ml-applications/genrecs-tokenization-transforming-ads-recommendation-at-meta-with-stable-model-vocabulary/",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 12707,
+        "input_truncated": false,
+        "body_sha256": "5d448c3f75372095581899c548134063204f3f93262937bf5ef69e67a93ef6c0",
+        "image_candidates": 0
+      },
+      {
+        "source_id": "apple-ml-research",
+        "status": "passed",
+        "public_url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 18897,
+        "input_truncated": false,
+        "body_sha256": "8afb63e2b416afab7f86d0164620116d9cfe0e26def730f0717614c34d350b61",
+        "image_candidates": 0
+      },
+      {
+        "source_id": "cloudflare-security",
+        "status": "passed",
+        "public_url": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+        "fetcher": "http",
+        "temporary_browser_override": false,
+        "article_heading_matched": true,
+        "document_status": 200,
+        "markdown_characters": 7613,
+        "input_truncated": false,
+        "body_sha256": "93bca324b27034785c8ace8ee3f7bd834c3cbcb2595b90236f7b221925b41525",
+        "image_candidates": 0
+      }
+    ]
+  },
+  "native_ntfs": {
+    "status": "passed",
+    "platform": "win32",
+    "filesystem": "NTFS",
+    "note_and_candidate_edits_preserved": true,
+    "exclusive_publish_preserved": true,
+    "simulated_unsupported_link_left_no_partial_file": true,
+    "alias_blocked_before_writes": true,
+    "python_version": "Python 3.12.14"
+  },
+  "apple_recovery": {
+    "run_id": "20261021T130316Z-c8e5d251",
+    "started_at": "2026-10-21T13:03:16.925265+00:00",
+    "report": {
+      "status": "success",
+      "llm_calls": 1,
+      "llm_http_attempts": 1,
+      "saved": 1,
+      "pending_before": 1,
+      "pending_after": 3,
+      "llm_usage_unavailable": 0,
+      "total_input_tokens": 6413,
+      "total_output_tokens": 619,
+      "total_thinking_tokens": 0,
+      "max_cost_usd": "0.10",
+      "source_completed_ids": [
+        "apple-ml-research",
+        "cloudflare-security",
+        "github-blog",
+        "google-research",
+        "meta-engineering",
+        "microsoft-research"
+      ],
+      "image_observations": {
+        "articles": 1,
+        "with_candidates": 0,
+        "candidates": 0,
+        "selected": 0,
+        "zero_selected_with_candidates": 0,
+        "input_truncated": 0
+      }
+    },
+    "audit": {
+      "status": "success",
+      "success_rows": 593,
+      "pending": 3,
+      "truncated_rows": 273,
+      "issues": []
+    },
+    "run_audit": {
+      "status": "success",
+      "run_id": "20261021T130316Z-c8e5d251",
+      "report": {
+        "llm_calls": 1,
+        "llm_http_attempts": 1,
+        "llm_processed": 1,
+        "llm_failed": 0,
+        "saved": 1,
+        "recovered": 0,
+        "pending_before": 1,
+        "pending_after": 3,
+        "total_input_tokens": 6413,
+        "total_output_tokens": 619,
+        "total_thinking_tokens": 0,
+        "llm_usage_unavailable": 0,
+        "batch_submitted": 0,
+        "batch_saved": 0,
+        "batch_failed": 0,
+        "batch_jobs_pending": 0
+      },
+      "audit": {
+        "status": "success",
+        "success_rows": 593,
+        "pending": 3,
+        "truncated_rows": 273,
+        "issues": []
+      },
+      "issues": []
+    },
+    "costs": {
+      "status": "success",
+      "as_of": "2026-10-21",
+      "timezone": "UTC",
+      "daily_usd": {
+        "2026-09-27": "0.0030529",
+        "2026-09-28": "0.0060394",
+        "2026-09-29": "0.0031555",
+        "2026-09-30": "0.0030451",
+        "2026-10-01": "0.1024959",
+        "2026-10-02": "0.0997731",
+        "2026-10-03": "0.0995718",
+        "2026-10-04": "0.0995463",
+        "2026-10-05": "0.097687",
+        "2026-10-06": "0.1007591",
+        "2026-10-07": "0.0982117",
+        "2026-10-08": "0.0989058",
+        "2026-10-09": "0.0998846",
+        "2026-10-10": "0.0997989",
+        "2026-10-11": "0.10134085",
+        "2026-10-12": "0.2139474",
+        "2026-10-13": "0.0782828",
+        "2026-10-14": "0.0826805",
+        "2026-10-15": "0.0711413",
+        "2026-10-16": "0.2264384",
+        "2026-10-17": "0.0057636",
+        "2026-10-18": "0.0",
+        "2026-10-19": "0.0",
+        "2026-10-20": "0.0148676",
+        "2026-10-21": "0.0088676"
+      },
+      "monthly_usd": {
+        "2026-09": "0.0152929",
+        "2026-10": "1.79996425"
+      },
+      "uncertain_runs": 0,
+      "incomplete_standard_runs": 0,
+      "pending_batch_items": 0,
+      "legacy_model_assumptions": 9,
+      "alerts": []
+    },
+    "health": {
+      "status": "success",
+      "health": "degraded",
+      "sources": [
+        {
+          "source_id": "apple-ml-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": "2026-10-21T00:37:35.186276+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 1,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 19,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T13:03:52.874311+00:00"
+        },
+        {
+          "source_id": "aws-news",
+          "enabled": false,
+          "health": "disabled",
+          "last_success_at": null,
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": null,
+          "latest_run_outcome": null,
+          "latest_run_counts": {
+            "discovered": null,
+            "saved": null,
+            "recovered": null,
+            "batch_submitted": null,
+            "batch_saved": null
+          },
+          "success_rows": 0,
+          "pending_candidates": 0,
+          "last_note_saved_at": null
+        },
+        {
+          "source_id": "cloudflare-security",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 20,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 23,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T00:38:12.898588+00:00"
+        },
+        {
+          "source_id": "github-blog",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 43,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T00:38:27.972186+00:00"
+        },
+        {
+          "source_id": "google-deepmind",
+          "enabled": true,
+          "health": "incomplete",
+          "last_success_at": "2026-10-21T00:37:35.186276+00:00",
+          "last_failure_at": "2026-10-13T03:04:02.279237+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "incomplete",
+          "latest_run_counts": {
+            "discovered": 100,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 101,
+          "pending_candidates": 3,
+          "last_note_saved_at": "2026-10-16T11:51:44.466227+00:00"
+        },
+        {
+          "source_id": "google-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": "2026-10-12T01:20:38.685240+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 100,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 376,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-17T00:29:52.329518+00:00"
+        },
+        {
+          "source_id": "meta-engineering",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 9,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 19,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-20T01:06:57.592495+00:00"
+        },
+        {
+          "source_id": "microsoft-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:03:16.925265+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:03:16.925265+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 12,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-16T11:52:21.518667+00:00"
+        }
+      ]
+    }
+  },
+  "recovery_publication": [
+    {
+      "status": "success",
+      "tag": "notes-35356be99e8c687193b043c76ff77e4c136fb568",
+      "commit": "35356be99e8c687193b043c76ff77e4c136fb568",
+      "dataset_digest": "4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f",
+      "notes": 311,
+      "kind": "delta",
+      "depth": 6,
+      "transport": {
+        "api_requests": 14,
+        "asset_downloads": 14,
+        "download_bytes": 1066262,
+        "cache_hits": 0,
+        "peak_cache_bytes": 1066262,
+        "elapsed_seconds": 40.144
+      }
+    },
+    {
+      "status": "passed",
+      "content_commit": "35356be99e8c687193b043c76ff77e4c136fb568",
+      "dataset_digest": "4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f",
+      "artifact_digest": "5e41db6d4e7cc64a25e6e62753b1ab7a75411b91d32fe260adb1c8fc8582922c",
+      "notes": 311
+    }
+  ],
+  "final_state": {
+    "run_id": "20261021T131547Z-844adadf",
+    "started_at": "2026-10-21T13:15:47.118709+00:00",
+    "report": {
+      "status": "success",
+      "llm_calls": 0,
+      "llm_http_attempts": 0,
+      "saved": 0,
+      "pending_before": 3,
+      "pending_after": 0,
+      "llm_usage_unavailable": 0,
+      "total_input_tokens": 0,
+      "total_output_tokens": 0,
+      "total_thinking_tokens": 0,
+      "max_cost_usd": "0.10",
+      "source_completed_ids": [
+        "apple-ml-research",
+        "cloudflare-security",
+        "github-blog",
+        "google-deepmind",
+        "google-research",
+        "meta-engineering",
+        "microsoft-research"
+      ],
+      "image_observations": {
+        "articles": 0,
+        "with_candidates": 0,
+        "candidates": 0,
+        "selected": 0,
+        "zero_selected_with_candidates": 0,
+        "input_truncated": 0
+      }
+    },
+    "audit": {
+      "status": "success",
+      "success_rows": 593,
+      "pending": 0,
+      "truncated_rows": 273,
+      "issues": []
+    },
+    "run_audit": {
+      "status": "success",
+      "run_id": "20261021T131547Z-844adadf",
+      "report": {
+        "llm_calls": 0,
+        "llm_http_attempts": 0,
+        "llm_processed": 0,
+        "llm_failed": 0,
+        "saved": 0,
+        "recovered": 0,
+        "pending_before": 3,
+        "pending_after": 0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_thinking_tokens": 0,
+        "llm_usage_unavailable": 0,
+        "batch_submitted": 0,
+        "batch_saved": 0,
+        "batch_failed": 0,
+        "batch_jobs_pending": 0
+      },
+      "audit": {
+        "status": "success",
+        "success_rows": 593,
+        "pending": 0,
+        "truncated_rows": 273,
+        "issues": []
+      },
+      "issues": []
+    },
+    "costs": {
+      "status": "success",
+      "as_of": "2026-10-21",
+      "timezone": "UTC",
+      "daily_usd": {
+        "2026-09-27": "0.0030529",
+        "2026-09-28": "0.0060394",
+        "2026-09-29": "0.0031555",
+        "2026-09-30": "0.0030451",
+        "2026-10-01": "0.1024959",
+        "2026-10-02": "0.0997731",
+        "2026-10-03": "0.0995718",
+        "2026-10-04": "0.0995463",
+        "2026-10-05": "0.097687",
+        "2026-10-06": "0.1007591",
+        "2026-10-07": "0.0982117",
+        "2026-10-08": "0.0989058",
+        "2026-10-09": "0.0998846",
+        "2026-10-10": "0.0997989",
+        "2026-10-11": "0.10134085",
+        "2026-10-12": "0.2139474",
+        "2026-10-13": "0.0782828",
+        "2026-10-14": "0.0826805",
+        "2026-10-15": "0.0711413",
+        "2026-10-16": "0.2264384",
+        "2026-10-17": "0.0057636",
+        "2026-10-18": "0.0",
+        "2026-10-19": "0.0",
+        "2026-10-20": "0.0148676",
+        "2026-10-21": "0.0088676"
+      },
+      "monthly_usd": {
+        "2026-09": "0.0152929",
+        "2026-10": "1.79996425"
+      },
+      "uncertain_runs": 0,
+      "incomplete_standard_runs": 0,
+      "pending_batch_items": 0,
+      "legacy_model_assumptions": 9,
+      "alerts": []
+    },
+    "health": {
+      "status": "success",
+      "health": "healthy",
+      "sources": [
+        {
+          "source_id": "apple-ml-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": "2026-10-21T00:37:35.186276+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 19,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T13:03:52.874311+00:00"
+        },
+        {
+          "source_id": "aws-news",
+          "enabled": false,
+          "health": "disabled",
+          "last_success_at": null,
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": null,
+          "latest_run_outcome": null,
+          "latest_run_counts": {
+            "discovered": null,
+            "saved": null,
+            "recovered": null,
+            "batch_submitted": null,
+            "batch_saved": null
+          },
+          "success_rows": 0,
+          "pending_candidates": 0,
+          "last_note_saved_at": null
+        },
+        {
+          "source_id": "cloudflare-security",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 20,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 23,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T00:38:12.898588+00:00"
+        },
+        {
+          "source_id": "github-blog",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 43,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-21T00:38:27.972186+00:00"
+        },
+        {
+          "source_id": "google-deepmind",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": "2026-10-13T03:04:02.279237+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 100,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 101,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-16T11:51:44.466227+00:00"
+        },
+        {
+          "source_id": "google-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": "2026-10-12T01:20:38.685240+00:00",
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 100,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 376,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-17T00:29:52.329518+00:00"
+        },
+        {
+          "source_id": "meta-engineering",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 9,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 19,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-20T01:06:57.592495+00:00"
+        },
+        {
+          "source_id": "microsoft-research",
+          "enabled": true,
+          "health": "healthy",
+          "last_success_at": "2026-10-21T13:15:47.118709+00:00",
+          "last_failure_at": null,
+          "consecutive_failures": 0,
+          "latest_report_at": "2026-10-21T13:15:47.118709+00:00",
+          "latest_run_outcome": "completed",
+          "latest_run_counts": {
+            "discovered": 10,
+            "saved": 0,
+            "recovered": 0,
+            "batch_submitted": 0,
+            "batch_saved": 0
+          },
+          "success_rows": 12,
+          "pending_candidates": 0,
+          "last_note_saved_at": "2026-10-16T11:52:21.518667+00:00"
+        }
+      ]
+    },
+    "candidate_decisions": {
+      "filtered": 3,
+      "filter_reasons": {
+        "article_domain_not_allowed": 3
+      },
+      "raw_duplicates": 0,
+      "content_duplicates": 0,
+      "known_articles_skipped": 256
+    }
+  },
+  "billing_judgment": {
+    "scope": "existing data only, explicitly accepted by user",
+    "activity_csv_count": 2,
+    "account_balance_invariants_matched": true,
+    "usage_invoice_complete_match": false,
+    "difference_status": "undetermined",
+    "missing": [
+      "project/service/SKU attribution",
+      "billing timezone and cutoff",
+      "applied USD/JPY rate",
+      "original model/price for 9 legacy records"
+    ],
+    "private_inputs_and_payment_identifiers_not_published": true
+  },
+  "source_scope": "current 7 enabled sources and disposable Linux/Windows NTFS; actual user Vault excluded by user",
+  "original_evidence": "docs/archive/2026-10/remaining-work-evidence-2026-10-16.json",
+  "items": {
+    "A01": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A02": {
+      "status": "judgment_complete_in_accepted_scope",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A03": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A04": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A05": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A06": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A07": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A08": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A09": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A10": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A11": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A12": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A13": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A14": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A15": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A16": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A17": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A18": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A19": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    },
+    "A20": {
+      "status": "completed",
+      "evidence": "docs/repository-audit.md#改善の依存関係と進捗"
+    }
+  },
+  "remaining_constraints": [
+    "Exact usage-to-invoice difference is not established by the supplied account-activity CSVs",
+    "Two reviewed npm advisories remain within pinned exceptions",
+    "No demonstrated Web speedup; measurement ranges overlap",
+    "Persistent private cache and differential HTML build were evaluated and not adopted",
+    "Graph normalization was evaluated and not applied",
+    "Optional period generation limits remain disabled by default",
+    "No exactly-once billing guarantee between API and persistence"
+  ]
+}
