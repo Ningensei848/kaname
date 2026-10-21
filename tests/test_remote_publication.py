@@ -4,9 +4,9 @@ import subprocess
 
 import pytest
 
-from techkb.distribution import publish_snapshot
-from techkb.remote_publication import publish_remote
-from techkb.publication import export_notes, ExportError
+from kaname.distribution import publish_snapshot
+from kaname.remote_publication import publish_remote
+from kaname.publication import export_notes, ExportError
 from test_distribution import git
 from test_publication import add_note
 
@@ -63,7 +63,7 @@ def test_concurrent_remote_change_is_not_overwritten(remote, harness, tmp_path, 
             if calls == 2:
                 winner = publish_snapshot(changed, bare)['commit']
         return runner(command, *args, **kwargs)
-    monkeypatch.setattr('techkb.remote_publication.subprocess.run', run)
+    monkeypatch.setattr('kaname.remote_publication.subprocess.run', run)
     with pytest.raises(ExportError, match='content_remote_conflict'):
         publish_remote(snapshot, str(bare), tmp_path)
     assert git('--git-dir=' + str(bare), 'rev-parse', 'content').stdout.decode().strip() == winner
@@ -72,7 +72,7 @@ def test_concurrent_remote_change_is_not_overwritten(remote, harness, tmp_path, 
 
 def test_publication_failure_event_and_issue_deduplication():
     import httpx
-    from techkb.operations import publish_issues
+    from kaname.operations import publish_issues
     spec = importlib.util.spec_from_file_location('notification_wrapper', Path(__file__).parents[1] / 'scripts/notify_publication.py')
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     assert module.failure_event('123', 'owner/repo', 'success', 'success', 'success', 'success', 'success') == []

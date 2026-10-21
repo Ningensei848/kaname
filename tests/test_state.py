@@ -1,7 +1,7 @@
 import pytest
 from conftest import MemoryStore
-from techkb.state import State, encode_tsv, decode_tsv, INDEX_COLUMNS
-from techkb.pending import Candidate, COLUMNS, merge_pending
+from kaname.state import State, encode_tsv, decode_tsv, INDEX_COLUMNS
+from kaname.pending import Candidate, COLUMNS, merge_pending
 
 def test_all_months_loaded():
     s = MemoryStore()

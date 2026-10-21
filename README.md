@@ -22,14 +22,14 @@ flowchart LR
 
 ## 開始する
 
-Python 3.12で、リポジトリrootから実行してください。パッケージ/CLI名は`techkb`です。
+Python 3.12で、リポジトリrootから実行してください。パッケージ/CLI名は`kaname`です。
 
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.lock
 python -m pip install --no-deps -e .
-python -m techkb validate-config
+python -m kaname validate-config
 python -m pytest -q
 ```
 
@@ -49,10 +49,10 @@ Windowsでは対応するvenvのPowerShell activateを使います。
 予算通知の閾値と、任意のstandard生成用run/UTC日月上限を分けています（[運用手順](docs/operations.md#任意のutc日月生成上限)）。既定の生成上限設定は変更していません。既存Noteは設定変更で自動再要約しません。
 
 ```bash
-python -m techkb run           # 有料生成・GCS更新を伴う通常収集
-python -m techkb audit-state   # GCS読取りによる整合性検査
-python -m techkb cost-report   # 保存済みusageからの費用推計
-python -m techkb source-health # 収集元の状態をJSON表示
+python -m kaname run           # 有料生成・GCS更新を伴う通常収集
+python -m kaname audit-state   # GCS読取りによる整合性検査
+python -m kaname cost-report   # 保存済みusageからの費用推計
+python -m kaname source-health # 収集元の状態をJSON表示
 ```
 
 通常scheduleは毎日07:17 JST予定で、GitHub側の遅延があります。同じbucketのwriterは一つに限定します。
@@ -62,8 +62,10 @@ python -m techkb source-health # 収集元の状態をJSON表示
 ## 実装と次の作業
 
 標準収集/復旧、画像、実Batch保存/公開/再実行、Git/Release/Pages、通常schedule/切戻し、NS1、Source Health、旧責務整理は受入済みです。
-現在の保証は[検証基準](docs/verification.md)、20項目の判定と根拠は[監査一覧](docs/repository-audit.md)、実施順と完了状況は[作業記録](docs/next-work.md)を参照してください。
-完了済み計画と過去の受入記録は[専用アーカイブブランチ](docs/archive/README.md)へ分離しました。
+現在の保証は[検証基準](docs/verification.md)、次の開発は[作業一覧](docs/next-work.md)を参照してください。
+完了済み20項目の判定と根拠は[過去の監査一覧](docs/archive/2026-10/completed-audit-2026-10-21.md)へ分離しました。
+パッケージとCLIは`kaname`へ統一しています。既存環境の更新は[名称移行](docs/naming-migration.md)を参照してください。
+完了済み計画と過去の受入記録は[履歴ファイルと保全タグ](docs/archive/README.md)へ分離しました。
 
 ## 資料
 

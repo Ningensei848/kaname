@@ -1,7 +1,7 @@
 """Optional estimated run/UTC period caps; no token-counting API requests."""
 from decimal import Decimal
 from datetime import datetime, timezone
-import os
+from .compat import env_value
 
 
 def aggregate_limits_enabled(app):
@@ -21,7 +21,7 @@ def generation_allowance(store, app, started_at):
         return None
     if hasattr(store, 'read_snapshot'):
         with store.read_snapshot(('runs/', 'state/standard-usage/', 'state/batches/'),
-                                 cache_dir=os.environ.get('TECHKB_READ_CACHE')) as snapshot:
+                                 cache_dir=env_value('KANAME_READ_CACHE')) as snapshot:
             return _period_allowance(snapshot, app, started_at)
     return _period_allowance(store, app, started_at)
 

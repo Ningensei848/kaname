@@ -13,7 +13,7 @@
 - 同じURLの後日修正は日次では自動検知しません。`--recheck-known`で元の全件hash再検査を明示的に使えます。旧設定に新項目がない場合は`recheck`で互換動作を維持します。
 - 本文hashによる重複判定・厳格なNote検証・単一writer・公開ポリシーを維持します。
 
-再検査は`python -m techkb dry-run --recheck-known`（生成/保存0）、保存も必要な場合は`python -m techkb run --recheck-known`です。後者は新しい本文の生成に通常の費用/件数上限を適用します。
+再検査は`python -m kaname dry-run --recheck-known`（生成/保存0）、保存も必要な場合は`python -m kaname run --recheck-known`です。後者は新しい本文の生成に通常の費用/件数上限を適用します。
 
 ## 現在の保存・配布の責務
 
@@ -36,4 +36,4 @@ GCSの「正本」は生成Noteと運用記録です。原記事HTML/原文を�
 ## 受入状態
 
 新規限定収集とRelease配布は実Actionsで受入済み。[整理前の全文・受入証拠](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/incremental-collection.md)へ初回の計数/短縮/保存照合を保全した。
-現在の保留件数は[監査一覧](repository-audit.md#確認できた現在値)を参照。別run間の差分GCS監査/exportと差分HTML buildは未採用である。
+現在の保留件数は[Source Health](operations.md#source-healthの読取り)で読み取る。[旧監査基点](archive/2026-10/completed-audit-2026-10-21.md#確認できた現在値)の件数は履歴である。別run間の差分GCS監査/exportと差分HTML buildは未採用で、今後の判断は[次の作業](next-work.md)で追跡する。

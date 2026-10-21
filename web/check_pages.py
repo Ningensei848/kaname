@@ -10,17 +10,21 @@ from playwright.sync_api import expect
 
 from kaname_web.public_input import public_input
 from kaname_web.artifact import load_artifact
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
 from image_acceptance import approved_images, check_image_pages
 from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
 from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
+from listing_acceptance import audit_listings, check_listing_navigation
+from tag_acceptance import audit_tags, check_search_shortcuts
 
 
 def check(content, commit, artifact, release_receipt=None, image_workers=2):
     manifest, original, _ = public_input(content, commit, release_receipt)
     marker, files = load_artifact(artifact)
     parsed = parse_html(files)
+    listing_pages = audit_listings(manifest, parsed)
+    audit_tags(manifest, original, files)
     search_links = audit_search_links(manifest, original, files, parsed)
     audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, original)
@@ -41,7 +45,7 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
         home = origin + '/kaname/'
         with browser_session(origin, approved, error_prefix='pages_') as (context, page, observed):
             page.goto(home)
-            expect(page.locator('.note-card')).to_have_count(len(manifest['notes']))
+            check_listing_navigation(context, page, home, len(manifest['notes']))
             if manifest['notes']:
                 entry = manifest['notes'][0]
                 page.get_by_role('button', name='検索', exact=True).click()
@@ -63,11 +67,13 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
                 assert page.evaluate('document.documentElement.scrollWidth') <= width, 'horizontal_overflow'
             for path in ('.env', '.git/config', 'state/index.json', 'README.md'):
                 assert context.request.get(home + path).status == 404
+            search_shortcuts = check_search_shortcuts(page, home)
         # Finish the navigation browser before starting the bounded image pool.
         images_checked = check_image_pages(origin, image_entries, image_workers)
-    return dict(status='passed', notes=len(manifest['notes']), content_commit=commit,
+    return dict(status='passed', notes=len(manifest['notes']), listing_pages=listing_pages, content_commit=commit,
                 dataset_digest=manifest['dataset_digest'], external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
+                search_shortcuts=search_shortcuts,
                 approved_image_requests=len(observed.image_requests) + images_checked['requests'],
                 image_notes=images_checked['notes'], image_workers=images_checked['workers'])
 

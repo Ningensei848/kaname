@@ -4,10 +4,10 @@ from decimal import Decimal
 import httpx
 import pytest
 
-from techkb.budget import request_reserve, token_cost
-from techkb.pipeline import Pipeline
-from techkb.state import State
-from techkb._cli_arguments import parse_args, validate_args
+from kaname.budget import request_reserve, token_cost
+from kaname.pipeline import Pipeline
+from kaname.state import State
+from kaname._cli_arguments import parse_args, validate_args
 from test_images import select
 
 
@@ -58,7 +58,7 @@ def test_reserve_accounts_for_actual_unicode_payload_and_all_attempts(harness):
 
 def test_measured_spend_is_deducted_before_next_reservation(harness, monkeypatch):
     two_articles(harness)
-    monkeypatch.setattr('techkb.pipeline.request_reserve', lambda *args: Decimal('0.01'))
+    monkeypatch.setattr('kaname.pipeline.request_reserve', lambda *args: Decimal('0.01'))
     r = capped(harness, Decimal('0.01'))
     assert r.saved == r.llm_calls == 1 and r.pending_after == 1
     assert r.budget_deferred == 1 and r.source_completed_ids == []
@@ -144,7 +144,7 @@ def test_larger_run_without_valid_standard_budget_rejected(harness, options):
 
 
 def test_audit_accepts_larger_run_with_known_usage_within_recorded_cap(harness):
-    from techkb.audit import audit_run
+    from kaname.audit import audit_run
     two_articles(harness)
     harness.app.llm.max_calls_per_run = 1
     validate_args(parse_args(['run', '--max-calls', '2', '--max-cost-usd', '1']), harness.app)
@@ -165,7 +165,7 @@ def test_audit_accepts_larger_run_with_known_usage_within_recorded_cap(harness):
     ('llm_mode', 'batch'), ('batch_submitted', 1), ('batch_saved', 1),
 ])
 def test_audit_rejects_invalid_or_unverifiable_recorded_cost_cap(harness, field, value):
-    from techkb.audit import audit_run
+    from kaname.audit import audit_run
     r = capped(harness, Decimal('1'))
     setattr(r, field, value)
     harness.store.data[next(n for n in harness.store.list('runs/'))] = r.to_bytes()

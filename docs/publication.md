@@ -1,22 +1,22 @@
 # 公開NoteのGit配布とPages
 
 この文書は[ADR-0001](adr/0001-generated-content-module-and-pages.md)に基づく公開snapshot・Git/Web配布契約の正本です。
-`techkb export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
-実GCSの117件をexportし、`content`branchへ配布しました。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
+`kaname export-notes`で公開snapshotを作れ、共通snapshotからWeb previewをbuildできます。
+実GCSからのexportと`content`branchへの配布は受入済みです。Gitの出版・取得は[Git配布手順](git-distribution.md)にあります。
 固定content commitからPagesをbuild/検証/deployするworkflowは実装済みです。
 Pages初回公開・通常schedule・切戻し/復帰を受入済みです。操作は[日次公開](daily-publication.md)・[Pages](pages.md)、現在の保証は[検証基準](verification.md)を参照してください。
 
-公開検証・読取り・配置・Git snapshot照合は`techkb.publication`配下へまとめ、従来の公開importを維持します。
+公開検証・読取り・配置・Git snapshot照合は`kaname.publication`配下へまとめ、従来の公開importを維持します。
 HTML成果物の処理はWeb側です。責務の境界は[仕様書](specification.md#pythonとwebの境界)を参照してください。
 
 ## exportの操作と実装範囲
 
 ```bash
 # ローカルの読取りsnapshot。出力は入力snapshotの外、新しいディレクトリへ
-python -m techkb export-notes --state-dir /path/to/state-snapshot --output /path/to/public-snapshot
+python -m kaname export-notes --state-dir /path/to/state-snapshot --output /path/to/public-snapshot
 
 # GCSの既存成功Noteを読む。ADC/WIFを使用し、GEMINI_API_KEYは不要
-python -m techkb export-notes --output /path/to/public-snapshot
+python -m kaname export-notes --output /path/to/public-snapshot
 ```
 
 HTTP記事取得、Gemini、GCS書込み、Vault操作、Git push、Pages deployは行いません。
@@ -52,7 +52,7 @@ GCSでは読取った世代とbytes、ローカルではbytesを再照合し、i
 除外理由は運用側に記録し、公開manifestへ運用台帳を持ち込まないようにします。
 
 ```bash
-python -m techkb export-notes --state-dir /path/to/state-snapshot \
+python -m kaname export-notes --state-dir /path/to/state-snapshot \
   --output /path/to/withdrawn-snapshot --exclude-note-id "$NOTE_ID"
 ```
 
@@ -106,7 +106,7 @@ Git履歴に依存しない再配布archiveを作る場合も、同じdataset di
 検証では一時的な親repoで参照の固定/明示更新を確認し、実際の人力Vaultには操作しません。
 dirtyな生成領域や未管理ファイルを強制削除しないことを、利用側の更新方法を選ぶ条件にします。
 kanameは第三者プラグインの動作を保証せず、選択した更新方法の編集保護は利用側で確認します。
-互換`techkb sync --vault`はsubmodule checkoutへ実行せず、Git配布とコピー同期を重ねません。
+互換`kaname sync --vault`はsubmodule checkoutへ実行せず、Git配布とコピー同期を重ねません。
 
 ## Pages向け契約
 

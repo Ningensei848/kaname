@@ -6,7 +6,7 @@ from .budget import validate_budget, validate_generation_mode
 
 
 def parse_args(argv):
-    parser = argparse.ArgumentParser(description="TechKB deterministic RSS knowledge collector")
+    parser = argparse.ArgumentParser(description="kaname deterministic RSS knowledge collector")
     parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "graph-quality", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes", "publish-notes"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")

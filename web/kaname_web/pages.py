@@ -1,7 +1,7 @@
 """Bind a complete Web artifact to the exact public content Git commit."""
 from pathlib import Path
 
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 from .public_input import public_input
 from .artifact import load_artifact, install_artifact
 from .validation import public_version_matches, snapshot_matches

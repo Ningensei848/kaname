@@ -60,10 +60,10 @@ standardのusage journalで中断後の元の日付/価格と既知countを保�
 照合不能・失敗・実行中・別SHA・不完全応答では従来の全単体テストへ戻る。`--full-tests`でも全実行できる。
 GCS/費用/全Web/配信版の実検査は省略しない。
 
-監査/export/費用/通知はlive世代catalogを使い、本文downloadは最大16並列。日次のrepository variable `GCS_READ_WORKERS`、ローカルの`TECHKB_GCS_READ_WORKERS`で1〜16を選べる。
+監査/export/費用/通知はlive世代catalogを使い、本文downloadは最大16並列。日次のrepository variable `GCS_READ_WORKERS`、ローカルの`KANAME_GCS_READ_WORKERS`で1〜16を選べる。
 省略は16、8で旧並列数、1で逐次へ戻す。不正値は認証・生成前に拒否する。
 SDK認証/retry/custom TLSを維持し、標準Storage接続poolをworker数へ合わせる。書込み/生成は単一writerのままである。
-`TECHKB_READ_CACHE`は同じprivate runner内の世代/CRC一致bytesだけを再利用し、検査結果やcatalogをcacheしない。
+`KANAME_READ_CACHE`は同じprivate runner内の世代/CRC一致bytesだけを再利用し、検査結果やcatalogをcacheしない。
 毎回の全件検査とlive catalog再確認を維持し、private bytesをActions cache/artifactへ保存しない。
 
 ## Release差分配布

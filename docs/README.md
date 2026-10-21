@@ -5,7 +5,9 @@ LLM生成Noteを独立した公開リソースとして管理し、同じNote群
 
 | 文書 | 読む目的 |
 |---|---|
-| [監査一覧](repository-audit.md)・[作業状況](next-work.md) | 20項目の根拠/判定/実施順と残余制約 |
+| [次の作業](next-work.md) | 現在のIssue・残課題・実施順・検証状態 |
+| [完了済み監査](archive/2026-10/completed-audit-2026-10-21.md)・[旧作業記録](archive/2026-10/completed-work-2026-10-21.md) | 旧20項目の判定と受入証拠 |
+| [名称移行](naming-migration.md) | kanameへのCLI/環境変数の更新と旧stateの保護 |
 | [ADR-0001](adr/0001-generated-content-module-and-pages.md)・[仕様](specification.md) | 採用構成、責務と境界 |
 | [公開・配布契約](publication.md) | Note ID/manifest/snapshotと公開前検査 |
 | [操作手順](operations.md) | CLIの副作用、課金、復旧、画像補完 |

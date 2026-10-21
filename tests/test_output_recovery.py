@@ -6,9 +6,9 @@ import subprocess
 
 import pytest
 from pydantic import ValidationError
-from techkb._cli_arguments import parse_args, validate_args
-from techkb.pipeline import Pipeline
-from techkb.audit import audit_run
+from kaname._cli_arguments import parse_args, validate_args
+from kaname.pipeline import Pipeline
+from kaname.audit import audit_run
 from test_daily_preflight import inputs, workflow
 
 

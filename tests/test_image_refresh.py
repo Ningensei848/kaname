@@ -6,13 +6,13 @@ from types import SimpleNamespace
 import pytest
 import yaml
 
-from techkb.audit import audit_state
-from techkb.browser_fetcher import SourceFetcher
-from techkb.image_refresh import ImageRepairPlan, original_bytes, repair_images
-from techkb.publication import export_notes
-from techkb.publication.common import sha256
-from techkb.publication.snapshot import snapshot_files
-from techkb.state import State
+from kaname.audit import audit_state
+from kaname.browser_fetcher import SourceFetcher
+from kaname.image_refresh import ImageRepairPlan, original_bytes, repair_images
+from kaname.publication import export_notes
+from kaname.publication.common import sha256
+from kaname.publication.snapshot import snapshot_files
+from kaname.state import State
 
 
 @pytest.fixture
@@ -127,7 +127,7 @@ def test_changed_inputs_are_rejected_before_any_write(repair, change):
 def test_latest_public_revision_is_selected_instead_of_stale_plan(repair, monkeypatch):
     h = repair.h
     h.fetcher.pages['https://example.com/a'] = b'<article>New revision</article>'
-    monkeypatch.setattr('techkb.pipeline.now', lambda: '2030-01-01T00:00:00+00:00')
+    monkeypatch.setattr('kaname.pipeline.now', lambda: '2030-01-01T00:00:00+00:00')
     assert h.pipeline.run().saved == 1
     before, writes = dict(h.store.data), list(h.store.writes)
     assert run(repair, apply=True)['status'] == 'failed'

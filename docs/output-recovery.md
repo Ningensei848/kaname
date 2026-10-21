@@ -7,7 +7,7 @@
 復旧時だけ`--max-output-tokens`で追加の出力余地を指定できます。`run`/standard・明示`--max-calls 1`・正の`--max-cost-usd`を必須とし、Batch/dry-run/診断/公開専用との混在を拒否します。CLIはclient生成前、WorkflowはGCP認証前に不適合入力を拒否します。未完JSONを閉じたり、文字列を変換して受入する処理や自動再生成は追加しません。
 
 ```bash
-python -m techkb run --llm-mode standard --max-calls 1 \
+python -m kaname run --llm-mode standard --max-calls 1 \
   --max-cost-usd 0.05 --max-output-tokens 4096
 ```
 
