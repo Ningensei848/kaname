@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "4bd0b553f5fc591acc4fc3297000710fd5453258d4d99aa295e7d9752438100f",
+  "dataset_digest": "fa2fd679b22324ee64dabcf4b6e2a55cf3d5c9afe3331fd962b86c96dd61602d",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -470,6 +470,18 @@
       "title": "eMudhraの中間証明書8件の侵害に関するCloudflareの対応と顧客向けガイド"
     },
     {
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/",
+      "category": "cloud",
+      "id": "1de8ee4c92dee1e2b6c8026bc489ce8d910de4c475ddf4715307f0d912effe31",
+      "llm_input_truncated": true,
+      "path": "notes/1de8ee4c92dee1e2b6c8026bc489ce8d910de4c475ddf4715307f0d912effe31.md",
+      "processed_at": "2026-10-22T00:42:42.327163+00:00",
+      "published": "2026-10-21",
+      "sha256": "77a7b5b0e2ecb843e5436d328741a7736392845c9d105e9590f7e0b665c39a20",
+      "source_id": "github-blog",
+      "title": "エージェント規模のGitインフラストラクチャへの移行：GitHubのAzure移行と次世代ストレージの展望"
+    },
+    {
       "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
       "category": "ai-llm",
       "id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
@@ -864,6 +876,18 @@
       "sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
       "source_id": "google-deepmind",
       "title": "筋萎縮性側索硬化症(ALS)研究におけるCo-Scientistを活用した異分野融合の試み"
+    },
+    {
+      "canonical_url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "category": "ai-llm",
+      "id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "llm_input_truncated": false,
+      "path": "notes/355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc.md",
+      "processed_at": "2026-10-22T00:42:47.802767+00:00",
+      "published": "2026-10-21",
+      "sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "source_id": "google-research",
+      "title": "AI補助超音波を活用した妊産婦ケアの拡張に関するGoogle Researchの取り組み"
     },
     {
       "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
@@ -1886,6 +1910,18 @@
       "title": "ミックスかチューニングか：データ制約のある環境におけるバイリンガル事前学習のハイパーパラメータ探索に対する優位性"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+      "category": "cybersecurity",
+      "id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
+      "llm_input_truncated": false,
+      "path": "notes/81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e.md",
+      "processed_at": "2026-10-22T00:42:29.494509+00:00",
+      "published": "2026-10-21",
+      "sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、PHPの脆弱性「php2shell」（CVE-2026-109618およびCVE-2026-109619）に対する防御を展開"
+    },
+    {
       "canonical_url": "https://research.google/blog/beyond-one-on-one-authoring-simulating-and-testing-dynamic-human-ai-group-conversations/",
       "category": "ai-llm",
       "id": "823f1395b6b4e60ea7d5a65e621234193f09bc7dc935dd9069cda143eebb5c82",
@@ -1896,6 +1932,18 @@
       "sha256": "970e4082c1e6619ee9465d47ae61eb1a02e206670088b7b58c13c50f8fe3dff6",
       "source_id": "google-research",
       "title": "マルチパーティな人間とAIのグループ会話のオーサリング、シミュレーション、テスト：DialogLab"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/solving-a-31-year-old-grand-challenge-in-mathematics-the-kls-conjecture/",
+      "category": "ai-llm",
+      "id": "8247fb52d9c69bc92fcddf426f3bfa89cc9e0baf38f0ea2ad9e4192abf86d16f",
+      "llm_input_truncated": false,
+      "path": "notes/8247fb52d9c69bc92fcddf426f3bfa89cc9e0baf38f0ea2ad9e4192abf86d16f.md",
+      "processed_at": "2026-10-22T00:42:53.242035+00:00",
+      "published": "2026-10-21",
+      "sha256": "dddf7b5e0b33aea3f02170e6f830202836f1518406bafe0479ed77269275aa91",
+      "source_id": "microsoft-research",
+      "title": "数学における31年来の難問「KLS予想」の解決"
     },
     {
       "canonical_url": "https://research.google/blog/hard-braking-events-as-indicators-of-road-segment-crash-risk/",
@@ -2796,6 +2844,18 @@
       "sha256": "31551516a65bba94877232284a97c69e37bd3cf15bab445db3d79bcdc7ac4256",
       "source_id": "google-research",
       "title": "洪水レジリエンスの次の章：Googleの水文学フレームワークのオープンソース化"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/full-transaction-waf/",
+      "category": "cybersecurity",
+      "id": "be3f1c0bcc40779de6e564476b7298ca69a2e3a08d76314fa33b74b2d9042469",
+      "llm_input_truncated": false,
+      "path": "notes/be3f1c0bcc40779de6e564476b7298ca69a2e3a08d76314fa33b74b2d9042469.md",
+      "processed_at": "2026-10-22T00:42:23.186439+00:00",
+      "published": "2026-10-21",
+      "sha256": "221e34f7ef44d4fcdb740dbb3b9300d255b54a0a89a1c8b219fb67b37c965c5d",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare WAFがフルビジネストラランザクション検出とレスポンスルールを発表"
     },
     {
       "canonical_url": "https://blog.cloudflare.com/turnstile-spin/",
