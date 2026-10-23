@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "fa2fd679b22324ee64dabcf4b6e2a55cf3d5c9afe3331fd962b86c96dd61602d",
+  "dataset_digest": "8d4929f4054b36369605cc403c4aa4545bd52fefd4c82164e8e2ab2111b66363",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -60,6 +60,18 @@
       "sha256": "4052a6dcd097195da8dac8e3efa7fddb27854591a51c39e7d9920000801c55b7",
       "source_id": "meta-engineering",
       "title": "GenRecsトークン化：安定したモデル語彙によるMetaの広告推薦の変革"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+      "category": "ai-llm",
+      "id": "0584b40568213c3756c7d8b8947bfd35321f9f72af6c81031d0b0b4a045544d2",
+      "llm_input_truncated": false,
+      "path": "notes/0584b40568213c3756c7d8b8947bfd35321f9f72af6c81031d0b0b4a045544d2.md",
+      "processed_at": "2026-10-23T00:40:47.618580+00:00",
+      "published": "2026-10-22",
+      "sha256": "510c65cd509bf61e86d5d15d3a673cab8030be5791b3a1c6e5296e2afa174e94",
+      "source_id": "google-deepmind",
+      "title": "樹木被覆を超えて：世界中の森林タイプを高解像度でマッピングするGoogle DeepMindの「ForTy 2020」"
     },
     {
       "canonical_url": "https://blog.google/products-and-platforms/products/gemini/gemini-3-flash/",
@@ -1056,6 +1068,18 @@
       "sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
       "source_id": "github-blog",
       "title": "2500件から24件へ：スター情報を除いたリポジトリスター履歴の再構築"
+    },
+    {
+      "canonical_url": "https://github.blog/security/how-bug-bounty-sharpens-one-researchers-security-skills/",
+      "category": "cybersecurity",
+      "id": "46a5f627c92195cb5471da3e3bc97c4f90817c4a5b954288729174da152617b3",
+      "llm_input_truncated": true,
+      "path": "notes/46a5f627c92195cb5471da3e3bc97c4f90817c4a5b954288729174da152617b3.md",
+      "processed_at": "2026-10-23T00:40:56.188061+00:00",
+      "published": "2026-10-22",
+      "sha256": "273d65e6c716e752d9d8c59bf8603dcf502f1437f925133c64b85ce6d3b1dca1",
+      "source_id": "github-blog",
+      "title": "バグ報奨金プログラムがセキュリティ研究者のスキルを磨く方法"
     },
     {
       "canonical_url": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
@@ -3074,6 +3098,18 @@
       "title": "細胞老化を逆転させるための遺伝的リードの迅速化"
     },
     {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/flint-interactive-a-language-for-creating-interactive-data-visualizations/",
+      "category": "ai-llm",
+      "id": "ccb73e38cedc23a0dfe447bb5d03675850284f29b8da9e64d15f085b465edbb9",
+      "llm_input_truncated": false,
+      "path": "notes/ccb73e38cedc23a0dfe447bb5d03675850284f29b8da9e64d15f085b465edbb9.md",
+      "processed_at": "2026-10-23T00:41:01.952395+00:00",
+      "published": "2026-10-22",
+      "sha256": "50dcebe0d7a45256458fc5c9a1c5d5b79345a5b405b8516cf2f76bcb58c7ff9b",
+      "source_id": "microsoft-research",
+      "title": "Flint-interactive: インラクティブなデータ視覚化を作成するための言語"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/our-approach-to-bioresilience/",
       "category": "ai-llm",
       "id": "d001f02592f8d70c6609f4dd9045b9169f611500533da81b422d902c0f2514be",
@@ -3684,6 +3720,18 @@
       "sha256": "b8f9374844e0d7d3355be094f9095c29d3b0a8c094c9ad39fc8e68d1c1d12451",
       "source_id": "apple-ml-research",
       "title": "セルフコンパクト・ランゲージモデル・エージェント"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/k-isms/",
+      "category": "cybersecurity",
+      "id": "f92a1dcf821d6538fa594c78efcd57bca0b877af31f1ec3430f16969a74c280a",
+      "llm_input_truncated": false,
+      "path": "notes/f92a1dcf821d6538fa594c78efcd57bca0b877af31f1ec3430f16969a74c280a.md",
+      "processed_at": "2026-10-23T00:40:41.238101+00:00",
+      "published": "2026-10-22",
+      "sha256": "ac016f035c1af7db94e82e6ffae0b422ef5207eb5f8478ada8677db66f183efd",
+      "source_id": "cloudflare-security",
+      "title": "韓国のISMS認証取得：大規模サービスにおけるローカライズされたコンプライアンスの実現"
     },
     {
       "canonical_url": "https://deepmind.google/blog/uncovering-repurposed-medicines-to-fight-liver-fibrosis/",
