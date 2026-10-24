@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "8d4929f4054b36369605cc403c4aa4545bd52fefd4c82164e8e2ab2111b66363",
+  "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -48,6 +48,18 @@
       "sha256": "b60b0c79bc4eb05e84ee336964074e11e4ab370458456ee7090f269072107551",
       "source_id": "apple-ml-research",
       "title": "言語識別機能の強化が多言語音声モデルの言語学習を改善する"
+    },
+    {
+      "canonical_url": "https://research.google/blog/bringing-foundational-models-to-the-front-lines-of-tb-screening/",
+      "category": "ai-llm",
+      "id": "052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68",
+      "llm_input_truncated": false,
+      "path": "notes/052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68.md",
+      "processed_at": "2026-10-24T00:43:14.497998+00:00",
+      "published": "2026-10-23",
+      "sha256": "0a5f496e94e5be632e2b5f3bb3e460951b96dbf5588e85a7d57b61177f51b56c",
+      "source_id": "google-research",
+      "title": "Google Researchが結核スクリーニングの最前線へ基盤モデルを展開、国際的な取り組みを発表"
     },
     {
       "canonical_url": "https://engineering.fb.com/2026/10/19/ml-applications/genrecs-tokenization-transforming-ads-recommendation-at-meta-with-stable-model-vocabulary/",
