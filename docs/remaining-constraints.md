@@ -9,7 +9,7 @@
 | R03 / cache・差分build・DB | 現公開版と現在のGCSで、全件整合性/前後catalogを保持した工程時間・転送・メモリを測り、導入条件を判定する。制約が確認されれば同じgateで改善する | 評価完了、現規模では追加基盤を見送る。全state/runsを含む監査対象GCS 1,315 object/7,881,765 bytes、603成功行、最大RSS115,368 KiB。16並列load5.690秒、全体7.695秒、index349,566 bytes/0.006秒。全Web build/全受入3回も同じartifact/coverageで成功、全体中央値211.307秒。DB・run間cache・差分HTMLの導入が必要になる制約は現在未確認。下記の測定を基点に再判断する |
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
 | R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
-| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を57件実施し、20件で用語/数量/精度/評価条件/公開日・提供範囲の訂正候補。20件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り264件は未完了。以下の確認記録を参照 |
+| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を77件実施し、36件に訂正候補。36件のhash固定計画を321件の公開snapshotで検証した。先の20件は実GCS読取り後のメモリ上の適用/監査も成功。追加16件の実GCS監査はADC再認証待ち。本番反映と残り244件は未完了。以下の確認記録を参照 |
 | R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
@@ -84,8 +84,28 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 
 - Note `255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2`：[Cyberの原典](https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/)の表示日/構造化データと[同時発表](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/)は7月21日。Noteの7月17日を訂正する。CyberGymの大型モデルに対する競争力と、Big Sleepでのmainline Flashへの優位も区別する。
 
-[訂正文案](note-reviews/2026-10-25-corrections.json)の20件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+- Note `262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b`：[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/)。音声参照は発表時点では声のみであり、その他の音声入力は今後の対応である。あらゆる入力という要約・ポイントにこの制約を明記する。 物理法則の直観を利用した動画表現を、検証済みの物理シミュレーションと混同しない。
+- Note `26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498`：[原典](https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/)。重大な脆弱性なら必ず3万ドル以上を得られるという最低額の保証に読める表現を、達する場合もある報酬として明確にする。
+- Note `28d1e98bb25b487f0b8b2be2538cc863fce18b879816bfea748565b905659b2a`：[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/)。2.5倍の速度向上は回答全体ではなく最初の応答トークンまでの時間である。重要ポイントも要約と同じ指標に揃える。
+- Note `2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18`：[原典](https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/)。100 billion images and videosは1,000億以上の画像・動画であり、100億以上の画像という記載を数値と対象の両方で訂正する。 AI Content Detection APIの初期提供対象は信頼されたパートナーであり、その条件を要約へ加える。
+- Note `2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2`：[原典](https://deepmind.google/blog/opening-new-paths-in-aging-research/)。重要ポイント末尾の「イ号」は原典にない無関係な断片であり削除する。
+- Note `2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c`：[原典](https://blog.google/innovation-and-ai/products/nano-banana-pro/)。リアルタイム情報はGoogle Search接続を利用する場合であり、モデルが常時最新情報を持つと読める表現を限定する。 この発表のGemini画像検証はGoogle AI生成物が対象であり、任意の他社AI画像まで判別できる表現を避ける。
+- Note `2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae`：[原典](https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/)。参照画像をインディレッドとする無意味な語を、素材となる参照画像に修正する。 1080p/4Kアップスケーリングの提供先はFlow・Gemini API・Vertex AIのみであり、全製品の共通機能にしない。 SynthIDで検証する対象はGoogle AI動画であり、任意の他社AI動画の判別と混同しない。
+- Note `2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41`：[原典](https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/)。ASIMOV-Agenticは安全判断や不確実性対応の評価であり、ベンチマーク自体が安全性を担保するという表現を修正する。 原典の表示日と構造化データは7月30日であり、元Noteの公開日7月28日を訂正する。生成日時や元index/usageは保持する。
+- Note `2e65d7de98b253645cbce9d356a7b1fe2e0309189ed80818bdde559a9e7993d1`：[原典](https://machinelearning.apple.com/research/code-switching-detection)。monolingual recordingsは単音節ではなく単一言語の録音であり、言語選択的次元を特定するデータ条件を訂正する。
+- Note `2f4cf4df821bb266280ee282b1b81eb78846041010bfc0d3ccaffbbab3f284f7`：[原典](https://github.blog/security/application-security/ai-powered-fuzzing-with-the-github-security-lab-taskflow-agent/)。自動生成される判定・修正案はモデルの誤りを含み得るため人のレビューを要するという原典の条件を要約へ追記する。
+- Note `2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7`：[原典](https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/)。Accountable事業者の名称をアカウント対象企業と誤訳している。提供機能と期限付き対応約束による指定と説明する。 Bingのrobots.txt連携は2027年初頭予定であり、設定だけで全3社へ現在通知されるとはしない。NOARCHIVE等の別途指定を明記する。
+- Note `30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135`：[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/)。17%のtoken削減と350 token/秒はArtificial Analysisの評価・測定であり、全タスクの保証として記述しない。 本日利用可能なのは3.6 Flashと3.5 Flash-Lite。Cyberは政府・信頼されたパートナー向けの今後の限定pilotであり3モデル共通の一般公開としない。
+- Note `33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e`：[原典](https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/)。有限回のpass@k実験を、推論OFFでは知識へ到達できないという絶対的不能の証明にしない。今回の評価で到達しにくかったとする。
+- Note `33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a`：[原典](https://research.google/blog/advancing-amie-towards-expert-level-audio-visual-clinical-consultations/)。30名は比較対象PCP10名と独立評価医20名の合計であり、30名のPCPを比較対象とする要約を訂正する。
+- Note `3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548`：[原典](https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/)。原典の表示日・構造化データは2025年12月19日であり、元Noteの12月16日を訂正する。
+- Note `34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981`：[原典](https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/)。原典の表示日・構造化データは2026年5月19日であり、元Noteの5月16日を訂正する。
+
+[訂正文案](note-reviews/2026-10-25-corrections.json)の36件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
 
 原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。20件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど20 Note変更を確認した。訂正後datasetは `18935841deb0aca80a8b46c2d0d126ef26145feb4e3249e1d609ebfe14fe6fb1`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
 
-Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。57件の結果を全321件へ一般化しない。
+
+追加16件は、先の20件の公開snapshotを入力に純粋なNote検証を通し、計36件を訂正した321件のローカルGit/組立てたReleaseのbytes一致を確認した。datasetは `3824e536c9db46b26722f9c855cae2059b22104fecb57e07bff4a9a87881cfa1`。元の生成情報と既存20件の結果bytesは維持した。ADCと既存gcloudの認証は再認証を要し、新しいGCS読取りは失敗したため、追加16件の現在のreceipt/index/usage監査まで済んだとはしない。認証設定の変更や実GCS書込みは行っていない。
+
+Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。77件の結果を全321件へ一般化しない。

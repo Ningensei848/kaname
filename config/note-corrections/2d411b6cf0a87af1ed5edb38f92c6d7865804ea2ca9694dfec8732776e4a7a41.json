@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+  "expected_note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+  "expected_text_sha256": "b3b5e2c9ff74945e0f4f9c6380c7f711d20e152c43fd38c6b986891c363b2e2a",
+  "source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics\n  2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini\n  Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全性を担保するためのベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "new": "description: Google DeepMindは、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics\n  2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini\n  Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全上の判断や不確実性への対応を評価するベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "> [[Google DeepMind]]は、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics 2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全性を担保するためのベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "new": "> [[Google DeepMind]]は、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics 2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全上の判断や不確実性への対応を評価するベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "published: '2026-07-28'",
+      "new": "published: '2026-07-30'",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- Published: 2026-07-28",
+      "new": "- Published: 2026-07-30",
+      "expected_occurrences": 1
+    }
+  ],
+  "source_published": "2026-07-30"
+}

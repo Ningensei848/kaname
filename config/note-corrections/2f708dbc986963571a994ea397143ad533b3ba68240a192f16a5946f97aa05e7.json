@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "note_id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+  "expected_note_sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+  "expected_text_sha256": "b009c2c21cf6724012e124e3856e9bcaf56ba1528dfa82dfb43e59445abde7bf",
+  "source": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow\n  AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、Microsoftなどのアカウント対象企業に対して個別の制御が可能になります。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "new": "description: Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow\n  AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、MicrosoftなどのAccountable（提供機能や期限付きの対応約束が確認された）事業者に対して制御を指定できます。ただしBingのrobots.txt連携は2027年初頭予定で、現時点では別途NOARCHIVE等の指定が必要です。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "> Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、Microsoftなどのアカウント対象企業に対して個別の制御が可能になります。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "new": "> Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、MicrosoftなどのAccountable（提供機能や期限付きの対応約束が確認された）事業者に対して制御を指定できます。ただしBingの[[robots.txt]]連携は2027年初頭予定で、現時点では別途NOARCHIVE等の指定が必要です。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- 検索での発見可能性を維持しながらAIモデルの学習だけを拒否できる「Disallow AI Training」設定が導入されました。",
+      "new": "- 検索を許可しつつ学習拒否の希望を通知する「Disallow AI Training」を導入。Bingのrobots.txt連携は2027年初頭予定で、それまではNOARCHIVE等による別途の指定が必要です。",
+      "expected_occurrences": 1
+    }
+  ]
+}

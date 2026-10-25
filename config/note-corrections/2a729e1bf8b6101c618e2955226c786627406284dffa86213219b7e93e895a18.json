@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "note_id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+  "expected_note_sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+  "expected_text_sha256": "eb3c615af4013423756fa660ff2b3a504d4377ba461f4d7fba4561f26013568d",
+  "source": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Googleは、オンライン上のコンテンツがどのように作成・編集されたかを理解しやすくするため、検索、Gemini、Chrome、Pixel、Cloudなどの製品群全体でコンテンツの透明性と検証ツールを拡大している。過去3年間でGoogleはデジタル電子透かし技術「SynthID」を画像・動画・音声モデルに統合し、100億以上の画像を透かし処理してきた。また、C2PA\n  Content Credentials規格を採用し、Pixelスマートフォンではカメラ撮影によるオリジナル画像の記録を拡大している。さらに、GeminiアプリやGoogle検索、Chromeにおいて、SynthIDやC2PAの検証機能を追加し、ユーザーが「AIで生成されたか」や「未編集のオリジナルか」を確認できるようにする。OpenAIやKakao、ElevenLabsなどの他社もSynthIDの導入を進めており、Google\n  CloudのGemini Enterprise Agent Platformでは新しいAI Content Detection APIが提供される。これにより、業界全体でのコンテンツの信頼性と透明性向上を目指している。\n",
+      "new": "description: Googleは、オンライン上のコンテンツがどのように作成・編集されたかを理解しやすくするため、検索、Gemini、Chrome、Pixel、Cloudなどの製品群全体でコンテンツの透明性と検証ツールを拡大している。過去3年間でGoogleはデジタル電子透かし技術「SynthID」を画像・動画・音声モデルに統合し、1,000億以上の画像・動画に透かしを付与してきた。また、C2PA\n  Content Credentials規格を採用し、Pixelスマートフォンではカメラ撮影によるオリジナル画像の記録を拡大している。さらに、GeminiアプリやGoogle検索、Chromeにおいて、SynthIDやC2PAの検証機能を追加し、ユーザーが「AIで生成されたか」や「未編集のオリジナルか」を確認できるようにする。OpenAIやKakao、ElevenLabsなどの他社もSynthIDの導入を進めており、Google\n  CloudのGemini Enterprise Agent Platformでは新しいAI Content Detection APIが当初は信頼されたパートナー向けに提供される。これにより、業界全体でのコンテンツの信頼性と透明性向上を目指している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "100億以上の画像を透かし処理",
+      "new": "1,000億以上の画像・動画に透かしを付与",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "新しいAI Content Detection APIが提供される",
+      "new": "新しいAI Content Detection APIが当初は信頼されたパートナー向けに提供される",
+      "expected_occurrences": 1
+    }
+  ]
+}

@@ -442,6 +442,392 @@
       "new": "[[CyberGym]]では最大5回のモデル呼び出しで大型モデルと競争力のある結果を示し、[[Big Sleep]]評価ではmainline 3.5 Flashと3.6 Flashを上回った。",
       "expected_occurrences": 1,
       "source_published": "2026-07-21"
+    },
+    {
+      "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+      "original_note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+      "proposed_note_sha256": "5587ecd12004f8349276b4d75e2f1e257f314616cc824bc07a361fe41e545b54",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+      "old": "description: Google DeepMindは、推論能力と生成能力を統合した新しいマルチモーダルモデル「Gemini Omni」を発表しました。第1弾モデルである「Gemini\n  Omni Flash」は、画像、音声、動画、テキストなどのあらゆる入力を組み合わせ、物理法則や世界知識に基づいた高品質な動画の生成や、自然言語による複数ターンの編集を可能にします。キャラクターの一貫性を保ちながら環境やスタイル、カメラアングルなどを対話形式で変更できるほか、物理シミュレーションや複雑な概念の視覚化も実現しています。安全性の面ではアバター機能による自身の声での動画作成をサポートし、すべての生成動画に「SynthID」による電子透かしが埋め込まれています。本モデルはGoogle\n  AIプランの加入者向けにGeminiアプリやGoogle Flowで提供されるほか、YouTube ShortsやYouTube Createアプリでも順次展開されます。\n",
+      "new": "description: Google DeepMindは、推論能力と生成能力を統合した新しいマルチモーダルモデル「Gemini Omni」を発表しました。第1弾モデルである「Gemini\n  Omni Flash」は、画像、動画、テキストと、発表時点では声に限られる音声参照を組み合わせ、物理法則や世界知識に基づいた高品質な動画の生成や、自然言語による複数ターンの編集を可能にします。キャラクターの一貫性を保ちながら環境やスタイル、カメラアングルなどを対話形式で変更できるほか、物理法則への直観を利用した動画表現や複雑な概念の視覚化も実現しています。安全性の面ではアバター機能による自身の声での動画作成をサポートし、すべての生成動画に「SynthID」による電子透かしが埋め込まれています。本モデルはGoogle\n  AIプランの加入者向けにGeminiアプリやGoogle Flowで提供されるほか、YouTube ShortsやYouTube Createアプリでも順次展開されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+      "original_note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+      "proposed_note_sha256": "5587ecd12004f8349276b4d75e2f1e257f314616cc824bc07a361fe41e545b54",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+      "old": "画像、音声、動画、テキストなどのあらゆる入力",
+      "new": "画像、動画、テキストと、発表時点では声に限られる音声参照",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+      "original_note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+      "proposed_note_sha256": "5587ecd12004f8349276b4d75e2f1e257f314616cc824bc07a361fe41e545b54",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+      "old": "画像、音声、動画、テキストのあらゆる入力",
+      "new": "画像、動画、テキストと、発表時点では声に限られる音声参照",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+      "original_note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+      "proposed_note_sha256": "5587ecd12004f8349276b4d75e2f1e257f314616cc824bc07a361fe41e545b54",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+      "old": "物理シミュレーションや複雑な概念の視覚化",
+      "new": "物理法則への直観を利用した動画表現や複雑な概念の視覚化",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498",
+      "original_note_sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
+      "proposed_note_sha256": "7b172ad7eb769a36b41af5f7a731b7e4cf7efde6adeff492e2c80fec98fe36c8",
+      "source": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
+      "old": "description: サイバーセキュリティ月間の開始に伴い、GitHubのバグバウンティチームは、トップセキュリティ研究者の1人である@vaib25vicky氏の調査手法やテクニック、GitHubでのハッキング経験に焦点を当てています。GitHubは最近バグバウンティプログラムを再構築し、提出の量ではなく質を重視する報酬体系への移行や、最大3万ドル以上の報酬、迅速な対応、ベータ版の早期プレビューを提供する招待制のVIPプログラムを設立しました。@vaib25vicky氏は権限およびアクセス制御の研究を専門とし、エコシステム内で複雑かつ重大な問題を発見しています。幼少期からのコンピュータへの興味や大学時代からのコーディング経験を経てセキュリティの世界に入り、システムの深い理解を追求し続けています。\n",
+      "new": "description: サイバーセキュリティ月間の開始に伴い、GitHubのバグバウンティチームは、トップセキュリティ研究者の1人である@vaib25vicky氏の調査手法やテクニック、GitHubでのハッキング経験に焦点を当てています。GitHubは最近バグバウンティプログラムを再構築し、提出の量ではなく質を重視する報酬体系への移行や、重大な発見には3万ドル以上に達する場合もある報酬、迅速な対応、ベータ版の早期プレビューを提供する招待制のVIPプログラムを設立しました。@vaib25vicky氏は権限およびアクセス制御の研究を専門とし、エコシステム内で複雑かつ重大な問題を発見しています。幼少期からのコンピュータへの興味や大学時代からのコーディング経験を経てセキュリティの世界に入り、システムの深い理解を追求し続けています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498",
+      "original_note_sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
+      "proposed_note_sha256": "7b172ad7eb769a36b41af5f7a731b7e4cf7efde6adeff492e2c80fec98fe36c8",
+      "source": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
+      "old": "最大3万ドル以上の報酬",
+      "new": "重大な発見には3万ドル以上に達する場合もある報酬",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498",
+      "original_note_sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
+      "proposed_note_sha256": "7b172ad7eb769a36b41af5f7a731b7e4cf7efde6adeff492e2c80fec98fe36c8",
+      "source": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
+      "old": "重大な脆弱性に対して3万ドル以上の高額な報酬",
+      "new": "重大な脆弱性では3万ドル以上に達する場合もある報酬",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "28d1e98bb25b487f0b8b2be2538cc863fce18b879816bfea748565b905659b2a",
+      "original_note_sha256": "c5573f8bc1b5889958c659577d1e51aae0a86202b4c75c476bd8fe41097e556c",
+      "proposed_note_sha256": "b210522077f309c314df4eb615f595a565b5df361d99cbedd845e109556095bb",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
+      "old": "応答時間が2.5倍高速化",
+      "new": "最初の応答トークンまでの時間が2.5倍高速化",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+      "original_note_sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+      "proposed_note_sha256": "eb3c615af4013423756fa660ff2b3a504d4377ba461f4d7fba4561f26013568d",
+      "source": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+      "old": "description: Googleは、オンライン上のコンテンツがどのように作成・編集されたかを理解しやすくするため、検索、Gemini、Chrome、Pixel、Cloudなどの製品群全体でコンテンツの透明性と検証ツールを拡大している。過去3年間でGoogleはデジタル電子透かし技術「SynthID」を画像・動画・音声モデルに統合し、100億以上の画像を透かし処理してきた。また、C2PA\n  Content Credentials規格を採用し、Pixelスマートフォンではカメラ撮影によるオリジナル画像の記録を拡大している。さらに、GeminiアプリやGoogle検索、Chromeにおいて、SynthIDやC2PAの検証機能を追加し、ユーザーが「AIで生成されたか」や「未編集のオリジナルか」を確認できるようにする。OpenAIやKakao、ElevenLabsなどの他社もSynthIDの導入を進めており、Google\n  CloudのGemini Enterprise Agent Platformでは新しいAI Content Detection APIが提供される。これにより、業界全体でのコンテンツの信頼性と透明性向上を目指している。\n",
+      "new": "description: Googleは、オンライン上のコンテンツがどのように作成・編集されたかを理解しやすくするため、検索、Gemini、Chrome、Pixel、Cloudなどの製品群全体でコンテンツの透明性と検証ツールを拡大している。過去3年間でGoogleはデジタル電子透かし技術「SynthID」を画像・動画・音声モデルに統合し、1,000億以上の画像・動画に透かしを付与してきた。また、C2PA\n  Content Credentials規格を採用し、Pixelスマートフォンではカメラ撮影によるオリジナル画像の記録を拡大している。さらに、GeminiアプリやGoogle検索、Chromeにおいて、SynthIDやC2PAの検証機能を追加し、ユーザーが「AIで生成されたか」や「未編集のオリジナルか」を確認できるようにする。OpenAIやKakao、ElevenLabsなどの他社もSynthIDの導入を進めており、Google\n  CloudのGemini Enterprise Agent Platformでは新しいAI Content Detection APIが当初は信頼されたパートナー向けに提供される。これにより、業界全体でのコンテンツの信頼性と透明性向上を目指している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+      "original_note_sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+      "proposed_note_sha256": "eb3c615af4013423756fa660ff2b3a504d4377ba461f4d7fba4561f26013568d",
+      "source": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+      "old": "100億以上の画像を透かし処理",
+      "new": "1,000億以上の画像・動画に透かしを付与",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+      "original_note_sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+      "proposed_note_sha256": "eb3c615af4013423756fa660ff2b3a504d4377ba461f4d7fba4561f26013568d",
+      "source": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+      "old": "新しいAI Content Detection APIが提供される",
+      "new": "新しいAI Content Detection APIが当初は信頼されたパートナー向けに提供される",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2",
+      "original_note_sha256": "da3fd860bd5368ce150035ad0d6acb3342b7060f70d52ea1a902a18562d83896",
+      "proposed_note_sha256": "dc959783c9d0a604b8f4b2d34e69dab15470228e243bdbdeb179add4ddfcf944",
+      "source": "https://deepmind.google/blog/opening-new-paths-in-aging-research/",
+      "old": "特定している。イ号",
+      "new": "特定している。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+      "original_note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+      "proposed_note_sha256": "22dc03988550a7c37cf1daf029724e7d85de7852ffa732edcd6281ad43bd5d71",
+      "source": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+      "old": "description: Google DeepMindは、Gemini 3 Proを基盤とする最先端の画像生成および編集モデル「Nano Banana Pro」を発表した。Gemini\n  3の優れた推論能力とリアルタイムのワールドナレッジを活用し、植物や料理のレシピなどの文脈に富んだ正確なインフォグラフィックや図解を作成できる。また、多言語における正確で視認性の高いテキストの描画やローカライゼーションに対応しており、ポスターやモックアップの制作に最適である。さらに、最大14枚の画像を組み合わせて一貫性を保つ高度な編集機能や、スタジオ品質のクリエイティブコントロールを備えている。コンシューマー向けのGeminiアプリをはじめ、Google\n  Ads、Workspace、Google AI Studio、Vertex AI、映画制作用のFlowなどで順次提供が開始される。生成された画像にはSynthIDによる電子透かしが埋め込まれ、透明性の確保と検証が可能となっている。\n",
+      "new": "description: Google DeepMindは、Gemini 3 Proを基盤とする最先端の画像生成および編集モデル「Nano Banana Pro」を発表した。Gemini\n  3の優れた推論能力と世界知識とGoogle Search接続時の最新情報を活用し、植物や料理のレシピなどの文脈に富んだ正確なインフォグラフィックや図解を作成できる。また、多言語における正確で視認性の高いテキストの描画やローカライゼーションに対応しており、ポスターやモックアップの制作に最適である。さらに、最大14枚の画像を組み合わせて一貫性を保つ高度な編集機能や、スタジオ品質のクリエイティブコントロールを備えている。コンシューマー向けのGeminiアプリをはじめ、Google\n  Ads、Workspace、Google AI Studio、Vertex AI、映画制作用のFlowなどで順次提供が開始される。生成された画像にはSynthIDによる電子透かしが埋め込まれ、透明性の確保と検証が可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+      "original_note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+      "proposed_note_sha256": "22dc03988550a7c37cf1daf029724e7d85de7852ffa732edcd6281ad43bd5d71",
+      "source": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+      "old": "リアルタイムのワールドナレッジ",
+      "new": "世界知識とGoogle Search接続時の最新情報",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+      "original_note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+      "proposed_note_sha256": "22dc03988550a7c37cf1daf029724e7d85de7852ffa732edcd6281ad43bd5d71",
+      "source": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+      "old": "リアルタイム知識",
+      "new": "Google Search接続時の最新情報",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+      "original_note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+      "proposed_note_sha256": "22dc03988550a7c37cf1daf029724e7d85de7852ffa732edcd6281ad43bd5d71",
+      "source": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+      "old": "GeminiアプリなどでAI生成画像の検証",
+      "new": "GeminiアプリなどでGoogle AI生成画像の検証",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "original_note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "proposed_note_sha256": "95c046aa558cf4e2ef13da8bb6b42a84db5a6c374d2b1af996c5a467d4091ecd",
+      "source": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "old": "description: Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「Veo 3.1 Ingredients to Video」を発表しました。参照画像（インディレッド）から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube\n  Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、1080pおよび4Kへのアップスケーリング機能も導入されています。これらの新機能は、Geminiアプリ、YouTube\n  Shorts、Flow、Google Vids、Gemini API、Vertex AIを通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「SynthID」が埋め込まれ、Geminiアプリ上でAI生成かどうかの検証が可能です。\n",
+      "new": "description: Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「Veo 3.1 Ingredients to Video」を発表しました。素材となる参照画像から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube\n  Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、Flow・Gemini API・Vertex AIでは1080pおよび4Kへのアップスケーリングも利用できます。これらの新機能は、Geminiアプリ、YouTube\n  Shorts、Flow、Google Vids、Gemini API、Vertex AIを通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「SynthID」が埋め込まれ、Geminiアプリ上でGoogle\n  AIで生成されたかどうかの検証が可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "original_note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "proposed_note_sha256": "95c046aa558cf4e2ef13da8bb6b42a84db5a6c374d2b1af996c5a467d4091ecd",
+      "source": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "old": "> Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「[[Veo 3.1]] Ingredients to Video」を発表しました。参照画像（インディレッド）から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、1080pおよび4Kへのアップスケーリング機能も導入されています。これらの新機能は、[[Geminiアプリ]]、YouTube Shorts、Flow、[[Google Vids]]、Gemini API、[[Vertex AI]]を通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「[[SynthID]]」が埋め込まれ、[[Geminiアプリ]]上でAI生成かどうかの検証が可能です。\n",
+      "new": "> Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「[[Veo 3.1]] Ingredients to Video」を発表しました。素材となる参照画像から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、Flow・Gemini API・[[Vertex AI]]では1080pおよび4Kへのアップスケーリングも利用できます。これらの新機能は、[[Geminiアプリ]]、YouTube Shorts、Flow、[[Google Vids]]、Gemini API、[[Vertex AI]]を通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「[[SynthID]]」が埋め込まれ、[[Geminiアプリ]]上でGoogle AIで生成されたかどうかの検証が可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "original_note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "proposed_note_sha256": "95c046aa558cf4e2ef13da8bb6b42a84db5a6c374d2b1af996c5a467d4091ecd",
+      "source": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "old": "- 1080pおよび4K解像度へのアップスケーリング機能に対応し、より高画質な動画制作ワークフローを実現。",
+      "new": "- Flow・Gemini API・Vertex AIで1080pおよび4K解像度へのアップスケーリングに対応し、より高画質な動画制作ワークフローを実現。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "original_note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "proposed_note_sha256": "95c046aa558cf4e2ef13da8bb6b42a84db5a6c374d2b1af996c5a467d4091ecd",
+      "source": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "old": "- Googleのデジタル透かし技術「[[SynthID]]」が組み込まれており、[[Geminiアプリ]]でAI生成動画の検証が可能。",
+      "new": "- Googleのデジタル透かし技術「[[SynthID]]」が組み込まれており、[[Geminiアプリ]]でGoogle AI生成動画の検証が可能。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+      "original_note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+      "proposed_note_sha256": "b3b5e2c9ff74945e0f4f9c6380c7f711d20e152c43fd38c6b986891c363b2e2a",
+      "source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "old": "description: Google DeepMindは、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics\n  2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini\n  Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全性を担保するためのベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "new": "description: Google DeepMindは、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics\n  2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini\n  Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全上の判断や不確実性への対応を評価するベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-30"
+    },
+    {
+      "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+      "original_note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+      "proposed_note_sha256": "b3b5e2c9ff74945e0f4f9c6380c7f711d20e152c43fd38c6b986891c363b2e2a",
+      "source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "old": "> [[Google DeepMind]]は、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics 2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全性を担保するためのベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "new": "> [[Google DeepMind]]は、ロボットの全身制御、高度な器用さ、チームワークを実現する新世代のAIモデル「Gemini Robotics 2」を発表した。本発表では、ビジョン・言語・行動（VLA）モデル「Gemini Robotics 2」、状況理解やマルチステップのタスク計画を行う「Gemini Robotics ER 2」、ローカルデバイス上で動作する「Gemini Robotics On-Device 2」の3つのモデルが紹介されている。全身の動きを伴うヒューマノイドの制御や、5本指ハンドによる微細な操作、複数ロボットによる協調作業が可能になり、新たなロボットへの適応も数時間で実現できる。また、安全上の判断や不確実性への対応を評価するベンチマーク「ASIMOV-Agentic」も導入され、実世界での安全なロボット活用を推進している。\n",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-30"
+    },
+    {
+      "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+      "original_note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+      "proposed_note_sha256": "b3b5e2c9ff74945e0f4f9c6380c7f711d20e152c43fd38c6b986891c363b2e2a",
+      "source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "old": "published: '2026-07-28'",
+      "new": "published: '2026-07-30'",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-30"
+    },
+    {
+      "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+      "original_note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+      "proposed_note_sha256": "b3b5e2c9ff74945e0f4f9c6380c7f711d20e152c43fd38c6b986891c363b2e2a",
+      "source": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "old": "- Published: 2026-07-28",
+      "new": "- Published: 2026-07-30",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-30"
+    },
+    {
+      "note_id": "2e65d7de98b253645cbce9d356a7b1fe2e0309189ed80818bdde559a9e7993d1",
+      "original_note_sha256": "7bb93579b092067fb968684b658495ac05304abb52f645f91a155eda193978ba",
+      "proposed_note_sha256": "2b5797575dc0c4ed4dfe77a4aaa799e3ce62376d3c7f225ca3b623abd00bf10a",
+      "source": "https://machinelearning.apple.com/research/code-switching-detection",
+      "old": "description: 音声内での言語の切り替わりであるコードスイッチングは多言語音声で一般的ですが、事前学習コーパスでは不十分です。本研究では、大規模な音声コレクションから該当する発話を効率的に見つけるため、音声から直接コードスイッチングを検出する軽量な手法を提案します。事前学習済み音声エンコーダーのフレームレベルの言語情報を使用し、単音節の録音から言語選択的な隠れ層の次元を特定し、そのアクティベーションを集約して予測を行います。決定ルールの調整に小さなコードスイッチングセットを用いた結果、Whisper-smallエンコーダーはCS-FLEURSの14言語ペアにおいて平均F1スコア0.798を達成し、CNNの0.776やHuBERT線形ベースラインの0.751を上回りました。この結果は、既存の事前学習済み音声エンコーダーがすでにコードスイッチングの特定に必要な情報を内包しており、より代表性の高い多言語コーパスを構築するための軽量なツールを提供することを示しています。\n",
+      "new": "description: 音声内での言語の切り替わりであるコードスイッチングは多言語音声で一般的ですが、事前学習コーパスでは不十分です。本研究では、大規模な音声コレクションから該当する発話を効率的に見つけるため、音声から直接コードスイッチングを検出する軽量な手法を提案します。事前学習済み音声エンコーダーのフレームレベルの言語情報を使用し、単一言語の録音から言語選択的な隠れ層の次元を特定し、そのアクティベーションを集約して予測を行います。決定ルールの調整に小さなコードスイッチングセットを用いた結果、Whisper-smallエンコーダーはCS-FLEURSの14言語ペアにおいて平均F1スコア0.798を達成し、CNNの0.776やHuBERT線形ベースラインの0.751を上回りました。この結果は、既存の事前学習済み音声エンコーダーがすでにコードスイッチングの特定に必要な情報を内包しており、より代表性の高い多言語コーパスを構築するための軽量なツールを提供することを示しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2e65d7de98b253645cbce9d356a7b1fe2e0309189ed80818bdde559a9e7993d1",
+      "original_note_sha256": "7bb93579b092067fb968684b658495ac05304abb52f645f91a155eda193978ba",
+      "proposed_note_sha256": "2b5797575dc0c4ed4dfe77a4aaa799e3ce62376d3c7f225ca3b623abd00bf10a",
+      "source": "https://machinelearning.apple.com/research/code-switching-detection",
+      "old": "> 音声内での言語の切り替わりであるコードスイッチングは多言語音声で一般的ですが、事前学習コーパスでは不十分です。本研究では、大規模な音声コレクションから該当する発話を効率的に見つけるため、音声から直接コードスイッチングを検出する軽量な手法を提案します。事前学習済み音声エンコーダーのフレームレベルの言語情報を使用し、単音節の録音から言語選択的な隠れ層の次元を特定し、そのアクティベーションを集約して予測を行います。決定ルールの調整に小さなコードスイッチングセットを用いた結果、[[Whisper]]-smallエンコーダーは[[CS-FLEURS]]の14言語ペアにおいて平均F1スコア0.798を達成し、CNNの0.776や[[HuBERT]]線形ベースラインの0.751を上回りました。この結果は、既存の事前学習済み音声エンコーダーがすでにコードスイッチングの特定に必要な情報を内包しており、より代表性の高い多言語コーパスを構築するための軽量なツールを提供することを示しています。\n",
+      "new": "> 音声内での言語の切り替わりであるコードスイッチングは多言語音声で一般的ですが、事前学習コーパスでは不十分です。本研究では、大規模な音声コレクションから該当する発話を効率的に見つけるため、音声から直接コードスイッチングを検出する軽量な手法を提案します。事前学習済み音声エンコーダーのフレームレベルの言語情報を使用し、単一言語の録音から言語選択的な隠れ層の次元を特定し、そのアクティベーションを集約して予測を行います。決定ルールの調整に小さなコードスイッチングセットを用いた結果、[[Whisper]]-smallエンコーダーは[[CS-FLEURS]]の14言語ペアにおいて平均F1スコア0.798を達成し、CNNの0.776や[[HuBERT]]線形ベースラインの0.751を上回りました。この結果は、既存の事前学習済み音声エンコーダーがすでにコードスイッチングの特定に必要な情報を内包しており、より代表性の高い多言語コーパスを構築するための軽量なツールを提供することを示しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2f4cf4df821bb266280ee282b1b81eb78846041010bfc0d3ccaffbbab3f284f7",
+      "original_note_sha256": "c8ff367a449d806b7cf50138022c4706c0725e29ffee4562d7fd7b136111432d",
+      "proposed_note_sha256": "c40592468b6301050c7e2defba88cf1fe6679e5c12f76aa5c15564c9cd248a72",
+      "source": "https://github.blog/security/application-security/ai-powered-fuzzing-with-the-github-security-lab-taskflow-agent/",
+      "old": "description: 本記事では、GitHub Security Lab Taskflow AgentというLLM駆動型セキュリティ自動化フレームワークを基に構築された、C/C++プロジェクト向けの自律型ファジングパイプライン「Fuzzing\n  Taskflow」について紹介しています。開発者がGitHubリポジトリを指定するだけで、AIエージェントがビルドシステムの解析、エントリーポイントの特定、ファジングハーネスの自動生成、AFL++の実行、カバレッジの読み取り、ハーネスの改善、クラッシュのトリアージ、および脆弱性レポートの作成までを人間による介入なしに自動的に実行します。利用にあたっては、LLMが選定する任意のビルドコマンドなどがホスト上で直接実行されるため、Codespaceや使い捨ての仮想マシンといった隔離された環境で実行することが強く推奨されています。\n",
+      "new": "description: 本記事では、GitHub Security Lab Taskflow AgentというLLM駆動型セキュリティ自動化フレームワークを基に構築された、C/C++プロジェクト向けの自律型ファジングパイプライン「Fuzzing\n  Taskflow」について紹介しています。開発者がGitHubリポジトリを指定するだけで、AIエージェントがビルドシステムの解析、エントリーポイントの特定、ファジングハーネスの自動生成、AFL++の実行、カバレッジの読み取り、ハーネスの改善、クラッシュのトリアージ、および脆弱性レポートの作成までを自動実行します。ただし、モデルによる判定や修正案は人のレビューを要します。利用にあたっては、LLMが選定する任意のビルドコマンドなどがホスト上で直接実行されるため、Codespaceや使い捨ての仮想マシンといった隔離された環境で実行することが強く推奨されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2f4cf4df821bb266280ee282b1b81eb78846041010bfc0d3ccaffbbab3f284f7",
+      "original_note_sha256": "c8ff367a449d806b7cf50138022c4706c0725e29ffee4562d7fd7b136111432d",
+      "proposed_note_sha256": "c40592468b6301050c7e2defba88cf1fe6679e5c12f76aa5c15564c9cd248a72",
+      "source": "https://github.blog/security/application-security/ai-powered-fuzzing-with-the-github-security-lab-taskflow-agent/",
+      "old": "> 本記事では、GitHub Security Lab Taskflow AgentというLLM駆動型セキュリティ自動化フレームワークを基に構築された、C/C++プロジェクト向けの自律型ファジングパイプライン「Fuzzing Taskflow」について紹介しています。開発者がGitHubリポジトリを指定するだけで、AIエージェントがビルドシステムの解析、エントリーポイントの特定、ファジングハーネスの自動生成、AFL++の実行、カバレッジの読み取り、ハーネスの改善、クラッシュのトリアージ、および脆弱性レポートの作成までを人間による介入なしに自動的に実行します。利用にあたっては、LLMが選定する任意のビルドコマンドなどがホスト上で直接実行されるため、Codespaceや使い捨ての仮想マシンといった隔離された環境で実行することが強く推奨されています。\n",
+      "new": "> 本記事では、GitHub Security Lab Taskflow AgentというLLM駆動型セキュリティ自動化フレームワークを基に構築された、C/C++プロジェクト向けの自律型ファジングパイプライン「Fuzzing Taskflow」について紹介しています。開発者がGitHubリポジトリを指定するだけで、AIエージェントがビルドシステムの解析、エントリーポイントの特定、ファジングハーネスの自動生成、AFL++の実行、カバレッジの読み取り、ハーネスの改善、クラッシュのトリアージ、および脆弱性レポートの作成までを自動実行します。ただし、モデルによる判定や修正案は人のレビューを要します。利用にあたっては、LLMが選定する任意のビルドコマンドなどがホスト上で直接実行されるため、Codespaceや使い捨ての仮想マシンといった隔離された環境で実行することが強く推奨されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+      "original_note_sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+      "proposed_note_sha256": "b009c2c21cf6724012e124e3856e9bcaf56ba1528dfa82dfb43e59445abde7bf",
+      "source": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+      "old": "description: Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow\n  AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、Microsoftなどのアカウント対象企業に対して個別の制御が可能になります。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "new": "description: Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow\n  AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、MicrosoftなどのAccountable（提供機能や期限付きの対応約束が確認された）事業者に対して制御を指定できます。ただしBingのrobots.txt連携は2027年初頭予定で、現時点では別途NOARCHIVE等の指定が必要です。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+      "original_note_sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+      "proposed_note_sha256": "b009c2c21cf6724012e124e3856e9bcaf56ba1528dfa82dfb43e59445abde7bf",
+      "source": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+      "old": "> Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、Microsoftなどのアカウント対象企業に対して個別の制御が可能になります。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "new": "> Cloudflareは、ウェブサイト運営者が検索エンジンでの発見可能性を維持しつつAIモデルの学習を拒否できる新しい設定「Disallow AI Training」を発表しました。従来の「混合型クローラー」は検索とAI学習の双方を兼ねており、拒否する場合は検索からのインデックス除外も余儀なくされるトレードオフがありましたが、この機能によりApple、Google、MicrosoftなどのAccountable（提供機能や期限付きの対応約束が確認された）事業者に対して制御を指定できます。ただしBingの[[robots.txt]]連携は2027年初頭予定で、現時点では別途NOARCHIVE等の指定が必要です。さらに、Cloudflareはロボット拡張機能やAI要約に関する新たなオプトアウト機能の提供も予定しており、今後は広告収益モデルを持つサイトなどに対してより柔軟なトラフィック制御のプリセットが適用されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+      "original_note_sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+      "proposed_note_sha256": "b009c2c21cf6724012e124e3856e9bcaf56ba1528dfa82dfb43e59445abde7bf",
+      "source": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+      "old": "- 検索での発見可能性を維持しながらAIモデルの学習だけを拒否できる「Disallow AI Training」設定が導入されました。",
+      "new": "- 検索を許可しつつ学習拒否の希望を通知する「Disallow AI Training」を導入。Bingのrobots.txt連携は2027年初頭予定で、それまではNOARCHIVE等による別途の指定が必要です。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+      "original_note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+      "proposed_note_sha256": "cc4ba53771004d28fa563843106822eede5b35f32f963fd6d13c72a88038363b",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "old": "description: Google DeepMindは、AIエージェントの構築やスケーリングを効率化する新しいGeminiモデル「Gemini 3.6 Flash」「Gemini\n  3.5 Flash-Lite」「Gemini 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5\n  Flash-Liteは、最高速度の3.5クラスモデルであり、秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、CodeMenderコードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、制限付きパイロットプログラムとして提供される。これらのモデルはGoogle\n  AI StudioやGemini APIなどで本日から利用可能となっている。\n",
+      "new": "description: Google DeepMindは、AIエージェントの構築やスケーリングを効率化する新しいGeminiモデル「Gemini 3.6 Flash」「Gemini\n  3.5 Flash-Lite」「Gemini 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、Artificial\n  Analysisの評価で出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、Artificial\n  Analysisの測定で秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、CodeMenderコードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、政府や信頼されたパートナー向けのCodeMender経由の制限付きパイロットが今後予定されている。3.6\n  Flashと3.5 Flash-Liteは発表日からGoogle AI StudioやGemini APIなどで利用可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+      "original_note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+      "proposed_note_sha256": "cc4ba53771004d28fa563843106822eede5b35f32f963fd6d13c72a88038363b",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "old": "> [[Google DeepMind]]は、[[AIエージェント]]の構築やスケーリングを効率化する新しい[[Gemini]]モデル「[[Gemini]] 3.6 Flash」「[[Gemini]] 3.5 Flash-Lite」「[[Gemini]] 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、[[CodeMender]]コードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、制限付きパイロットプログラムとして提供される。これらのモデルはGoogle AI Studioや[[Gemini]] APIなどで本日から利用可能となっている。\n",
+      "new": "> [[Google DeepMind]]は、[[AIエージェント]]の構築やスケーリングを効率化する新しい[[Gemini]]モデル「[[Gemini]] 3.6 Flash」「[[Gemini]] 3.5 Flash-Lite」「[[Gemini]] 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、Artificial Analysisの評価で出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、Artificial Analysisの測定で秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、[[CodeMender]]コードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、政府や信頼されたパートナー向けの[[CodeMender]]経由の制限付きパイロットが今後予定されている。3.6 Flashと3.5 Flash-Liteは発表日からGoogle AI Studioや[[Gemini]] APIなどで利用可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+      "original_note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+      "proposed_note_sha256": "cc4ba53771004d28fa563843106822eede5b35f32f963fd6d13c72a88038363b",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "old": "- [[Gemini]] 3.6 Flashは3.5 Flash比で出力トークン数を17%削減し、コーディングや知識作業、マルチモーダル性能が向上している。",
+      "new": "- [[Gemini]] 3.6 FlashはArtificial Analysisの評価で3.5 Flash比の出力トークン数を17%削減し、コーディングや知識作業、マルチモーダル性能が向上している。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+      "original_note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+      "proposed_note_sha256": "cc4ba53771004d28fa563843106822eede5b35f32f963fd6d13c72a88038363b",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "old": "- [[Gemini]] 3.5 Flash-Liteは秒間350出力トークンを処理する最速かつ最もコスト効率に優れた3.5クラスモデルである。",
+      "new": "- [[Gemini]] 3.5 Flash-LiteはArtificial Analysisの測定で秒間350出力トークンを処理する最速かつ最もコスト効率に優れた3.5クラスモデルである。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e",
+      "original_note_sha256": "de51a11e5300078999b3d8aec80325f54ea67be2935ccaf08a426525017d533e",
+      "proposed_note_sha256": "b6a19816818a068c80c45518189efaedbd471272429f55b189c80d411d5f967d",
+      "source": "https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/",
+      "old": "- 推論を有効にすることで、複雑な分解を必要としない単純な事実質問でも、推論無効時には到達できないパラメトリック知識をモデルから引き出すことができる。",
+      "new": "- 推論を有効にすることで、複雑な分解を必要としない単純な事実質問でも、今回の評価で推論無効時には到達しにくかったパラメトリック知識をモデルから引き出すことができる。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a",
+      "original_note_sha256": "8cc3ec7c4b540b19ffaa6b2b1b847e702452af0a8b7d0bc3d3a6a26717123c27",
+      "proposed_note_sha256": "13802178afbf3ee835e1a6d5a468827084858b34a40e0899d91bcdd9cfce7c3b",
+      "source": "https://research.google/blog/advancing-amie-towards-expert-level-audio-visual-clinical-consultations/",
+      "old": "description: Google Researchなどは、テキストベースの対話型AIシステム「AMIE」を拡張し、リアルタイムの臨床ビデオ相談を行う「AMIE\n  (Video)」を発表した。患者の非言語的な視覚・聴覚の手がかりを認識し、仮想的な身体診察を誘導しながら診断推論を行うため、対話の自然なレイテンシを維持しつつ、話者、プランナー、知覚の3つの専門エージェントを並列動作させる非同期マルチエージェントアーキテクチャを採用している。100の臨床シナリオと300のライブ相談を用いた無作為化OSCE（客観的臨床能力試験）の評価では、経験豊富な30名のボード認定プライマリケア医（PCP）と同等の臨床能力や診断精度を示したほか、身体診察の誘導や患者役からの評価において優れた結果を収めた。ただし、本研究は模擬的な設定に基づくものであり、実患者での検証や安全性の担保が今後の課題とされる。\n",
+      "new": "description: Google Researchなどは、テキストベースの対話型AIシステム「AMIE」を拡張し、リアルタイムの臨床ビデオ相談を行う「AMIE\n  (Video)」を発表した。患者の非言語的な視覚・聴覚の手がかりを認識し、仮想的な身体診察を誘導しながら診断推論を行うため、対話の自然なレイテンシを維持しつつ、話者、プランナー、知覚の3つの専門エージェントを並列動作させる非同期マルチエージェントアーキテクチャを採用している。100の臨床シナリオと300のライブ相談を用いた無作為化OSCE（客観的臨床能力試験）の評価では、相談を担当する10名の認定プライマリケア医（PCP）を比較対象とし、別の20名の医師による評価でPCPと同等の臨床能力や診断精度を示したほか、身体診察の誘導や患者役からの評価において優れた結果を収めた。ただし、本研究は模擬的な設定に基づくものであり、実患者での検証や安全性の担保が今後の課題とされる。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a",
+      "original_note_sha256": "8cc3ec7c4b540b19ffaa6b2b1b847e702452af0a8b7d0bc3d3a6a26717123c27",
+      "proposed_note_sha256": "13802178afbf3ee835e1a6d5a468827084858b34a40e0899d91bcdd9cfce7c3b",
+      "source": "https://research.google/blog/advancing-amie-towards-expert-level-audio-visual-clinical-consultations/",
+      "old": "> Google Researchなどは、テキストベースの対話型AIシステム「AMIE」を拡張し、リアルタイムの臨床ビデオ相談を行う「AMIE \\(Video\\)」を発表した。患者の非言語的な視覚・聴覚の手がかりを認識し、仮想的な身体診察を誘導しながら診断推論を行うため、対話の自然なレイテンシを維持しつつ、話者、プランナー、知覚の3つの専門エージェントを並列動作させる非同期マルチエージェントアーキテクチャを採用している。100の臨床シナリオと300のライブ相談を用いた無作為化OSCE（客観的臨床能力試験）の評価では、経験豊富な30名のボード認定プライマリケア医（PCP）と同等の臨床能力や診断精度を示したほか、身体診察の誘導や患者役からの評価において優れた結果を収めた。ただし、本研究は模擬的な設定に基づくものであり、実患者での検証や安全性の担保が今後の課題とされる。\n",
+      "new": "> Google Researchなどは、テキストベースの対話型AIシステム「AMIE」を拡張し、リアルタイムの臨床ビデオ相談を行う「AMIE \\(Video\\)」を発表した。患者の非言語的な視覚・聴覚の手がかりを認識し、仮想的な身体診察を誘導しながら診断推論を行うため、対話の自然なレイテンシを維持しつつ、話者、プランナー、知覚の3つの専門エージェントを並列動作させる非同期マルチエージェントアーキテクチャを採用している。100の臨床シナリオと300のライブ相談を用いた無作為化OSCE（客観的臨床能力試験）の評価では、相談を担当する10名の認定プライマリケア医（PCP）を比較対象とし、別の20名の医師による評価でPCPと同等の臨床能力や診断精度を示したほか、身体診察の誘導や患者役からの評価において優れた結果を収めた。ただし、本研究は模擬的な設定に基づくものであり、実患者での検証や安全性の担保が今後の課題とされる。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548",
+      "original_note_sha256": "7360b0bb3a68c7f453b138b52a33d3783b77ed211874d977f48b6aa68ffa84b1",
+      "proposed_note_sha256": "2fb7b656a5b1883b26f02467ef2a0a530c8d94179b2ae10f5e9dcbabcb36ddf4",
+      "source": "https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/",
+      "old": "published: '2025-12-16'",
+      "new": "published: '2025-12-19'",
+      "expected_occurrences": 1,
+      "source_published": "2025-12-19"
+    },
+    {
+      "note_id": "3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548",
+      "original_note_sha256": "7360b0bb3a68c7f453b138b52a33d3783b77ed211874d977f48b6aa68ffa84b1",
+      "proposed_note_sha256": "2fb7b656a5b1883b26f02467ef2a0a530c8d94179b2ae10f5e9dcbabcb36ddf4",
+      "source": "https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/",
+      "old": "- Published: 2025-12-16",
+      "new": "- Published: 2025-12-19",
+      "expected_occurrences": 1,
+      "source_published": "2025-12-19"
+    },
+    {
+      "note_id": "34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981",
+      "original_note_sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
+      "proposed_note_sha256": "6dea912b220f8c3387c0ad2a3150b9fb8b5acdec2ba07596e438afd75641f08e",
+      "source": "https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/",
+      "old": "published: '2026-05-16'",
+      "new": "published: '2026-05-19'",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981",
+      "original_note_sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
+      "proposed_note_sha256": "6dea912b220f8c3387c0ad2a3150b9fb8b5acdec2ba07596e438afd75641f08e",
+      "source": "https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/",
+      "old": "- Published: 2026-05-16",
+      "new": "- Published: 2026-05-19",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
     }
   ]
 }
