@@ -77,6 +77,87 @@
       "old": "[[MedGemma]]や[[AMIE]]といった医療AIのオープン化と臨床研究が進み、実際の医療現場や患者ケアでの有用性が示されている。",
       "new": "[[MedGemma]]の公開・活用と[[AMIE]]の臨床研究が進み、患者ケアを支援する可能性が研究されている。",
       "expected_occurrences": 1
+    },
+    {
+      "note_id": "1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b",
+      "original_note_sha256": "6da1cd93972d540e2fe4f19ad14c9490246a9238f5d32b20f9886fba3dd47d82",
+      "proposed_note_sha256": "be6ad3b2a7a8bea4f3471d3d2339739482de862a5969199bf24347ebb0c2eb61",
+      "source": "https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/",
+      "old": "数百万枚の画像からなる大規模データセット",
+      "new": "100万枚の画像を用いた大規模データセット",
+      "expected_occurrences": 2
+    },
+    {
+      "note_id": "1b499f786fc3a15442f694a69dc2d9589e630e658e81e5e56dc8159bdd1f6bc8",
+      "original_note_sha256": "8e0d6a212478b0f2d7afd38b0dbd04c4131f4cca40a83cc96f674ca12c61b55a",
+      "proposed_note_sha256": "228a3aaba761e0cb4caa38b8f4013be433595c0fbdf5d29e8cc912ec9cccbbc0",
+      "source": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+      "old": "短い文脈における非効率性",
+      "new": "小型モデルでの推論の非効率性",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be",
+      "original_note_sha256": "3226169bfa34fcb65c2a30bfa2e1bf4e97e82fa2beb3a9a9331263f93c54978a",
+      "proposed_note_sha256": "f2740cc4e9726d670f98993f81946b1e5d5e7f222ffa16057b9ba7a1b7602f41",
+      "source": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+      "old": "2026年10月19日、[[eMudhra]]の中間証明書8件の秘密鍵が侵害され、偽造証明書によるトラフィック傍受のリスクが浮上。",
+      "new": "2026年10月19日（UTC）、Cloudflareが[[eMudhra]]の中間証明書8件の秘密鍵の侵害を把握し、偽造証明書によるトラフィック傍受リスクへの対応を開始。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+      "original_note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+      "proposed_note_sha256": "720eb29c48aa55283c7f8a988a64f21f39c7fd9f8bb8e3d871c5b5f5a88fdabf",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+      "old": "物理演算や構図の高度な制御",
+      "new": "照明やカメラなどの視覚表現と構図の高度な制御",
+      "expected_occurrences": 2
+    },
+    {
+      "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+      "original_note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+      "proposed_note_sha256": "720eb29c48aa55283c7f8a988a64f21f39c7fd9f8bb8e3d871c5b5f5a88fdabf",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+      "old": "物理演算、照明、カメラ、フォーカス、構図の高度な制御",
+      "new": "照明、カメラ、フォーカス、色調、構図の高度な制御",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+      "original_note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+      "proposed_note_sha256": "720eb29c48aa55283c7f8a988a64f21f39c7fd9f8bb8e3d871c5b5f5a88fdabf",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+      "old": "Google検索のグラウンディング機能を活用してリアルタイムのWebコンテンツに基づく正確な出力を実現している。",
+      "new": "Google検索のグラウンディング機能を有効にすると、リアルタイムのWebコンテンツを参照した出力を支援できる。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441",
+      "original_note_sha256": "b6644312289b10ea960f163ef86fd45d7c55a5c9b0ade445bff94d84fdd79306",
+      "proposed_note_sha256": "88c4863cc3ead2f8e234fb033a53bacd5cb9d8fddfdb41393fc6c7c1b718882e",
+      "source": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "old": "計画、実装、ビルド、テスト、修正のサイクルを自律的に実行させる「ヒューマン・オン・ザ・ループ」のモデルを採用しています。",
+      "new": "計画、実装、ビルド、テスト、修正のサイクルをエージェントが実行する「ヒューマン・オン・ザ・ループ」を目指し、一部工程を自律化しています。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441",
+      "original_note_sha256": "b6644312289b10ea960f163ef86fd45d7c55a5c9b0ade445bff94d84fdd79306",
+      "proposed_note_sha256": "88c4863cc3ead2f8e234fb033a53bacd5cb9d8fddfdb41393fc6c7c1b718882e",
+      "source": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "old": "計画、実装、ビルド、テスト、修正のサイクルを自律的に実行させる「[[ヒューマン・オン・ザ・ループ]]」のモデルを採用しています。",
+      "new": "計画、実装、ビルド、テスト、修正のサイクルをエージェントが実行する「[[ヒューマン・オン・ザ・ループ]]」を目指し、一部工程を自律化しています。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441",
+      "original_note_sha256": "b6644312289b10ea960f163ef86fd45d7c55a5c9b0ade445bff94d84fdd79306",
+      "proposed_note_sha256": "88c4863cc3ead2f8e234fb033a53bacd5cb9d8fddfdb41393fc6c7c1b718882e",
+      "source": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "old": "人間がプロセスを直接駆動する手法から、エンジニアが目標を設定して結果の品質を担保する「[[ヒューマン・オン・ザ・ループ]]」へ移行した。",
+      "new": "エンジニアが目標を設定して結果の品質を担保する「[[ヒューマン・オン・ザ・ループ]]」を目指し、一部工程を自律化している。工程によっては人が各反復に関与している。",
+      "expected_occurrences": 1
     }
   ]
 }

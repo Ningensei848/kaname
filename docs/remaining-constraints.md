@@ -9,7 +9,7 @@
 | R03 / cache・差分build・DB | 現公開版と現在のGCSで、全件整合性/前後catalogを保持した工程時間・転送・メモリを測り、導入条件を判定する。制約が確認されれば同じgateで改善する | 評価完了、現規模では追加基盤を見送る。全state/runsを含む監査対象GCS 1,315 object/7,881,765 bytes、603成功行、最大RSS115,368 KiB。16並列load5.690秒、全体7.695秒、index349,566 bytes/0.006秒。全Web build/全受入3回も同じartifact/coverageで成功、全体中央値211.307秒。DB・run間cache・差分HTMLの導入が必要になる制約は現在未確認。下記の測定を基点に再判断する |
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
 | R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
-| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を21件実施し、7件で用語/数量/精度/提供時期・機能制約の訂正候補。7件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り300件は未完了。以下の確認記録を参照 |
+| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を45件実施し、12件で用語/数量/精度/提供時期・機能制約の訂正候補。12件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り276件は未完了。以下の確認記録を参照 |
 | R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
@@ -57,8 +57,18 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 
 - Note `0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c`：[原典](https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/)のTimesFM/TabFMのGemini for business統合は予定であり、その限定を要約へ追加する。MedGemmaの公開とAMIEの臨床研究を分け、AMIEの公開も示唆する重要ポイントを修正する。10/20のSynaptics発売追記は10/16生成の後であり、当時のNoteの誤りとは扱わない。
 
-[訂正文案](note-reviews/2026-10-25-corrections.json)の7件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+- Note `1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b`：[原典](https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/)は100万枚の画像から数百万の判断データを生成している。要約の「数百万枚の画像」を「100万枚の画像」に直し、データの種類と件数を区別する。
 
-原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。7件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど7 Note変更を確認した。訂正後datasetは `e884d56497e0ce4d7dd35d87f3fb51feace86bf0dceba3ace5aca8e4806f56b4`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+- Note `1b499f786fc3a15442f694a69dc2d9589e630e658e81e5e56dc8159bdd1f6bc8`：資料の位置づけが「短い文脈」の非効率性としているが、[原典](https://machinelearning.apple.com/research/selection-structured-reasoning)の問題設定は小型モデルの容量制約である。「小型モデルでの推論の非効率性」に直す。
 
-Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。21件の結果を全321件へ一般化しない。
+- Note `1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441`：[原典](https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/)はhuman-on-the-loopを目標とし、一部工程では人が各反復に関与すると明記する。要約と重要ポイントを、全面移行の完了ではなく段階的な自律化として記述する。
+
+- Note `1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be`：[原典](https://blog.cloudflare.com/emudhra-certificate-compromise/)の10/19約17:00 UTCはCloudflareが侵害を把握した時刻である。重要ポイントも把握日として記述し、鍵の侵害そのものの発生日と混同しない。
+
+- Note `1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd`：[原典](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/)のphysicsは照明・カメラ・フォーカス・色調などの画像表現の制御であり、「物理演算」を示すものではない。Google Search groundingも有効化時のWeb参照として説明し、常時の動作や正確性を保証する表現を避ける。
+
+[訂正文案](note-reviews/2026-10-25-corrections.json)の12件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+
+原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。12件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど12 Note変更を確認した。訂正後datasetは `d4166060aef453f32ad6e0ec7ce214ab25cf0014a72a0c9b5eb4901343a97dc2`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+
+Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。45件の結果を全321件へ一般化しない。

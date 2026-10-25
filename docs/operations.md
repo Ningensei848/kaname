@@ -99,7 +99,7 @@ index・runs/usage・元usage_run_idは書き換えません。同じ計画の�
 別計画/変更済みNote/receipt/historyや世代競合は拒否し、人の編集を上書きしません。
 API/GCS全体を一体のtransactionにはしません。単一writer・世代条件・再読取りで競合を検出します。
 適用と監査の成功を確認してから、別のDailyで `publish_only=true` により配布します。
-2026-10-25の7計画はローカルsnapshotでの受入段階で、本番適用済みとはしません。
+2026-10-25の12計画はローカルsnapshotでの受入段階で、本番適用済みとはしません。
 
 ## 取得・本文・フィルタ
 

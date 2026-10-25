@@ -324,6 +324,395 @@
       "checked_at": "2026-10-25"
     },
     {
+      "note_id": "0dbef4c64d8e1f9eceb7b1ca0ebd2f6839b07a85661d6aeed87d54e56c57974a",
+      "note_sha256": "a2acbc9c7607534c85a4344508ddec0e30b32f3786c26614b8820e1865eb32da",
+      "canonical_url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary cyclone article supports the extra-day average lead time (three-day versus previous two-day accuracy), nearly 20 TB and 5,000 historical storms, FGNs, a single 15-day forecast in under one minute on a TPU, 1,000-member ensembles, Melissa example, open code/weights and Weather Lab/Earth AI. These are the team's reported model evaluations, not official weather warnings.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0efde46915aca57a981ce0cc2bcb9245158581f45332a9860f4bcce8db88b275",
+      "note_sha256": "c3df84537cf31393907dd81434ec6e7aa9c5abdee75e060ac806082a4f51d71a",
+      "canonical_url": "https://github.blog/developer-skills/career-growth/hack-the-world-why-hackathons-are-still-the-best-place-to-learn-to-build/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared the two-day focus, non-CS entry, free learning and safe-failure sections. Participants' accounts support prototyping, Copilot/API assistance, trial-and-error learning and the safe third-place characterization. The Note positions the piece as an essay and does not present the author's opinion as a measured learning-effect trial.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0fbfee5b2825eb211546e46ac303f946dc99b0acb2ff9126679136d34bb0e08c",
+      "note_sha256": "9008aaedfd459ceaa3a4658a473a9e0010748c0619db8974ec7191d5c504400f",
+      "canonical_url": "https://deepmind.google/blog/facts-benchmark-suite-systematically-evaluating-the-factuality-of-large-language-models/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary overview/results support four benchmarks, 3,513 public examples, Kaggle private-set stewardship and leaderboard, Gemini 3 Pro 68.8%, Search/Parametric improvement and all evaluated overall scores below 70%. The leading score is the article's reported comparison, not a claim about today's leaderboard.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "104104b58ffb07ce58c4530e2f8a2d3f0a3a20086ca86f8f7d2cdb0982858b98",
+      "note_sha256": "0da54717fee42bf7542116953c51b3bdd0d40583455717197f9609af4077d2a8",
+      "canonical_url": "https://machinelearning.apple.com/research/rltl-dr-self-improvement",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Apple's primary abstract supports verifier-derived TL;DR feedback, conditioning on previous insights and insight backpropagation, Pass@128=0 dataset filtering, GRPO 0-1%, training 14-31% and insight-free evaluation 12-13%. SFTL;DR uses task/insight tuples and nearly recovers RLTL;DR and full-rollout SFT performance. These remain experiment-specific findings. The page only certifies October 2026, not an exact publication day.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "12956c2a08e8b0da15bc192c83dfefbe695743bdf65905005dd875ce9dea86e5",
+      "note_sha256": "38898aa4667725fcb98732b0276f0496b42a53669a3ff961aa3ac389359ae08d",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary announcement supports native computer use in Gemini 3.5 Flash, replacement of the standalone model route, browser/mobile/desktop actions, long-horizon automation/testing and API availability. Adversarial training and the two enterprise safeguards agree. The safeguards are optional in the original; the Note states they are provided without claiming they are always enabled or eliminate prompt injection.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "134daa402f0b0fcc411a201cf4a99e7f89be767c7f691a8eee74d62e49d60578",
+      "note_sha256": "fe32fd4b3a561c95f51b3fade7e32879f4d54412711bca27e6780758d0216d51",
+      "canonical_url": "https://research.google/blog/reducing-ev-range-anxiety-how-a-simple-ai-model-predicts-port-availability/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary model/features/results/regional sections support lightweight linear regression, hourly occupancy-change weights, California/Germany models and approximate 20% morning/40% evening error reduction versus Keep Current State. The source evaluation is 30-60 minutes on selected high-turnover stations with at least six ports; the Note associates the improvements with peak times and does not claim those gains for every station or horizon.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14c9fd2de1dc05d866529bf68e3f4303d014c1f60f75e2b3aa6f216bedbc6cc5",
+      "note_sha256": "729ad56f36ab397bf6b9b72eb4297f588630f184d2dd07bb0e16c8b5fb29a4f9",
+      "canonical_url": "https://research.google/blog/putting-earth-ai-to-work-geospatial-agents-for-our-planets-biggest-challenges/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary capabilities/evaluation/partner/access sections support Earth AI tools, modular skills and upfront planning, four agent configurations, GeoKTools/GeoExpertQueries, early WHO/People in Need use and limited experimental Google Earth/A2A access. Partner time savings are reported cases. The source's autorater scores workflow adherence and treats outputs as expert-review drafts; the Note does not claim certified final-answer accuracy or general availability.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14d1c15095856e9d0a3f1a40c96d0e1dce86b9fbe5aa291e4d8e65c90c7710ca",
+      "note_sha256": "8c556c6923ab5745c96677b018c0249d061c9c2fecc0ca577eb802a3f9292be6",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/performance/deployment sections agree with Gemma 4, Apache 2.0, 740M parameters, native text/code/image/audio/video embeddings, MRL 768 to 128 dimensions/up to six-fold storage reduction, 8K context, MTEB Code 68.76 to 78.68 and quantized Pixel 11 Pro active RAM around 191/567 MB. These RAM figures remain tied to the stated quantization/device conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14e3f0eb4255c1f229bcd647bcf72e6abd8a74759dd7304d8b918bd13cd951c2",
+      "note_sha256": "a2a443c07660831214c1e06a5970d32171b7799034ba6a7162af34c0dbe95509",
+      "canonical_url": "https://machinelearning.apple.com/research/sclate-agent-training-evaluation",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Apple primary abstract supports the shared open scheduler/adapters, hybrid real-time/idle-skipping clock, unmodified harness/memory, proxy token/log-probability recording, seven benchmarks, ten models/configurations, native versus added memory conclusion and Qwen3.5-4B post-training improvements. Improvements are restricted to the reported experiments; the page certifies September 2026 without an exact day.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14fb26f59cee6fe836ec102f906fff77a9c627085656911e312d5f7dff8b80d7",
+      "note_sha256": "cd4996fb0fb44dff40047210ff7357304620dc926ae17a9e83deccdbe3a3989d",
+      "canonical_url": "https://research.google/blog/optimizing-cloud-economics-with-linear-elastic-caching/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary theory/production/public-trace sections support time-and-size linear memory cost, separation of TTL and capacity eviction, lightweight decision-tree prediction in Spanner, fallback LRU, public GDSF baselines and production 15.5% memory reduction/5.5% more misses/about 5% lower TCO. The article explicitly describes Spanner production-server integration; these percentages are the reported production comparison, not a universal cache guarantee.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b",
+      "note_sha256": "6da1cd93972d540e2fe4f19ad14c9490246a9238f5d32b20f9886fba3dd47d82",
+      "canonical_url": "https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "dataset_quantity",
+          "finding": "AligNetの判断データ数と画像数を混同し、100万枚の画像を数百万枚と記述している。原典は100万枚の画像から数百万の判断を生成すると説明する。"
+        }
+      ],
+      "comparison": "Primary three-step method supports THINGS-trained regularized adapter on frozen SigLIP-SO400M, teacher-generated judgments, student fine-tuning, hierarchical alignment, cognitive tasks and better few-shot/distribution-shift results. The source distinguishes millions of odd-one-out decisions from one million distinct images. The summary incorrectly makes the image count several million. Neither alignment nor reliability is established as perfect.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "17f6112c1d55e15628f9e2bcd2e5c60b3bd072d3c556175f98e0b5e2275bf603",
+      "note_sha256": "6968d175dc1efb4e2ff5220bd012dc9e4bbe6cf581529429ae19818c9619d49f",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-3-java-champions-are-using-github-copilot-for-increased-productivity/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary introduction and Vlad interview support all three named Java Champions, Hypersistence Optimizer event-history app implemented in two days versus an estimated weeks, IntelliJ plugin use for review/debugging, skills derived from past articles and retained human review/accountability. The Note treats these as practitioner examples, not a controlled or general productivity multiplier.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "18577726f5fa231033daba0479c37e1eabda3e0db864f16d5990a28756fd0cc4",
+      "note_sha256": "e6b5b767b75ab16b4dc723cbc99e614c6f80e06099cca7c5dd3528914ed7013e",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary launch supports the model's speed/rhythm/tone improvements, ComplexFuncBench Audio and Audio MultiChallenge results, developer preview Live API, enterprise customer-experience access, consumer Live experiences and Search Live expansion to over 200 countries/territories. SynthID on all generated audio agrees. It supports AI-content detection; it does not guarantee misinformation prevention.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "189ff58f788124a21ceafe81081570e31929f081228d7aa65b4516cc9c01746c",
+      "note_sha256": "7f466ad108da369cd447a62305b56c279c10347b3cc93577442049c3035b0ee6",
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/introducing-quine-an-ai-research-system-designed-for-the-complexity-of-biology/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary overview/system/PDAC/Fellows sections support the multimodal biology world model plus researcher/tool/literature harness, iterative wet-lab loop, Broad collaboration prioritizing thousands of compounds and validating selected state-shift candidates. The Note preserves research-only/non-clinical status and planned restricted Fellows access; it does not claim an approved treatment or general availability.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "194bd012952193636f7f518bfb42159ec2929aacfd4df6f5c90cb3f9d3a0d253",
+      "note_sha256": "b4355d85ceefa2babcbbb909f3be4e91b89005b42ab199743e364cd64291a3b9",
+      "canonical_url": "https://engineering.fb.com/2026/08/24/networking-traffic/mtia-300-meta-training-chip-built-in-nics/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/performance sections support two chiplets with six 800 Gbps NICs each, 1.2 TB/s without PCIe, 16 message engines, under 0.5% compute degradation in concurrent tests and compiled HCCL autonomous collectives. The reported 3.9x communication comparison uses a 150-billion-parameter model across 40 accelerators, not an overall training-speed guarantee.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1b499f786fc3a15442f694a69dc2d9589e630e658e81e5e56dc8159bdd1f6bc8",
+      "note_sha256": "8e0d6a212478b0f2d7afd38b0dbd04c4131f4cca40a83cc96f674ca12c61b55a",
+      "canonical_url": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "research_scope",
+          "finding": "資料の位置づけが小型モデルの容量制約を短い文脈の問題としている。原典のsmall models/limited model capacityに合わせる。"
+        }
+      ],
+      "comparison": "Apple primary abstract supports selection from reusable natural-language reasoning candidates, likelihood selection without extra task head, teacher-forced concurrent scoring/shared KV, seven benchmarks, 2B/4B models, over 90% per-turn reasoning and 28-54% per-question inference latency reduction. The context section changes the motivation from limited small-model capacity to short context, which the source does not establish.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1b979cf8abff836a0e4aa721100620a223f173f543087778f4df1331a054c3f6",
+      "note_sha256": "733c5617f13bb53e615211f44ff9c357f185265276847aaa38df346e62188a00",
+      "canonical_url": "https://research.google/blog/planetary-prediction-engine-automating-global-models-via-earth-ai/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary three-stage architecture supports geospatial data selection, multimodal curation and automated model building, LLM orchestration and opaque artifact handles. US health/environment, Nigeria downscaling and DRC nowcasting comparisons support the stated experimental scope. Weeks-to-minutes is the authors' reported workflow result; the Note identifies PPE as experimental research.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1bba88abf0cf4541e7402622d600c9051ef8601ac3092a15d9b370a78cd09e61",
+      "note_sha256": "982ae2d9f3e0879d853875e3196dd90e191fa7163b64d53d88c0867638fdb5a8",
+      "canonical_url": "https://research.google/blog/introducing-groundsource-turning-news-reports-into-data-with-gemini/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary pipeline/validation/impact sections agree with over 150 countries, 2000-present, 2.6M events, 80-language extraction/translation, Gemini classification/time/location reasoning, 82% practical accuracy, 85-100% GDACS severe-event coverage and Flood Hub urban forecasts up to 24h. Practical accuracy is distinct from the source's stricter 60% location-and-time accuracy; the Note does not equate 82% with exact extraction of every field.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1bd5e2667dec3ddb4fed5c2ec36215516f99b951c0cf4ca146353c41ea78400e",
+      "note_sha256": "098e825731f9817405e17a20bb8512880fc1f7e9f2096c7f93b8d387c561b1e4",
+      "canonical_url": "https://research.google/blog/how-mobility-gives-language-models-a-deeper-understanding-of-place/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary method/experiments support aggregated anonymized mobility plus text, self-supervised place embeddings, multiscale propagation for sparse POIs, cosine alignment and LA/Houston evaluation on unseen places. The Note describes place-level predictions and the tested cities; it does not claim individual-user inference or general global validation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441",
+      "note_sha256": "b6644312289b10ea960f163ef86fd45d7c55a5c9b0ade445bff94d84fdd79306",
+      "canonical_url": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "implementation_status",
+          "finding": "human-on-the-loopへの全面移行を完了したように述べているが、原典は目標であり一部工程では人が各反復に関与すると明記する。段階的な自律化として訂正する。"
+        }
+      ],
+      "comparison": "Primary Forum article supports verified outcomes, tools reading screen hierarchy, separate prototype build, autonomous stress-testing example, roughly halved memory/page faults and eight-week core feature parity. It explicitly says human-on-the-loop is a target with some stages still human-in-the-loop. Summary/key point instead present the transition as achieved and need that limitation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1cd31bc3f79615f9d181be12dc5e47f008cb32f858260545a9ba34b2834981b4",
+      "note_sha256": "02c5feb8b6bf1c7c6dfd9654bb97b9e2f6e9c4bd10d8d8332750d5124be2c9f6",
+      "canonical_url": "https://blog.cloudflare.com/vulnerability-discovery-remediation/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary service/harness/context/review sections support invitation-only Managed Defense early access, authorized-code investigation with GPT-5.6 Cyber, production Web Assets/WAF/Workers evidence, prioritization, validated patch/rule proposals and customer control. Prior authorization may permit WAF deployment; the Note says customers control implementation and does not claim the model itself can deploy fixes or execute at the edge.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be",
+      "note_sha256": "3226169bfa34fcb65c2a30bfa2e1bf4e97e82fa2beb3a9a9331263f93c54978a",
+      "canonical_url": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "event_date",
+          "finding": "重要ポイントが10/19を鍵の侵害発生日としている。原典が示すのはCloudflareの把握時刻（10/19約17:00 UTC）であり、侵害そのものの発生日とは区別する。"
+        }
+      ],
+      "comparison": "Primary incident/response/customer/developer sections support eight weak intermediate-certificate keys, forgery risk, WARP/cloudflared updates, CDN/Zero Trust mitigations, trust-store/dependency/image checks and retained verification. October 19 is when Cloudflare learned of the compromise (about 17:00 UTC), not the established time the keys were first compromised. The summary says awareness correctly, but the first key point conflates those dates.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1de8ee4c92dee1e2b6c8026bc489ce8d910de4c475ddf4715307f0d912effe31",
+      "note_sha256": "77a7b5b0e2ecb843e5436d328741a7736392845c9d105e9590f7e0b665c39a20",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary migration/coordination/read-scale sections support 99.99999% dual-location repositories, August 2025 first Central US copy, two of five Azure replicas for most repositories, about half traffic and 25ms cross-region constraint. Per-reference quorum and storage/compute decoupling remain staged work; the Note presents them as future direction rather than completed universal stateless operation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+      "note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "capability_scope",
+          "finding": "physicsを物理演算と訳し、物理シミュレーション機能を示唆している。原典の照明・カメラ・フォーカス・色調の制御として訂正する。"
+        },
+        {
+          "kind": "feature_condition",
+          "finding": "Google Search groundingは有効化時の機能で、正確性の保証ではない。条件とWeb参照による支援の範囲を重要ポイントへ反映する。"
+        }
+      ],
+      "comparison": "Primary feature/access/provenance sections support paid-preview Gemini API/Vertex, Gemini 3 Pro basis, 2K/4K, five-person resemblance, blended inputs, localization and SynthID. Physics here means lighting/camera/focus/color controls, not a physics simulation engine. Search grounding is explicitly conditional on enabling it and supports data-informed output rather than guaranteed correctness.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
       "note_id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
       "note_sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
       "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",

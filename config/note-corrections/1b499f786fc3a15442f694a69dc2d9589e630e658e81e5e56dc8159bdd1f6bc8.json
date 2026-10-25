@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "1b499f786fc3a15442f694a69dc2d9589e630e658e81e5e56dc8159bdd1f6bc8",
+  "expected_note_sha256": "8e0d6a212478b0f2d7afd38b0dbd04c4131f4cca40a83cc96f674ca12c61b55a",
+  "expected_text_sha256": "228a3aaba761e0cb4caa38b8f4013be433595c0fbdf5d29e8cc912ec9cccbbc0",
+  "source": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "短い文脈における非効率性",
+      "new": "小型モデルでの推論の非効率性",
+      "expected_occurrences": 1
+    }
+  ]
+}
