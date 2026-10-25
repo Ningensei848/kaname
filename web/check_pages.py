@@ -14,7 +14,8 @@ from kaname.publication import ExportError
 from kaname_web.validation import public_version_matches, snapshot_matches
 from image_acceptance import approved_images, check_image_pages
 from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
-from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
+from link_acceptance import (parse_html, audit_search_links, audit_note_anchors, check_search_click,
+                             audit_shared_keyword_links, check_shared_keyword_navigation)
 from listing_acceptance import audit_listings, check_listing_navigation
 from tag_acceptance import audit_tags, check_search_shortcuts
 
@@ -26,6 +27,7 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
     listing_pages = audit_listings(manifest, parsed)
     audit_tags(manifest, original, files)
     search_links = audit_search_links(manifest, original, files, parsed)
+    shared_edges = audit_shared_keyword_links(manifest, original, files, parsed)
     audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, original)
     approved = {image['url'] for images in image_entries.values() for image in images}
@@ -68,13 +70,16 @@ def check(content, commit, artifact, release_receipt=None, image_workers=2):
             for path in ('.env', '.git/config', 'state/index.json', 'README.md'):
                 assert context.request.get(home + path).status == 404
             search_shortcuts = check_search_shortcuts(page, home)
+            shared_navigation = check_shared_keyword_navigation(page, home, manifest, original)
         # Finish the navigation browser before starting the bounded image pool.
         images_checked = check_image_pages(origin, image_entries, image_workers)
     return dict(status='passed', notes=len(manifest['notes']), listing_pages=listing_pages, content_commit=commit,
                 dataset_digest=manifest['dataset_digest'], external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
                 search_shortcuts=search_shortcuts,
+                shared_keyword_edges=shared_edges, shared_keyword_navigation=shared_navigation,
                 approved_image_requests=len(observed.image_requests) + images_checked['requests'],
+                approved_image_checks=images_checked['images'], navigation_image_requests=len(observed.image_requests),
                 image_notes=images_checked['notes'], image_workers=images_checked['workers'])
 
 

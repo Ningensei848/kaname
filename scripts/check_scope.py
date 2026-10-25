@@ -12,12 +12,13 @@ APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test
 WEB_CONTRACTS = (
     'src/kaname/publication/', 'src/kaname/pages', 'src/kaname/site',
     'src/kaname/composer', 'src/kaname/markup', 'src/kaname/wikilinks',
-    'src/kaname/models', 'src/kaname/config', 'src/kaname/normalize',
+    'src/kaname/models', 'src/kaname/config', 'src/kaname/normalize', 'src/kaname/graph_quality',
     'src/kaname/hashes', 'src/kaname/images', 'src/kaname/tags', 'src/kaname/release_bundle',
     'src/kaname/release_publication', 'src/kaname/distribution',
     'src/kaname/remote_publication', 'tests/test_publication', 'tests/test_site',
     'tests/test_pages', 'tests/test_wikilinks', 'tests/test_release_notes',
     'tests/test_distribution', 'tests/test_remote_publication', 'tests/test_pagination', 'tests/test_tags',
+    'tests/test_graph_quality', 'tests/test_shared_keywords',
 )
 
 

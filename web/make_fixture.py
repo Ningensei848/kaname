@@ -50,6 +50,8 @@ def make_fixture(output, count=27):
             positioning_ja="このNoteは画面検証のための架空データです。実在の記事の要約ではありません。",
             category=category, tags=[category, "preview", ("ai-egent", "AIエージェント", "ai-agent")[n % 3]],
             related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方", "GlucoFM", "C++ & 検証"], source_language="ja")
+        if n < 3:
+            enrichment.related_concepts.extend(['版管理の検証', '出典の検証'])
         images = []
         if n == 0:
             from kaname.models import ImageSelection

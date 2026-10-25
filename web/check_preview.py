@@ -12,7 +12,8 @@ from kaname_web.artifact import load_artifact
 from kaname.publication import sha256
 from image_acceptance import approved_images, check_images
 from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
-from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
+from link_acceptance import (parse_html, audit_search_links, audit_note_anchors, check_search_click,
+                             audit_shared_keyword_links, check_shared_keyword_navigation)
 from listing_acceptance import audit_listings, check_listing_navigation
 from tag_acceptance import audit_tags, check_tag_aliases, check_search_shortcuts
 
@@ -27,6 +28,7 @@ def check(artifact, screenshots=None):
     listing_pages = audit_listings(manifest, parsed)
     audit_tags(manifest, note_files, files)
     search_links = audit_search_links(manifest, note_files, files, parsed)
+    shared_edges = audit_shared_keyword_links(manifest, note_files, files, parsed)
     audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, note_files)
     approved = {image['url'] for images in image_entries.values() for image in images}
@@ -91,10 +93,12 @@ def check(artifact, screenshots=None):
                 assert context.request.get(home + path).status == 404
             alias_results = check_tag_aliases(page, home)
             search_shortcuts = check_search_shortcuts(page, home)
+            shared_navigation = check_shared_keyword_navigation(page, home, manifest, note_files)
     return dict(status="passed", notes=len(manifest["notes"]), listing_pages=listing_pages, browser="chromium", external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
                 tag_alias_results=alias_results,
                 search_shortcuts=search_shortcuts,
+                shared_keyword_edges=shared_edges, shared_keyword_navigation=shared_navigation,
                 approved_image_requests=len(observed.image_requests),
                 dataset_digest=marker["dataset_digest"])
 

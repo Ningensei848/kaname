@@ -79,6 +79,69 @@ def verify():
         assert not list(outside.iterdir())
         assert not (vault / 'kaname/.kaname-sync.lock').exists()
         result['alias_blocked_before_writes'] = True
+        legacy_alias_base = root / 'legacy-aliased-vault'
+        legacy_alias_base.mkdir()
+        legacy_alias = legacy_alias_base / 'TechKB'
+        if os.name == 'nt':
+            subprocess.run(['cmd.exe', '/d', '/c', 'mklink', '/J', str(legacy_alias), str(outside)],
+                           check=True, capture_output=True)
+        else:
+            legacy_alias.symlink_to(outside, target_is_directory=True)
+        try:
+            sync.sync_vault(FixtureStore(), legacy_alias_base)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('legacy_filesystem_alias_accepted')
+        assert not list(outside.iterdir())
+        result['legacy_alias_blocked_before_writes'] = True
+        # Run the new CLI's sync against an existing old-name layout, including
+        # its editor changes, candidate edits and the lock held by an old CLI.
+        legacy_vault = root / 'legacy-vault'
+        legacy_root = legacy_vault / 'TechKB'
+        legacy_note = legacy_root / 'notes/2026/10/fixture.md'
+        legacy_note.parent.mkdir(parents=True)
+        legacy_note.write_bytes(b'legacy human edit')
+        manifest = legacy_root / '.techkb-sync.json'
+        manifest.write_text(json.dumps({'notes/2026/10/fixture.md': sync.digest(b'original')}))
+        before_manifest = manifest.read_bytes()
+        old_lock = legacy_root / '.techkb-sync.lock'
+        old_lock.touch()
+        try:
+            sync.sync_vault(store, legacy_vault)
+        except FileExistsError:
+            pass
+        else:
+            raise AssertionError('legacy_lock_ignored')
+        assert old_lock.exists() and manifest.read_bytes() == before_manifest
+        old_lock.unlink()
+        updated = sync.sync_vault(store, legacy_vault)
+        assert not (legacy_vault / 'kaname').exists()
+        assert legacy_note.read_bytes() == b'legacy human edit'
+        candidate = legacy_root / updated['updates'][0]['incoming']
+        candidate.write_bytes(b'legacy candidate edit')
+        assert sync.sync_vault(store, legacy_vault)['updates'][0]['status'] == 'conflict'
+        assert candidate.read_bytes() == b'legacy candidate edit'
+        assert manifest.read_bytes() == before_manifest
+        result['legacy_edits_candidates_manifest_and_lock_preserved'] = True
+        (legacy_vault / 'kaname').mkdir()
+        try:
+            sync.sync_vault(store, legacy_vault)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('dual_sync_roots_accepted')
+        assert not list((legacy_vault / 'kaname').iterdir())
+        (legacy_vault / 'kaname').rmdir()
+        # Explicit user migration, with every writer stopped, preserves the
+        # same manifest and incoming files under the new root and filename.
+        migrated = legacy_vault / 'kaname'
+        legacy_root.rename(migrated)
+        (migrated / '.techkb-sync.json').rename(migrated / '.kaname-sync.json')
+        assert sync.sync_vault(store, legacy_vault)['updates'][0]['status'] == 'conflict'
+        assert (migrated / candidate.relative_to(legacy_root)).read_bytes() == b'legacy candidate edit'
+        assert (migrated / '.kaname-sync.json').read_bytes() == before_manifest
+        result['dual_roots_rejected_and_explicit_migration_preserved'] = True
     return result
 
 

@@ -11,6 +11,7 @@ from .publication import ExportError, sha256, note_frontmatter, instant
 from .publication.snapshot import load_snapshot
 from .wikilinks import project_wikilinks
 from .tags import canonical_tags
+from .graph_quality import shared_keyword_links
 
 PAGE_SIZE = 24
 
@@ -77,6 +78,7 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
     if content_commit is not None and not re.fullmatch(r"[0-9a-f]{40}", content_commit):
         raise ExportError("invalid_content_commit")
     entries = manifest["notes"]
+    related = shared_keyword_links(manifest, files)
     latest = max((e["processed_at"] for e in entries), default="2026-01-01T00:00:00Z", key=instant)
     sources = sorted({e["source_id"] for e in entries})
     categories = sorted({e["category"] for e in entries})
@@ -135,6 +137,15 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
         front = dict(title=meta["title"], description=meta["description"], tags=canonical_tags(meta["tags"]),
                      created=entry["processed_at"], modified=entry["processed_at"],
                      published=entry["published"] or entry["processed_at"])
+        if related[entry['id']]:
+            body += '\n\n<section class="shared-keywords"><h2>共通の検索キーワードから読む</h2><ul>'
+            for link in related[entry['id']]:
+                href = html.escape(link['note_id'], quote=True)
+                title = html.escape(metadata[link['note_id']]['title'])
+                terms = html.escape(' · '.join(link['terms']))
+                body += (f'<li><a class="shared-keyword-note" href="{href}">{title}</a>'
+                         f'<span class="shared-keyword-terms">共通: {terms}</span></li>')
+            body += '</ul></section>\n'
         projected[entry["path"]] = ("---\n" + yaml.safe_dump(front, allow_unicode=True, sort_keys=False) + "---\n\n" + lead + body).encode()
     for kind, values, label, field in (("sources", sources, "出典別", "source_id"),
                                       ("categories", categories, "カテゴリ別", "category")):
