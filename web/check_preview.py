@@ -10,6 +10,7 @@ from playwright.sync_api import expect
 from serve import WEB
 from kaname_web.artifact import load_artifact
 from kaname.publication import sha256
+from kaname.publication.note import note_frontmatter
 from image_acceptance import approved_images, check_images
 from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
 from link_acceptance import (parse_html, audit_search_links, audit_note_anchors, check_search_click,
@@ -67,6 +68,9 @@ def check(artifact, screenshots=None):
                 link = page.get_by_role("link", name="Markdownを取得 ↗")
                 response = context.request.get(urljoin(page.url, link.get_attribute("href")))
                 assert response.ok and sha256(response.body()) == entry["sha256"]
+                if note_frontmatter(note_files[entry['path']])[2].get('note_corrections'):
+                    expect(page.get_by_role('heading', name='訂正記録', exact=True)).to_have_count(1)
+                    expect(page.locator('article')).to_contain_text('原典照合に基づき自動支援で訂正')
             # Every local HTML navigation/asset link resolves under /kaname/.
             for name in files:
                 if not name.endswith(".html") or name == "404.html": continue

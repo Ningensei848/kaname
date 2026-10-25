@@ -69,6 +69,38 @@ mainのレビュー済み計画だけを許可し、日次writerと同じconcurr
 競合・hash不一致・異なる計画は停止し、既存公開版を維持します。
 適用とauditが成功した後、別のDaily実行で`publish_only=true`を指定してGit/Pagesを更新します。
 
+## 原典照合による既存Noteの訂正
+
+原典と比較した訂正は `config/note-corrections/<Note ID>.json` に固定します。
+計画には元Note/置換後テキストのSHA256、canonicalな出典URL、確認日、文字列と出現数を指定します。
+`docs/note-reviews/` の根拠も合わせてレビューします。計画のschema検証だけでは事実の正しさを保証しません。
+画像/生成情報/本文hash/検索キーワード/安定IDは変更できず、タイトル・説明と本文中の指定文字列だけを訂正します。
+訂正後はfrontmatterに計画hash・元Note hash・確認日・`automated_assistant`を記録し、本文末にも訂正履歴を表示します。
+履歴を付けた最終Note hashは計画中の置換後テキストhashと異なります。
+
+```bash
+# GCS読取りのみ。記事取得・Gemini・通知・公開は実行しない
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --output /tmp/correction-preview
+# 保存済みローカルsnapshotでのpreview（--applyとは併用不可）
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --state-dir local-snapshot --output /tmp/correction-offline
+# レビューした計画をNote/receiptへ適用。出力先は毎回新しいディレクトリ
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --output /tmp/correction-apply --apply
+```
+
+ActionsはDaily kanameの `note_correction_plan` に上記パスを指定します。
+`note_correction_apply=false` がpreview、`true` が適用です。mainに保存された計画のみ実行します。
+既存のDaily WIF条件とwriter concurrencyを使い、画像補完/収集/再試行/診断/公開との混在は認証前に拒否します。
+専用jobはGCS認証だけを使い、Geminiキーを渡しません。検証済みpreviewと判定JSONを7日保存し、最後に監査します。
+
+適用順序は原receipt全bytesの履歴保存、pending intent、新receipt、新Note、完了intentです。
+履歴は `state/note-correction-history/<Note ID>/<元Note hash>.json`、intentは `state/note-corrections/<Note ID>.json` に保持します。
+index・runs/usage・元usage_run_idは書き換えません。同じ計画の完了後再実行は変更なしです。
+保存中断後は同じ計画の再実行、または通常runの生成前の復旧で再開します。復旧できないpendingは新たな生成を止めます。
+別計画/変更済みNote/receipt/historyや世代競合は拒否し、人の編集を上書きしません。
+API/GCS全体を一体のtransactionにはしません。単一writer・世代条件・再読取りで競合を検出します。
+適用と監査の成功を確認してから、別のDailyで `publish_only=true` により配布します。
+2026-10-25の7計画はローカルsnapshotでの受入段階で、本番適用済みとはしません。
+
 ## 取得・本文・フィルタ
 
 現行の有効sourceはRSS/HTTPです。Google Researchは`content_selector: .blog-detail-wrapper`で、

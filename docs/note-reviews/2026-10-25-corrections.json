@@ -4,7 +4,7 @@
   "content_commit": "406a716ef2462de01cc50faf09542c3e741c9b79",
   "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
   "checked_at": "2026-10-25",
-  "scope": "Text edits only. No mutation of Notes, receipts, index, billing history or public edition. Application requires a separate provenance-preserving update of the matching Note/receipt/index and new publication acceptance.",
+  "scope": "Hash-pinned text proposals. Production Notes/receipts/index/usage/public edition unchanged. Executable plans preserve original receipts, add assisted-correction provenance, and require separate application/publication acceptance.",
   "edits": [
     {
       "note_id": "052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68",
@@ -50,6 +50,33 @@
       "old": "医療辞書やMedGemmaへの音声プロンプト入力",
       "new": "医療音声の書き起こしやMedGemmaへの音声プロンプト入力",
       "expected_occurrences": 2
+    },
+    {
+      "note_id": "0d89805d9a93a297775ab35612d5d93ed4da1eeed982f3fcdb103a0273857e00",
+      "original_note_sha256": "4cebf5b5f7063255de10e732f882df66560293f61aeced9d557e5ca442a53511",
+      "proposed_note_sha256": "719be9b4a20fe95ff675650504c2cedb2b9288235fe186cee8e22fd1ec1c5b4b",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/",
+      "old": "ミリ秒単位のモーメント抽出",
+      "new": "1秒未満のモーメント抽出",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c",
+      "original_note_sha256": "c18e9db15e3b9415b292e117364bca38d87d0088d4af7b10b26e5b44af1186a4",
+      "proposed_note_sha256": "e2dabc3699970c608fbee21376df2c345865ac3b9f5f597deb58559086f53128",
+      "source": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+      "old": "への統合である",
+      "new": "への今後の統合計画である",
+      "expected_occurrences": 2
+    },
+    {
+      "note_id": "0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c",
+      "original_note_sha256": "c18e9db15e3b9415b292e117364bca38d87d0088d4af7b10b26e5b44af1186a4",
+      "proposed_note_sha256": "e2dabc3699970c608fbee21376df2c345865ac3b9f5f597deb58559086f53128",
+      "source": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+      "old": "[[MedGemma]]や[[AMIE]]といった医療AIのオープン化と臨床研究が進み、実際の医療現場や患者ケアでの有用性が示されている。",
+      "new": "[[MedGemma]]の公開・活用と[[AMIE]]の臨床研究が進み、患者ケアを支援する可能性が研究されている。",
+      "expected_occurrences": 1
     }
   ]
 }

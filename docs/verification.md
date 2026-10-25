@@ -10,6 +10,7 @@ runごとの計数・commit・費用・測定結果は[archive索引](archive/RE
 | standard収集・保存 | 本番稼働。usageの部分欠落/中断後復旧、元価格/日付、receipt→Note→indexの保存、障害時の後続課金停止を回帰検証 |
 | Batch | 画像型/候補外IDを修正。実Note1件/画像3件の保存/公開、課金1回、追加生成0の回収・再実行まで受入済み |
 | 本文・画像 | 有効7 source/9レイアウトの合成corpus。Google Research/DeepMind/追加4社の実本文検査、GlucoFM2図の限定補完と実配信、新規Batchの画像選択を受入 |
+| 原典照合と訂正 | 21/321件を原典比較。7件のhash固定計画、元receipt履歴、可視訂正記録、保存中断/変更競合/再実行/後続生成停止を回帰検証。固定321件のローカルsnapshotで7件のみ変更、usage不変・監査成功。本番反映と残り300件の原典比較は未完了 |
 | 新規記事限定・並列処理 | 成功URLの本文HTTP省略、明示recheck、receipt/Batch回収、生成枠でfetch停止を受入。fetch/convertはbounded・入力順、課金/保存は単一writer |
 | Source Health | 読取りCLI・本番GCS受入済み。未処理sourceや全体successでstreakをresetしない |
 | 公開snapshot/Git | Note/receipt/index・元Markdown bytes・安定ID・manifest/dataset・世代/catalogを検査。競合・不完全出力・余分なファイルを拒否。実content/submodule互換を受入 |
@@ -28,7 +29,7 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 
 ## 受入範囲と限界
 
-- #116は提供CSVの残高照合・既存データによる判断まで完了。適用換算レート/対象project・SKU/請求timezoneがないため、usageと請求の完全一致・差額は未確定。legacy/unknownと推計/実請求を区別する。
+- #116はCSVの残高照合に加え、利用者から期間/project/JPY/SKU内訳を得て、公式Catalogの9月・10月の換算レート/円単価と保存usageを比較した。請求数量・調整/税・未観測期間の帰属は未確定で完全照合は未完了。期間別の内訳・公開価格と実請求・legacy/unknownを区別する。[現在の証拠と境界](remaining-constraints.md)を参照。
 - source別の保留/最終成功/失敗streakの観測。日次の成功だけで全source healthyとしない。
 - 今回の環境受入はユーザー指定の現在のsourceと一時領域。実Vaultへの書込みや、対象外source/他環境の受入を一般保証しない。
 - npm監査は現在警告0件・例外0件。今後の警告/取得失敗をCIで拒否する。詳細は[Web依存](web-preview.md#固定依存と残る制約)。

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68",
+  "expected_note_sha256": "0a5f496e94e5be632e2b5f3bb3e460951b96dbf5588e85a7d57b61177f51b56c",
+  "expected_text_sha256": "ac903cbc789ce98c6935bf6ff95fa5dbdb0e1c919fdf6d6e94d54063cca5cb2e",
+  "source": "https://research.google/blog/bringing-foundational-models-to-the-front-lines-of-tb-screening/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "オープンソースの基盤モデルである[[MedGemma]]や[[MedSigLIP]]、音声に基づく[[HeAR]]",
+      "new": "重みを公開する[[MedGemma]]、オープンソースの[[MedSigLIP]]、音声に基づく[[HeAR]]",
+      "expected_occurrences": 1
+    }
+  ]
+}

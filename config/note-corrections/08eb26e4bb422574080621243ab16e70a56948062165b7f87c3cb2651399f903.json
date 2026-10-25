@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903",
+  "expected_note_sha256": "7767268f6893762243b9bbfdc0ede1d474273572faac28568950cc3f5661618c",
+  "expected_text_sha256": "d6bafff86d4518354604354e659596e2d7aa5fb7edaf01c3e814865388fd992a",
+  "source": "https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "医療辞書やMedGemmaへの音声プロンプト入力",
+      "new": "医療音声の書き起こしやMedGemmaへの音声プロンプト入力",
+      "expected_occurrences": 2
+    }
+  ]
+}

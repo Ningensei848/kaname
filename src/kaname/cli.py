@@ -153,7 +153,8 @@ def main(argv=None):
             return _json_result(result, ensure_ascii=True, status_exit=True)
         if args.command in {"audit-state", "audit-run"}:
             prefixes = ('state/index/', 'state/pending.tsv', 'notes/', 'state/receipts/')
-            prefixes += ('state/standard-requests/', 'state/standard-request-history/', 'state/standard-usage/', 'runs/')
+            prefixes += ('state/standard-requests/', 'state/standard-request-history/', 'state/standard-usage/',
+                         'state/note-corrections/', 'runs/')
             with dependencies.read_store(prefixes) as store:
                 result = (audit_state(store) if args.command == "audit-state" else
                           audit_run(store, args.run_id, app.llm.max_calls_per_run, args.expected_success_before))

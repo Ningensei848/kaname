@@ -1,5 +1,5 @@
 """Pure validation of public compact Note bytes against their index row."""
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import re
 from urllib.parse import unquote, urlsplit
 
@@ -91,6 +91,31 @@ def plain_body(value, concepts):
     return decoded
 
 
+def correction_trailer(revisions):
+    """Only a canonical, bounded correction record can extend a compact Note."""
+    if not isinstance(revisions, list) or not 1 <= len(revisions) <= 10:
+        raise ExportError('invalid_note_corrections')
+    plans, lines = set(), []
+    for record in revisions:
+        if (not isinstance(record, dict) or set(record) !=
+                {'plan_sha256', 'previous_note_sha256', 'checked_at', 'reviewer_kind'} or
+                record['reviewer_kind'] != 'automated_assistant' or
+                any(not isinstance(record[k], str) or not re.fullmatch(r'[0-9a-f]{64}', record[k])
+                    for k in ('plan_sha256', 'previous_note_sha256')) or
+                record['plan_sha256'] in plans or not isinstance(record['checked_at'], str)):
+            raise ExportError('invalid_note_corrections')
+        try:
+            if date.fromisoformat(record['checked_at']).isoformat() != record['checked_at']:
+                raise ValueError()
+        except ValueError:
+            raise ExportError('invalid_note_corrections') from None
+        plans.add(record['plan_sha256'])
+        lines.append(f"- {record['checked_at']}：原典照合に基づき自動支援で訂正。"
+                     f"計画 `{record['plan_sha256'][:12]}`、訂正前Note `{record['previous_note_sha256'][:12]}`"
+                     '（hashの先頭12桁。全桁はfrontmatterに記録）。')
+    return '\n## 訂正記録\n\n' + '\n'.join(lines) + '\n'
+
+
 def validate_note(data, row, tracking, categories):
     if len(data) > 100_000:
         raise ExportError("oversized_note")
@@ -99,7 +124,7 @@ def validate_note(data, row, tracking, categories):
         reject_secrets(text)
         if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", text):
             raise ExportError("invalid_note")
-        if not FIELDS <= meta.keys() or meta.keys() - FIELDS - {"llm_input_max_chars", "article_images"}:
+        if not FIELDS <= meta.keys() or meta.keys() - FIELDS - {"llm_input_max_chars", "article_images", "note_corrections"}:
             raise ExportError("invalid_frontmatter")
         for value in meta.values():
             for part in value if isinstance(value, list) else [value]:
@@ -148,6 +173,11 @@ def validate_note(data, row, tracking, categories):
         prefix += "> [!abstract] AI要約\n" + "".join("> " + inline(line) + "\n" for line in meta["description"].splitlines())
         prefix += "\n## 重要ポイント\n\n"
         body = text[match.end():]
+        if 'note_corrections' in meta:
+            trailer = correction_trailer(meta['note_corrections'])
+            if not body.endswith(trailer):
+                raise ExportError('note_correction_trailer_mismatch')
+            body = body[:-len(trailer)]
         images = meta.get("article_images", [])
         if not isinstance(images, list) or not 0 <= len(images) <= 6:
             raise ExportError("invalid_article_images")

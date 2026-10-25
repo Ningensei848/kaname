@@ -18,6 +18,7 @@ from .extraction import parse_listing, relevance
 from .batch import BatchManager, failure_diagnostics
 from .usage import has_usage_record
 from .standard_requests import StandardRequests, UnresolvedStandardRequest
+from .note_corrections import recover_note_corrections
 from .discovery import KnownArticles
 from .collection_progress import partition_known, completed_sources, failure_stop_reason, batch_submission_allowed
 
@@ -79,6 +80,7 @@ class Pipeline:
             if not dry_run:
                 standard_blocked = self.requests.recover(self.app.categories, compose)
                 self._recover_receipts(state, dedupe, report)
+                recover_note_corrections(self.store, self.app)
                 batch = BatchManager(self.store, self.gemini)
                 batch.settle(self._save_receipt, state, dedupe, report, done)
                 active = batch.active_hashes()

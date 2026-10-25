@@ -53,9 +53,91 @@ on:
         description: 'Explicitly retry a held content SHA-256; standard max_calls=1 and max_cost_usd required'
         type: string
         default: ''
+      note_correction_plan:
+        description: 'Reviewed config/note-corrections/<Note ID>.json; no Gemini or article fetches'
+        type: string
+        default: ''
+      note_correction_apply:
+        description: 'Apply the reviewed Note correction; otherwise only preview'
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
+  note-correction:
+    if: ${{ (inputs.note_correction_plan != '' || inputs.note_correction_apply) && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: kaname-gcs-single-writer
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-python
+        with:
+          editable: 'true'
+      - name: Validate reviewed plan before authentication
+        env:
+          PLAN: ${{ inputs.note_correction_plan }}
+          IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
+          IMAGE_REPAIR_APPLY: ${{ inputs.image_repair_apply }}
+          BATCH_PREFLIGHT: ${{ inputs.batch_preflight }}
+          PUBLISH_ONLY: ${{ inputs.publish_only }}
+          VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
+          DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
+          COLLECTION_MODE: ${{ inputs.collection_mode }}
+          MAX_CALLS: ${{ inputs.max_calls }}
+          MAX_COST_USD: ${{ inputs.max_cost_usd }}
+          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+          RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
+          EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "$MAX_COST_USD" || -n "$MAX_OUTPUT_TOKENS" || -n "$RETRY_STANDARD_CONTENT" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+            echo 'Note correction cannot be combined with collection, diagnostics or image repair.'
+            exit 1
+          fi
+          if [[ ! "$PLAN" =~ ^config/note-corrections/[0-9a-f]{64}\.json$ || ! -f "$PLAN" ]]; then
+            echo 'A committed correction plan is required.'
+            exit 1
+          fi
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from kaname.note_corrections import load_plan
+          plan = load_plan(os.environ['PLAN'])
+          assert Path(os.environ['PLAN']).stem == plan.note_id
+          PY
+          python -m pytest -q tests/test_note_corrections.py
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+      - name: Preview or apply without Gemini or article fetches
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          PLAN: ${{ inputs.note_correction_plan }}
+          APPLY: ${{ inputs.note_correction_apply }}
+        run: |
+          set -euo pipefail
+          args=(--plan "$PLAN" --output "$RUNNER_TEMP/note-correction-preview")
+          if [[ "$APPLY" == true ]]; then args+=(--apply); fi
+          python scripts/correct_note_text.py "${args[@]}"
+      - name: Audit saved state
+        env:
+          GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+        run: python -m kaname audit-state
+      - uses: actions/upload-artifact@v7
+        with:
+          name: note-correction-preview
+          path: ${{ runner.temp }}/note-correction-preview
+          if-no-files-found: error
+          retention-days: 7
   image-repair:
     if: ${{ (inputs.image_repair_plan != '' || inputs.image_repair_apply) && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -86,8 +168,10 @@ jobs:
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
           RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
+          NOTE_CORRECTION_PLAN: ${{ inputs.note_correction_plan }}
+          NOTE_CORRECTION_APPLY: ${{ inputs.note_correction_apply }}
         run: |
-          if [[ ! "$IMAGE_REPAIR_PLAN" =~ ^config/image-repairs/[0-9a-f]{64}\.json$ || ! -f "$IMAGE_REPAIR_PLAN" || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+          if [[ -n "${NOTE_CORRECTION_PLAN:-}" || "${NOTE_CORRECTION_APPLY:-}" == true || ! "$IMAGE_REPAIR_PLAN" =~ ^config/image-repairs/[0-9a-f]{64}\.json$ || ! -f "$IMAGE_REPAIR_PLAN" || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
             echo 'Image repair requires a reviewed plan and cannot be combined with other execution modes.'
             exit 1
           fi
@@ -146,8 +230,10 @@ jobs:
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
           IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
           IMAGE_REPAIR_APPLY: ${{ inputs.image_repair_apply }}
+          NOTE_CORRECTION_PLAN: ${{ inputs.note_correction_plan }}
+          NOTE_CORRECTION_APPLY: ${{ inputs.note_correction_apply }}
         run: |
-          if [[ -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+          if [[ -n "${NOTE_CORRECTION_PLAN:-}" || "${NOTE_CORRECTION_APPLY:-}" == true || -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
             echo 'Batch preflight cannot be combined with other execution modes or collection overrides.'
             exit 1
           fi
@@ -161,7 +247,7 @@ jobs:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: python scripts/batch_preflight.py
   collect:
-    if: ${{ !inputs.batch_preflight && inputs.image_repair_plan == '' && !inputs.image_repair_apply }}
+    if: ${{ !inputs.batch_preflight && inputs.image_repair_plan == '' && !inputs.image_repair_apply && inputs.note_correction_plan == '' && !inputs.note_correction_apply }}
     permissions:
       actions: read
       contents: read

@@ -3,7 +3,6 @@
   "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
   "reviewed_at": "2026-10-25",
   "reviewer": "Codex primary-source comparison; not a human or domain-expert certification",
-  "total_notes": 321,
   "notes": [
     {
       "note_id": "02a360a91a073f25dd9ccd9b89780cc88943b18c3fc48f1aa0855f962ae06f29",
@@ -266,6 +265,65 @@
       "checked_at": "2026-10-25"
     },
     {
+      "note_id": "0c903931c25fc735d7bc97357b9c5175878995fa1b16701b0d34e583d0fa0517",
+      "note_sha256": "93e8a19c67e4cbfdbf6dd5ba097eaa3445c823c241afd7281169571b605c475a",
+      "canonical_url": "https://github.blog/news-insights/policy-news-and-insights/developer-policy-update-transparency-state-policy-and-whats-ahead/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary reporting-methodology and state-policy sections support the 98 requests in all 2025 versus 708 in H1 2026 comparison, duplicates/all received requests, rare actual takedowns, age assurance and content provenance. These are GitHub reporting statements at publication, not independent legal analysis or a claim about current law.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0d89805d9a93a297775ab35612d5d93ed4da1eeed982f3fcdb103a0273857e00",
+      "note_sha256": "4cebf5b5f7063255de10e732f882df66560293f61aeced9d557e5ca442a53511",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "precision",
+          "finding": "原典のsub-second retrievalに対し重要ポイントがミリ秒単位と断定している。1秒未満へ修正する。"
+        }
+      ],
+      "comparison": "Primary model list, dynamic video tools/modalities, benchmark maximums 88%/66%/7%, API availability and planned Ask YouTube rollout agree. The use-case section supports sub-second retrieval; it does not establish millisecond resolution. Replace the stronger precision claim.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c",
+      "note_sha256": "c18e9db15e3b9415b292e117364bca38d87d0088d4af7b10b26e5b44af1186a4",
+      "canonical_url": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "availability_timing",
+          "finding": "原典はTimesFM/TabFMのGemini for business統合を今後の予定としている。要約にも計画であることを明記する。"
+        },
+        {
+          "kind": "release_scope",
+          "finding": "MedGemmaとAMIEをまとめてオープン化と記述しているが、原典はMedGemmaの公開とAMIEの臨床研究を分けている。AMIE公開を示唆しない表現にする。"
+        }
+      ],
+      "comparison": "Compared all ten highlights. The article describes Gemini for business integration as upcoming, while the summary presents it as integration without a timing qualification. The medical key point groups MedGemma and AMIE as opening up; the source supports MedGemma open foundation and AMIE ongoing clinical research, not AMIE public release. The October 20 Synaptics launch update postdates the October 16 Note and is not a contemporaneous omission.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
       "note_id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
       "note_sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
       "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
@@ -303,6 +361,5 @@
       "checked_at": "2026-10-25"
     }
   ],
-  "corrections_applied": false,
-  "unreviewed_notes": 303
+  "total_notes": 321
 }

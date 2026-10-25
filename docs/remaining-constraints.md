@@ -4,12 +4,12 @@
 
 | ID | 完了を立証する条件 | 現在の状態 |
 |---|---|---|
-| R01 / #116 | 同じ対象期間/project/service/SKU・請求時間帯・適用換算レート・調整/税に対応づけ、既知/unknown usage・元価格・安定課金IDを保持して差額を計算する | 未完了。既存2 CSVは同じhashで、帰属/時間帯/換算レート等の列がない。追加の `agent_billing_data.csv` はGemini APIの小計1行。利用者から対象project・JPY・9/24〜10/23の出力条件を得た。SKU/請求時間帯/適用換算レート等は未記録。Drive・請求書メールでは不足項目を補う資料なし。現在の認証ではBilling APIが403、対象projectのBigQuery datasetも0件。権限変更・export新設・新規query課金は行わない |
+| R01 / #116 | 同じ対象期間/project/service/SKU・請求時間帯・適用換算レート・調整/税に対応づけ、既知/unknown usage・元価格・安定課金IDを保持して差額を計算する | 部分完了。CSVのproject/JPY/9/24〜10/23と、別途提供された9/1〜10/24のSKU内訳を区別した。Cloud Billing APIを有効化し、公式Catalogから9月・10月の円建て4 SKU単価と換算レートを取得。保存usageとの比較を実施したが、請求数量/割引/調整/税と未観測期間の帰属は未確定。公開単価は[取得記録](billing-catalog-2026-09-10.json)、個人の金額/明細は非公開で保管。export新設・新規query課金は行っていない |
 | R02 / Graph | 概念と記事の関係を明示した設計で、存在する公開Note間に根拠のある導線を作る。自分自身/欠落/曖昧な推定先を排し、保存bytesと従来検索を保持して実HTML/index/移動を検証する | 実装・ローカル受入済み。321 Noteの検索語1,534件ではタイトル完全一致/正規化案とも0辺。定義先を推定せず、2つ以上の具体的な共有検索語を根拠に69 Note・136有向辺を別の関係として導入。[設計](graph-quality.md#共通検索語によるnote間の導線) |
 | R03 / cache・差分build・DB | 現公開版と現在のGCSで、全件整合性/前後catalogを保持した工程時間・転送・メモリを測り、導入条件を判定する。制約が確認されれば同じgateで改善する | 評価完了、現規模では追加基盤を見送る。全state/runsを含む監査対象GCS 1,315 object/7,881,765 bytes、603成功行、最大RSS115,368 KiB。16並列load5.690秒、全体7.695秒、index349,566 bytes/0.006秒。全Web build/全受入3回も同じartifact/coverageで成功、全体中央値211.307秒。DB・run間cache・差分HTMLの導入が必要になる制約は現在未確認。下記の測定を基点に再判断する |
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
-| R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功、全Python/Web924件と追加境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
-| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を18件実施し、5件で用語/数量/機能制約の訂正候補。残り303件と訂正反映が未完了。以下の確認記録を参照 |
+| R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
+| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を21件実施し、7件で用語/数量/精度/提供時期・機能制約の訂正候補。7件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り300件は未完了。以下の確認記録を参照 |
 | R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
@@ -19,7 +19,11 @@
 
 R05はAPIとGCSの分散transactionを導入するものではない。[generateContentの公式契約](https://ai.google.dev/api/generate-content)と[retryの説明](https://ai.google.dev/gemini-api/docs/troubleshooting)を確認したが、この実装でAPI側の処理とローカル/GCSのcommitを一体で確定する保証は立証していない。応答保存前に結果を失った場合、明示的な再試行には二重課金の可能性を残す。新規機構を導入する前の履歴から、失われた結果や未記録の元価格を推測復元しない。
 
-R01では、支払・前払い・税・消費額を混同せず、現在の為替で過去のUSD推計をJPYへ逆算しない。追加CSVの通貨/期間/projectは利用者の出力条件で確認した。固定期間の保存usageを元run IDで統合し、元価格のある推計と旧価格不明9件を分けた。UTC/JSTと米国太平洋時間では境界のrunが1件異なり、請求側の時間帯を未確定のまま同期間と扱わない。製品別小計をこのアプリだけの消費額とも仮定しない。不足資料を取得できるまで完全照合/差額は未確定である。既存データによる残高検算の完了を、完全照合の完了へ置き換えない。
+R01では、支払・前払い・税・消費額を混同せず、現在の市場為替で過去のUSD推計を逆算しない。追加CSVの条件は利用者から確認した。後から提供されたSKU内訳は別の対象期間として扱う。利用者の居住時間帯はJSTだが、[Reportsの課金日区分](https://docs.cloud.google.com/billing/docs/how-to/reports)と同一とは仮定しない。
+
+当初のSERVICE_DISABLEDを解消するため既存projectの `cloudbilling.googleapis.com` を有効化し、既存認証で公式Catalogの履歴価格を読み取った。IAM・請求先の変更、export作成、有料queryは行っていない。[Catalog契約](https://docs.cloud.google.com/billing/docs/reference/rest/v1/services.skus/list)の月区分はAmerica/Los_Angeles。9月の公表JPY/USD換算レートは約159.375、10月は約157.195で、[取得記録](billing-catalog-2026-09-10.json)に正確な返却値・SKU ID・有効日時・JPY units/nanosを残した。計算には丸めたレートでなく返却された円単価を使い、期間の絞込みと価格の有効時刻を分離する。run開始時刻と価格有効日時を照合した参考計算であり、個々の請求timestampは未取得である。
+
+旧価格欠損9 runはActionsの元checkout/config/SDKと保存96 Noteを照合し、当時のモデル・standard mode・入出力token総数を確認した。元reportへ価格を追記せず、元価格と後から取得した公開価格を区別する。請求accountの最新4 SKU価格も取得し、公表単価と契約単価の一致・割引0を確認した。ただし最新値の取得は9月の契約価格や請求数量の証明ではない。百万token単位の最新価格は履歴Catalogのtoken単位nanosより精度が高いため、非公開比較に両者の精度差による感度も残した。保存usageは9/27からで、9/1〜9/26のproject全体利用は未観測。公開価格と契約単価、整数表示のSKU費用と未丸め費用、調整/税も同じと仮定しない。非公開の比較記録では期間・JST/Pacificシナリオ別に差を算出したが、完全照合や過剰請求の立証とはしない。既存CSVの残高検算完了を完全照合の完了へ置き換えない。
 
 ## 全WebとGCSの規模評価
 
@@ -49,4 +53,12 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 
 - Note `08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903`：[原典](https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/)のmedical dictationを要約で「医療辞書」としている。「医療音声の書き起こし」に直し、既に書き起こしと記述している重要ポイントと整合させる。
 
-[訂正文案](note-reviews/2026-10-25-corrections.json)に元/訂正案のhashと置換箇所数を固定した。元のNote bytesへ適用でき、5件とも既存の厳格なNote検証に通ることを一時メモリ上で確認済みだが、保存bytes・receipt・公開版はまだ訂正していない。訂正時は元の生成結果と人による訂正の出典/責任範囲を混同せず、変更と配布版を追跡する。18件の結果を全321件へ一般化しない。
+- Note `0d89805d9a93a297775ab35612d5d93ed4da1eeed982f3fcdb103a0273857e00`：重要ポイントの「ミリ秒単位」は[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/)のsub-secondより細かい精度を断定するため、「1秒未満」へ修正する。モデル/ベンチマークの最大改善値/API提供/YouTubeへの今後の展開は一致した。
+
+- Note `0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c`：[原典](https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/)のTimesFM/TabFMのGemini for business統合は予定であり、その限定を要約へ追加する。MedGemmaの公開とAMIEの臨床研究を分け、AMIEの公開も示唆する重要ポイントを修正する。10/20のSynaptics発売追記は10/16生成の後であり、当時のNoteの誤りとは扱わない。
+
+[訂正文案](note-reviews/2026-10-25-corrections.json)の7件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+
+原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。7件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど7 Note変更を確認した。訂正後datasetは `e884d56497e0ce4d7dd35d87f3fb51feace86bf0dceba3ace5aca8e4806f56b4`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+
+Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。21件の結果を全321件へ一般化しない。
