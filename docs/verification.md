@@ -15,7 +15,7 @@ runごとの計数・commit・費用・測定結果は[archive索引](archive/RE
 | 公開snapshot/Git | Note/receipt/index・元Markdown bytes・安定ID・manifest/dataset・世代/catalogを検査。競合・不完全出力・余分なファイルを拒否。実content/submodule互換を受入 |
 | Release配布 | 完全版/最大7差分/削除、固定tagとdigest、draft検査/再開、改変拒否、同版再実行を実Actionsで受入。全体復元/全HTML buildを維持 |
 | Web/Pages | fixtureと固定実Git/Release入力、全元Markdown、検索/全ローカルリンク/アンカー/画像/4幅/想定外通信を検証。初回/通常schedule/切戻し/復帰を実deploy・配信照合で受入 |
-| 検索・graph | NS1本文WikiLink/内部Note優先/Google検索fallbackを本番受入。Graph評価CLIは読取り専用、正規化は評価案のみ |
+| 検索・graph | NS1本文WikiLink/内部Note優先/Google検索fallbackを本番受入。Graph評価CLIは読取り専用。タイトル解決の正規化は評価案のみ、具体的な共有検索語による別のNote間導線をローカル受入 |
 | 一覧・タグ・名称の更新 | ローカルで24件の静的ページ分割・接続条件付き次ページ先読み・検索の遅延初期化を検証。タグ辞書はWeb/新規生成に適用し、旧Noteは保持。CLI/importはkanameへ統一し、旧state/環境変数/通知/Batch識別子は互換読取り。実装・検証状態は[現在の作業](next-work.md)を参照。本番受入と区別する |
 | GCS読取り | 16並列/接続pool再利用、世代条件/CRC、同一runner内private byte cache、live catalog再検証を受入。1/8へ切戻し可能 |
 | 日次CI再利用 | 同じmain SHAの最新成功Checks/attempt・scope/aggregate jobsをAPI照合。不一致/不完全/照合不能時は全単体テストへfallback。設定/本番状態/公開検査は毎回実行 |
@@ -31,8 +31,8 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 - #116は提供CSVの残高照合・既存データによる判断まで完了。適用換算レート/対象project・SKU/請求timezoneがないため、usageと請求の完全一致・差額は未確定。legacy/unknownと推計/実請求を区別する。
 - source別の保留/最終成功/失敗streakの観測。日次の成功だけで全source healthyとしない。
 - 今回の環境受入はユーザー指定の現在のsourceと一時領域。実Vaultへの書込みや、対象外source/他環境の受入を一般保証しない。
-- npm既知advisoryの例外。詳細は[Web依存](web-preview.md#固定依存と残る制約)。
-- APIとGCSは単一transactionでなく、timeout/retryを含む厳密なexactly-once課金は保証しない。
+- npm監査は現在警告0件・例外0件。今後の警告/取得失敗をCIで拒否する。詳細は[Web依存](web-preview.md#固定依存と残る制約)。
+- APIとGCSは単一transactionではない。standardの予約/応答保存と不明応答の再送停止で追加課金を抑止するが、API側の厳密なexactly-once課金は未立証。
 - 出典画像の内容/存続と全Noteの日本語事実確認は固定hashや自動検査だけでは保証しない。
 - run間cache/差分HTML buildは未採用。本文上限20,000文字、new_onlyの既知URL再取得省略、予算通知の境界を維持する。
 

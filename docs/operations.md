@@ -266,6 +266,28 @@ Issue投稿をskipします。両診断入力の同時指定はWIF認証前に�
 日次scheduleと入力未指定時の通常動作は維持します。Secretの抽出、権限拡張、匿名公開は不要です。
 診断モードの成功は検査操作の成功です。新規有料提出や結果の保存とは別の操作として扱います。
 
+## standard生成の予約と明示的な再試行
+
+生成前にcontent hashごとの予約を保存し、応答を失った場合は同じ記事の後続runも停止します。`run --max-calls 0`も、この不明な応答を再生成しません。応答と元の組立て情報を保存できた場合は、次runで元の時刻/モデル/出典/画像候補からreceiptを復旧し、追加の生成呼出しはありません。保存済みreceiptはそのbytesを保持します。
+
+```bash
+# 応答不明/未復旧のcontent hash・元run ID・状態だけを表示。生成文は表示しない。
+python -m kaname standard-status
+python -m kaname standard-status --state-dir local-snapshot
+```
+
+`legacy_pending_runs`は記事hashを特定できない旧保留usageの元run IDです。`reserved`はAPI側の成否不明、`response`は応答保存済みでreceipt未確定です。原則は保存障害を解消して無課金の復旧を試します。schema/画像選択不正の応答は自動補正/自動再生成しません。旧usage予約だけが残り記事hashを特定できない場合も、履歴を確認するまで停止します。
+
+追加課金を明示的に許容して再試行する場合だけ、対象hashと1件・費用上限を指定します。対象以外の記事を生成せず、LLM通信retryは0にします。旧予約/応答は `state/standard-request-history/` へ保全し、元runのusageや不明課金を消しません。この操作には記事HTTP・有料生成・GCS更新があります。
+
+```bash
+python -m kaname run --retry-standard-content <standard-statusの64桁hash> --max-calls 1 --max-cost-usd 0.20
+```
+
+Actionsでも `retry_standard_content=<hash>`、`collection_mode=standard`、`max_calls=1`、正の `max_cost_usd` を指定できます。他の診断/画像修復/preflight/公開専用とは認証前に排他検証します。通常scheduleでは未指定です。
+
+APIとGCSを一体でcommitしたり、API側の厳密なexactly-once課金を保証したりする機構ではありません。生成直後に応答を保存できなかった場合は復元不能で、再試行には二重課金の可能性が残ります。実Vaultや生成設定の既定値を変更しません。
+
 ## 実測usageと予算
 
 ```bash
@@ -282,7 +304,7 @@ receipt後の中断・再回収でも費用を重複計上しません。`incomp
 部分欠落metadata、応答未保存の予約、複数HTTP試行の不明課金はpartialとなり、既知countを保持します。
 thinking欠落を0とするのは合計countから0を証明できる場合だけです。
 旧receiptで課金記録への参照がなければ、復旧runにusage不明を記録し、過去の単価・日付は推測しません。
-API応答と永続化の間の停止には再課金の可能性が残ります。invoiceとの照合は別途必要です。
+API応答を失った予約は後続runも停止します。明示的な再試行には再課金の可能性が残り、invoiceとの照合は別途必要です。
 旧Phase 1 reportはmodel記録がないため現在設定model/standard価格を仮定し、仮定件数を表示します。
 新reportはmodel/modeと単価をsnapshotし、後の単価更新で履歴を再評価しません。
 

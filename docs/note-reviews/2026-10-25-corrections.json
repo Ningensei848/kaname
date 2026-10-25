@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "draft_not_applied",
+  "content_commit": "406a716ef2462de01cc50faf09542c3e741c9b79",
+  "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
+  "checked_at": "2026-10-25",
+  "scope": "Text edits only. No mutation of Notes, receipts, index, billing history or public edition. Application requires a separate provenance-preserving update of the matching Note/receipt/index and new publication acceptance.",
+  "edits": [
+    {
+      "note_id": "052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68",
+      "original_note_sha256": "0a5f496e94e5be632e2b5f3bb3e460951b96dbf5588e85a7d57b61177f51b56c",
+      "proposed_note_sha256": "ac903cbc789ce98c6935bf6ff95fa5dbdb0e1c919fdf6d6e94d54063cca5cb2e",
+      "source": "https://research.google/blog/bringing-foundational-models-to-the-front-lines-of-tb-screening/",
+      "old": "オープンソースの基盤モデルである[[MedGemma]]や[[MedSigLIP]]、音声に基づく[[HeAR]]",
+      "new": "重みを公開する[[MedGemma]]、オープンソースの[[MedSigLIP]]、音声に基づく[[HeAR]]",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "be3f1c0bcc40779de6e564476b7298ca69a2e3a08d76314fa33b74b2d9042469",
+      "original_note_sha256": "221e34f7ef44d4fcdb740dbb3b9300d255b54a0a89a1c8b219fb67b37c965c5d",
+      "proposed_note_sha256": "a4b50d59968ea557267c2d8d9b0bf9ab029d3f31290e37787300e2e1153b5b28",
+      "source": "https://blog.cloudflare.com/full-transaction-waf/",
+      "old": "フルビジネストラランザクション検出",
+      "new": "HTTPリクエストと応答全体の検出",
+      "expected_occurrences": 5
+    },
+    {
+      "note_id": "0584b40568213c3756c7d8b8947bfd35321f9f72af6c81031d0b0b4a045544d2",
+      "original_note_sha256": "510c65cd509bf61e86d5d15d3a673cab8030be5791b3a1c6e5296e2afa174e94",
+      "proposed_note_sha256": "9e6944a7812caca02beb835d2868720ce987795fb76fdd52c2ea6a67e67aa766",
+      "source": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+      "old": "170万件以上のラベル付きデータ",
+      "new": "約170万件のラベル付きデータ",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "0763ba87a2c5f42f9562df1e47ddebb23b6aedb45bcfff75c0edb604dd35ba9d",
+      "original_note_sha256": "b20afc90083e5f9d2818c41d8bae198351bbcaebdbf5dd7c52a82aca983dc567",
+      "proposed_note_sha256": "b5fd1cf3893bf6267cccb95d89e18c577f8fd2ad6c9a14010f6a3efd6b972e3c",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/",
+      "old": "テキスト、画像、動画の入力",
+      "new": "テキスト・画像の入力（動画参照はAPIスキーマで受理されても、発表時点ではモデルが正しく処理しない制約あり）",
+      "expected_occurrences": 3
+    },
+    {
+      "note_id": "08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903",
+      "original_note_sha256": "7767268f6893762243b9bbfdc0ede1d474273572faac28568950cc3f5661618c",
+      "proposed_note_sha256": "d6bafff86d4518354604354e659596e2d7aa5fb7edaf01c3e814865388fd992a",
+      "source": "https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/",
+      "old": "医療辞書やMedGemmaへの音声プロンプト入力",
+      "new": "医療音声の書き起こしやMedGemmaへの音声プロンプト入力",
+      "expected_occurrences": 2
+    }
+  ]
+}
