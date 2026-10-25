@@ -9,7 +9,7 @@
 | R03 / cache・差分build・DB | 現公開版と現在のGCSで、全件整合性/前後catalogを保持した工程時間・転送・メモリを測り、導入条件を判定する。制約が確認されれば同じgateで改善する | 評価完了、現規模では追加基盤を見送る。全state/runsを含む監査対象GCS 1,315 object/7,881,765 bytes、603成功行、最大RSS115,368 KiB。16並列load5.690秒、全体7.695秒、index349,566 bytes/0.006秒。全Web build/全受入3回も同じartifact/coverageで成功、全体中央値211.307秒。DB・run間cache・差分HTMLの導入が必要になる制約は現在未確認。下記の測定を基点に再判断する |
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
 | R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
-| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を45件実施し、12件で用語/数量/精度/提供時期・機能制約の訂正候補。12件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り276件は未完了。以下の確認記録を参照 |
+| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を57件実施し、20件で用語/数量/精度/評価条件/公開日・提供範囲の訂正候補。20件のhash固定計画・履歴付き訂正/中断復旧を実装し、321件のローカルsnapshotへ適用/監査した。本番反映と残り264件は未完了。以下の確認記録を参照 |
 | R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
@@ -67,8 +67,25 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 
 - Note `1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd`：[原典](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/)のphysicsは照明・カメラ・フォーカス・色調などの画像表現の制御であり、「物理演算」を示すものではない。Google Search groundingも有効化時のWeb参照として説明し、常時の動作や正確性を保証する表現を避ける。
 
-[訂正文案](note-reviews/2026-10-25-corrections.json)の12件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
 
-原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。12件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど12 Note変更を確認した。訂正後datasetは `d4166060aef453f32ad6e0ec7ce214ab25cf0014a72a0c9b5eb4901343a97dc2`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+- Note `207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe`：[Omni 1.1 Flashの原典](https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/)の40秒は動画の累積長の上限。追加で40秒延長できる意味と区別し、10秒単位の延長と累積上限を明記する。
 
-Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。45件の結果を全321件へ一般化しない。
+- Note `2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a`：[スマートフォンでの心拍測定の原典](https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/)のHR評価は信頼度による測定選別後の結果である。研究データ/モデルも、IRB承認等を満たす研究者の申請による非商用研究向けと明記する。
+
+- Note `226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c`：[OAuth移行の原典](https://blog.cloudflare.com/oauth-for-all/)のblue-green deploymentを「ブルーグリーンデプロイ」へ修正する。
+
+- Note `2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1`：[PaperVizAgent/ScholarPeerの原典](https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/)の60.2対50.0はLLM判定による比較評価。その評価主体を明記し、literature-groundedも「学術文献に裏付けられた」へ修正する。
+
+- Note `2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481`：[I/O Researchの原典](https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/)の短期気象/災害予測を気候変動予測と区別する。Gemini for Scienceの発表と段階的アクセスも、無条件の公開完了としない。
+
+- Note `23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8`：[Marketing ops as codeの原典](https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/)は人の事前承認と終了後のコマンド起動を含む。全工程の無条件な自律実行と読める要約を修正する。
+
+- Note `24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440`：[WeatherNext 3の原典](https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/)の約5倍は主要表面変数の空間解像度であり、精度の倍率ではない。medium-rangeは「中期」、100メートルは風速を測る高度として記述する。
+
+- Note `255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2`：[Cyberの原典](https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/)の表示日/構造化データと[同時発表](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/)は7月21日。Noteの7月17日を訂正する。CyberGymの大型モデルに対する競争力と、Big Sleepでのmainline Flashへの優位も区別する。
+
+[訂正文案](note-reviews/2026-10-25-corrections.json)の20件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+
+原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。20件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど20 Note変更を確認した。訂正後datasetは `18935841deb0aca80a8b46c2d0d126ef26145feb4e3249e1d609ebfe14fe6fb1`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+
+Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。57件の結果を全321件へ一般化しない。

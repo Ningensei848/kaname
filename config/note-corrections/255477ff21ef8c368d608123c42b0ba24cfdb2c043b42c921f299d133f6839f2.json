@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+  "expected_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+  "expected_text_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+  "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは2026年7月17日、コードの脆弱性を迅速かつ効率的に発見、検証、修正するためにファインチューニングされた軽量サイバーセキュリティモデル「Gemini\n  3.5 Flash Cyber」を発表しました。Flashモデルをベースにしているためコスト効率が高く、大規模なコードベースや多数の実行パスをスキャンするタスクに最適です。デュアルユースの性質を考慮し、初期段階では限定アクセスのパイロットプログラムとして、CodeMenderを通じて政府機関や信頼できるパートナーに限定提供されます。CyberGymやBig\n  Sleep評価、Chromeのコミットスキャンパイプラインなどのベンチマークでは、大規模なモデルや従来型Flashモデルを上回る成果を上げ、Google社内のChromeやAndroidなどのコードベースでもすでに脆弱性の発見と修正に貢献しています。\n",
+      "new": "description: Google DeepMindは2026年7月21日、コードの脆弱性を迅速かつ効率的に発見、検証、修正するためにファインチューニングされた軽量サイバーセキュリティモデル「Gemini\n  3.5 Flash Cyber」を発表しました。Flashモデルをベースにしているためコスト効率が高く、大規模なコードベースや多数の実行パスをスキャンするタスクに最適です。デュアルユースの性質を考慮し、初期段階では限定アクセスのパイロットプログラムとして、CodeMenderを通じて政府機関や信頼できるパートナーに限定提供されます。CyberGymやBig\n  Sleep評価、Chromeのコミットスキャンパイプラインなどのベンチマークでは、大型モデルに対する競争力や従来型Flashモデルからの改善を示し、Google社内のChromeやAndroidなどのコードベースでもすでに脆弱性の発見と修正に貢献しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "2026年7月17日",
+      "new": "2026年7月21日",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "2026-07-17",
+      "new": "2026-07-21",
+      "expected_occurrences": 2
+    },
+    {
+      "old": "大規模なモデルや従来型Flashモデルを上回る成果を上げ",
+      "new": "大型モデルに対する競争力や従来型Flashモデルからの改善を示し",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "[[CyberGym]]や[[Big Sleep]]評価などのベンチマークテストにおいて、既存モデルや競合モデルを大きく上回る成果を実証した。",
+      "new": "[[CyberGym]]では最大5回のモデル呼び出しで大型モデルと競争力のある結果を示し、[[Big Sleep]]評価ではmainline 3.5 Flashと3.6 Flashを上回った。",
+      "expected_occurrences": 1
+    }
+  ],
+  "source_published": "2026-07-21"
+}

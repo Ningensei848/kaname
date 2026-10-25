@@ -97,8 +97,9 @@ def correction_trailer(revisions):
         raise ExportError('invalid_note_corrections')
     plans, lines = set(), []
     for record in revisions:
-        if (not isinstance(record, dict) or set(record) !=
-                {'plan_sha256', 'previous_note_sha256', 'checked_at', 'reviewer_kind'} or
+        fields = {'plan_sha256', 'previous_note_sha256', 'checked_at', 'reviewer_kind'}
+        if (not isinstance(record, dict) or set(record) not in
+                (fields, fields | {'published_before', 'published_after'}) or
                 record['reviewer_kind'] != 'automated_assistant' or
                 any(not isinstance(record[k], str) or not re.fullmatch(r'[0-9a-f]{64}', record[k])
                     for k in ('plan_sha256', 'previous_note_sha256')) or
@@ -109,14 +110,25 @@ def correction_trailer(revisions):
                 raise ValueError()
         except ValueError:
             raise ExportError('invalid_note_corrections') from None
+        publication = ''
+        if 'published_after' in record:
+            before, after = record['published_before'], record['published_after']
+            try:
+                if (not isinstance(after, str) or date.fromisoformat(after).isoformat() != after or
+                        (before is not None and (not isinstance(before, str) or
+                         date.fromisoformat(before).isoformat() != before)) or before == after):
+                    raise ValueError()
+            except ValueError:
+                raise ExportError('invalid_note_corrections') from None
+            publication = f"原典公開日 {before or '不明'} → {after}。"
         plans.add(record['plan_sha256'])
-        lines.append(f"- {record['checked_at']}：原典照合に基づき自動支援で訂正。"
+        lines.append(f"- {record['checked_at']}：原典照合に基づき自動支援で訂正。" + publication +
                      f"計画 `{record['plan_sha256'][:12]}`、訂正前Note `{record['previous_note_sha256'][:12]}`"
                      '（hashの先頭12桁。全桁はfrontmatterに記録）。')
     return '\n## 訂正記録\n\n' + '\n'.join(lines) + '\n'
 
 
-def validate_note(data, row, tracking, categories):
+def validate_note(data, row, tracking, categories, *, published_is_effective=False):
     if len(data) > 100_000:
         raise ExportError("oversized_note")
     try:
@@ -151,11 +163,25 @@ def validate_note(data, row, tracking, categories):
             if not author.startswith("[[") or not author.endswith("]]") or not valid_saved_concept(author[2:-2]):
                 raise ExportError("invalid_frontmatter")
             authors.append(author[2:-2])
+        published = row['published_at'][:10] or None
+        if 'note_corrections' in meta:
+            correction_trailer(meta['note_corrections'])
+            date_changes = [r for r in meta['note_corrections'] if 'published_after' in r]
+            # Public manifests contain the effective date. Private index rows
+            # retain the original date, which anchors the complete date chain.
+            if published_is_effective and date_changes:
+                if published != date_changes[-1]['published_after']:
+                    raise ExportError('note_index_mismatch')
+                published = date_changes[0]['published_before']
+            for revision in date_changes:
+                if revision['published_before'] != published:
+                    raise ExportError('note_index_mismatch')
+                published = revision['published_after']
         if (any(meta[k] != row[k] for k in ("raw_html_sha256", "content_sha256")) or
                 normalize_url(meta["source"], tracking) != normalize_url(row["source_url"], tracking) or
                 normalize_url(meta["canonical_url"], tracking) != normalize_url(row["canonical_url"], tracking) or
                 meta["ai_model"] != row["llm_model"] or meta["created"] != row["processed_at"][:10] or
-                str(meta["published"] or "") != row["published_at"][:10] or
+                meta["published"] != published or
                 type(meta["llm_input_truncated"]) is not bool or
                 str(meta["llm_input_truncated"]).lower() != row.get("llm_input_truncated", "false")):
             raise ExportError("note_index_mismatch")

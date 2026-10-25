@@ -4,14 +4,15 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from kaname.audit import audit_state
 from kaname.costs import cost_report
-from kaname.note_corrections import NoteCorrectionPlan, correct_note, corrected_note
+from kaname.note_corrections import NoteCorrectionPlan, correct_note, corrected_note, plan_payload
 from kaname.publication import export_notes
 from kaname.publication.common import sha256
-from kaname.publication.note import note_frontmatter, validate_note
-from kaname.publication.snapshot import snapshot_files
+from kaname.publication.note import correction_trailer, note_frontmatter, validate_note
+from kaname.publication.snapshot import snapshot_files, load_snapshot
 from kaname.state import State
 
 
@@ -196,6 +197,119 @@ def test_existing_output_directory_fails_before_any_mutation(correction, tmp_pat
     before = dict(correction.h.store.data)
     assert run(correction, apply=True, output=tmp_path)['stage'] == 'preview'
     assert correction.h.store.data == before
+
+
+def date_plan(correction, note=None, after='2026-10-02'):
+    original = note or correction.note
+    before = note_frontmatter(original)[2]['published']
+    assert before != after
+    edits = [dict(old='published: ' + (f"'{before}'" if before else 'null'),
+                  new=f"published: '{after}'", expected_occurrences=1),
+             dict(old='- Published: ' + (before or '（取得なし）'), new='- Published: ' + after, expected_occurrences=1)]
+    text = original.decode()
+    for edit in edits:
+        text = text.replace(edit['old'], edit['new'])
+    return NoteCorrectionPlan.model_validate(correction.plan.model_dump() | dict(
+        expected_note_sha256=sha256(original), expected_text_sha256=sha256(text.encode()),
+        source_published=after, edits=edits))
+
+
+def test_date_correction_changes_public_date_without_rewriting_generation_or_costs(correction, tmp_path):
+    h = correction.h
+    before, costs = dict(h.store.data), cost_report(h.store, h.app)
+    plan = date_plan(correction)
+    result = correct_note(h.store, h.app, plan, apply=True)
+    assert result['status'] == 'success' and result['updated'] == 1
+    note = h.store.read(correction.row['note_object'])
+    meta = validate_note(note, correction.row, h.app.tracking_parameters, h.app.categories)
+    old_meta = note_frontmatter(correction.note)[2]
+    assert meta['published'] == plan.source_published
+    assert meta['created'] == old_meta['created'] and meta['ai_model'] == old_meta['ai_model']
+    record = meta['note_corrections'][-1]
+    assert record['published_before'] == old_meta['published'] and record['published_after'] == plan.source_published
+    assert f"原典公開日 {old_meta['published'] or '不明'} → {plan.source_published}" in note.decode()
+    receipt_name = 'state/receipts/' + correction.row['content_sha256'] + '.json'
+    receipt = json.loads(h.store.read(receipt_name))
+    assert h.store.read(receipt['note_correction']['history']) == before[receipt_name]
+    assert receipt['row'] == json.loads(before[receipt_name])['row']
+    assert receipt['usage_run_id'] == json.loads(before[receipt_name])['usage_run_id']
+    assert {n: v for n, v in before.items() if n != receipt_name and n != correction.row['note_object']} == {
+        n: h.store.read(n) for n in before if n != receipt_name and n != correction.row['note_object']}
+    assert cost_report(h.store, h.app) == costs and audit_state(h.store)['status'] == 'success'
+    assert export_notes(h.store, tmp_path / 'export')['status'] == 'success'
+    _, files, metadata = load_snapshot(tmp_path / 'export', h.app.tracking_parameters)
+    assert next(iter(metadata.values()))['published'] == plan.source_published
+    assert json.loads(files['manifest.json'])['notes'][0]['published'] == plan.source_published
+    h.store.writes.clear()
+    assert correct_note(h.store, h.app, plan, apply=True)['unchanged'] == 1 and not h.store.writes
+    assert len(h.sdk.calls) == 1
+
+
+@pytest.mark.parametrize('mode', ['undeclared', 'wrong_date', 'no_op'])
+def test_date_override_requires_an_explicit_matching_actual_change(correction, mode):
+    plan = date_plan(correction)
+    values = plan.model_dump()
+    if mode == 'undeclared':
+        values['source_published'] = None
+    elif mode == 'wrong_date':
+        values['source_published'] = '2026-10-03'
+    else:
+        assert correct_note(correction.h.store, correction.h.app, plan, apply=True)['status'] == 'success'
+        values = plan_for(correction.h.store.read(correction.row['note_object']), correction.plan.note_id).model_dump() | {
+            'source_published': plan.source_published}
+    before = dict(correction.h.store.data)
+    assert correct_note(correction.h.store, correction.h.app, NoteCorrectionPlan.model_validate(values), apply=True)['status'] == 'failed'
+    assert correction.h.store.data == before
+
+
+@pytest.mark.parametrize('value', ['2026-02-30', '20261002', '2026-10-02T00:00:00Z', 20261002])
+def test_source_publication_override_requires_exact_iso_date(correction, value):
+    with pytest.raises(ValueError):
+        NoteCorrectionPlan.model_validate(correction.plan.model_dump() | {'source_published': value})
+
+
+@pytest.mark.parametrize('mutation', ['missing_before', 'missing_after', 'wrong_before', 'wrong_after', 'bad_date', 'extra_key'])
+def test_date_history_must_be_paired_valid_and_anchored_to_the_original_index(correction, mutation):
+    h = correction.h
+    note = corrected_note(correction.note, correction.row, h.app, date_plan(correction))
+    text, match, meta = note_frontmatter(note)
+    body = text[match.end():-len(correction_trailer(meta['note_corrections']))]
+    record = meta['note_corrections'][-1]
+    if mutation.startswith('missing_'):
+        record.pop('published_' + mutation.removeprefix('missing_'))
+    elif mutation == 'extra_key':
+        record['extra'] = 'private'
+    else:
+        record[{'wrong_before': 'published_before', 'wrong_after': 'published_after', 'bad_date': 'published_after'}[mutation]] = {
+            'wrong_before': '2026-09-01', 'wrong_after': '2026-10-03', 'bad_date': '2026-02-30'}[mutation]
+    with pytest.raises(ValueError):
+        trailer = correction_trailer(meta['note_corrections'])
+        changed = ('---\n' + yaml.safe_dump(meta, allow_unicode=True, sort_keys=False) + '---\n' + body + trailer).encode()
+        validate_note(changed, correction.row, h.app.tracking_parameters, h.app.categories)
+
+
+def test_date_and_text_corrections_chain_and_failed_note_save_recovers(correction):
+    h = correction.h
+    first = date_plan(correction)
+    h.store.fail_prefix = 'notes/'
+    assert correct_note(h.store, h.app, first, apply=True)['status'] == 'failed'
+    h.store.fail_prefix = None
+    assert h.pipeline.run().llm_calls == 0
+    second = date_plan(correction, h.store.read(correction.row['note_object']), after='2026-10-03')
+    assert correct_note(h.store, h.app, second, apply=True)['status'] == 'success'
+    third = plan_for(h.store.read(correction.row['note_object']), correction.plan.note_id)
+    assert correct_note(h.store, h.app, third, apply=True)['status'] == 'success'
+    note = h.store.read(correction.row['note_object'])
+    assert validate_note(note, correction.row, h.app.tracking_parameters, h.app.categories)['published'] == '2026-10-03'
+    assert audit_state(h.store)['status'] == 'success' and len(h.sdk.calls) == 1
+    before = dict(h.store.data)
+    assert correct_note(h.store, h.app, first, apply=True)['status'] == 'failed' and h.store.data == before
+
+
+def test_text_only_plan_hashes_remain_backward_compatible(correction):
+    payload = correction.plan.model_dump()
+    payload.pop('source_published')
+    assert plan_payload(correction.plan) == payload
 
 
 def test_cli_previews_local_state_without_clients_and_rejects_apply(correction, tmp_path, monkeypatch, capsys):

@@ -158,6 +158,290 @@
       "old": "人間がプロセスを直接駆動する手法から、エンジニアが目標を設定して結果の品質を担保する「[[ヒューマン・オン・ザ・ループ]]」へ移行した。",
       "new": "エンジニアが目標を設定して結果の品質を担保する「[[ヒューマン・オン・ザ・ループ]]」を目指し、一部工程を自律化している。工程によっては人が各反復に関与している。",
       "expected_occurrences": 1
+    },
+    {
+      "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+      "original_note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+      "proposed_note_sha256": "65bce6789902443c20f73f24efa9464c48df8beef8f138233e0a1022bd601cf7",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+      "old": "description: Google DeepMindは、開発者向けに生成動画の制御を強化したプロダクションレディなモデル「Gemini Omni 1.1 Flash」を発表しました。本モデルでは、最大10秒の文脈解析によるシーンの延長機能（最大40秒まで）、最初のフレームと最後のフレームを指定してスムーズなトランジションを作成する機能、最高4K解像度までのアップスケール対応が提供されます。また、360p解像度での軽量なプレビュー生成により、標準の720pと比較して最大60%高速かつ低コストでプロトタイピングやストーリーボードの作成が可能です。マルチモーダル入力では最大3秒の動画参照をサポートし、ビジュアルコンテキストやキャラクターの一貫性を維持できます。Google\n  AI StudioのGemini APIやGemini Enterprise Agent Platform経由で利用可能であり、Adobe Firefly、Figma\n  Weave、GMI Cloud、Runwayなどの企業におけるプロダクション環境での活用が進んでいます。\n",
+      "new": "description: Google DeepMindは、開発者向けに生成動画の制御を強化したプロダクションレディなモデル「Gemini Omni 1.1 Flash」を発表しました。本モデルでは、最大10秒の文脈解析によるシーンの延長機能（10秒単位で延長し累積長は最大40秒）、最初のフレームと最後のフレームを指定してスムーズなトランジションを作成する機能、最高4K解像度までのアップスケール対応が提供されます。また、360p解像度での軽量なプレビュー生成により、標準の720pと比較して最大60%高速かつ低コストでプロトタイピングやストーリーボードの作成が可能です。マルチモーダル入力では最大3秒の動画参照をサポートし、ビジュアルコンテキストやキャラクターの一貫性を維持できます。Google\n  AI StudioのGemini APIやGemini Enterprise Agent Platform経由で利用可能であり、Adobe Firefly、Figma\n  Weave、GMI Cloud、Runwayなどの企業におけるプロダクション環境での活用が進んでいます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+      "original_note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+      "proposed_note_sha256": "65bce6789902443c20f73f24efa9464c48df8beef8f138233e0a1022bd601cf7",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+      "old": "最大10秒の文脈解析によるシーンの延長機能（最大40秒まで）",
+      "new": "最大10秒の文脈解析によるシーンの延長機能（10秒単位で延長し累積長は最大40秒）",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+      "original_note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+      "proposed_note_sha256": "65bce6789902443c20f73f24efa9464c48df8beef8f138233e0a1022bd601cf7",
+      "source": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+      "old": "最大40秒のシーン延長に対応し、視覚的整合性を保ちながらストーリーテリングを拡張できる。",
+      "new": "10秒単位で動画を延長でき、累積長は最大40秒に対応する。視覚的整合性を保ちながらストーリーテリングを拡張できる。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "original_note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "proposed_note_sha256": "d048d7eaf547888d2972c0b1e56e15ed9ba45c7e0e00be2d4f1dbfed1ee5652a",
+      "source": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "old": "description: Google Researchは、スマートフォンの日常的な使用中に顔の動画を撮影し、背景で心拍数（HR）と安静時心拍数（RHR）を受動的に追跡する研究システム「PHRM」を発表した。PHRMは、顔認証イベント直後の8秒間の顔動画クリップを捉え、時間シフト畳み込みニューラルネットワークを用いて心拍数を予測する。ラボ環境および実際の日常生活環境における検証では、心電図（ECG）を基準として、すべての肌トーンにおいて平均絶対パーセンテージ誤差（MAPE）が10%未満という業界の精度基準を達成した。また、日々のRHR推定値においても、Fitbit\n  Charge 6などのウェアラブル端末と同等の精度（平均絶対誤差4.39 bpm）を示した。研究コミュニティのさらなる発展のために、研究者向けに大規模なデータセットと事前学習済みモデルが公開されている。\n",
+      "new": "description: Google Researchは、スマートフォンの日常的な使用中に顔の動画を撮影し、背景で心拍数（HR）と安静時心拍数（RHR）を受動的に追跡する研究システム「PHRM」を発表した。PHRMは、顔認証イベント直後の8秒間の顔動画クリップを捉え、時間シフト畳み込みニューラルネットワークを用いて心拍数を予測する。ラボ環境および実際の日常生活環境における検証では、信頼度による測定の選別後、心電図（ECG）を基準として、全肌トーングループで平均絶対パーセンテージ誤差（MAPE）が10%未満という業界の精度基準を達成した。また、日々のRHR推定値においても、Fitbit\n  Charge 6などのウェアラブル端末と同等の精度（平均絶対誤差4.39 bpm）を示した。研究コミュニティのさらなる発展のために、IRB承認などの要件を満たす研究者が申請できる、非商用研究用データセットと事前学習済みモデルが提供されている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "original_note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "proposed_note_sha256": "d048d7eaf547888d2972c0b1e56e15ed9ba45c7e0e00be2d4f1dbfed1ee5652a",
+      "source": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "old": "心電図（ECG）を基準として、すべての肌トーンにおいて",
+      "new": "信頼度による測定の選別後、心電図（ECG）を基準として、全肌トーングループで",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "original_note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "proposed_note_sha256": "d048d7eaf547888d2972c0b1e56e15ed9ba45c7e0e00be2d4f1dbfed1ee5652a",
+      "source": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "old": "ラボ環境およびフリーリビング環境の双方で、すべての肌トーンにおいて心拍数の予測誤差（MAPE）が10%未満の基準を達成した。",
+      "new": "ラボ環境およびフリーリビング環境の検証で、信頼度による測定の選別後、全肌トーングループの心拍数予測誤差（MAPE）が10%未満の基準を達成した。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "original_note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "proposed_note_sha256": "d048d7eaf547888d2972c0b1e56e15ed9ba45c7e0e00be2d4f1dbfed1ee5652a",
+      "source": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "old": "研究者向けに大規模なデータセットと事前学習済みモデルが公開されている。",
+      "new": "IRB承認などの要件を満たす研究者が申請できる、非商用研究用データセットと事前学習済みモデルが提供されている。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c",
+      "original_note_sha256": "cab3ce2f6fd585aa864334118ad7295f89459374c69ef06c5918d2ff684eba84",
+      "proposed_note_sha256": "3558dadb09e6b1ce4af32a03021fde617bf9a4d70eb01a1898c8c2467a343dcf",
+      "source": "https://blog.cloudflare.com/oauth-for-all/",
+      "old": "description: Cloudflareは全顧客が独自のOAuthクライアントを作成し管理できる「セルフマネージドOAuth」の提供を開始した。これにより開発者はSaaS連携や内部開発者プラットフォーム、エージェントツールを容易に構築できるようになる。この機能拡大を支えるため、背後で稼働しているオープンソースのOAuthエンジン「Hydra」を最新バージョンへ大規模にアップグレードした。移行にあたっては、ダウンタイムやユーザーへの影響を最小限に抑えるため、SQLマイグレーションの書き換え、トークンの有効期限延長、Cloudflare\n  Queuesを活用したリボケーション（失効）イベントのキューイング機構、そしてブルージェーングデプロイ戦略が採用された。1.Xへの移行では、厳格化されたリフレッシュトークンの無効化挙動に対しワーカー側でキャッシュ機構を追加して対応した。続く2.Xへの移行では、約3時間のデータベースマイグレーションを経て新しいHydraサービスへの切り替えを実施し、APIのP95レイテンシが185msから101msへと45%削減されるなど、大幅なパフォーマンス向上と安定性を達成した。\n",
+      "new": "description: Cloudflareは全顧客が独自のOAuthクライアントを作成し管理できる「セルフマネージドOAuth」の提供を開始した。これにより開発者はSaaS連携や内部開発者プラットフォーム、エージェントツールを容易に構築できるようになる。この機能拡大を支えるため、背後で稼働しているオープンソースのOAuthエンジン「Hydra」を最新バージョンへ大規模にアップグレードした。移行にあたっては、ダウンタイムやユーザーへの影響を最小限に抑えるため、SQLマイグレーションの書き換え、トークンの有効期限延長、Cloudflare\n  Queuesを活用したリボケーション（失効）イベントのキューイング機構、そしてブルーグリーンデプロイ戦略が採用された。1.Xへの移行では、厳格化されたリフレッシュトークンの無効化挙動に対しワーカー側でキャッシュ機構を追加して対応した。続く2.Xへの移行では、約3時間のデータベースマイグレーションを経て新しいHydraサービスへの切り替えを実施し、APIのP95レイテンシが185msから101msへと45%削減されるなど、大幅なパフォーマンス向上と安定性を達成した。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c",
+      "original_note_sha256": "cab3ce2f6fd585aa864334118ad7295f89459374c69ef06c5918d2ff684eba84",
+      "proposed_note_sha256": "3558dadb09e6b1ce4af32a03021fde617bf9a4d70eb01a1898c8c2467a343dcf",
+      "source": "https://blog.cloudflare.com/oauth-for-all/",
+      "old": "ブルージェーングデプロイ",
+      "new": "ブルーグリーンデプロイ",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "original_note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "proposed_note_sha256": "2568fb3988f5fbf03d05649c36de34ec27df3ef6529fa0c9248c55c5774aa818",
+      "source": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "old": "description: Google Researchは、学術研究のワークフローを支援する2つの新しいAIエージェントフレームワーク「PaperVizAgent（旧称PaperBanana）」と「ScholarPeer」を発表しました。PaperVizAgentは、ソースコンテキストとコミュニケーティブ・インテントを入力として受け取り、リトリーバー、プランナー、スタイリスト、ビジュアライザー、クリティックの5つの専門エージェントが協調して、学術基準に適合した高品質な論文用図表を自動生成します。実験では、人間のベースライン（50.0）を超える総合スコア60.2を記録し、既存のベースラインモデルを大きく上回りました。一方のScholarPeerは、シニア研究者のワークフローを模倣した文脈認識・検索機能付きのマルチエージェントフレームワークであり、デュアルストリームのコンテキスト取得と能動的な検証プロセスにより、文献に裏付けられた厳格で現実的な査読レポートを自動生成します。これらの実験的プロトタイプは、研究者が管理オーバーヘッドを軽減しイノベーションに集中できるよう支援することを目指しています。\n",
+      "new": "description: Google Researchは、学術研究のワークフローを支援する2つの新しいAIエージェントフレームワーク「PaperVizAgent（旧称PaperBanana）」と「ScholarPeer」を発表しました。PaperVizAgentは、ソースコンテキストとコミュニケーティブ・インテントを入力として受け取り、リトリーバー、プランナー、スタイリスト、ビジュアライザー、クリティックの5つの専門エージェントが協調して、学術基準に適合した高品質な論文用図表を自動生成します。人が作成した図を用いて調整したLLM判定による比較評価で、人間の基準値50.0に対し総合スコア60.2を記録し、比較対象モデルを上回りました。一方のScholarPeerは、シニア研究者のワークフローを模倣した文脈認識・検索機能付きのマルチエージェントフレームワークであり、デュアルストリームのコンテキスト取得と能動的な検証プロセスにより、文献に裏付けられた厳格で現実的な査読レポートを自動生成します。これらの実験的プロトタイプは、研究者が管理オーバーヘッドを軽減しイノベーションに集中できるよう支援することを目指しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "original_note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "proposed_note_sha256": "2568fb3988f5fbf03d05649c36de34ec27df3ef6529fa0c9248c55c5774aa818",
+      "source": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "old": "実験では、人間のベースライン（50.0）を超える総合スコア60.2を記録し、既存のベースラインモデルを大きく上回りました。",
+      "new": "人が作成した図を用いて調整したLLM判定による比較評価で、人間の基準値50.0に対し総合スコア60.2を記録し、比較対象モデルを上回りました。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "original_note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "proposed_note_sha256": "2568fb3988f5fbf03d05649c36de34ec27df3ef6529fa0c9248c55c5774aa818",
+      "source": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "old": "PaperVizAgentは、評価において人間のベースラインを超えるスコアを記録し、簡潔さと美しさの面で優れた性能を示した。",
+      "new": "PaperVizAgentは、LLM判定による比較評価で人間の基準値50.0を超える60.2を記録し、簡潔さと美しさの面で高いスコアを示した。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "original_note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "proposed_note_sha256": "2568fb3988f5fbf03d05649c36de34ec27df3ef6529fa0c9248c55c5774aa818",
+      "source": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "old": "文学に裏付けられた",
+      "new": "学術文献に裏付けられた",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "original_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "proposed_note_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+      "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "old": "description: Google I/O 2026では、エージェント型AIを活用した科学的発見、医療支援、エッジ向けハードウェア、気候予測などの分野における最新のブレイクスルーが発表されました。科学分野では、Nature誌に掲載された「Empirical\n  Research Assistance (ERA)」や「Co-Scientist」を統合した「Gemini for Science」が公開され、計算実験の自動化やアイデアの創出を加速させています。医療分野では、Google\n  Healthアプリの展開やSymptom AIの研究、マルチモーダルな診断対話を行うAMIEの進展、さらに開発者向けのMedGemmaやMedASRが紹介されました。また、エッジデバイス向けにエネルギー効率の高いCoral\n  NPUを搭載したSynaptics製の「Coralboard」が発表され、気候・災害予測ではWeatherNextによる高精度な台風予測や、Geminiを活用した都市部洪水の予測技術などが公開されました。\n",
+      "new": "description: Google I/O 2026では、エージェント型AIを活用した科学的発見、医療支援、エッジ向けハードウェア、気象予測などの分野における最新のブレイクスルーが発表されました。科学分野では、Nature誌に掲載された「Empirical\n  Research Assistance (ERA)」や「Co-Scientist」を統合した「Gemini for Science」が発表され、計算実験の自動化やアイデアの創出を加速させています。医療分野では、Google\n  Healthアプリの展開やSymptom AIの研究、マルチモーダルな診断対話を行うAMIEの進展、さらに開発者向けのMedGemmaやMedASRが紹介されました。また、エッジデバイス向けにエネルギー効率の高いCoral\n  NPUを搭載したSynaptics製の「Coralboard」が発表され、気象・災害予測ではWeatherNextによる高精度な台風予測や、Geminiを活用した都市部洪水の予測技術などが公開されました。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "original_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "proposed_note_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+      "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "old": "気候予測",
+      "new": "気象予測",
+      "expected_occurrences": 4
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "original_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "proposed_note_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+      "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "old": "気候・災害予測",
+      "new": "気象・災害予測",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "original_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "proposed_note_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+      "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "old": "気候変動予測",
+      "new": "気象・災害予測",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "original_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "proposed_note_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+      "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "old": "Science」が公開され",
+      "new": "Science」が発表され",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+      "original_note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+      "proposed_note_sha256": "3007c6bc82b77ae1167cdbfbdb3e7544231da8778315e457bdb3cea03c88bce4",
+      "source": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+      "old": "description: GitHubの日本および韓国におけるマーケティング担当者であるTomoko Tanaka氏が、GitHub Copilotを活用してイベント運用の全工程を自動化した事例について紹介しています。従来、イベントの承認後に発生するランディングページの複製、UTMタグ付きリンクの生成、メール案の作成、プロジェクトボードへの追加、参加者リストの集計とステータス更新、終了後のCRM用データ整形やレポート作成といった一連の定型作業は、ヒューマンエラーのリスクを伴う負担の大きいものでした。元エンジニアである著者は、自身の手順書をGitHub\n  Copilotに渡し、対話を重ねることでコードを生成させました。その結果、1つのGitHub Issueからイベントの自動セットアップ、毎朝の登録者スクリーニング、終了後の後片付けまでが自動で行われる「Marketing\n  ops as code」の仕組みが実現されました。イベント管理の基本単位としてGitHub Issueを用い、issue formを構造化された申請フォームとして活用しています。\n",
+      "new": "description: GitHubの日本および韓国におけるマーケティング担当者であるTomoko Tanaka氏が、GitHub Copilotを活用してイベント運用の定型作業を、人の承認やコマンド起動を挟んで自動化した事例について紹介しています。従来、イベントの承認後に発生するランディングページの複製、UTMタグ付きリンクの生成、メール案の作成、プロジェクトボードへの追加、参加者リストの集計とステータス更新、終了後のCRM用データ整形やレポート作成といった一連の定型作業は、ヒューマンエラーのリスクを伴う負担の大きいものでした。元エンジニアである著者は、自身の手順書をGitHub\n  Copilotに渡し、対話を重ねることでコードを生成させました。その結果、承認後のGitHub Issueを起点にイベント設定や毎朝の登録者確認を自動化し、終了後の処理は担当者がコマンドで開始する「Marketing\n  ops as code」の仕組みが実現されました。イベント管理の基本単位としてGitHub Issueを用い、issue formを構造化された申請フォームとして活用しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+      "original_note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+      "proposed_note_sha256": "3007c6bc82b77ae1167cdbfbdb3e7544231da8778315e457bdb3cea03c88bce4",
+      "source": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+      "old": "イベント運用の全工程を自動化した事例",
+      "new": "イベント運用の定型作業を、人の承認やコマンド起動を挟んで自動化した事例",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+      "original_note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+      "proposed_note_sha256": "3007c6bc82b77ae1167cdbfbdb3e7544231da8778315e457bdb3cea03c88bce4",
+      "source": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+      "old": "その結果、1つのGitHub Issueからイベントの自動セットアップ、毎朝の登録者スクリーニング、終了後の後片付けまでが自動で行われる「Marketing ops as code」の仕組みが実現されました。",
+      "new": "その結果、承認後のGitHub Issueを起点にイベント設定や毎朝の登録者確認を自動化し、終了後の処理は担当者がコマンドで開始する「Marketing ops as code」の仕組みが実現されました。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "original_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "proposed_note_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "old": "description: Google DeepMindとGoogle Researchは、最先端のグローバル気象AIモデル「WeatherNext 3」を発表しました。従来の数値予報モデルとは異なり、リアルタイムの衛星データや観測モザイクを取り入れて1時間ごとに高解像度の予測を生成します。温度や湿度は5キロメートル解像度、風速などの大気変数は25キロメートル解像度で提供され、前モデルのWeatherNext\n  2と比較して約5倍の精度と解像度を実現しています。NASAのIMERGなどの降水データを用いた学習により、降水予測の精度も大幅に向上しました。本モデルはGoogle検索、Gemini、Googleマップ、Google\n  Cloud（BigQuery、Earth Engineなど）を通じてグローバルに展開されます。\n",
+      "new": "description: Google DeepMindとGoogle Researchは、最先端のグローバル気象AIモデル「WeatherNext 3」を発表しました。従来の数値予報モデルとは異なり、リアルタイムの衛星データや観測モザイクを取り入れて1時間ごとに高解像度の予測を生成します。温度や湿度は5キロメートル解像度、風速などの大気変数は25キロメートル解像度で提供され、前モデルのWeatherNext\n  2と比較して主要な表面変数で約5倍細かな空間解像度を実現しています。NASAのIMERGなどの降水データを用いた学習により、降水予測の精度も大幅に向上しました。本モデルはGoogle検索、Gemini、Googleマップ、Google\n  Cloud（BigQuery、Earth Engineなど）を通じてグローバルに展開されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "original_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "proposed_note_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "old": "約5倍の精度と解像度を実現",
+      "new": "主要な表面変数で約5倍細かな空間解像度を実現",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "original_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "proposed_note_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "old": "表面変数を5キロメートル解像度で視覚化し",
+      "new": "温度や湿度などの主要な表面変数を5キロメートル解像度で視覚化し",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "original_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "proposed_note_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "old": "中規模な降水予測",
+      "new": "中期の降水予測",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "original_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "proposed_note_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "old": "100メートルの風速",
+      "new": "高度100メートルの風速",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "original_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "proposed_note_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+      "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "old": "description: Google DeepMindは2026年7月17日、コードの脆弱性を迅速かつ効率的に発見、検証、修正するためにファインチューニングされた軽量サイバーセキュリティモデル「Gemini\n  3.5 Flash Cyber」を発表しました。Flashモデルをベースにしているためコスト効率が高く、大規模なコードベースや多数の実行パスをスキャンするタスクに最適です。デュアルユースの性質を考慮し、初期段階では限定アクセスのパイロットプログラムとして、CodeMenderを通じて政府機関や信頼できるパートナーに限定提供されます。CyberGymやBig\n  Sleep評価、Chromeのコミットスキャンパイプラインなどのベンチマークでは、大規模なモデルや従来型Flashモデルを上回る成果を上げ、Google社内のChromeやAndroidなどのコードベースでもすでに脆弱性の発見と修正に貢献しています。\n",
+      "new": "description: Google DeepMindは2026年7月21日、コードの脆弱性を迅速かつ効率的に発見、検証、修正するためにファインチューニングされた軽量サイバーセキュリティモデル「Gemini\n  3.5 Flash Cyber」を発表しました。Flashモデルをベースにしているためコスト効率が高く、大規模なコードベースや多数の実行パスをスキャンするタスクに最適です。デュアルユースの性質を考慮し、初期段階では限定アクセスのパイロットプログラムとして、CodeMenderを通じて政府機関や信頼できるパートナーに限定提供されます。CyberGymやBig\n  Sleep評価、Chromeのコミットスキャンパイプラインなどのベンチマークでは、大型モデルに対する競争力や従来型Flashモデルからの改善を示し、Google社内のChromeやAndroidなどのコードベースでもすでに脆弱性の発見と修正に貢献しています。\n",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-21"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "original_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "proposed_note_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+      "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "old": "2026年7月17日",
+      "new": "2026年7月21日",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-21"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "original_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "proposed_note_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+      "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "old": "2026-07-17",
+      "new": "2026-07-21",
+      "expected_occurrences": 2,
+      "source_published": "2026-07-21"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "original_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "proposed_note_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+      "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "old": "大規模なモデルや従来型Flashモデルを上回る成果を上げ",
+      "new": "大型モデルに対する競争力や従来型Flashモデルからの改善を示し",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-21"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "original_note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "proposed_note_sha256": "8dd0ecb56096dacd9402bbca81d1a2096eb9583a776dff870f35747516c16e11",
+      "source": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "old": "[[CyberGym]]や[[Big Sleep]]評価などのベンチマークテストにおいて、既存モデルや競合モデルを大きく上回る成果を実証した。",
+      "new": "[[CyberGym]]では最大5回のモデル呼び出しで大型モデルと競争力のある結果を示し、[[Big Sleep]]評価ではmainline 3.5 Flashと3.6 Flashを上回った。",
+      "expected_occurrences": 1,
+      "source_published": "2026-07-21"
     }
   ]
 }

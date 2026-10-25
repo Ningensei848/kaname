@@ -75,6 +75,9 @@ mainのレビュー済み計画だけを許可し、日次writerと同じconcurr
 計画には元Note/置換後テキストのSHA256、canonicalな出典URL、確認日、文字列と出現数を指定します。
 `docs/note-reviews/` の根拠も合わせてレビューします。計画のschema検証だけでは事実の正しさを保証しません。
 画像/生成情報/本文hash/検索キーワード/安定IDは変更できず、タイトル・説明と本文中の指定文字列だけを訂正します。
+原典公開日の誤りは計画に `source_published`（ISO日付）を明示し、frontmatterと出典表示の両方を置換します。
+指定がなければ公開日も変更不可です。元indexの日付は維持し、履歴に `published_before` / `published_after` の対を追加します。
+公開manifestは訂正後の日付を使います。生成日時やusageの日付は変更しません。
 訂正後はfrontmatterに計画hash・元Note hash・確認日・`automated_assistant`を記録し、本文末にも訂正履歴を表示します。
 履歴を付けた最終Note hashは計画中の置換後テキストhashと異なります。
 

@@ -713,6 +713,247 @@
       "checked_at": "2026-10-25"
     },
     {
+      "note_id": "1fdc2fc1a8b71396d765f48cc84f93487a847bf3355be601763564a4fa86d9b2",
+      "note_sha256": "2b1a2e89588027397466ade8d524f23acf199247aa8b1b89a1a4ce9229332536",
+      "canonical_url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary announcement supports the five named consultancies, a possible $15.7T contribution by 2030, the cited 25% production-at-scale adoption figure, three pillars and sector focus. These are the announcement's forecast/cited adoption statements, not independently established global outcomes or a promise of realized economic gains.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "20630901881005d99af9d73ac37ea011d5c6c3401d0b263cb6b4f84f75ea305e",
+      "note_sha256": "ba649cc5ceaa1fbb65ef13d1de49ad0a6fd67e78021cac3c5f6930e4d9d168b5",
+      "canonical_url": "https://github.blog/news-insights/company-news/the-next-developer-interface-is-ambient-intelligence/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary essay supports Copilot repository-aware edit/test loops, coding-agent PRs in isolated Actions, developer ownership of constraints/evidence, MCP/context and the modality/harness/control-plane layers. The Note labels the piece an October 2026 essay and presents its interface vision as the author's argument rather than universal adoption or a measured productivity trial.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+      "note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "duration_limit",
+          "finding": "40秒は延長できる追加尺ではなく動画の累積長の上限である。10秒単位の延長と累積40秒上限を要約・重要ポイントで明記する。"
+        }
+      ],
+      "comparison": "Primary feature sections support ten-second prior context, first/last-frame interpolation, 360p throughput up to 60% faster at lower cost, 4K upscaling, three-second video references, access and customer examples. Scene extension proceeds in ten-second steps up to forty seconds cumulative duration. The key point's wording can make forty seconds sound like additional extension length and should state the cumulative cap.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "20e27079cc0ad624e51e7c7830cce1b42ad1228b3dc9d7dea0b8424baa413d4f",
+      "note_sha256": "b452a546cb5a6ffabea75a35aa8d2a90f80bfb9a3b18f6b9404dd5f3a9bef51d",
+      "canonical_url": "https://engineering.fb.com/2026/09/23/security/private-processing-meta-ai-glasses/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/flow/storage/transparency sections support CVM/TEE isolation from host and operator, blind-signed anonymous credentials, third-party OHTTP routing, hardware attestation, encrypted user-key state and ledger/audit/bounty mechanisms. These are Meta's stated design/threat-boundary guarantees, not our independent security certification. The Note does not claim all binaries are openly downloadable; the source limits binary access to its research program under agreement.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "canonical_url": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_condition",
+          "finding": "HRのMAPE基準達成は信頼度による測定の選別後の結果である。要約と重要ポイントにこの条件を追記する。"
+        },
+        {
+          "kind": "data_access",
+          "finding": "データとモデルの提供はIRB承認等の条件を満たす研究者の申請による非商用研究向けであり、そのアクセス条件を明記する。"
+        }
+      ],
+      "comparison": "Primary method/validation supports eight-second clips, temporal-shift CNNs, ECG HR reference, confidence-gated HR MAPE below 10% in each tested skin-tone group and aggregate RHR MAE 4.39 bpm versus Fitbit daily RHR. The Note omits confidence gating and says research resources are published without their qualified-access restrictions. RHR comparison is against the wearable reference, not independent ECG accuracy, and early Group 3 RHR/success-rate limitations remain in the source.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c",
+      "note_sha256": "cab3ce2f6fd585aa864334118ad7295f89459374c69ef06c5918d2ff684eba84",
+      "canonical_url": "https://blog.cloudflare.com/oauth-for-all/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "ブルージェーングデプロイは原典のblue-green deploymentの誤記であり、ブルーグリーンデプロイに修正する。"
+        }
+      ],
+      "comparison": "Primary rollout/migration sections support all-customer OAuth, Hydra 1.X then 2.X, concurrent-index SQL/custom column selection, extended token expiry, revocation replay via Queues, refresh coalescing, three-hour migration and P95 185 to 101 ms. The blue-green strategy name is misspelled. The source also reports refresh/session 403 problems and remediation, so this is not evidence of an entirely incident-free migration.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "canonical_url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_method",
+          "finding": "60.2対50.0はLLM判定による比較評価であり、その評価主体と人間の基準値を明記する。"
+        },
+        {
+          "kind": "translation",
+          "finding": "ScholarPeerのliterature-groundedを文学に裏付けられたと訳している。学術文献に裏付けられたに修正する。"
+        }
+      ],
+      "comparison": "Primary architecture/results support five PaperVizAgent roles and ScholarPeer dual-stream acquisition/verification. PaperVizAgent 60.2 versus a calibrated 50.0 human baseline comes from an LLM comparative judge, which should be named to avoid implying independent human superiority. ScholarPeer is grounded in academic literature; the key point wrongly translates this as literature in the artistic sense. The summary retains prototype status.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "canonical_url": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "forecast_scope",
+          "finding": "WeatherNextの気象・災害予測を気候予測や気候変動予測としている。短期の気象予測と長期の気候変動予測を区別する。"
+        },
+        {
+          "kind": "availability_scope",
+          "finding": "Gemini for Scienceは発表と段階的なアクセス拡大であり、公開済みとする表現を発表に改める。"
+        }
+      ],
+      "comparison": "Compared the source sections on ERA/Co-Scientist, experimental science tools, Health/AMIE/MedGemma, Coralboard and WeatherNext/Groundsource. The Note confuses short-horizon weather/disaster forecasts with climate-change prediction. Gemini for Science was announced with gradual experimental access, rather than an unrestricted public release. Other summarized examples agree with the primary event recap.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "231ebc69a42cc525681b82f6a797a97a30723aefc279a867afb8089685a83f26",
+      "note_sha256": "c190710d233f90eef19ef7f3a48c57ce30d38304c3f207775a15a2c135bd3a44",
+      "canonical_url": "https://deepmind.google/blog/engineering-more-resilient-crops-for-a-warming-climate/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared GLYK structure, three loops, hybrid enzyme temperature tests and future plant trials. The primary supports AlphaFold-guided plant/algal enzyme engineering and stability at 65°C. The Note explicitly says crop validation is future work; it does not claim heat-resilient crop yields have already been demonstrated in fields.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+      "note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "autonomy_scope",
+          "finding": "全工程が自動で行われるという要約に、人による事前承認と終了後のコマンド起動の条件を明記する。"
+        }
+      ],
+      "comparison": "Primary supports Issue forms/labels/Actions, routine setup, scheduled screening and post-event processing. However, the author signs off campaign names/emails/dates before opening the Issue and starts post-event processing via /lead-upload and /event-report. The summary overstates end-to-end autonomy and should preserve approval and command initiation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "measurement_scope",
+          "finding": "約5倍は主要表面変数の空間解像度であり予測精度の倍率ではない。medium-rangeは中規模でなく中期である。"
+        }
+      ],
+      "comparison": "Primary supports hourly raw-satellite and weather-station inputs, FGN mesh transformer, 5 km key surface variables versus the previous 25 km grid, renewable-energy variables and variable-specific CRPS improvements. Roughly fivefold improvement is spatial resolution, not accuracy. Medium-range denotes temporal lead time, not spatial mesoscale. Other surface variables remain 10 km and atmospheric variables 25 km.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "canonical_url": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "source_publication_date",
+          "finding": "公式の表示日・構造化データ・同日のモデル発表は2026年7月21日であり、Noteの公開日・出典情報・要約の7月17日を訂正する。生成日時と元index/usageは維持する。"
+        },
+        {
+          "kind": "benchmark_scope",
+          "finding": "CyberGymの大型モデルに対する競争力と、Big Sleepでのmainline Flashへの優位を区別し、全比較対象を大きく上回るという断定を修正する。"
+        }
+      ],
+      "comparison": "Primary header and BlogPosting datePublished both state July 21, 2026 (16:00 UTC), corroborated by the joint model launch dated July 21. Note metadata, provenance and summary incorrectly state July 17. CyberGym is competitive against larger models with up to five model calls/report; Big Sleep surpasses mainline 3.5/3.6 Flash, not every competitor in all benchmarks. Limited pilot availability is explicitly future in the Note.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "displayed": "2026-07-21",
+        "datePublished": "2026-07-21T16:00:00+00:00",
+        "corroborating_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/"
+      }
+    },
+    {
       "note_id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
       "note_sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
       "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",

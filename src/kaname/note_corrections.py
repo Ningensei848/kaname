@@ -28,14 +28,22 @@ class NoteCorrectionPlan(BaseModel):
     expected_text_sha256: str = Field(pattern=r'^[0-9a-f]{64}$')
     source: str = Field(min_length=1, max_length=2000)
     checked_at: str
+    source_published: str | None = None
     edits: list[TextEdit] = Field(min_length=1, max_length=10)
 
-    @field_validator('checked_at')
+    @field_validator('checked_at', 'source_published')
     @classmethod
     def valid_date(cls, value):
+        if value is None:
+            return value
         if date.fromisoformat(value).isoformat() != value:
             raise ValueError('invalid review date')
         return value
+
+
+def plan_payload(plan):
+    # Keep hashes of existing text-only plans stable when adding optional fields.
+    return plan.model_dump(exclude_none=True)
 
 
 def load_plan(path):
@@ -82,8 +90,12 @@ def corrected_note(original, row, app, plan):
         text = text.replace(edit.old, edit.new)
     if sha256(text.encode()) != plan.expected_text_sha256:
         raise ValueError('changed proposed text')
-    updated = validate_note(text.encode(), row, app.tracking_parameters, app.categories)
+    _, match, updated = note_frontmatter(text.encode())
     immutable = set(meta) - {'title', 'description'}
+    if plan.source_published is not None:
+        if updated.get('published') != plan.source_published or meta['published'] == plan.source_published:
+            raise ValueError('changed source publication date')
+        immutable.remove('published')
     if any(updated.get(k) != meta[k] for k in immutable) or set(updated) != set(meta):
         raise ValueError('changed immutable metadata')
     # Search terms establish graph relations; a text correction does not alter
@@ -93,13 +105,18 @@ def corrected_note(original, row, app, plan):
     if keywords(text) != keywords(original.decode()):
         raise ValueError('changed search keywords')
     revisions = list(meta.get('note_corrections', []))
-    _, match, _ = note_frontmatter(text.encode())
     body = text[match.end():]
     if revisions:
-        body = body[:-len(correction_trailer(revisions))]
-    revisions.append(dict(plan_sha256=sha256(json_bytes(plan.model_dump())),
-                          previous_note_sha256=plan.expected_note_sha256,
-                          checked_at=plan.checked_at, reviewer_kind='automated_assistant'))
+        trailer = correction_trailer(revisions)
+        if not body.endswith(trailer):
+            raise ValueError('changed correction trailer')
+        body = body[:-len(trailer)]
+    revision = dict(plan_sha256=sha256(json_bytes(plan_payload(plan))),
+                    previous_note_sha256=plan.expected_note_sha256,
+                    checked_at=plan.checked_at, reviewer_kind='automated_assistant')
+    if plan.source_published is not None:
+        revision.update(published_before=meta['published'], published_after=plan.source_published)
+    revisions.append(revision)
     updated['note_corrections'] = revisions
     result = ('---\n' + yaml.safe_dump(updated, allow_unicode=True, sort_keys=False) +
               '---\n' + body + correction_trailer(revisions)).encode()
@@ -128,9 +145,9 @@ def correct_note(store, app, plan, *, apply=False, output=None):
                 not isinstance(receipt.get('note'), str) or
                 any(str(receipt['row'].get(k, '')) != value for k, value in row.items())):
             raise ValueError('conflicting receipt')
-        plan_hash = sha256(json_bytes(plan.model_dump()))
+        plan_hash = sha256(json_bytes(plan_payload(plan)))
         intent_name = 'state/note-corrections/' + plan.note_id + '.json'
-        intent = dict(schema_version=1, status='pending', plan=plan.model_dump())
+        intent = dict(schema_version=1, status='pending', plan=plan_payload(plan))
         previous_intent = store.read(intent_name)
         if previous_intent is not None:
             saved, saved_plan = load_intent(intent_name, previous_intent)
