@@ -23,6 +23,7 @@ from .distribution import publish_snapshot
 from ._cli_arguments import parse_args, validate_args
 from .source_health import source_health
 from .graph_quality import graph_quality
+from .standard_requests import StandardRequests
 from .publication.snapshot import load_snapshot
 
 
@@ -99,6 +100,10 @@ def main(argv=None):
                 raise ValueError("graph-quality requires --public-snapshot")
             return _json_result(graph_quality(*load_snapshot(args.public_snapshot, app.tracking_parameters),
                                              details=args.details))
+        if args.command == 'standard-status':
+            with dependencies.read_store(('state/standard-requests/', 'state/standard-request-history/',
+                                          'state/standard-usage/', 'runs/')) as store:
+                return _json_result(StandardRequests(store).status(), ensure_ascii=True)
         if args.command == "publish-notes":
             if not args.public_snapshot or not args.distribution_repo:
                 raise ValueError("publish-notes requires public snapshot and local bare repository")
@@ -148,8 +153,7 @@ def main(argv=None):
             return _json_result(result, ensure_ascii=True, status_exit=True)
         if args.command in {"audit-state", "audit-run"}:
             prefixes = ('state/index/', 'state/pending.tsv', 'notes/', 'state/receipts/')
-            if args.command == 'audit-run':
-                prefixes += ('runs/',)
+            prefixes += ('state/standard-requests/', 'state/standard-request-history/', 'state/standard-usage/', 'runs/')
             with dependencies.read_store(prefixes) as store:
                 result = (audit_state(store) if args.command == "audit-state" else
                           audit_run(store, args.run_id, app.llm.max_calls_per_run, args.expected_success_before))
@@ -183,6 +187,8 @@ def main(argv=None):
         fetcher = dependencies.articles()
         gemini = dependencies.llm(prompt) if not dry else None
         options = {"max_cost_usd": args.max_cost_usd} if args.max_cost_usd is not None else {}
+        if args.retry_standard_content:
+            options['retry_standard_content'] = args.retry_standard_content
         report = Pipeline(app, sources, store, fetcher, Converter(), gemini, **options).run(dry_run=dry)
         return 0 if report.status == "success" else 1
     except ExportError as exc:

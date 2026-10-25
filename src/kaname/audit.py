@@ -130,6 +130,15 @@ def audit_state(store):
                           for name in store.list("notes/"))
     if unindexed_notes:
         issues.append({"code": "unindexed_notes", "count": unindexed_notes})
+    from .standard_requests import StandardRequests
+    try:
+        standard = StandardRequests(store).status()
+        if standard['requests']:
+            issues.append(dict(code='unresolved_standard_requests', count=len(standard['requests'])))
+        if standard['legacy_pending_runs']:
+            issues.append(dict(code='unresolved_legacy_standard_usage', count=len(standard['legacy_pending_runs'])))
+    except (ValueError, TypeError, KeyError):
+        issues.append(dict(code='invalid_standard_request_state'))
     return {"status": "failed" if issues else "success", "success_rows": len(rows),
             "pending": len(state.pending()),
             "truncated_rows": sum(row.get("llm_input_truncated", "").casefold() == "true" for row in rows),

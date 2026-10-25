@@ -1,6 +1,6 @@
 import json
 import logging
-from .composer import compose
+from .composer import compose, word_count
 from .preparation import prepared_articles
 from .images import article_images
 from ._receipts import build_receipt
@@ -17,17 +17,25 @@ from .fetcher import audit_url
 from .extraction import parse_listing, relevance
 from .batch import BatchManager, failure_diagnostics
 from .usage import has_usage_record
+from .standard_requests import StandardRequests, UnresolvedStandardRequest
 from .discovery import KnownArticles
 from .collection_progress import partition_known, completed_sources, failure_stop_reason, batch_submission_allowed
 
 log = logging.getLogger(__name__)
 
 class Pipeline:
-    def __init__(self, app, sources, store, fetcher, converter, gemini=None, *, max_cost_usd=None):
+    def __init__(self, app, sources, store, fetcher, converter, gemini=None, *, max_cost_usd=None, retry_standard_content=None):
         validate_generation_mode(app)
         self.max_cost_usd = validate_budget(app, max_cost_usd) if max_cost_usd is not None else None
+        if retry_standard_content is not None:
+            import re
+            if (self.max_cost_usd is None or app.llm.mode != 'standard' or app.llm.max_calls_per_run != 1 or
+                    not re.fullmatch(r'[0-9a-f]{64}', retry_standard_content)):
+                raise ValueError('standard retry requires a digest and bounded single standard run')
+            app.llm.retries = 0
         self.app, self.sources, self.store = app, sources, store
         self.fetcher, self.converter, self.gemini = fetcher, converter, gemini
+        self.requests = StandardRequests(store, retry_standard_content)
 
     def _save_receipt(self, receipt, state, dedupe, report):
         row = receipt["row"]
@@ -69,10 +77,13 @@ class Pipeline:
             previous = state.pending()
             report.pending_before = len(previous)
             if not dry_run:
+                standard_blocked = self.requests.recover(self.app.categories, compose)
                 self._recover_receipts(state, dedupe, report)
                 batch = BatchManager(self.store, self.gemini)
                 batch.settle(self._save_receipt, state, dedupe, report, done)
                 active = batch.active_hashes()
+                if standard_blocked:
+                    raise UnresolvedStandardRequest()
                 report.generation_budget = generation_allowance(self.store, self.app, report.started_at)
                 if report.generation_budget is not None:
                     if report.generation_budget['reason']:
@@ -151,6 +162,8 @@ class Pipeline:
                             done.add(candidate.url)
                             continue
                         ch = content_hash(markdown)
+                        if self.requests.retry_content and ch != self.requests.retry_content:
+                            continue
                         if ch in dedupe.content:
                             report.content_duplicates += 1
                             done.add(candidate.url)
@@ -193,7 +206,11 @@ class Pipeline:
                         stage = "llm"
                         report.llm_calls += 1
                         attempted_content.add(ch)
-                        request = StandardRequest(self.store, self.gemini, report)
+                        context = dict(candidate=candidate.row(), source=source.model_dump(mode='json'),
+                            canonical=canon, fetched_at=now(), raw_hash=rh, model=self.app.llm.model,
+                            truncated=truncated, authors=authors, input_char_limit=self.app.llm.max_input_chars,
+                            source_word_count=word_count(markdown), image_candidates=images)
+                        request = StandardRequest(self.store, self.gemini, report, self.requests, ch, context)
                         try:
                             enrichment, usage = request.enrich(candidate, source, markdown, truncated, authors, images)
                         finally:
@@ -202,7 +219,7 @@ class Pipeline:
                             response = getattr(self.gemini, "last_response", None)
                         log.info("LLM success")
                         stage = "compose"
-                        fetched_at = now()
+                        fetched_at = context['fetched_at']
                         receipt = build_receipt(candidate, source, enrichment, markdown, canon, fetched_at,
                                                 rh, ch, self.app.llm.model, truncated, authors, usage,
                                                 input_char_limit=self.app.llm.max_input_chars,
@@ -211,6 +228,8 @@ class Pipeline:
                         report.observe_images(len(images), len(enrichment.images), truncated)
                         stage = "receipt_save"
                         self.store.write(f"state/receipts/{ch}.json", json.dumps(receipt, ensure_ascii=False).encode("utf-8"), "application/json")
+                        stage = 'standard_response_save'
+                        self.requests.complete(request.record)
                         stage = "note_or_index_save"
                         self._save_receipt(receipt, state, dedupe, report)
                         done.add(candidate.url)
@@ -232,8 +251,13 @@ class Pipeline:
                             if stop == 'generation_failed':
                                 report.budget_stop_reason = stop
                             break
+                        if stage == 'llm' and response is None:
+                            report.budget_stop_reason = 'standard_request_unresolved'
+                            break
             if prepared and not dry_run and batch_submission_allowed(report.failures):
                 batch.submit(prepared, self.app, report)
+            if self.requests.retry_content and not self.requests.retried:
+                raise ValueError('standard retry target not found')
         except Exception as exc:
             report.fail("state_or_recovery", "", "", exc)
             log.error("state/recovery failed error=%s", type(exc).__name__)

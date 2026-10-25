@@ -49,6 +49,10 @@ on:
         description: 'Explicit output recovery limit; standard max_calls=1 and max_cost_usd required'
         type: string
         default: ''
+      retry_standard_content:
+        description: 'Explicitly retry a held content SHA-256; standard max_calls=1 and max_cost_usd required'
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -80,9 +84,10 @@ jobs:
           MAX_CALLS: ${{ inputs.max_calls }}
           MAX_COST_USD: ${{ inputs.max_cost_usd }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+          RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
         run: |
-          if [[ ! "$IMAGE_REPAIR_PLAN" =~ ^config/image-repairs/[0-9a-f]{64}\.json$ || ! -f "$IMAGE_REPAIR_PLAN" || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+          if [[ ! "$IMAGE_REPAIR_PLAN" =~ ^config/image-repairs/[0-9a-f]{64}\.json$ || ! -f "$IMAGE_REPAIR_PLAN" || "$BATCH_PREFLIGHT" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
             echo 'Image repair requires a reviewed plan and cannot be combined with other execution modes.'
             exit 1
           fi
@@ -137,11 +142,12 @@ jobs:
           MAX_CALLS: ${{ inputs.max_calls }}
           MAX_COST_USD: ${{ inputs.max_cost_usd }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+          RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
           IMAGE_REPAIR_PLAN: ${{ inputs.image_repair_plan }}
           IMAGE_REPAIR_APPLY: ${{ inputs.image_repair_apply }}
         run: |
-          if [[ -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
+          if [[ -n "$IMAGE_REPAIR_PLAN" || "$IMAGE_REPAIR_APPLY" == true || "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ]]; then
             echo 'Batch preflight cannot be combined with other execution modes or collection overrides.'
             exit 1
           fi
@@ -196,9 +202,10 @@ jobs:
           MAX_CALLS: ${{ inputs.max_calls }}
           MAX_COST_USD: ${{ inputs.max_cost_usd }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+          RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
         run: |
-          if [[ "$PUBLISH_ONLY" == true && ( -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ) ]]; then
+          if [[ "$PUBLISH_ONLY" == true && ( -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || -n "$MAX_CALLS" || -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" || -n "$MAX_COST_USD" || ( -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ) ) ]]; then
             echo 'Publish-only cannot be combined with diagnostics or collection overrides.'
             exit 1
           fi
@@ -213,6 +220,18 @@ jobs:
             fi
             if (( MAX_OUTPUT_TOKENS > 65536 )); then
               echo 'Invalid output recovery limit.'
+              exit 1
+            fi
+          fi
+          if [[ -n "${RETRY_STANDARD_CONTENT:-}" || -n "$MAX_OUTPUT_TOKENS" ]]; then
+            if [[ ! "$MAX_COST_USD" =~ ^[0-9]+([.][0-9]+)?$ || ! "$MAX_COST_USD" =~ [1-9] ]]; then
+              echo 'Recovery requires a positive finite decimal cost cap.'
+              exit 1
+            fi
+          fi
+          if [[ -n "${RETRY_STANDARD_CONTENT:-}" ]]; then
+            if [[ "$PUBLISH_ONLY" == true || -n "$VERIFY_RUN_ID" || -n "$DIAGNOSTIC_BATCH_ID" || -n "$EXPECTED_SUCCESS_BEFORE" || "$COLLECTION_MODE" != standard || "$MAX_CALLS" != 1 || -z "$MAX_COST_USD" || ! "$RETRY_STANDARD_CONTENT" =~ ^[0-9a-f]{64}$ ]]; then
+              echo 'Standard retry requires a content digest, one standard call and a cost cap.'
               exit 1
             fi
           fi
@@ -242,12 +261,14 @@ jobs:
           MAX_CALLS: ${{ inputs.max_calls }}
           MAX_COST_USD: ${{ inputs.max_cost_usd }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+          RETRY_STANDARD_CONTENT: ${{ inputs.retry_standard_content }}
         run: |
           args=(run)
           if [[ -n "$COLLECTION_MODE" && "$COLLECTION_MODE" != configured ]]; then args+=(--llm-mode "$COLLECTION_MODE"); fi
           if [[ -n "$MAX_CALLS" ]]; then args+=(--max-calls "$MAX_CALLS"); fi
           if [[ -n "$MAX_COST_USD" ]]; then args+=(--max-cost-usd "$MAX_COST_USD"); fi
           if [[ -n "$MAX_OUTPUT_TOKENS" ]]; then args+=(--max-output-tokens "$MAX_OUTPUT_TOKENS"); fi
+          if [[ -n "$RETRY_STANDARD_CONTENT" ]]; then args+=(--retry-standard-content "$RETRY_STANDARD_CONTENT"); fi
           python -m kaname "${args[@]}"
       - name: Audit saved state
         id: audit
