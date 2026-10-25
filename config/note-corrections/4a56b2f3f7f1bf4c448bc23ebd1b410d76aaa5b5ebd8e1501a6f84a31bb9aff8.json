@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8",
+  "expected_note_sha256": "f0997538df9f30cf7ba9e9e0548a8b6a4a2bb8f6c08e27388e38b34d1c8135f1",
+  "expected_text_sha256": "9e0f782768c03729b325781286dd79bbe4596b5c40a2ceef9618bd77e205d370",
+  "source": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "- 約816Bパラメータを持つ混合専門家（MoE）モデルの[[Muse Spark Open]]を4台の[[Mac Studio]]クラスタで動かし、36トークン/秒以上の生成速度を達成する。",
+      "new": "- 816BのMoEモデル[[Muse Spark Open]]をNVFP4量子化し、4台の[[M5 Ultra]]搭載[[Mac Studio]]でテンソル並列実行した測定では、8,192 tokenの文脈で36.73 token/秒を記録した。",
+      "expected_occurrences": 1
+    }
+  ]
+}

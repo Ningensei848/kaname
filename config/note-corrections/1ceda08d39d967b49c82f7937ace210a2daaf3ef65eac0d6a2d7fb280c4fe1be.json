@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be",
+  "expected_note_sha256": "3226169bfa34fcb65c2a30bfa2e1bf4e97e82fa2beb3a9a9331263f93c54978a",
+  "expected_text_sha256": "f2740cc4e9726d670f98993f81946b1e5d5e7f222ffa16057b9ba7a1b7602f41",
+  "source": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "2026年10月19日、[[eMudhra]]の中間証明書8件の秘密鍵が侵害され、偽造証明書によるトラフィック傍受のリスクが浮上。",
+      "new": "2026年10月19日（UTC）、Cloudflareが[[eMudhra]]の中間証明書8件の秘密鍵の侵害を把握し、偽造証明書によるトラフィック傍受リスクへの対応を開始。",
+      "expected_occurrences": 1
+    }
+  ]
+}

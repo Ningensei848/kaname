@@ -108,26 +108,13 @@ Quartz公式のGit plugin lock形式ではありません。公式の自動plugi
 日本語フォントは`@fontsource/noto-sans-jp` 5.3.0（OFL）をローカル配信し、ライセンスも同梱します。
 Quartz/pluginと主要frontend runtimeのライセンスは`static/licenses/`へ同梱します。
 
-監査で見つかったxmldom/sharp/toml/KaTeXは、`overrides`で修正版を固定して実buildを検証しています。
-一方、[bracesの深いglobによるstack exhaustion](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)には、
-確認時点で公開npm最新版3.0.3にも警告が残ります。braces→micromatch→fast-glob→globbyの4件のhigh表示は
-この1 advisoryの伝播です。解消済み/警告0とは扱いません。
-ここではSSGが使うglobは固定文字列で、ignorePatternsは空、入力filenameは生成したID/slugのみです。
-Note本文・frontmatterからglobを渡す経路を追加しません。Node buildに180秒のtimeoutを設けています。
-`sprintf-js`にも[精度指定によるDoS](https://github.com/advisories/GHSA-hp3w-g68c-fv3c)の警告があり、確認時点の公開最新版1.1.3にも修正がありません。
-依存経路はQuartz → gray-matter → js-yaml 3.15.2 → argparse 1.0.10 → sprintf-js 1.0.3です。
-js-yamlのライブラリ入口はargparseを読み込まず、argparseを使うのは`bin/js-yaml.js`のCLIだけです。
-このビルドはgray-matterから`safeLoad`を呼び、YAML CLIやsprintfのformat指定にNote本文を渡しません。
-この固定version・配置の警告だけを既知の制約として許可します。YAML CLIの利用や依存経路の変更時には再レビューが必要です。
-KaTeXは修正版0.18.2に固定します。`node --test audit.test.mjs`で未知の警告・配置/version変更を拒否することを検証します。
-`npm run audit`は上記2 advisoryだけを既知の制約として許し、別の警告・audit取得失敗をCIで失敗にします。
-glob/ignore設定の拡張や依存更新時には、この到達性判断を見直し、修正版が出たら更新してください。
+xmldom/sharp/toml/KaTeXは、`overrides`で修正版を固定して実buildを検証します。TOMLは5.0.1、KaTeXは0.18.2です。
+2026-10-25の実npm監査は警告0件です。`npm run audit`には例外を設けず、すべての警告・不完全な応答・監査取得失敗をCIで拒否します。`npm run test:frontend`でこの境界と遅延検索hookを検証します。
 
-2026-10-16の再監査でもbraces3.0.3とsprintf-js1.1.3に修正版はなく、実lockの警告は上記2 advisoryの伝播9件でした。
-既知例外は9 packageの固定version/単一node配置と親子の伝播辺を確認し、新version・新配置・新親・不完全な監査応答を拒否します。
-既存の固定glob/生成filename・YAMLライブラリ経路の制約は維持します。
+以前例外にしていた[braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)と[sprintf-js](https://github.com/advisories/GHSA-hp3w-g68c-fv3c)のadvisoryは、それぞれ2026-10-23/22に公式に撤回されました。修正版の公開で解消したという判断ではありません。両方の旧許可規則は削除しています。
+10/23・24の日次Pages失敗は、新規TOML警告を監査が拒否したことによるものです。[配列表ヘッダ](https://github.com/advisories/GHSA-4qx8-w7c3-pj3p)・[長いキー](https://github.com/advisories/GHSA-9j65-hcg3-gc64)・[長い整数](https://github.com/advisories/GHSA-9qmh-m7c6-f92p)の3 advisoryを修正した5.0.1へlock/integrityを更新しました。監査の例外追加は行いません。
 
-2026-10-21の実npm監査も既知2 advisoryだけで、公開最新版はbraces3.0.3/sprintf-js1.1.3でした。lockと例外は拡大せず、Nodeの監査/検索起動hook検査7件を通しています。
+SSGのglobは固定文字列、ignorePatternsは空、入力filenameは生成したID/slugだけです。Noteの本文・frontmatterからglobやYAML CLIのformatを渡す経路は設けません。buildには180秒のtimeoutを維持します。
 
 ## 初期表示の反復計測
 

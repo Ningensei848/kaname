@@ -1,6 +1,7 @@
 """Pure candidate completion and stop decisions; no clients or persistence."""
 
-DURABILITY_STAGES = frozenset({'receipt_save', 'note_or_index_save', 'raw_save', 'usage_reserve', 'usage_save'})
+DURABILITY_STAGES = frozenset({'receipt_save', 'note_or_index_save', 'raw_save', 'usage_reserve', 'usage_save',
+                              'standard_request_reserve', 'standard_response_save'})
 
 
 def partition_known(candidates, known, enabled):

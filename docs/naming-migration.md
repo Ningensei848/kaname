@@ -19,3 +19,5 @@ kaname --help
 Actionsのworkflow表示とwriter concurrencyはkanameへ統一します。本番へ反映する際は旧workflowのwriterが終了したことを確認してから新名のworkflowを実行し、新旧concurrency groupのwriterを重ねません。WIFのrepository ID・workflow path・main条件は変更しません。
 
 archive、過去のcommit/blob URL、既存の公開snapshot、外部依存の名称は歴史の証拠として保持します。旧名の文字列は、これらと互換読取りの定数・回帰テストだけに限定します。
+
+2026-10-25に現行コードを実Windows Python 3.13.1/一時NTFSでも検証しました。旧フォルダの編集・更新候補・manifest・旧lock保持、新旧両rootの書込み前拒否、全writer停止を模した明示移行を受入済みです。実Vaultと利用者プラグインへの適用は別です。検証は `scripts/verify_sync_filesystem.py` で再実行できます。

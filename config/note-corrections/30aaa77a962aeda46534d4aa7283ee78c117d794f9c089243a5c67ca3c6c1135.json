@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+  "expected_note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+  "expected_text_sha256": "cc4ba53771004d28fa563843106822eede5b35f32f963fd6d13c72a88038363b",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、AIエージェントの構築やスケーリングを効率化する新しいGeminiモデル「Gemini 3.6 Flash」「Gemini\n  3.5 Flash-Lite」「Gemini 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5\n  Flash-Liteは、最高速度の3.5クラスモデルであり、秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、CodeMenderコードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、制限付きパイロットプログラムとして提供される。これらのモデルはGoogle\n  AI StudioやGemini APIなどで本日から利用可能となっている。\n",
+      "new": "description: Google DeepMindは、AIエージェントの構築やスケーリングを効率化する新しいGeminiモデル「Gemini 3.6 Flash」「Gemini\n  3.5 Flash-Lite」「Gemini 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、Artificial\n  Analysisの評価で出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、Artificial\n  Analysisの測定で秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、CodeMenderコードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、政府や信頼されたパートナー向けのCodeMender経由の制限付きパイロットが今後予定されている。3.6\n  Flashと3.5 Flash-Liteは発表日からGoogle AI StudioやGemini APIなどで利用可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "> [[Google DeepMind]]は、[[AIエージェント]]の構築やスケーリングを効率化する新しい[[Gemini]]モデル「[[Gemini]] 3.6 Flash」「[[Gemini]] 3.5 Flash-Lite」「[[Gemini]] 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、[[CodeMender]]コードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、制限付きパイロットプログラムとして提供される。これらのモデルはGoogle AI Studioや[[Gemini]] APIなどで本日から利用可能となっている。\n",
+      "new": "> [[Google DeepMind]]は、[[AIエージェント]]の構築やスケーリングを効率化する新しい[[Gemini]]モデル「[[Gemini]] 3.6 Flash」「[[Gemini]] 3.5 Flash-Lite」「[[Gemini]] 3.5 Flash Cyber」を発表した。3.6 Flashは、3.5 Flashからトークン効率が向上し、Artificial Analysisの評価で出力トークン数を17%削減しながらコーディングやマルチモーダル性能を高めたワークホースモデルである。3.5 Flash-Liteは、最高速度の3.5クラスモデルであり、Artificial Analysisの測定で秒間350出力トークンを処理し、低レイテンシーとコスト効率に優れる。3.5 Flash Cyberは、[[CodeMender]]コードセキュリティエージェントと組み合わせて脆弱性の検出と修正を行う特化型モデルであり、政府や信頼されたパートナー向けの[[CodeMender]]経由の制限付きパイロットが今後予定されている。3.6 Flashと3.5 Flash-Liteは発表日からGoogle AI Studioや[[Gemini]] APIなどで利用可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- [[Gemini]] 3.6 Flashは3.5 Flash比で出力トークン数を17%削減し、コーディングや知識作業、マルチモーダル性能が向上している。",
+      "new": "- [[Gemini]] 3.6 FlashはArtificial Analysisの評価で3.5 Flash比の出力トークン数を17%削減し、コーディングや知識作業、マルチモーダル性能が向上している。",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- [[Gemini]] 3.5 Flash-Liteは秒間350出力トークンを処理する最速かつ最もコスト効率に優れた3.5クラスモデルである。",
+      "new": "- [[Gemini]] 3.5 Flash-LiteはArtificial Analysisの測定で秒間350出力トークンを処理する最速かつ最もコスト効率に優れた3.5クラスモデルである。",
+      "expected_occurrences": 1
+    }
+  ]
+}

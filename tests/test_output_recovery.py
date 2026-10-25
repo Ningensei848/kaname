@@ -101,3 +101,29 @@ def test_workflow_admits_recovery_and_passes_it_as_an_argument(workflow):
     assert subprocess.run(['/bin/bash','-c',guard['run']],env=env,capture_output=True).returncode==0
     collect=next(s for s in steps if s.get('id')=='collection')
     assert 'args+=(--max-output-tokens "$MAX_OUTPUT_TOKENS")' in collect['run']
+
+
+@pytest.mark.parametrize('changes', [dict(retry_standard_content='$(private)'), dict(collection_mode='batch'),
+    dict(max_calls='2'), dict(max_cost_usd=''), dict(max_cost_usd='0'), dict(max_cost_usd='NaN'),
+    dict(publish_only=True), dict(verification_run_id='saved')])
+def test_workflow_rejects_invalid_standard_retry_before_auth(workflow, changes):
+    steps = workflow['jobs']['collect']['steps']
+    guard = next(step for step in steps if step.get('name') == 'Validate execution mode')
+    assert guard['env']['RETRY_STANDARD_CONTENT'] == '${{ inputs.retry_standard_content }}'
+    config = inputs(retry_standard_content='a' * 64, collection_mode='standard', max_calls='1', max_cost_usd='1') | changes
+    env = {key.upper(): str(value).lower() for key, value in config.items()}
+    env['VERIFY_RUN_ID'] = env.pop('VERIFICATION_RUN_ID')
+    assert subprocess.run(['/bin/bash', '-c', guard['run']], env=env, capture_output=True).returncode == 1
+    assert steps.index(guard) < next(i for i, step in enumerate(steps) if step.get('id') == 'gcp_auth')
+
+
+def test_workflow_passes_explicit_standard_retry_as_a_quoted_argument(workflow):
+    steps = workflow['jobs']['collect']['steps']
+    guard = next(step for step in steps if step.get('name') == 'Validate execution mode')
+    config = inputs(retry_standard_content='a' * 64, collection_mode='standard', max_calls='1', max_cost_usd='1')
+    env = {key.upper(): str(value).lower() for key, value in config.items()}
+    env['VERIFY_RUN_ID'] = env.pop('VERIFICATION_RUN_ID')
+    assert subprocess.run(['/bin/bash', '-c', guard['run']], env=env, capture_output=True).returncode == 0
+    collect = next(step for step in steps if step.get('id') == 'collection')
+    assert collect['env']['RETRY_STANDARD_CONTENT'] == '${{ inputs.retry_standard_content }}'
+    assert 'args+=(--retry-standard-content "$RETRY_STANDARD_CONTENT")' in collect['run']

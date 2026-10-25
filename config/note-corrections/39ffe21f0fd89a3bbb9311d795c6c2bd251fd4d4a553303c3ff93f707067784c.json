@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+  "expected_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+  "expected_text_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルのChirp\n  3から大幅に進化し、ストリーミング時の単語誤り率（WER）が4.0%、事前録音データでは2.6%を達成しています。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、最大3人のマルチスピーカー識別などの機能を備え、Google\n  AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIを通じて提供されます。また、AndroidのRamblerやmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "new": "description: Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルのChirp\n  3から大幅に進化し、Artificial Analysisの評価では、平均単語誤り率（WER）がストリーミング4.0%、非ストリーミング2.6%でした。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、事前録音音声での最大3人の話者識別などの機能を備え、Google\n  AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIでpublic previewとして提供されます。また、AndroidのRamblerやmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "> Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルの[[Chirp 3]]から大幅に進化し、ストリーミング時の単語誤り率（WER）が4.0%、事前録音データでは2.6%を達成しています。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、最大3人のマルチスピーカー識別などの機能を備え、Google AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIを通じて提供されます。また、Androidの[[Rambler]]やmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "new": "> Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルの[[Chirp 3]]から大幅に進化し、[[Artificial Analysis]]の評価では、平均単語誤り率（WER）がストリーミング4.0%、非ストリーミング2.6%でした。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、事前録音音声での最大3人の話者識別などの機能を備え、Google AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIでpublic previewとして提供されます。また、Androidの[[Rambler]]やmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- リアルタイムストリーミングと事前録音データの両方で高い認識精度を誇り、ストリーミングの単語誤り率は4.0%を記録しています。",
+      "new": "- Artificial Analysisの評価で、ストリーミングの平均単語誤り率は4.0%、非ストリーミングは2.6%を記録しています。",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- 関数呼び出し（ファンクションコーリング）をサポートし、他の[[Geminiモデル]]と連携して音声によるファイル分析や画像生成などの複雑なタスクを実行できます。",
+      "new": "- 関数呼び出しは現在Gemini macOSアプリで利用でき、他の[[Geminiモデル]]と連携して音声によるファイル分析や画像生成などを行います。",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- 85言語以上の自動検出やカスタム語彙への対応に加え、最大3人のマルチスピーカー識別をタイムスタンプ付きで提供します。",
+      "new": "- 85言語以上の自動検出やカスタム語彙に対応し、事前録音音声では最大3人の話者識別をタイムスタンプ付きで提供します。",
+      "expected_occurrences": 1
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "note_id": "3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548",
+  "expected_note_sha256": "7360b0bb3a68c7f453b138b52a33d3783b77ed211874d977f48b6aa68ffa84b1",
+  "expected_text_sha256": "2fb7b656a5b1883b26f02467ef2a0a530c8d94179b2ae10f5e9dcbabcb36ddf4",
+  "source": "https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "published: '2025-12-16'",
+      "new": "published: '2025-12-19'",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- Published: 2025-12-16",
+      "new": "- Published: 2025-12-19",
+      "expected_occurrences": 1
+    }
+  ],
+  "source_published": "2025-12-19"
+}

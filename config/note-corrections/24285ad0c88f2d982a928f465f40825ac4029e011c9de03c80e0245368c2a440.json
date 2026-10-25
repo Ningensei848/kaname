@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+  "expected_note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+  "expected_text_sha256": "c7135728f35c25b11bc061acb8cdbe28ff0a7c806387540cb03a45132a4c070a",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindとGoogle Researchは、最先端のグローバル気象AIモデル「WeatherNext 3」を発表しました。従来の数値予報モデルとは異なり、リアルタイムの衛星データや観測モザイクを取り入れて1時間ごとに高解像度の予測を生成します。温度や湿度は5キロメートル解像度、風速などの大気変数は25キロメートル解像度で提供され、前モデルのWeatherNext\n  2と比較して約5倍の精度と解像度を実現しています。NASAのIMERGなどの降水データを用いた学習により、降水予測の精度も大幅に向上しました。本モデルはGoogle検索、Gemini、Googleマップ、Google\n  Cloud（BigQuery、Earth Engineなど）を通じてグローバルに展開されます。\n",
+      "new": "description: Google DeepMindとGoogle Researchは、最先端のグローバル気象AIモデル「WeatherNext 3」を発表しました。従来の数値予報モデルとは異なり、リアルタイムの衛星データや観測モザイクを取り入れて1時間ごとに高解像度の予測を生成します。温度や湿度は5キロメートル解像度、風速などの大気変数は25キロメートル解像度で提供され、前モデルのWeatherNext\n  2と比較して主要な表面変数で約5倍細かな空間解像度を実現しています。NASAのIMERGなどの降水データを用いた学習により、降水予測の精度も大幅に向上しました。本モデルはGoogle検索、Gemini、Googleマップ、Google\n  Cloud（BigQuery、Earth Engineなど）を通じてグローバルに展開されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "約5倍の精度と解像度を実現",
+      "new": "主要な表面変数で約5倍細かな空間解像度を実現",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "表面変数を5キロメートル解像度で視覚化し",
+      "new": "温度や湿度などの主要な表面変数を5キロメートル解像度で視覚化し",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "中規模な降水予測",
+      "new": "中期の降水予測",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "100メートルの風速",
+      "new": "高度100メートルの風速",
+      "expected_occurrences": 1
+    }
+  ]
+}

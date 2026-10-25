@@ -203,7 +203,14 @@ def test_standard_and_batch_wire_payload_preserve_same_content_and_schema_constr
         authors = ['Fixture Author']
         item = manager.prepare(candidate, h.source, markdown, 'https://example.com/a',
                                'a'*64, 'b'*64, authors, image_candidates=images)
-        request = StandardRequest(h.store, gemini, RunReport(llm_calls=1))
+        from kaname.standard_requests import StandardRequests
+        from kaname.composer import word_count
+        report = RunReport(llm_calls=1)
+        context = dict(candidate=candidate.row(), source=h.source.model_dump(mode='json'),
+            canonical='https://example.com/a', fetched_at=report.started_at, raw_hash='a' * 64,
+            model=h.app.llm.model, truncated=False, authors=authors,
+            input_char_limit=h.app.llm.max_input_chars, source_word_count=word_count(markdown), image_candidates=images)
+        request = StandardRequest(h.store, gemini, report, StandardRequests(h.store), 'b' * 64, context)
         request.enrich(candidate, h.source, markdown, False, authors, image_candidates=images)
         manager.submit([item], h.app, RunReport())
         standard_config = sent['standard']['generationConfig']

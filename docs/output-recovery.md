@@ -11,7 +11,9 @@ python -m kaname run --llm-mode standard --max-calls 1 \
   --max-cost-usd 0.05 --max-output-tokens 4096
 ```
 
-Daily Actionsの手動入力も`collection_mode=standard`、`max_calls=1`、`max_cost_usd=0.05`、`max_output_tokens=4096`を使います。通常scheduleでは未指定で2,048のままです。この明示復旧ではHTTP retryも0とし、論理生成/HTTP試行とも最大1です。通常設定のHTTP retryは3のままです。費用予約は指定した出力上限・thinkingの余裕・1回のHTTP試行を含み、不明usageや生成拒否で後続を止めます。金額は実usageと元価格から計上し、上限値を消費額と扱いません。
+新しいstandard予約の保留から再試行する場合は、先に `standard-status` で対象hashを確認し、上のCLIへ `--retry-standard-content <hash>` を追加します。元の不明課金/失敗履歴を保持し、自動で予約を解除しません。[予約と再試行](operations.md#standard生成の予約と明示的な再試行)を参照してください。
+
+Daily Actionsの手動入力も`collection_mode=standard`、`max_calls=1`、`max_cost_usd=0.05`、`max_output_tokens=4096`を使います。保留済み予約には `retry_standard_content=<hash>` も指定します。通常scheduleでは未指定で2,048のままです。この明示復旧ではHTTP retryも0とし、論理生成/HTTP試行とも最大1です。通常設定のHTTP retryは3のままです。費用予約は指定した出力上限・thinkingの余裕・1回のHTTP試行を含み、不明usageや生成拒否で後続を止めます。金額は実usageと元価格から計上し、上限値を消費額と扱いません。
 
 Googleの[公開モデル定義](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite)では出力上限65,536 tokensに対応します。[Structured outputs](https://ai.google.dev/gemini-api/docs/generate-content/structured-output?hl=en)のschema対応subsetは制限があるため、この修正では新しいschemaフィールドや受入型を追加しません。
 

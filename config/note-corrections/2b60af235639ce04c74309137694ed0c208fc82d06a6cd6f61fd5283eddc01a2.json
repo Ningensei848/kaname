@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2",
+  "expected_note_sha256": "da3fd860bd5368ce150035ad0d6acb3342b7060f70d52ea1a902a18562d83896",
+  "expected_text_sha256": "dc959783c9d0a604b8f4b2d34e69dab15470228e243bdbdeb179add4ddfcf944",
+  "source": "https://deepmind.google/blog/opening-new-paths-in-aging-research/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "特定している。イ号",
+      "new": "特定している。",
+      "expected_occurrences": 1
+    }
+  ]
+}

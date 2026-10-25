@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+  "expected_note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+  "expected_text_sha256": "720eb29c48aa55283c7f8a988a64f21f39c7fd9f8bb8e3d871c5b5f5a88fdabf",
+  "source": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "物理演算や構図の高度な制御",
+      "new": "照明やカメラなどの視覚表現と構図の高度な制御",
+      "expected_occurrences": 2
+    },
+    {
+      "old": "物理演算、照明、カメラ、フォーカス、構図の高度な制御",
+      "new": "照明、カメラ、フォーカス、色調、構図の高度な制御",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "Google検索のグラウンディング機能を活用してリアルタイムのWebコンテンツに基づく正確な出力を実現している。",
+      "new": "Google検索のグラウンディング機能を有効にすると、リアルタイムのWebコンテンツを参照した出力を支援できる。",
+      "expected_occurrences": 1
+    }
+  ]
+}

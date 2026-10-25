@@ -7,7 +7,9 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from kaname.composer import compose
-from kaname.config import Source
+from kaname.config import AppConfig, Source
+from kaname.note_corrections import NoteCorrectionPlan, correct_note
+from kaname.publication.identity import note_identity
 from kaname.models import ArticleEnrichment
 from kaname.pending import Candidate
 from kaname.publication import export_notes, sha256
@@ -21,6 +23,8 @@ class FixtureStore:
         return self.data.get(name)
     def list(self, prefix):
         return sorted(name for name in self.data if name.startswith(prefix))
+    def write(self, name, data, content_type=None):
+        self.data[name] = data
 
 
 def make_fixture(output, count=27):
@@ -50,6 +54,8 @@ def make_fixture(output, count=27):
             positioning_ja="このNoteは画面検証のための架空データです。実在の記事の要約ではありません。",
             category=category, tags=[category, "preview", ("ai-egent", "AIエージェント", "ai-agent")[n % 3]],
             related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方", "GlucoFM", "C++ & 検証"], source_language="ja")
+        if n < 3:
+            enrichment.related_concepts.extend(['版管理の検証', '出典の検証'])
         images = []
         if n == 0:
             from kaname.models import ImageSelection
@@ -66,7 +72,15 @@ def make_fixture(output, count=27):
         rows.append({k: str(row[k]) for k in INDEX_COLUMNS})
         store.data[name] = note.encode()
         store.data[f"state/receipts/{digest}.json"] = json.dumps(dict(row=row, note=note), ensure_ascii=False).encode()
+        if n == 0:
+            old, new = points[1], '代表的な入力で品質・費用・速度を比較する'
+            correction = NoteCorrectionPlan(schema_version=1,
+                note_id=note_identity(source_id, url, ())[1], expected_note_sha256=sha256(note.encode()),
+                expected_text_sha256=sha256(note.replace(old, new).encode()), source=url, checked_at='2026-10-25',
+                edits=[dict(old=old, new=new, expected_occurrences=1)])
     store.data["state/index/2026-10.tsv"] = encode_tsv(rows, INDEX_COLUMNS)
+    if correct_note(store, AppConfig(), correction, apply=True)['status'] != 'success':
+        raise ValueError('fixture_correction_failed')
     return export_notes(store, output)
 
 

@@ -7,7 +7,7 @@ from .budget import validate_budget, validate_generation_mode
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="kaname deterministic RSS knowledge collector")
-    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "graph-quality", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "export-notes", "publish-notes"])
+    parser.add_argument("command", choices=["run", "validate-config", "dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "graph-quality", "notify", "raw-lifecycle", "batch-status", "batch-bind", "batch-inspect", "standard-status", "export-notes", "publish-notes"])
     parser.add_argument("--config", default="config/app.yaml")
     parser.add_argument("--sources", default="config/sources.yaml")
     parser.add_argument("--state-dir", help="read-only local snapshot for inspection, dry-run, sync and export")
@@ -30,10 +30,18 @@ def parse_args(argv):
     parser.add_argument("--max-cost-usd", type=Decimal, help="estimated standard generation cost cap for this run; stops on uncertain usage")
     parser.add_argument('--max-output-tokens', type=int, help='explicit output recovery limit; standard run with --max-calls 1 and --max-cost-usd only')
     parser.add_argument('--recheck-known', action='store_true', help='re-fetch successful article URLs to detect edits; run/dry-run only')
+    parser.add_argument('--retry-standard-content', help='explicitly retry a held content SHA-256; bounded single standard run only')
     return parser.parse_args(argv)
 
 
 def validate_args(args, app):
+    if args.retry_standard_content:
+        import re
+        if (args.command != 'run' or (args.llm_mode or app.llm.mode) != 'standard' or
+                args.max_calls != 1 or args.max_cost_usd is None or
+                not re.fullmatch(r'[0-9a-f]{64}', args.retry_standard_content)):
+            raise ValueError('standard retry requires a content digest and bounded single standard run')
+        app.llm.retries = 0
     if args.recheck_known:
         if args.command not in {'run', 'dry-run'}:
             raise ValueError('--recheck-known requires run or dry-run')
@@ -59,7 +67,7 @@ def validate_args(args, app):
         app.llm.max_output_tokens = args.max_output_tokens
         # Recovery must not turn an ambiguous timeout into another paid request.
         app.llm.retries = 0
-    if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "export-notes"}:
+    if args.state_dir and args.command not in {"dry-run", "audit-state", "audit-run", "refresh-metadata", "sync", "cost-report", "source-health", "notify", "batch-status", "batch-inspect", "standard-status", "export-notes"}:
         raise ValueError("--state-dir requires a command supporting read-only snapshots")
     if args.apply and args.command not in {"refresh-metadata", "notify", "raw-lifecycle"}:
         raise ValueError("--apply requires refresh-metadata, notify or raw-lifecycle")

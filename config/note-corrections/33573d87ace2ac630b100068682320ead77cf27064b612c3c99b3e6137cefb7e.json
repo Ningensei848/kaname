@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e",
+  "expected_note_sha256": "de51a11e5300078999b3d8aec80325f54ea67be2935ccaf08a426525017d533e",
+  "expected_text_sha256": "b6a19816818a068c80c45518189efaedbd471272429f55b189c80d411d5f967d",
+  "source": "https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "- 推論を有効にすることで、複雑な分解を必要としない単純な事実質問でも、推論無効時には到達できないパラメトリック知識をモデルから引き出すことができる。",
+      "new": "- 推論を有効にすることで、複雑な分解を必要としない単純な事実質問でも、今回の評価で推論無効時には到達しにくかったパラメトリック知識をモデルから引き出すことができる。",
+      "expected_occurrences": 1
+    }
+  ]
+}

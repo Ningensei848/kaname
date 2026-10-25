@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "0d89805d9a93a297775ab35612d5d93ed4da1eeed982f3fcdb103a0273857e00",
+  "expected_note_sha256": "4cebf5b5f7063255de10e732f882df66560293f61aeced9d557e5ca442a53511",
+  "expected_text_sha256": "719be9b4a20fe95ff675650504c2cedb2b9288235fe186cee8e22fd1ec1c5b4b",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "ミリ秒単位のモーメント抽出",
+      "new": "1秒未満のモーメント抽出",
+      "expected_occurrences": 1
+    }
+  ]
+}

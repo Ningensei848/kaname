@@ -1,0 +1,1885 @@
+{
+  "content_commit": "406a716ef2462de01cc50faf09542c3e741c9b79",
+  "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
+  "reviewed_at": "2026-10-25",
+  "reviewer": "Codex primary-source comparison; not a human or domain-expert certification",
+  "notes": [
+    {
+      "note_id": "02a360a91a073f25dd9ccd9b89780cc88943b18c3fc48f1aa0855f962ae06f29",
+      "note_sha256": "ddf22c38ec12bc38e6984ee1f99d641d8579abc007222e4891e8e277595a07ed",
+      "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared title, summary, key points and context with primary sections Quantum resource estimates / Protecting cryptocurrencies / Our approach to vulnerability disclosure. Both circuit resource estimates, future CRQC qualification, wallet reuse advice and zero-knowledge disclosure agree. Hardware assumptions remain a qualification; this is an estimate, not an observed break.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "02bac34ac354a4dd4c4f0ce3c3d78a816e2ae3d2428c01be3788803ec8a717a2",
+      "note_sha256": "056a8ea1fe76b8fae136d412606e2c10953d5a5d6698d6bf8e81d118347ddf44",
+      "canonical_url": "https://machinelearning.apple.com/research/distributed-gpu-cloud",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared title, summary, key points and context with the complete primary abstract. Idle Apple Silicon macOS GPUs, inference pooling without additional procurement, flexible execution, fault tolerance and resource efficiency agree. No numeric benchmark or availability promise added. Primary visible publication date is month-level; no day-level date certification.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "03162282c9de7ac1f686a38c6cccd8f57b102b089d59e1d5a6dc965ce06ab279",
+      "note_sha256": "9e37985f322586e0c54a6560aa8942f9533e717db1b2c70c944975cfcb8a14bb",
+      "canonical_url": "https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared title, summary, key points and context with primary Approach / Workflow Templates / Results / runtime knowledge discussion. Fourteen specialists, deterministic routing, templates, on-demand knowledge and manual 3–4 days / previous about one day / under one hour agree. This is the source author’s reported deployment result, not independent reliability certification.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "04422041293690c58e1df731277dd34bb9a8bb2c29c5882f4d41df6838590766",
+      "note_sha256": "b60b0c79bc4eb05e84ee336964074e11e4ab370458456ee7090f269072107551",
+      "canonical_url": "https://machinelearning.apple.com/research/language-discrimination-multilingual-learning",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary abstract agrees with English/French HuBERT setup and both interventions; phone-ABX lower-is-better 11.6→10.4 versus monolingual 10.8, sWUGGY 52.1→56.7 and ProsAudit 68.9→72.9. Early intervention and limited later/repeated benefit agree. Visible date only certifies October 2026, not exact day.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "052905967cd9c26a9a3dfb1ea2e8e4673142f52d0088f4160b947be02c3b2a68",
+      "note_sha256": "0a5f496e94e5be632e2b5f3bb3e460951b96dbf5588e85a7d57b61177f51b56c",
+      "canonical_url": "https://research.google/blog/bringing-foundational-models-to-the-front-lines-of-tb-screening/",
+      "status": "findings",
+      "scope": "title, summary, key points and positioning versus current primary article",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "MedGemmaをオープンソースと記述しているが原典はopen-weightと明記する。公開モデル/重みとオープンソースを区別して訂正が必要。"
+        }
+      ],
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "05660a8f05bb346113069af83e3a1b39d4187ea0a9a341211fe4c4915fc66a46",
+      "note_sha256": "4052a6dcd097195da8dac8e3efa7fddb27854591a51c39e7d9920000801c55b7",
+      "canonical_url": "https://engineering.fb.com/2026/10/19/ml-applications/genrecs-tokenization-transforming-ads-recommendation-at-meta-with-stable-model-vocabulary/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary introduction, three-stage pipeline, tokenizer quality and flywheel sections support the summary/key points/context. The +0.35% conversion lift is Meta internal data from February 2026 paired with GEM and Adaptive Ranking, not independent measurement or a universal gain.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0584b40568213c3756c7d8b8947bfd35321f9f72af6c81031d0b0b4a045544d2",
+      "note_sha256": "510c65cd509bf61e86d5d15d3a673cab8030be5791b3a1c6e5296e2afa174e94",
+      "canonical_url": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "quantifier",
+          "finding": "重要ポイントの「170万件以上」は原典のabout 1.7 millionに対応せず、下限を断定している。要約と同じ「約170万件」へ訂正する。"
+        }
+      ],
+      "comparison": "Primary six classes, 10m resolution, 2017–2025 early time series, AlphaEarth input, >9,000 validation sites and 90% forest-type/95% forest-versus-other metrics agree. Training count is approximate, with no established lower bound.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "060a667dfd4ffc5913a741f7980e0f1236f7eea3cd1508a387e1957238851d94",
+      "note_sha256": "6dd7fbc1a20722d2b8449e7b5f139c7d71caa337e13c2ce63c064eef9cd609e1",
+      "canonical_url": "https://blog.google/products-and-platforms/products/gemini/gemini-3-flash/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared launch article benchmarks, efficiency, developer and global rollout sections. SWE-bench Verified 78% versus Gemini 3 Pro, text token launch prices $0.50/$3 per million and 3x versus 2.5 Pro agree; source attributes speed to Artificial Analysis. These are December 2025 launch claims, not current prices or availability certification.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "06a533ffc87618fa311d23c9eeba35b1490a60bd6485f19ae23f6aee25db8643",
+      "note_sha256": "072f91a583006e8fbacc69434089a6c54cbe69a7d5166ef082132a35c7ba4dd1",
+      "canonical_url": "https://deepmind.google/blog/unlocking-uk-house-building-with-ai-accelerated-planning/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared planning prototype, four routine tasks, final human authority/audit trail and Extract sections. 50% reduction is a goal during development, with national availability planned from 2027. UK housing target and named pilot councils agree; no measured 50% success is claimed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0763ba87a2c5f42f9562df1e47ddebb23b6aedb45bcfff75c0edb604dd35ba9d",
+      "note_sha256": "b20afc90083e5f9d2818c41d8bae198351bbcaebdbf5dd7c52a82aca983dc567",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "capability_limitation",
+          "finding": "Gemini Omni Flashについて動画入力をサポートすると無条件に記述しているが、原典Limitationsは動画参照がAPIスキーマで受理されてもモデルが正しく処理しないと明記。発表時点の制約を併記する必要がある。"
+        }
+      ],
+      "comparison": "Launch performance/prices, image-to-video workflow and SynthID agree. The primary limitations section contradicts unqualified working video-reference support: references are schema-accepted but not correctly processed at that time.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0769a0732480b10d409f12498d4f47119b68f6fd16bc10a5c7070512e0087e34",
+      "note_sha256": "e507d4f75d91adfd237dfe779484d2584307163b6fc6b916463977ee28ad84e8",
+      "canonical_url": "https://deepmind.google/blog/accelerating-discovery-in-india-through-ai-powered-science-and-education/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared science, education, agriculture and energy sections. ANRF tools, India fourth-largest AlphaFold adoption with over 180,000 researchers, global $30m challenge, Atal/PM Publishers/IIT Bombay and WeatherNext/Open Climate Fix are supported. These are announced initiatives and source-reported adoption, not independently certified outcomes.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "088fc8c07cd026e13b2f56655016431ec0feb10a5b5a510b428fc4b422087d8a",
+      "note_sha256": "be1c9e0c0b12d129b5e88e5fd2717c850409ea61f6cf4c2d3cb9c5cc413e9afd",
+      "canonical_url": "https://blog.cloudflare.com/workers-granular-authorization/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared role table, three scopes, CI deployment, route/Custom Domain permissions, Durable Objects and 403 documentation links. Note accurately describes Workers controls and does not claim D1/R2 resource controls have already shipped. Content read-only may read source; Editor deploys existing Worker but cannot create/delete it.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "08eb26e4bb422574080621243ab16e70a56948062165b7f87c3cb2651399f903",
+      "note_sha256": "7767268f6893762243b9bbfdc0ede1d474273572faac28568950cc3f5661618c",
+      "canonical_url": "https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "MedASRのmedical dictationを「医療辞書」としている。「医療音声の書き起こし」へ訂正する。重要ポイントは既に書き起こしとしており、要約との整合も必要。"
+        }
+      ],
+      "comparison": "Medical image modalities, MedQA/EHRQA, MedASR error reduction and $100k Kaggle challenge agree with primary sections. Free use refers to models, not a verified waiver of cloud infrastructure charges. Medical dictation is incorrectly translated as a medical dictionary in the summary.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0ab8f10dd2fcf3914a385f9f582857ee0a84d5fbae462cccfd0f92a76b2554c4",
+      "note_sha256": "0a4327a1378d740c3d4e8d30d6ff88b84d9ad501d08642fa0cc1f307d0ddb2ba",
+      "canonical_url": "https://research.google/blog/four-ways-google-research-scientists-have-been-using-empirical-research-assistance/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared all four primary application sections. Forecast comparison is retrospective for original COVID work; flu/COVID public leaderboards and RSV internal analysis have different evidence scope. General cosmic-string solutions, GOES-East ten-minute CO2 estimates and simulation neural mechanisms support the Note. This is a comparison to the source, not independent replication.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0b4c5458822607421a15aa53a1636129fe1674b1c781784e8f8615cd9e62e324",
+      "note_sha256": "cf643937b010358ed89fb499b6e3de0b21ff698bba203984cd690c32d2ea8339",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/safety-security/fairwind-program/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared announced limited-access program, Gemini 3.8 Flash Cyber/CodeMender, verified deployment-ready patch generation in minutes, staged partner categories and operational standards. Note does not describe the model as generally available. Timing and performance remain the source author’s program claims.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0b58ddbab451e5bc9f14ff7a363d601198026525c470c316cfb12d377b16d34c",
+      "note_sha256": "ac97290861e6cebcbfa06c87521f2bd6c809331e94bb03e27f5aecd99b11f959",
+      "canonical_url": "https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary introduction directly supports every substantive summary/key-point claim: TypeScript/Node runtime rewritten to >800k production Rust lines, agent-written majority, 128 incrementally shipped PRs, primarily one developer over a few months and improved runtime performance. The limited Note does not reproduce detailed benchmark methods, nor does this check certify every number in the long original article.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0c903931c25fc735d7bc97357b9c5175878995fa1b16701b0d34e583d0fa0517",
+      "note_sha256": "93e8a19c67e4cbfdbf6dd5ba097eaa3445c823c241afd7281169571b605c475a",
+      "canonical_url": "https://github.blog/news-insights/policy-news-and-insights/developer-policy-update-transparency-state-policy-and-whats-ahead/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary reporting-methodology and state-policy sections support the 98 requests in all 2025 versus 708 in H1 2026 comparison, duplicates/all received requests, rare actual takedowns, age assurance and content provenance. These are GitHub reporting statements at publication, not independent legal analysis or a claim about current law.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0d89805d9a93a297775ab35612d5d93ed4da1eeed982f3fcdb103a0273857e00",
+      "note_sha256": "4cebf5b5f7063255de10e732f882df66560293f61aeced9d557e5ca442a53511",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "precision",
+          "finding": "原典のsub-second retrievalに対し重要ポイントがミリ秒単位と断定している。1秒未満へ修正する。"
+        }
+      ],
+      "comparison": "Primary model list, dynamic video tools/modalities, benchmark maximums 88%/66%/7%, API availability and planned Ask YouTube rollout agree. The use-case section supports sub-second retrieval; it does not establish millisecond resolution. Replace the stronger precision claim.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c",
+      "note_sha256": "c18e9db15e3b9415b292e117364bca38d87d0088d4af7b10b26e5b44af1186a4",
+      "canonical_url": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "availability_timing",
+          "finding": "原典はTimesFM/TabFMのGemini for business統合を今後の予定としている。要約にも計画であることを明記する。"
+        },
+        {
+          "kind": "release_scope",
+          "finding": "MedGemmaとAMIEをまとめてオープン化と記述しているが、原典はMedGemmaの公開とAMIEの臨床研究を分けている。AMIE公開を示唆しない表現にする。"
+        }
+      ],
+      "comparison": "Compared all ten highlights. The article describes Gemini for business integration as upcoming, while the summary presents it as integration without a timing qualification. The medical key point groups MedGemma and AMIE as opening up; the source supports MedGemma open foundation and AMIE ongoing clinical research, not AMIE public release. The October 20 Synaptics launch update postdates the October 16 Note and is not a contemporaneous omission.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0dbef4c64d8e1f9eceb7b1ca0ebd2f6839b07a85661d6aeed87d54e56c57974a",
+      "note_sha256": "a2acbc9c7607534c85a4344508ddec0e30b32f3786c26614b8820e1865eb32da",
+      "canonical_url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary cyclone article supports the extra-day average lead time (three-day versus previous two-day accuracy), nearly 20 TB and 5,000 historical storms, FGNs, a single 15-day forecast in under one minute on a TPU, 1,000-member ensembles, Melissa example, open code/weights and Weather Lab/Earth AI. These are the team's reported model evaluations, not official weather warnings.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0efde46915aca57a981ce0cc2bcb9245158581f45332a9860f4bcce8db88b275",
+      "note_sha256": "c3df84537cf31393907dd81434ec6e7aa9c5abdee75e060ac806082a4f51d71a",
+      "canonical_url": "https://github.blog/developer-skills/career-growth/hack-the-world-why-hackathons-are-still-the-best-place-to-learn-to-build/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared the two-day focus, non-CS entry, free learning and safe-failure sections. Participants' accounts support prototyping, Copilot/API assistance, trial-and-error learning and the safe third-place characterization. The Note positions the piece as an essay and does not present the author's opinion as a measured learning-effect trial.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "0fbfee5b2825eb211546e46ac303f946dc99b0acb2ff9126679136d34bb0e08c",
+      "note_sha256": "9008aaedfd459ceaa3a4658a473a9e0010748c0619db8974ec7191d5c504400f",
+      "canonical_url": "https://deepmind.google/blog/facts-benchmark-suite-systematically-evaluating-the-factuality-of-large-language-models/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary overview/results support four benchmarks, 3,513 public examples, Kaggle private-set stewardship and leaderboard, Gemini 3 Pro 68.8%, Search/Parametric improvement and all evaluated overall scores below 70%. The leading score is the article's reported comparison, not a claim about today's leaderboard.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "104104b58ffb07ce58c4530e2f8a2d3f0a3a20086ca86f8f7d2cdb0982858b98",
+      "note_sha256": "0da54717fee42bf7542116953c51b3bdd0d40583455717197f9609af4077d2a8",
+      "canonical_url": "https://machinelearning.apple.com/research/rltl-dr-self-improvement",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Apple's primary abstract supports verifier-derived TL;DR feedback, conditioning on previous insights and insight backpropagation, Pass@128=0 dataset filtering, GRPO 0-1%, training 14-31% and insight-free evaluation 12-13%. SFTL;DR uses task/insight tuples and nearly recovers RLTL;DR and full-rollout SFT performance. These remain experiment-specific findings. The page only certifies October 2026, not an exact publication day.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "12956c2a08e8b0da15bc192c83dfefbe695743bdf65905005dd875ce9dea86e5",
+      "note_sha256": "38898aa4667725fcb98732b0276f0496b42a53669a3ff961aa3ac389359ae08d",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary announcement supports native computer use in Gemini 3.5 Flash, replacement of the standalone model route, browser/mobile/desktop actions, long-horizon automation/testing and API availability. Adversarial training and the two enterprise safeguards agree. The safeguards are optional in the original; the Note states they are provided without claiming they are always enabled or eliminate prompt injection.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "134daa402f0b0fcc411a201cf4a99e7f89be767c7f691a8eee74d62e49d60578",
+      "note_sha256": "fe32fd4b3a561c95f51b3fade7e32879f4d54412711bca27e6780758d0216d51",
+      "canonical_url": "https://research.google/blog/reducing-ev-range-anxiety-how-a-simple-ai-model-predicts-port-availability/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary model/features/results/regional sections support lightweight linear regression, hourly occupancy-change weights, California/Germany models and approximate 20% morning/40% evening error reduction versus Keep Current State. The source evaluation is 30-60 minutes on selected high-turnover stations with at least six ports; the Note associates the improvements with peak times and does not claim those gains for every station or horizon.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14c9fd2de1dc05d866529bf68e3f4303d014c1f60f75e2b3aa6f216bedbc6cc5",
+      "note_sha256": "729ad56f36ab397bf6b9b72eb4297f588630f184d2dd07bb0e16c8b5fb29a4f9",
+      "canonical_url": "https://research.google/blog/putting-earth-ai-to-work-geospatial-agents-for-our-planets-biggest-challenges/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary capabilities/evaluation/partner/access sections support Earth AI tools, modular skills and upfront planning, four agent configurations, GeoKTools/GeoExpertQueries, early WHO/People in Need use and limited experimental Google Earth/A2A access. Partner time savings are reported cases. The source's autorater scores workflow adherence and treats outputs as expert-review drafts; the Note does not claim certified final-answer accuracy or general availability.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14d1c15095856e9d0a3f1a40c96d0e1dce86b9fbe5aa291e4d8e65c90c7710ca",
+      "note_sha256": "8c556c6923ab5745c96677b018c0249d061c9c2fecc0ca577eb802a3f9292be6",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/performance/deployment sections agree with Gemma 4, Apache 2.0, 740M parameters, native text/code/image/audio/video embeddings, MRL 768 to 128 dimensions/up to six-fold storage reduction, 8K context, MTEB Code 68.76 to 78.68 and quantized Pixel 11 Pro active RAM around 191/567 MB. These RAM figures remain tied to the stated quantization/device conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14e3f0eb4255c1f229bcd647bcf72e6abd8a74759dd7304d8b918bd13cd951c2",
+      "note_sha256": "a2a443c07660831214c1e06a5970d32171b7799034ba6a7162af34c0dbe95509",
+      "canonical_url": "https://machinelearning.apple.com/research/sclate-agent-training-evaluation",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Apple primary abstract supports the shared open scheduler/adapters, hybrid real-time/idle-skipping clock, unmodified harness/memory, proxy token/log-probability recording, seven benchmarks, ten models/configurations, native versus added memory conclusion and Qwen3.5-4B post-training improvements. Improvements are restricted to the reported experiments; the page certifies September 2026 without an exact day.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "14fb26f59cee6fe836ec102f906fff77a9c627085656911e312d5f7dff8b80d7",
+      "note_sha256": "cd4996fb0fb44dff40047210ff7357304620dc926ae17a9e83deccdbe3a3989d",
+      "canonical_url": "https://research.google/blog/optimizing-cloud-economics-with-linear-elastic-caching/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary theory/production/public-trace sections support time-and-size linear memory cost, separation of TTL and capacity eviction, lightweight decision-tree prediction in Spanner, fallback LRU, public GDSF baselines and production 15.5% memory reduction/5.5% more misses/about 5% lower TCO. The article explicitly describes Spanner production-server integration; these percentages are the reported production comparison, not a universal cache guarantee.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b",
+      "note_sha256": "6da1cd93972d540e2fe4f19ad14c9490246a9238f5d32b20f9886fba3dd47d82",
+      "canonical_url": "https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "dataset_quantity",
+          "finding": "AligNetの判断データ数と画像数を混同し、100万枚の画像を数百万枚と記述している。原典は100万枚の画像から数百万の判断を生成すると説明する。"
+        }
+      ],
+      "comparison": "Primary three-step method supports THINGS-trained regularized adapter on frozen SigLIP-SO400M, teacher-generated judgments, student fine-tuning, hierarchical alignment, cognitive tasks and better few-shot/distribution-shift results. The source distinguishes millions of odd-one-out decisions from one million distinct images. The summary incorrectly makes the image count several million. Neither alignment nor reliability is established as perfect.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "17f6112c1d55e15628f9e2bcd2e5c60b3bd072d3c556175f98e0b5e2275bf603",
+      "note_sha256": "6968d175dc1efb4e2ff5220bd012dc9e4bbe6cf581529429ae19818c9619d49f",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-3-java-champions-are-using-github-copilot-for-increased-productivity/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary introduction and Vlad interview support all three named Java Champions, Hypersistence Optimizer event-history app implemented in two days versus an estimated weeks, IntelliJ plugin use for review/debugging, skills derived from past articles and retained human review/accountability. The Note treats these as practitioner examples, not a controlled or general productivity multiplier.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "18577726f5fa231033daba0479c37e1eabda3e0db864f16d5990a28756fd0cc4",
+      "note_sha256": "e6b5b767b75ab16b4dc723cbc99e614c6f80e06099cca7c5dd3528914ed7013e",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary launch supports the model's speed/rhythm/tone improvements, ComplexFuncBench Audio and Audio MultiChallenge results, developer preview Live API, enterprise customer-experience access, consumer Live experiences and Search Live expansion to over 200 countries/territories. SynthID on all generated audio agrees. It supports AI-content detection; it does not guarantee misinformation prevention.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "189ff58f788124a21ceafe81081570e31929f081228d7aa65b4516cc9c01746c",
+      "note_sha256": "7f466ad108da369cd447a62305b56c279c10347b3cc93577442049c3035b0ee6",
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/introducing-quine-an-ai-research-system-designed-for-the-complexity-of-biology/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary overview/system/PDAC/Fellows sections support the multimodal biology world model plus researcher/tool/literature harness, iterative wet-lab loop, Broad collaboration prioritizing thousands of compounds and validating selected state-shift candidates. The Note preserves research-only/non-clinical status and planned restricted Fellows access; it does not claim an approved treatment or general availability.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "194bd012952193636f7f518bfb42159ec2929aacfd4df6f5c90cb3f9d3a0d253",
+      "note_sha256": "b4355d85ceefa2babcbbb909f3be4e91b89005b42ab199743e364cd64291a3b9",
+      "canonical_url": "https://engineering.fb.com/2026/08/24/networking-traffic/mtia-300-meta-training-chip-built-in-nics/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/performance sections support two chiplets with six 800 Gbps NICs each, 1.2 TB/s without PCIe, 16 message engines, under 0.5% compute degradation in concurrent tests and compiled HCCL autonomous collectives. The reported 3.9x communication comparison uses a 150-billion-parameter model across 40 accelerators, not an overall training-speed guarantee.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1b499f786fc3a15442f694a69dc2d9589e630e658e81e5e56dc8159bdd1f6bc8",
+      "note_sha256": "8e0d6a212478b0f2d7afd38b0dbd04c4131f4cca40a83cc96f674ca12c61b55a",
+      "canonical_url": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "research_scope",
+          "finding": "資料の位置づけが小型モデルの容量制約を短い文脈の問題としている。原典のsmall models/limited model capacityに合わせる。"
+        }
+      ],
+      "comparison": "Apple primary abstract supports selection from reusable natural-language reasoning candidates, likelihood selection without extra task head, teacher-forced concurrent scoring/shared KV, seven benchmarks, 2B/4B models, over 90% per-turn reasoning and 28-54% per-question inference latency reduction. The context section changes the motivation from limited small-model capacity to short context, which the source does not establish.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1b979cf8abff836a0e4aa721100620a223f173f543087778f4df1331a054c3f6",
+      "note_sha256": "733c5617f13bb53e615211f44ff9c357f185265276847aaa38df346e62188a00",
+      "canonical_url": "https://research.google/blog/planetary-prediction-engine-automating-global-models-via-earth-ai/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary three-stage architecture supports geospatial data selection, multimodal curation and automated model building, LLM orchestration and opaque artifact handles. US health/environment, Nigeria downscaling and DRC nowcasting comparisons support the stated experimental scope. Weeks-to-minutes is the authors' reported workflow result; the Note identifies PPE as experimental research.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1bba88abf0cf4541e7402622d600c9051ef8601ac3092a15d9b370a78cd09e61",
+      "note_sha256": "982ae2d9f3e0879d853875e3196dd90e191fa7163b64d53d88c0867638fdb5a8",
+      "canonical_url": "https://research.google/blog/introducing-groundsource-turning-news-reports-into-data-with-gemini/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary pipeline/validation/impact sections agree with over 150 countries, 2000-present, 2.6M events, 80-language extraction/translation, Gemini classification/time/location reasoning, 82% practical accuracy, 85-100% GDACS severe-event coverage and Flood Hub urban forecasts up to 24h. Practical accuracy is distinct from the source's stricter 60% location-and-time accuracy; the Note does not equate 82% with exact extraction of every field.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1bd5e2667dec3ddb4fed5c2ec36215516f99b951c0cf4ca146353c41ea78400e",
+      "note_sha256": "098e825731f9817405e17a20bb8512880fc1f7e9f2096c7f93b8d387c561b1e4",
+      "canonical_url": "https://research.google/blog/how-mobility-gives-language-models-a-deeper-understanding-of-place/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary method/experiments support aggregated anonymized mobility plus text, self-supervised place embeddings, multiscale propagation for sparse POIs, cosine alignment and LA/Houston evaluation on unseen places. The Note describes place-level predictions and the tested cities; it does not claim individual-user inference or general global validation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1c7f4fe01d7c843ec24c22a487d2fd3dff71947e57e93294d5cd8b2c359f6441",
+      "note_sha256": "b6644312289b10ea960f163ef86fd45d7c55a5c9b0ade445bff94d84fdd79306",
+      "canonical_url": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "implementation_status",
+          "finding": "human-on-the-loopへの全面移行を完了したように述べているが、原典は目標であり一部工程では人が各反復に関与すると明記する。段階的な自律化として訂正する。"
+        }
+      ],
+      "comparison": "Primary Forum article supports verified outcomes, tools reading screen hierarchy, separate prototype build, autonomous stress-testing example, roughly halved memory/page faults and eight-week core feature parity. It explicitly says human-on-the-loop is a target with some stages still human-in-the-loop. Summary/key point instead present the transition as achieved and need that limitation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1cd31bc3f79615f9d181be12dc5e47f008cb32f858260545a9ba34b2834981b4",
+      "note_sha256": "02c5feb8b6bf1c7c6dfd9654bb97b9e2f6e9c4bd10d8d8332750d5124be2c9f6",
+      "canonical_url": "https://blog.cloudflare.com/vulnerability-discovery-remediation/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary service/harness/context/review sections support invitation-only Managed Defense early access, authorized-code investigation with GPT-5.6 Cyber, production Web Assets/WAF/Workers evidence, prioritization, validated patch/rule proposals and customer control. Prior authorization may permit WAF deployment; the Note says customers control implementation and does not claim the model itself can deploy fixes or execute at the edge.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1ceda08d39d967b49c82f7937ace210a2daaf3ef65eac0d6a2d7fb280c4fe1be",
+      "note_sha256": "3226169bfa34fcb65c2a30bfa2e1bf4e97e82fa2beb3a9a9331263f93c54978a",
+      "canonical_url": "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "event_date",
+          "finding": "重要ポイントが10/19を鍵の侵害発生日としている。原典が示すのはCloudflareの把握時刻（10/19約17:00 UTC）であり、侵害そのものの発生日とは区別する。"
+        }
+      ],
+      "comparison": "Primary incident/response/customer/developer sections support eight weak intermediate-certificate keys, forgery risk, WARP/cloudflared updates, CDN/Zero Trust mitigations, trust-store/dependency/image checks and retained verification. October 19 is when Cloudflare learned of the compromise (about 17:00 UTC), not the established time the keys were first compromised. The summary says awareness correctly, but the first key point conflates those dates.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1de8ee4c92dee1e2b6c8026bc489ce8d910de4c475ddf4715307f0d912effe31",
+      "note_sha256": "77a7b5b0e2ecb843e5436d328741a7736392845c9d105e9590f7e0b665c39a20",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary migration/coordination/read-scale sections support 99.99999% dual-location repositories, August 2025 first Central US copy, two of five Azure replicas for most repositories, about half traffic and 25ms cross-region constraint. Per-reference quorum and storage/compute decoupling remain staged work; the Note presents them as future direction rather than completed universal stateless operation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1f1c14a1caf775277d37ce96d65f8889d1b5343aaa92aeb7c8b6ae126bcf85fd",
+      "note_sha256": "757d862526606d250ee25f4f374b6b50f0f3d399fd54dcce1958eb3a1d680aee",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-3-pro-image-developers/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "capability_scope",
+          "finding": "physicsを物理演算と訳し、物理シミュレーション機能を示唆している。原典の照明・カメラ・フォーカス・色調の制御として訂正する。"
+        },
+        {
+          "kind": "feature_condition",
+          "finding": "Google Search groundingは有効化時の機能で、正確性の保証ではない。条件とWeb参照による支援の範囲を重要ポイントへ反映する。"
+        }
+      ],
+      "comparison": "Primary feature/access/provenance sections support paid-preview Gemini API/Vertex, Gemini 3 Pro basis, 2K/4K, five-person resemblance, blended inputs, localization and SynthID. Physics here means lighting/camera/focus/color controls, not a physics simulation engine. Search grounding is explicitly conditional on enabling it and supports data-informed output rather than guaranteed correctness.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "1fdc2fc1a8b71396d765f48cc84f93487a847bf3355be601763564a4fa86d9b2",
+      "note_sha256": "2b1a2e89588027397466ade8d524f23acf199247aa8b1b89a1a4ce9229332536",
+      "canonical_url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary announcement supports the five named consultancies, a possible $15.7T contribution by 2030, the cited 25% production-at-scale adoption figure, three pillars and sector focus. These are the announcement's forecast/cited adoption statements, not independently established global outcomes or a promise of realized economic gains.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "20630901881005d99af9d73ac37ea011d5c6c3401d0b263cb6b4f84f75ea305e",
+      "note_sha256": "ba649cc5ceaa1fbb65ef13d1de49ad0a6fd67e78021cac3c5f6930e4d9d168b5",
+      "canonical_url": "https://github.blog/news-insights/company-news/the-next-developer-interface-is-ambient-intelligence/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary essay supports Copilot repository-aware edit/test loops, coding-agent PRs in isolated Actions, developer ownership of constraints/evidence, MCP/context and the modality/harness/control-plane layers. The Note labels the piece an October 2026 essay and presents its interface vision as the author's argument rather than universal adoption or a measured productivity trial.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+      "note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "duration_limit",
+          "finding": "40秒は延長できる追加尺ではなく動画の累積長の上限である。10秒単位の延長と累積40秒上限を要約・重要ポイントで明記する。"
+        }
+      ],
+      "comparison": "Primary feature sections support ten-second prior context, first/last-frame interpolation, 360p throughput up to 60% faster at lower cost, 4K upscaling, three-second video references, access and customer examples. Scene extension proceeds in ten-second steps up to forty seconds cumulative duration. The key point's wording can make forty seconds sound like additional extension length and should state the cumulative cap.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "20e27079cc0ad624e51e7c7830cce1b42ad1228b3dc9d7dea0b8424baa413d4f",
+      "note_sha256": "b452a546cb5a6ffabea75a35aa8d2a90f80bfb9a3b18f6b9404dd5f3a9bef51d",
+      "canonical_url": "https://engineering.fb.com/2026/09/23/security/private-processing-meta-ai-glasses/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary architecture/flow/storage/transparency sections support CVM/TEE isolation from host and operator, blind-signed anonymous credentials, third-party OHTTP routing, hardware attestation, encrypted user-key state and ledger/audit/bounty mechanisms. These are Meta's stated design/threat-boundary guarantees, not our independent security certification. The Note does not claim all binaries are openly downloadable; the source limits binary access to its research program under agreement.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2106c2e5fddd4ff7a46c3e33f2e9d8be286a785dcf86f4786609695ba203ee8a",
+      "note_sha256": "3f4bccbec050573b444c474aaf6307ee42251d46ade10e66bce1264c36f9daf9",
+      "canonical_url": "https://research.google/blog/towards-passive-heart-health-monitoring-via-smartphone-camera/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_condition",
+          "finding": "HRのMAPE基準達成は信頼度による測定の選別後の結果である。要約と重要ポイントにこの条件を追記する。"
+        },
+        {
+          "kind": "data_access",
+          "finding": "データとモデルの提供はIRB承認等の条件を満たす研究者の申請による非商用研究向けであり、そのアクセス条件を明記する。"
+        }
+      ],
+      "comparison": "Primary method/validation supports eight-second clips, temporal-shift CNNs, ECG HR reference, confidence-gated HR MAPE below 10% in each tested skin-tone group and aggregate RHR MAE 4.39 bpm versus Fitbit daily RHR. The Note omits confidence gating and says research resources are published without their qualified-access restrictions. RHR comparison is against the wearable reference, not independent ECG accuracy, and early Group 3 RHR/success-rate limitations remain in the source.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "226d46957d80d407b3c27d9326c6335a50b7d50545bf914a015bc2985f79191c",
+      "note_sha256": "cab3ce2f6fd585aa864334118ad7295f89459374c69ef06c5918d2ff684eba84",
+      "canonical_url": "https://blog.cloudflare.com/oauth-for-all/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "ブルージェーングデプロイは原典のblue-green deploymentの誤記であり、ブルーグリーンデプロイに修正する。"
+        }
+      ],
+      "comparison": "Primary rollout/migration sections support all-customer OAuth, Hydra 1.X then 2.X, concurrent-index SQL/custom column selection, extended token expiry, revocation replay via Queues, refresh coalescing, three-hour migration and P95 185 to 101 ms. The blue-green strategy name is misspelled. The source also reports refresh/session 403 problems and remediation, so this is not evidence of an entirely incident-free migration.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2305d08929302b19d3cff782f2f79be4d91eb421d7801cc9f40ec66c434c4ef1",
+      "note_sha256": "1485dcce3bd356e882d2d86e1e99bfb31de5832ba7e5ba87443ed9a29d183109",
+      "canonical_url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_method",
+          "finding": "60.2対50.0はLLM判定による比較評価であり、その評価主体と人間の基準値を明記する。"
+        },
+        {
+          "kind": "translation",
+          "finding": "ScholarPeerのliterature-groundedを文学に裏付けられたと訳している。学術文献に裏付けられたに修正する。"
+        }
+      ],
+      "comparison": "Primary architecture/results support five PaperVizAgent roles and ScholarPeer dual-stream acquisition/verification. PaperVizAgent 60.2 versus a calibrated 50.0 human baseline comes from an LLM comparative judge, which should be named to avoid implying independent human superiority. ScholarPeer is grounded in academic literature; the key point wrongly translates this as literature in the artistic sense. The summary retains prototype status.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+      "note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+      "canonical_url": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "forecast_scope",
+          "finding": "WeatherNextの気象・災害予測を気候予測や気候変動予測としている。短期の気象予測と長期の気候変動予測を区別する。"
+        },
+        {
+          "kind": "availability_scope",
+          "finding": "Gemini for Scienceは発表と段階的なアクセス拡大であり、公開済みとする表現を発表に改める。"
+        }
+      ],
+      "comparison": "Compared the source sections on ERA/Co-Scientist, experimental science tools, Health/AMIE/MedGemma, Coralboard and WeatherNext/Groundsource. The Note confuses short-horizon weather/disaster forecasts with climate-change prediction. Gemini for Science was announced with gradual experimental access, rather than an unrestricted public release. Other summarized examples agree with the primary event recap.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "231ebc69a42cc525681b82f6a797a97a30723aefc279a867afb8089685a83f26",
+      "note_sha256": "c190710d233f90eef19ef7f3a48c57ce30d38304c3f207775a15a2c135bd3a44",
+      "canonical_url": "https://deepmind.google/blog/engineering-more-resilient-crops-for-a-warming-climate/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared GLYK structure, three loops, hybrid enzyme temperature tests and future plant trials. The primary supports AlphaFold-guided plant/algal enzyme engineering and stability at 65°C. The Note explicitly says crop validation is future work; it does not claim heat-resilient crop yields have already been demonstrated in fields.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+      "note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "autonomy_scope",
+          "finding": "全工程が自動で行われるという要約に、人による事前承認と終了後のコマンド起動の条件を明記する。"
+        }
+      ],
+      "comparison": "Primary supports Issue forms/labels/Actions, routine setup, scheduled screening and post-event processing. However, the author signs off campaign names/emails/dates before opening the Issue and starts post-event processing via /lead-upload and /event-report. The summary overstates end-to-end autonomy and should preserve approval and command initiation.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "24285ad0c88f2d982a928f465f40825ac4029e011c9de03c80e0245368c2a440",
+      "note_sha256": "303529e5161dbe739a56dbc23e1851cbefb47e291ba0aeadd480e902c768e8d4",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/introducing-weathernext-3/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "measurement_scope",
+          "finding": "約5倍は主要表面変数の空間解像度であり予測精度の倍率ではない。medium-rangeは中規模でなく中期である。"
+        }
+      ],
+      "comparison": "Primary supports hourly raw-satellite and weather-station inputs, FGN mesh transformer, 5 km key surface variables versus the previous 25 km grid, renewable-energy variables and variable-specific CRPS improvements. Roughly fivefold improvement is spatial resolution, not accuracy. Medium-range denotes temporal lead time, not spatial mesoscale. Other surface variables remain 10 km and atmospheric variables 25 km.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "255477ff21ef8c368d608123c42b0ba24cfdb2c043b42c921f299d133f6839f2",
+      "note_sha256": "10efe044870d0a6be7491772bddd8e1791329a00d9a85885d612058def7f7ee2",
+      "canonical_url": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "source_publication_date",
+          "finding": "公式の表示日・構造化データ・同日のモデル発表は2026年7月21日であり、Noteの公開日・出典情報・要約の7月17日を訂正する。生成日時と元index/usageは維持する。"
+        },
+        {
+          "kind": "benchmark_scope",
+          "finding": "CyberGymの大型モデルに対する競争力と、Big Sleepでのmainline Flashへの優位を区別し、全比較対象を大きく上回るという断定を修正する。"
+        }
+      ],
+      "comparison": "Primary header and BlogPosting datePublished both state July 21, 2026 (16:00 UTC), corroborated by the joint model launch dated July 21. Note metadata, provenance and summary incorrectly state July 17. CyberGym is competitive against larger models with up to five model calls/report; Big Sleep surpasses mainline 3.5/3.6 Flash, not every competitor in all benchmarks. Limited pilot availability is explicitly future in the Note.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "displayed": "2026-07-21",
+        "datePublished": "2026-07-21T16:00:00+00:00",
+        "corroborating_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/"
+      }
+    },
+    {
+      "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+      "note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "input_availability",
+          "finding": "音声参照は発表時点では声のみであり、その他の音声入力は今後の対応である。あらゆる入力という要約・ポイントにこの制約を明記する。"
+        },
+        {
+          "kind": "capability_scope",
+          "finding": "物理法則の直観を利用した動画表現を、検証済みの物理シミュレーションと混同しない。"
+        }
+      ],
+      "comparison": "Primary announcement supports conversational video editing, consistent characters, real-world knowledge, subscribers/Shorts rollout and SynthID. Audio reference support is explicitly voice-only initially, with other audio inputs future. The Note says all audio inputs without this condition. It also describes physics simulation although the source claims intuitive physics for more realistic generated scenes, not a validated physical simulator.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "26b878a871d0ceffb1f02f58cb0ecdc245c54578dec8d0ee715a3477134e0ad4",
+      "note_sha256": "e4a947d1a234236bfa8bd890652ea576216f32f026cad838a4274d266c2e33f1",
+      "canonical_url": "https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared the three-stage DP clustering/keyword-histogram/noise/summarization pipeline, post-processing and privacy/utility experiments. The Note correctly restricts the no-original-conversation claim to the final summarization stage, and names LLM evaluators rather than human judgments. AUC 0.53 versus non-private 0.58 is supported. Privacy/prompt-injection language restates the authors formal-guarantee claim; this is not our independent security proof or an assertion that per-conversation keyword extraction never sees private text.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "26d7e55c48b9580825af7085289454557fc1fdb4b3699ade5efb57439d7ee498",
+      "note_sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
+      "canonical_url": "https://github.blog/security/how-one-bug-bounty-researcher-chooses-the-features-they-investigate/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "payment_condition",
+          "finding": "重大な脆弱性なら必ず3万ドル以上を得られるという最低額の保証に読める表現を、達する場合もある報酬として明確にする。"
+        }
+      ],
+      "comparison": "Primary researcher interview supports the quality-over-volume VIP restructuring, invitation, faster responses/early previews and authorization/access-control focus. The payout is up to $30,000 or more for critical findings, not a minimum $30,000 for each critical issue. Clarify conditional payout wording. The source is a profile, not proof that the omitted detailed methodology appears in the Note.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "28d1e98bb25b487f0b8b2be2538cc863fce18b879816bfea748565b905659b2a",
+      "note_sha256": "c5573f8bc1b5889958c659577d1e51aae0a86202b4c75c476bd8fe41097e556c",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "latency_metric",
+          "finding": "2.5倍の速度向上は回答全体ではなく最初の応答トークンまでの時間である。重要ポイントも要約と同じ指標に揃える。"
+        }
+      ],
+      "comparison": "Primary March 3 announcement supports preview AI Studio/Vertex access, $0.25/$1.50 per million tokens, Artificial Analysis 2.5x faster Time to First Answer Token and 45% output-speed increase, Elo 1432, GPQA 86.9%, MMMU Pro 76.8% and listed task examples. The summary identifies first-answer-token latency correctly, but the key point generalizes it to response time; narrow that metric. These are announcement-date prices/results, not a certification of current price or all-workload latency.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2a729e1bf8b6101c618e2955226c786627406284dffa86213219b7e93e895a18",
+      "note_sha256": "6abe6eae37e6d2e32708bf0feef84c05adaf31073e02e5d4b2480ed4f42dea9d",
+      "canonical_url": "https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "quantity_unit",
+          "finding": "100 billion images and videosは1,000億以上の画像・動画であり、100億以上の画像という記載を数値と対象の両方で訂正する。"
+        },
+        {
+          "kind": "availability_scope",
+          "finding": "AI Content Detection APIの初期提供対象は信頼されたパートナーであり、その条件を要約へ加える。"
+        }
+      ],
+      "comparison": "Primary supports SynthID/C2PA, Pixel capture provenance, staged Gemini/Search/Chrome verification and named partner adoption. Watermark count is over 100 billion images and videos, not over ten billion images alone. AI Content Detection API initially launches with trusted partners; clarify limited initial access. This is an announcement, not a guarantee every online file can be identified.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2b60af235639ce04c74309137694ed0c208fc82d06a6cd6f61fd5283eddc01a2",
+      "note_sha256": "da3fd860bd5368ce150035ad0d6acb3342b7060f70d52ea1a902a18562d83896",
+      "canonical_url": "https://deepmind.google/blog/opening-new-paths-in-aging-research/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "extraneous_text",
+          "finding": "重要ポイント末尾の「イ号」は原典にない無関係な断片であり削除する。"
+        }
+      ],
+      "comparison": "Complete primary case study supports Calico Co-Scientist use, biological-literature noise, ISR/metabolic hypothesis, iterative experimental design and future publication. The Note retains hypothesis/experiment/publication status and makes no lifespan-extension claim. One unexplained trailing fragment is absent from the source and should be removed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+      "note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+      "canonical_url": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "grounding_condition",
+          "finding": "リアルタイム情報はGoogle Search接続を利用する場合であり、モデルが常時最新情報を持つと読める表現を限定する。"
+        },
+        {
+          "kind": "verification_scope",
+          "finding": "この発表のGemini画像検証はGoogle AI生成物が対象であり、任意の他社AI画像まで判別できる表現を避ける。"
+        }
+      ],
+      "comparison": "Primary supports Gemini 3 Pro basis, multilingual text, up to 14 images/up to five people, editing controls, product-specific rollout and SynthID. Real-time information comes from Google Search connection, not constant intrinsic current-world knowledge. Gemini image verification in this announcement targets Google AI images, not all providers. Clarify those scopes without claiming independent accuracy guarantees.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2c773478e6b1648989eac463461d327ce3bff540f8f1ffd6c5b37f95161e0062",
+      "note_sha256": "bf873e1257a67b431f2ec70c7fc7029c660a558460aea46d75c7e7123b97d861",
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared paradigm, four integration challenges, 3,500-line architecture/three components, proxy endpoint, native Kubernetes, collocated async scheduling and SWE-smith/mini-SWE-agent/Qwen3.5-9B experiment. The Note preserves about 6,000 training samples, 41.8% to 56.4% Pass@1 and the 14.6 percentage-point absolute gain. No claim of universally better agents or zero compute cost is added; these remain the authors reported experimental results, not our reproduction of the RL run.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+      "note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "参照画像をインディレッドとする無意味な語を、素材となる参照画像に修正する。"
+        },
+        {
+          "kind": "product_availability",
+          "finding": "1080p/4Kアップスケーリングの提供先はFlow・Gemini API・Vertex AIのみであり、全製品の共通機能にしない。"
+        },
+        {
+          "kind": "verification_scope",
+          "finding": "SynthIDで検証する対象はGoogle AI動画であり、任意の他社AI動画の判別と混同しない。"
+        }
+      ],
+      "comparison": "Primary supports reference-image consistency, portrait 9:16 and product rollout. Upscaling 1080p/4K is expressly only in Flow, Gemini API and Vertex AI; the Note implies all listed products share every new feature. Correct the malformed ingredient-image term and scope Gemini verification to Google AI videos.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2d2736001f9b85b07f9d6dd00be27b831ed299d64c1094635d1d4983e3e41f48",
+      "note_sha256": "e1de12261b56c1d08aad9c266b5dfacaefb62978853df9a962f3204ae179458d",
+      "canonical_url": "https://research.google/blog/coherent-long-form-video-generation/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared all four research pillars, MAB preproduction/production hierarchy, CANVAS persistent anchors, A²RD extrapolation/interpolation and ten-minute example, VQQA black-box prompt loop and the named benchmarks. The Note preserves the research/framework-suite scope and describes prompt optimization rather than pixel editing. Its baseline-improvement statement is supported by the primary reported evaluations, not our independent video-quality reproduction.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2d411b6cf0a87af1ed5edb38f92c6d7865804ea2ca9694dfec8732776e4a7a41",
+      "note_sha256": "3a24d6ca29d811e11f8e6eb4e85a47e4d9805a56ca24689539a07bf632beae21",
+      "canonical_url": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "safety_evaluation_scope",
+          "finding": "ASIMOV-Agenticは安全判断や不確実性対応の評価であり、ベンチマーク自体が安全性を担保するという表現を修正する。"
+        },
+        {
+          "kind": "source_publication_date",
+          "finding": "原典の表示日と構造化データは7月30日であり、元Noteの公開日7月28日を訂正する。生成日時や元index/usageは保持する。"
+        }
+      ],
+      "comparison": "Compared all three models, whole-body/finger control, ER team planning, offline adaptation and ASIMOV-Agentic safety evaluation. Few-hour adaptation and data wording agree with the primary. The safety benchmark measures refusal/feasibility/human-intervention behavior; it does not itself guarantee real-world robot safety. Clarify the summary wording while retaining the authors goal. The displayed July 30 date and BlogPosting datePublished 2026-07-30T16:00:00+00:00 disagree with the original July 28 metadata.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "datePublished": "2026-07-30T16:00:00+00:00",
+        "displayed": "2026-07-30"
+      }
+    },
+    {
+      "note_id": "2e65d7de98b253645cbce9d356a7b1fe2e0309189ed80818bdde559a9e7993d1",
+      "note_sha256": "7bb93579b092067fb968684b658495ac05304abb52f645f91a155eda193978ba",
+      "canonical_url": "https://machinelearning.apple.com/research/code-switching-detection",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "translation",
+          "finding": "monolingual recordingsは単音節ではなく単一言語の録音であり、言語選択的次元を特定するデータ条件を訂正する。"
+        }
+      ],
+      "comparison": "Primary abstract supports direct speech-only CS detection, language-selective hidden-state aggregation, small CS tuning set and all 14-pair mean-F1 comparisons 0.798/0.776/0.751. Monolingual recordings are wrongly translated as monosyllabic recordings; this changes the calibration-data assumption. Visible publication date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2f4cf4df821bb266280ee282b1b81eb78846041010bfc0d3ccaffbbab3f284f7",
+      "note_sha256": "c8ff367a449d806b7cf50138022c4706c0725e29ffee4562d7fd7b136111432d",
+      "canonical_url": "https://github.blog/security/application-security/ai-powered-fuzzing-with-the-github-security-lab-taskflow-agent/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "review_condition",
+          "finding": "自動生成される判定・修正案はモデルの誤りを含み得るため人のレビューを要するという原典の条件を要約へ追記する。"
+        }
+      ],
+      "comparison": "Primary supports Taskflow/AFL++ autonomous harness/coverage/crash/report stages, host arbitrary-command execution and disposable unprivileged environment requirement. It explicitly says suggested patches are review-required and model verdicts are a starting point for human review. Preserve that material limitation alongside the autonomous pipeline description.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "2f708dbc986963571a994ea397143ad533b3ba68240a192f16a5946f97aa05e7",
+      "note_sha256": "71c0203e30dc762815b52482bcce808306d752757f6beb3a48a7dffc64f6dece",
+      "canonical_url": "https://blog.cloudflare.com/accountable-mixed-use-ai-crawlers/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "Accountable事業者の名称をアカウント対象企業と誤訳している。提供機能と期限付き対応約束による指定と説明する。"
+        },
+        {
+          "kind": "operator_availability",
+          "finding": "Bingのrobots.txt連携は2027年初頭予定であり、設定だけで全3社へ現在通知されるとはしない。NOARCHIVE等の別途指定を明記する。"
+        }
+      ],
+      "comparison": "Compared mixed-use behavior, Training/Search/Agent settings, migration, Accountable designation, operator-specific support and future summary controls. Accountable is not account-target-company. Current primary explicitly states Bing robots.txt no-training support is targeted early 2027 and is not automatically conveyed today; NOARCHIVE or removal tools are needed meanwhile. Record this current limitation without assuming when the source added its clarification.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "30aaa77a962aeda46534d4aa7283ee78c117d794f9c089243a5c67ca3c6c1135",
+      "note_sha256": "bc1e1d9ea5f188ba9f8b246fee585621d134813f86b0bff42b6d62bd46adf1ab",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "benchmark_condition",
+          "finding": "17%のtoken削減と350 token/秒はArtificial Analysisの評価・測定であり、全タスクの保証として記述しない。"
+        },
+        {
+          "kind": "availability_scope",
+          "finding": "本日利用可能なのは3.6 Flashと3.5 Flash-Lite。Cyberは政府・信頼されたパートナー向けの今後の限定pilotであり3モデル共通の一般公開としない。"
+        }
+      ],
+      "comparison": "Primary joint launch supports the three models, but the 17% output-token reduction and 350 tokens/s are Artificial Analysis measurements rather than every workload. General availability that day applies only to 3.6 Flash and 3.5 Flash-Lite; Cyber is a future limited government/trusted-partner CodeMender pilot. Narrow benchmark and availability wording.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3246413f00d590d868eafc9ac155429f15c28f784a34bf42cf7d85cd13ccf661",
+      "note_sha256": "251c50ce1fd4ef0c6af2db22cdbe7148cedfee6c6c84378ede4ad3dca4fd55a5",
+      "canonical_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports Effective E2B/E4B, 26B MoE/31B dense, Apache 2.0, 31B open-model ranking at announcement, edge offline use, all-model vision/video/code/140+ languages and edge 128K versus large 256K contexts. The Note does not claim every model has native audio or every model supports 256K. Hardware/availability remain a product announcement, not an independent device benchmark.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "33573d87ace2ac630b100068682320ead77cf27064b612c3c99b3e6137cefb7e",
+      "note_sha256": "de51a11e5300078999b3d8aec80325f54ea67be2935ccaf08a426525017d533e",
+      "canonical_url": "https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "claim_strength",
+          "finding": "有限回のpass@k実験を、推論OFFでは知識へ到達できないという絶対的不能の証明にしない。今回の評価で到達しにくかったとする。"
+        }
+      ],
+      "comparison": "Compared pass@k closed-book on/off experiments, named models/datasets, matched-length dummy traces, factual priming and search-verified intermediate facts/test-time selection. The summary preserves empirical scope, but a key point claims facts are unreachable with reasoning off; finite pass@k evidence supports virtually unrecoverable in this evaluation, not impossibility. Narrow that statement.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "33e7191d6a66c8028781f9a738d0f85a7f3c9fa4692fa1c0097eaa57ac9d2b3a",
+      "note_sha256": "8cc3ec7c4b540b19ffaa6b2b1b847e702452af0a8b7d0bc3d3a6a26717123c27",
+      "canonical_url": "https://research.google/blog/advancing-amie-towards-expert-level-audio-visual-clinical-consultations/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "study_population",
+          "finding": "30名は比較対象PCP10名と独立評価医20名の合計であり、30名のPCPを比較対象とする要約を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports asynchronous Talker/Planner/Perception, 100 scenarios/300 actor consultations and comparable PCP-level results. Thirty physicians includes ten consulting PCP comparators plus twenty independent physician evaluators, not thirty consulting comparators. The Note otherwise preserves simulated patient-actor status and need for real-patient validation; correct participant roles.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548",
+      "note_sha256": "7360b0bb3a68c7f453b138b52a33d3783b77ed211874d977f48b6aa68ffa84b1",
+      "canonical_url": "https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "source_publication_date",
+          "finding": "原典の表示日・構造化データは2025年12月19日であり、元Noteの12月16日を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports all Gemma 3 sizes 270M–27B, approximately 110PB, over one trillion trained parameters, every-layer SAEs/transcoders, skip/cross-layer methods, Matryoshka and chat-behavior research. It does not imply C2S Scale is directly covered. Displayed date and BlogPosting datePublished both December 19, 2025, conflict with original December 16 metadata; correct source date while preserving generation/costs.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "datePublished": "2025-12-19T12:00:00+00:00",
+        "displayed": "2025-12-19"
+      }
+    },
+    {
+      "note_id": "34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981",
+      "note_sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
+      "canonical_url": "https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "source_publication_date",
+          "finding": "原典の表示日・構造化データは2026年5月19日であり、元Noteの5月16日を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports Raman/Flynn disciplines, ALS literature/hypothesis ranking, cell-surface expertise gap, iterative collaboration and ongoing search for mechanisms/potential drugs rather than an established treatment. Displayed date and BlogPosting datePublished both May 19, 2026, conflict with original May 16 metadata; correct source date while preserving generation/costs.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "datePublished": "2026-05-19T10:30:00+00:00",
+        "displayed": "2026-05-19"
+      }
+    },
+    {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "canonical_url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_population",
+          "finding": "MAE4.18日は妊娠16〜36週の385人を対象とした結果であり、妊娠期間を問わない値としない。"
+        },
+        {
+          "kind": "adaptation_condition",
+          "finding": "ナイロビのlocal tuningはないが、モデルはシカゴ120人で微調整している。全く未調整の汎化を証明したとは記述しない。"
+        }
+      ],
+      "comparison": "Primary supports blind sweeps/mobile execution and 4.18 versus 4.48-day noninferiority. The primary cohort is 385 participants at 16–36 gestational weeks. The model was tuned on 120 Chicago participants before both sites were tested; Nairobi alone had no local fine-tuning. Clarify those training/evaluation conditions and avoid treating two-site evidence as universal proof of generalization. Mortality reduction remains potential rather than observed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82",
+      "note_sha256": "2b55b2f8c51209ba9f20c587b95cf507066609d6de2fae51fe2e47fd1ec1cae4",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "numeric_transcription",
+          "finding": "原典の473.3 billion eventsは4,733億であり、4,738億を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports the ongoing Git rebuild, busiest-repository roughly one-billion monthly requests, 218.2B starting monthly events and 7.38B September commits. The ending activity number is 473.3B, but the Note says 473.8B (4,738億). Correct that numeric transcription. The Note does not claim the new architecture is fully deployed or independently certify internal benchmarks.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
+      "note_sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
+      "canonical_url": "https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "recommendation_scope",
+          "finding": "10人以上が一律に必要という結論ではなく、主観的タスクで1項目あたり10人を超える評価者が必要になる場合が多いとする。"
+        }
+      ],
+      "comparison": "Primary supports N/K simulation tradeoffs, subjective-rater disagreement, majority-accuracy breadth versus distributional-nuance depth and efficient finite budgets. More than ten raters is often needed, not a universal requirement of ten or more for every benchmark. Preserve the studied subjective-task/metric dependence in summary and point wording.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_condition",
+          "finding": "WER4.0%/2.6%はArtificial Analysisの評価値であり、別評価や全利用環境で共通の誤り率としない。"
+        },
+        {
+          "kind": "modality_availability",
+          "finding": "話者識別は事前録音音声、関数呼び出しは現在Gemini macOSに限定され、開発者APIはpublic previewである。"
+        }
+      ],
+      "comparison": "Primary supports the two Transcribe APIs, smart cleanup, vocabulary/85+ languages and WER 4.0/2.6 under Artificial Analysis, versus separate FLEURS results. Speaker attribution is pre-recorded only. Function calling is currently in Gemini macOS, not a generally available capability of every API surface. Preserve public-preview and surface/metric conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "safeguard_availability",
+          "finding": "一般提供に向けた安全対策の強化と、信頼された防御側にサイバーガードレールなしで限定提供する方針を分ける。"
+        },
+        {
+          "kind": "specialization_scope",
+          "finding": "広い専門業務向けの汎用フロンティアモデルであり、サイバー防衛だけに特化したモデルとしない。"
+        }
+      ],
+      "comparison": "Primary supports 1M output limit, frontier enterprise/coding capabilities, internal engineering uses and phased Fairwind access. General-availability safeguards are still being strengthened; trusted cyber defenders are explicitly to receive the model without cyber guardrails. The Note presents safeguards as already complete for the rollout and describes a general frontier model as cyber-specialized; clarify scope and rollout conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3d15334254e7e6e1416a19a0234fe21d75d5031ed797b9e312589fcb833d3ba2",
+      "note_sha256": "f7763c8af994cc30465fda3fccb1aa5b28e65022e0ead1da8b7d204f0da8ac8b",
+      "canonical_url": "https://blog.cloudflare.com/account-abuse-protection-dashboard/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports Early Access AAP rollout, stateful login/signup histories anchored by domain-hashed account IDs, funnel investigation and the separate dashboard/PII roles. The Note describes investigation signals rather than treating leaked-credential matches as confirmed compromise, and does not claim automatic account recovery or universal fraud prevention.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3dbfb8fd9bf925edda9499852cbcdd991badb1a081dcb65c338acb094c1f8c22",
+      "note_sha256": "123d1351c995fc8b551f63b022d3a267a32832dfca07ae60444fca6209237ad3",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports prompt-created canvases via /create-canvas, boards/checklists/forms, bidirectional shared state and project/personal extension storage. The Note accurately presents authoring/collaboration workflow and no measured performance or cross-product compatibility claims. Article commands were treated as source content, not executed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3e7ecdf1b7cc94ec3b7c57c806f78dfb429843bbe9e82a9b59583c704264a991",
+      "note_sha256": "add4b4a65c3cb64a71ace078157d76b5fa5efb90fe2edaf8a8f637e76a7013da",
+      "canonical_url": "https://machinelearning.apple.com/research/ontological-boundary-negotiation",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary abstract supports two open-ended Wizard-of-Oz probes, a week-long exploratory study with participants using one probe, and the four named ontological negotiation sites. The Note frames training as an experience enabled by Wizard of Oz rather than proof of a fully autonomous implemented ML trainer. Stanford affiliation is confirmed; visible publication date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3fc2f12c46a71c1c1fe33f82e2a0c3559535678d09b642c47fdade8e8e254d19",
+      "note_sha256": "4edafad68b46215f445033b6eced8ab03eceead93bbce21a3072a5a4bfe574bb",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/lyria-3-5/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Complete short primary announcement supports July 29 launch in Google Flow Music and exactly the four highlighted improvements: musicality, lyric prompt adherence/structure, vocal expression/pronunciation and tempo/duration controls. The Note adds no unsupported duration, pricing, licensing or cross-product availability claims.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3fdcc07c07cdc5d77d9fa96a1d1a2f0274e7294f2874b8e4b474361d8f971ac1",
+      "note_sha256": "59112079ed080708e3345eb1af5d62dfdc760aa11bc6e05f7e9ddc6f98e85f46",
+      "canonical_url": "https://engineering.fb.com/2026/10/12/ml-applications/turning-opportunistic-ai-inference-capacity-into-better-ads-recommendations/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared capacity-fragmentation causes, RMA CPU/accelerator versus SBM accelerator-only surplus, physical/logical isolation, PID candidate control, value-aware model routing and millisecond shedding bridging minute-scale central loops. The Note preserves optional-work/baseline protection scope and does not claim all models are already portable across every region or that the future automated allocator is already deployed. Performance claims remain the authors reported operation, not our independent benchmark.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3feedfa650e38ebcf1889145120010235e28b5c57db72acafab4912e12a61476",
+      "note_sha256": "5f0f70ba0c6d4f16347a4413696b3cf49da427e9f58037072cfef5067dec3d00",
+      "canonical_url": "https://machinelearning.apple.com/research/normalizing-trajectory-models",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary abstract supports conditional normalizing reverse steps, exact trajectory likelihood training, shallow invertible/deep parallel architecture, scratch or flow-matching initialization, self-distilled model-induced score denoiser and four-step text-to-image results. The Note preserves exact likelihood over the generative trajectory rather than claiming arbitrary image marginal likelihood. No numeric benchmark added; visible date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "40652942dec1c0dd77831eae6aa97912b5b2da911a8ace790803150a3690beeb",
+      "note_sha256": "a14c9b439dcfe8d8c156d633b4a91f865ca1b25d434a3974cc577d0ff672ead6",
+      "canonical_url": "https://research.google/blog/titans-miras-helping-ai-have-long-term-memory/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports MLP deep memory, gradient surprise, momentum/adaptive decay, all four MIRAS choices and YAAD/MONETA/MEMORA non-Euclidean alternatives. The Note ties GPT-4 comparison to BABILong and preserves greater-than-two-million-context research results, rather than claiming all-task superiority or indefinite cross-session memory. No numerical result is invented. Genomic/time-series scope agrees with the primary research description.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "canonical_url": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "integration_scope",
+          "finding": "AlphaFoldのツール利用は一部の研究協力での試験であり、専門データベースと同じく全般に統合済みとはしない。"
+        },
+        {
+          "kind": "source_publication_date",
+          "finding": "原典の表示日・構造化データは2026年5月19日であり、元Noteの5月12日を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports Gemini multi-agent generate/debate/evolve phases, supervisor and named enterprise previews/research themes. AlphaFold use is being tested in selected research collaborations, not unrestricted integration across every deployment. Displayed date and BlogPosting datePublished both May 19, 2026, conflict with original May 12 metadata. Keep scientific expert/lab validation distinct from automated literature critique.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "displayed": "2026-05-19",
+        "datePublished": "2026-05-19T10:42:00+00:00"
+      }
+    },
+    {
+      "note_id": "45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28",
+      "note_sha256": "797e6eb564acbd50cd650acfc878dbe4eb24778fc52e6b403ecd62a14981b232",
+      "canonical_url": "https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "referent_scope",
+          "finding": "ASCVDの主要リスク要因と原典が説明している対象はLDLであり、apoB100の構造説明と主語を分ける。"
+        }
+      ],
+      "comparison": "Primary supports Berndsen/Cassidy, cryo-EM plus AlphaFold atomic predictions, the roughly fifty-year mapping difficulty, apoB100 shell/belt and future therapeutic potential. The Note attaches ASCVD risk directly to apoB100 where the source specifically names LDL as the risk factor; clarify the referent without adding clinical claims.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "metric_definition",
+          "finding": "APIは現在残っているスターの付与日別件数を返す。解除済みスターを含む増減履歴ではない。"
+        },
+        {
+          "kind": "title_scope",
+          "finding": "除かれるのはスター件数や日付でなく利用者識別情報であり、タイトルのスター情報を除いたを修正する。"
+        }
+      ],
+      "comparison": "Primary supports 30-week daily buckets/request, time filtering before aggregation and no user identities. Counts are grouped creation dates of currently remaining stars; removed records are absent, so this is not a net gain/loss event log. The title says star information removed although only stargazer identities are removed. Dense-week queries remain a documented limit; Note does not claim all such costs vanish.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "46a5f627c92195cb5471da3e3bc97c4f90817c4a5b954288729174da152617b3",
+      "note_sha256": "273d65e6c716e752d9d8c59bf8603dcf502f1437f925133c64b85ce6d3b1dca1",
+      "canonical_url": "https://github.blog/security/how-bug-bounty-sharpens-one-researchers-security-skills/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary interview supports verified/reproducible PoCs and actual security impact, the VIP higher-payout/response/preview program and r31n GHES findings. The Note remains a researcher profile; it does not add unverified exploit claims, automatic vulnerability guarantees, fixed invitation thresholds or particular payout amounts. Methodology details omitted by the compact summary are not treated as factual contradictions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "46f26b37b127c3f5afb11241128980827608f6d23baf1a45e8f562fded83b04f",
+      "note_sha256": "e2111fbcaf0465d775380f03d1a1ceee9f0b4c8ae467171c7f638db0f1e13ca7",
+      "canonical_url": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "視覚障がい者・ロービジョンのコミュニティをBVとする不正確な略語を使わず、対象を日本語で明記する。"
+        },
+        {
+          "kind": "roadmap_scope",
+          "finding": "自律探索・経路案内・豊かな音声は今後の研究機会として検討されており、提供を計画済みと断定しない。"
+        }
+      ],
+      "comparison": "Primary supports prototype status, Describer/Chat/live API, eleven blind screen-reader participants and 86.3% correct responses with predominantly false-negative errors. The community abbreviation BV is malformed; use the full community name. Autonomous exploration, full routing and richer audio are research opportunities under consideration, not committed feature delivery.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "49e48cd9ec2340b1033c292f1e50c70562f78f6cdb507b55022352270bab049c",
+      "note_sha256": "136df2c93f361e82e66903ca588f330d8ead4664a79a503dc45dc9667c113587",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-to-continue-a-github-copilot-app-session-in-vs-code/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary tutorial supports installed/same-account/repository-permission prerequisites, Open in VS Code, the same isolated worktree and conversation/diff preservation, manual edits/testing and pushing the associated branch. The Note does not claim cloud/local migration without those prerequisites or create a new chat. Article commands were treated as explanatory source text rather than actions to run.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8",
+      "note_sha256": "f0997538df9f30cf7ba9e9e0548a8b6a4a2bb8f6c08e27388e38b34d1c8135f1",
+      "canonical_url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "benchmark_configuration",
+          "finding": "Muse Spark Openの36 token/秒超はNVFP4量子化・M5 Ultra搭載4台のテンソル並列・8,192 token文脈での測定であり、その条件を明記する。"
+        }
+      ],
+      "comparison": "Primary supports M5/M3 single-node comparisons, 4.6x max TTFT/1.6x decode, RDMA Thunderbolt jaccl and multi-node schemes. The 36.73 tokens/s result is specifically 4x M5 Ultra tensor parallel, NVFP4 Muse Spark Open, 8,192 context, 128 generated tokens. Add material precision/hardware/context conditions rather than imply any four Mac Studios achieve that rate.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "canonical_url": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "security_boundary",
+          "finding": "Accessが保護するWeb認証経路とDTLS等の別経路を分け、既存侵害の除去や全Gateway経路の保護まで保証しない。"
+        },
+        {
+          "kind": "origin_control",
+          "finding": "オリジンtoken検証は上流のネットワーク制限等を補助するものであり、それだけで迂回経路を遮断できるとはしない。"
+        }
+      ],
+      "comparison": "Primary supports patch-first multilayer defense, Access before Web authentication, WAF and restricted origin paths. It explicitly excludes automatic protection for DTLS/desktop transports and already-compromised systems. Token validation supplements upstream restrictions; it does not replace network/origin controls. Narrow the Note to Web authentication and preserve these material limits.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4aa510d0ed13abcfe56c9f8c69a9944d2e4cbea721e4713899e2f73ec769b867",
+      "note_sha256": "c8ccc825a7f5c997e2c3bdd4679fd0130502f9f7048680142eb77b271ceb3ee6",
+      "canonical_url": "https://machinelearning.apple.com/research/plan-retrieve-tool-discovery",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary ToolBench abstract supports RtP/PtR complexity crossover, tested k=1–20 and 1k–47k registries/two model families, stub-hallucination tradeoff and roughly doubled discovery inference cost. The Note describes adaptive routing as a proposed practical direction, not a reproduced optimal router, and adds no unsupported benchmark value. Visible date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "canonical_url": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "clinical_comparator",
+          "finding": "比較医は静的な会話記録を読む3名で追加問診ができず、Top-5の正解ラベルも参加者による後日の医療者診断の自己申告である。対面診療全般に対する優位としない。"
+        },
+        {
+          "kind": "observational_scope",
+          "finding": "Fitbitの対応はAI候補で分類した集団の症状報告日へ向かう変化であり、感染症の流行期や確定診断の検証としない。"
+        }
+      ],
+      "comparison": "Primary supports 13,917 randomized participants, five Flash 2.0 agents and favorable DDx results. The comparator is DDx generated by three clinicians from static transcripts without their own follow-up questions; top-5 truth is participants later self-reported provider diagnosis. Wearable analysis groups AI top-1 candidate respiratory-infection labels and observes trends approaching symptom reporting, not outbreak-season validation or confirmed clinical disease.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0",
+      "note_sha256": "d527ca732f2c64bb2f07fae1f7565efd5c916dbc6e2b85865fc5647b7370798f",
+      "canonical_url": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "research_maturity",
+          "finding": "破滅的忘却を防いで継続学習を一般に達成済みとする表現を、忘却を抑える設計を目指す研究として限定する。"
+        }
+      ],
+      "comparison": "Primary supports nested architecture/optimizer levels, own context/update rates, associative-memory interpretation, deep optimizers, CMS and proof-of-concept Hope results. The purpose is mitigating or potentially avoiding catastrophic forgetting; the Note says it prevents forgetting while continuously acquiring knowledge as an accomplished general capability. Recast that clause as the design/research goal, preserving the reported task-specific results.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a",
+      "note_sha256": "15f5e733457686023835b919323c1e3a98ddff5e0d3ee9e6e530abb64bc309e5",
+      "canonical_url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "unsupported_background",
+          "finding": "原典は専門的・希少・privacy-sensitiveな応用データの不足を論じており、インターネット全体のデータが枯渇しつつあるとは述べていない。"
+        }
+      ],
+      "comparison": "Primary supports Simula four axes, recursive taxonomy/meta-prompts/dual critics, reasoning metrics, five-domain teacher/student comparisons and listed real Google uses. It begins with abundant internet data but scarcity/inaccessibility of specialized uncommon/privacy-sensitive data; the Note invents a global internet-data exhaustion trend. Correct only that unsupported problem framing.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
+      "note_sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
+      "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+      "status": "reviewed_no_material_mismatch",
+      "scope": "title, summary, key points and positioning versus current primary article",
+      "findings": [],
+      "temporal_limit": "Current primary article contains an October 23 update after the October 22 Note; that later CVE is not attributed to the original Note.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "be3f1c0bcc40779de6e564476b7298ca69a2e3a08d76314fa33b74b2d9042469",
+      "note_sha256": "221e34f7ef44d4fcdb740dbb3b9300d255b54a0a89a1c8b219fb67b37c965c5d",
+      "canonical_url": "https://blog.cloudflare.com/full-transaction-waf/",
+      "status": "findings",
+      "scope": "title, summary, key points and positioning versus current primary article",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "full transaction detectionをフルビジネストラランザクション検出と記述。HTTP取引全体を指しbusinessの追加とトラランザクションの誤記を訂正する必要。"
+        }
+      ],
+      "cross_reference": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/ supports automatic managed response rule deployment; no separate mismatch recorded for that claim.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    }
+  ],
+  "total_notes": 321
+}
