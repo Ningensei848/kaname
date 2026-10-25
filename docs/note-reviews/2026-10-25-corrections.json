@@ -828,6 +828,416 @@
       "new": "- Published: 2026-05-19",
       "expected_occurrences": 1,
       "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "original_note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "proposed_note_sha256": "d94150340062ec272eb3d8a04bf14f498877033c0eabea862e2914d52eaee7ab",
+      "source": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "old": "description: Google Researchは、専門的な超音波検査の訓練を受けていない最前線の医療従事者でも活用できる、AI補助による「ブラインドスイープ」超音波検査の研究成果を発表しました。世界中の多くの人々が医療画像診断へのアクセスに課題を抱えている中、本研究ではモバイルデバイス上で動作する機械学習システムを開発しました。米国のシカゴとケニアのナイロビで実施された前向き臨床試験において、AIモデルによる妊娠週数の推定誤差は平均絶対誤差（MAE）4.18日を記録し、専門の超音波検査士による標準的な測定（4.48日）に対して非劣性を示しました。ナイロビのサイトではローカルでの微調整を行わずに検証され、異なる臨床環境やハードウェア間における高い汎化性能が実証されています。この技術は、リソースの限られた地域における周産期医療のアクセス拡大や妊産婦の死亡率低減に貢献することが期待されています。\n",
+      "new": "description: Google Researchは、専門的な超音波検査の訓練を受けていない最前線の医療従事者でも活用できる、AI補助による「ブラインドスイープ」超音波検査の研究成果を発表しました。世界中の多くの人々が医療画像診断へのアクセスに課題を抱えている中、本研究ではモバイルデバイス上で動作する機械学習システムを開発しました。シカゴの120人で微調整したモデルを用い、同地とナイロビの妊娠16〜36週の385人を対象とした前向き試験で、AIモデルによる妊娠週数の推定誤差は平均絶対誤差（MAE）4.18日を記録し、専門の超音波検査士による標準的な測定（4.48日）に対して非劣性を示しました。ナイロビのサイトではローカルでの微調整を行わずに検証され、異なる臨床環境やハードウェア間における高い汎化性能が実証されています。この技術は、リソースの限られた地域における周産期医療のアクセス拡大や妊産婦の死亡率低減に貢献することが期待されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "original_note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "proposed_note_sha256": "d94150340062ec272eb3d8a04bf14f498877033c0eabea862e2914d52eaee7ab",
+      "source": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "old": "> [[Google Research]]は、専門的な超音波検査の訓練を受けていない最前線の医療従事者でも活用できる、AI補助による「[[ブラインドスイープ]]」超音波検査の研究成果を発表しました。世界中の多くの人々が医療画像診断へのアクセスに課題を抱えている中、本研究ではモバイルデバイス上で動作する機械学習システムを開発しました。米国のシカゴとケニアのナイロビで実施された前向き臨床試験において、AIモデルによる妊娠週数の推定誤差は平均絶対誤差（MAE）4.18日を記録し、専門の超音波検査士による標準的な測定（4.48日）に対して非劣性を示しました。ナイロビのサイトではローカルでの微調整を行わずに検証され、異なる臨床環境やハードウェア間における高い汎化性能が実証されています。この技術は、リソースの限られた地域における周産期医療のアクセス拡大や妊産婦の死亡率低減に貢献することが期待されています。\n",
+      "new": "> [[Google Research]]は、専門的な超音波検査の訓練を受けていない最前線の医療従事者でも活用できる、AI補助による「[[ブラインドスイープ]]」超音波検査の研究成果を発表しました。世界中の多くの人々が医療画像診断へのアクセスに課題を抱えている中、本研究ではモバイルデバイス上で動作する機械学習システムを開発しました。シカゴの120人で微調整したモデルを用い、同地とナイロビの妊娠16〜36週の385人を対象とした前向き試験で、AIモデルによる妊娠週数の推定誤差は平均絶対誤差（MAE）4.18日を記録し、専門の超音波検査士による標準的な測定（4.48日）に対して非劣性を示しました。ナイロビのサイトではローカルでの微調整を行わずに検証され、異なる臨床環境やハードウェア間における高い汎化性能が実証されています。この技術は、リソースの限られた地域における周産期医療のアクセス拡大や妊産婦の死亡率低減に貢献することが期待されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "original_note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "proposed_note_sha256": "d94150340062ec272eb3d8a04bf14f498877033c0eabea862e2914d52eaee7ab",
+      "source": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "old": "- シカゴとナイロビで行われた前向き試験において、AIによる妊娠週数推定のMAEは4.18日であり、専門家の4.48日に対して非劣性を示した。",
+      "new": "- シカゴとナイロビの妊娠16〜36週の385人を対象とした前向き試験において、AIによる妊娠週数推定のMAEは4.18日であり、専門家の4.48日に対して非劣性を示した。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "original_note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "proposed_note_sha256": "d94150340062ec272eb3d8a04bf14f498877033c0eabea862e2914d52eaee7ab",
+      "source": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "old": "- ナイロビのデータを用いた微調整を行わずに高い精度を維持し、異なる臨床環境やハードウェア間での汎化性能が証明された。",
+      "new": "- シカゴで微調整したモデルがナイロビのデータによる微調整なしでも高い精度を維持し、検証した施設・機器間での汎化性能を示した。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82",
+      "original_note_sha256": "2b55b2f8c51209ba9f20c587b95cf507066609d6de2fae51fe2e47fd1ec1cae4",
+      "proposed_note_sha256": "84e17f3f0330a0be72914a55043c9034934a18d4847ea2c90475ac0278996de2",
+      "source": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+      "old": "description: GitHubは、開発者とAIエージェントが同時にリポジトリで作業を行う「エージェント駆動開発」の台頭に対応するため、GitHubを稼働させたままGitインフラストラクチャの再構築を進めている。2026年8月のデータでは、もっとも繁忙なリポジトリで月間約10億回のリクエストが発生しており、月間Gitアクティビティは2025年9月の2,182億イベントから2026年8月の4,738億イベントへと2倍以上に増加した。また、2026年9月のコミット数は73億8000万回に達し、前年同期の5倍以上となっている。このような状況下では、単一のエージェントのコミット応答速度がボトルネックになり、数千のエージェントが単一のリポジトリに対して並行して書き込みを行うことで書き込みスループットの要求が桁違いに増加するなどの課題が生じるため、持続的な高並行の読み書きを支える強固な基盤構築が必要とされる。\n",
+      "new": "description: GitHubは、開発者とAIエージェントが同時にリポジトリで作業を行う「エージェント駆動開発」の台頭に対応するため、GitHubを稼働させたままGitインフラストラクチャの再構築を進めている。2026年8月のデータでは、もっとも繁忙なリポジトリで月間約10億回のリクエストが発生しており、月間Gitアクティビティは2025年9月の2,182億イベントから2026年8月の4,733億イベントへと2倍以上に増加した。また、2026年9月のコミット数は73億8000万回に達し、前年同期の5倍以上となっている。このような状況下では、単一のエージェントのコミット応答速度がボトルネックになり、数千のエージェントが単一のリポジトリに対して並行して書き込みを行うことで書き込みスループットの要求が桁違いに増加するなどの課題が生じるため、持続的な高並行の読み書きを支える強固な基盤構築が必要とされる。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82",
+      "original_note_sha256": "2b55b2f8c51209ba9f20c587b95cf507066609d6de2fae51fe2e47fd1ec1cae4",
+      "proposed_note_sha256": "84e17f3f0330a0be72914a55043c9034934a18d4847ea2c90475ac0278996de2",
+      "source": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+      "old": "> GitHubは、開発者とAIエージェントが同時にリポジトリで作業を行う「エージェント駆動開発」の台頭に対応するため、GitHubを稼働させたままGitインフラストラクチャの再構築を進めている。2026年8月のデータでは、もっとも繁忙なリポジトリで月間約10億回のリクエストが発生しており、月間Gitアクティビティは2025年9月の2,182億イベントから2026年8月の4,738億イベントへと2倍以上に増加した。また、2026年9月のコミット数は73億8000万回に達し、前年同期の5倍以上となっている。このような状況下では、単一のエージェントのコミット応答速度がボトルネックになり、数千のエージェントが単一のリポジトリに対して並行して書き込みを行うことで書き込みスループットの要求が桁違いに増加するなどの課題が生じるため、持続的な高並行の読み書きを支える強固な基盤構築が必要とされる。\n",
+      "new": "> GitHubは、開発者とAIエージェントが同時にリポジトリで作業を行う「エージェント駆動開発」の台頭に対応するため、GitHubを稼働させたままGitインフラストラクチャの再構築を進めている。2026年8月のデータでは、もっとも繁忙なリポジトリで月間約10億回のリクエストが発生しており、月間Gitアクティビティは2025年9月の2,182億イベントから2026年8月の4,733億イベントへと2倍以上に増加した。また、2026年9月のコミット数は73億8000万回に達し、前年同期の5倍以上となっている。このような状況下では、単一のエージェントのコミット応答速度がボトルネックになり、数千のエージェントが単一のリポジトリに対して並行して書き込みを行うことで書き込みスループットの要求が桁違いに増加するなどの課題が生じるため、持続的な高並行の読み書きを支える強固な基盤構築が必要とされる。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
+      "original_note_sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
+      "proposed_note_sha256": "fa0bff192d25f3fa14b2c6a7d18316b5d0a92686be675bf42fa2646b00fb49fd",
+      "source": "https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/",
+      "old": "description: 機械学習における再現性は、同じ実験条件で同じ結果を得る容易さを測定するものであり、チーム間の信頼や進歩の基盤となる。しかし、正解データの多くは人間の判断に依存しており、人間は多様な視点を持つため意見が割れることが多い。AIのベンチマークにおいて、この人間の不一致を無視することは一般的な見落としであり、評価データの収集予算が限られていることもその背景にある。Google\n  Researchの研究では、「Forest vs Tree：再現可能なML評価における（N、K）トレードオフ」と題し、評価対象の項目数（N）と1項目あたりの評価者数（K）の比率に関する再現性のトレードオフを調査した。従来の研究や実践では1〜5人の評価者で十分とされることが多かったが、本研究のシミュレーターを用いた実験結果から、人間のニュアンスや意見の不一致を捉えるには10人以上の評価者が必要であることが示された。また、精度（多数決）を重視する場合は項目数を増やす方針が有効である一方、多様な意見の範囲を捉えるには評価者数を増やす方針が有効であり、指標によって最適な戦略が異なることが明らかになった。\n",
+      "new": "description: 機械学習における再現性は、同じ実験条件で同じ結果を得る容易さを測定するものであり、チーム間の信頼や進歩の基盤となる。しかし、正解データの多くは人間の判断に依存しており、人間は多様な視点を持つため意見が割れることが多い。AIのベンチマークにおいて、この人間の不一致を無視することは一般的な見落としであり、評価データの収集予算が限られていることもその背景にある。Google\n  Researchの研究では、「Forest vs Tree：再現可能なML評価における（N、K）トレードオフ」と題し、評価対象の項目数（N）と1項目あたりの評価者数（K）の比率に関する再現性のトレードオフを調査した。従来の研究や実践では1〜5人の評価者で十分とされることが多かったが、本研究のシミュレーターを用いた実験結果から、人間のニュアンスや意見の不一致を捉えるには1項目あたり10人を超える評価者が必要になる場合が多いことが示された。また、精度（多数決）を重視する場合は項目数を増やす方針が有効である一方、多様な意見の範囲を捉えるには評価者数を増やす方針が有効であり、指標によって最適な戦略が異なることが明らかになった。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
+      "original_note_sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
+      "proposed_note_sha256": "fa0bff192d25f3fa14b2c6a7d18316b5d0a92686be675bf42fa2646b00fb49fd",
+      "source": "https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/",
+      "old": "> 機械学習における再現性は、同じ実験条件で同じ結果を得る容易さを測定するものであり、チーム間の信頼や進歩の基盤となる。しかし、正解データの多くは人間の判断に依存しており、人間は多様な視点を持つため意見が割れることが多い。AIのベンチマークにおいて、この人間の不一致を無視することは一般的な見落としであり、評価データの収集予算が限られていることもその背景にある。Google Researchの研究では、「Forest vs Tree：再現可能なML評価における（N、K）トレードオフ」と題し、評価対象の項目数（N）と1項目あたりの評価者数（K）の比率に関する再現性のトレードオフを調査した。従来の研究や実践では1〜5人の評価者で十分とされることが多かったが、本研究のシミュレーターを用いた実験結果から、人間のニュアンスや意見の不一致を捉えるには10人以上の評価者が必要であることが示された。また、精度（多数決）を重視する場合は項目数を増やす方針が有効である一方、多様な意見の範囲を捉えるには評価者数を増やす方針が有効であり、指標によって最適な戦略が異なることが明らかになった。\n",
+      "new": "> 機械学習における再現性は、同じ実験条件で同じ結果を得る容易さを測定するものであり、チーム間の信頼や進歩の基盤となる。しかし、正解データの多くは人間の判断に依存しており、人間は多様な視点を持つため意見が割れることが多い。AIのベンチマークにおいて、この人間の不一致を無視することは一般的な見落としであり、評価データの収集予算が限られていることもその背景にある。Google Researchの研究では、「Forest vs Tree：再現可能なML評価における（N、K）トレードオフ」と題し、評価対象の項目数（N）と1項目あたりの評価者数（K）の比率に関する再現性のトレードオフを調査した。従来の研究や実践では1〜5人の評価者で十分とされることが多かったが、本研究のシミュレーターを用いた実験結果から、人間のニュアンスや意見の不一致を捉えるには1項目あたり10人を超える評価者が必要になる場合が多いことが示された。また、精度（多数決）を重視する場合は項目数を増やす方針が有効である一方、多様な意見の範囲を捉えるには評価者数を増やす方針が有効であり、指標によって最適な戦略が異なることが明らかになった。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
+      "original_note_sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
+      "proposed_note_sha256": "fa0bff192d25f3fa14b2c6a7d18316b5d0a92686be675bf42fa2646b00fb49fd",
+      "source": "https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/",
+      "old": "- 従来のAI評価における1〜3人、または5人という少数の評価者によるアプローチは、人間の意見のニュアンスを捉えるには不十分であることが示された。",
+      "new": "- 従来のAI評価における1〜3人、または5人という少数の評価者によるアプローチは、今回扱った主観的タスクで人間の意見のニュアンスを捉えるには、不十分になりやすいことが示された。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "original_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "proposed_note_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "old": "description: Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルのChirp\n  3から大幅に進化し、ストリーミング時の単語誤り率（WER）が4.0%、事前録音データでは2.6%を達成しています。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、最大3人のマルチスピーカー識別などの機能を備え、Google\n  AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIを通じて提供されます。また、AndroidのRamblerやmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "new": "description: Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルのChirp\n  3から大幅に進化し、Artificial Analysisの評価では、平均単語誤り率（WER）がストリーミング4.0%、非ストリーミング2.6%でした。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、事前録音音声での最大3人の話者識別などの機能を備え、Google\n  AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIでpublic previewとして提供されます。また、AndroidのRamblerやmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "original_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "proposed_note_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "old": "> Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルの[[Chirp 3]]から大幅に進化し、ストリーミング時の単語誤り率（WER）が4.0%、事前録音データでは2.6%を達成しています。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、最大3人のマルチスピーカー識別などの機能を備え、Google AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIを通じて提供されます。また、Androidの[[Rambler]]やmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "new": "> Google DeepMindは、正確でインテリジェントなリアルタイム文字起こしを実現する最新の音声認識モデル「Gemini 3.5 Transcribe」を発表しました。前モデルの[[Chirp 3]]から大幅に進化し、[[Artificial Analysis]]の評価では、平均単語誤り率（WER）がストリーミング4.0%、非ストリーミング2.6%でした。フィラーや言い直しの自動削除、カスタム語彙の適応、85言語以上の自動検出、事前録音音声での最大3人の話者識別などの機能を備え、Google AI StudioやGemini Enterprise Agent Platformなどの開発者向けAPIでpublic previewとして提供されます。また、Androidの[[Rambler]]やmacOS版Geminiアプリなどの日常的なGoogle製品にも統合され、音声による操作やファイル分析、画像生成などの高度なワークフローをサポートします。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "original_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "proposed_note_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "old": "- リアルタイムストリーミングと事前録音データの両方で高い認識精度を誇り、ストリーミングの単語誤り率は4.0%を記録しています。",
+      "new": "- Artificial Analysisの評価で、ストリーミングの平均単語誤り率は4.0%、非ストリーミングは2.6%を記録しています。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "original_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "proposed_note_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "old": "- 関数呼び出し（ファンクションコーリング）をサポートし、他の[[Geminiモデル]]と連携して音声によるファイル分析や画像生成などの複雑なタスクを実行できます。",
+      "new": "- 関数呼び出しは現在Gemini macOSアプリで利用でき、他の[[Geminiモデル]]と連携して音声によるファイル分析や画像生成などを行います。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "original_note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "proposed_note_sha256": "be039a67e1bfb07f9a60b65cf87c796fcc741dca66ea140435ce905558ab6d69",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "old": "- 85言語以上の自動検出やカスタム語彙への対応に加え、最大3人のマルチスピーカー識別をタイムスタンプ付きで提供します。",
+      "new": "- 85言語以上の自動検出やカスタム語彙に対応し、事前録音音声では最大3人の話者識別をタイムスタンプ付きで提供します。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "original_note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "proposed_note_sha256": "0c13aef1e37a3cc927b5d2a554e64981afd8040b9c83d0b5c0003a379a356397",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "old": "description: Google DeepMindは、複雑で長時間のワークフローに対応する新世代のフロンティアモデル「Gemini 4 Argon」を発表しました。本モデルは、出力トークン制限を業界最高水準の100万トークンへと大幅に拡張し、深くて多段階の推論を単一の軌跡で実行可能です。ソフトウェアエンジニアリング、法務、財務、サイバーセキュリティなどの専門分野で優れたパフォーマンスを発揮します。Google社内では量子アルゴリズムの最適化や大規模なコードベースの移行、メモリ効率化などにすでに活用されています。さらに、サイバーセキュリティ防衛では脆弱性の自動発見・修正において高い能力を示し、Wizなどのパートナー企業と連携してインフラ保護に貢献しています。悪用防止やプロンプトインジェクションへの耐性強化といったフロンティアセーフガードを徹底した上で、Fairwindプログラムに参加する信頼できるサイバーディフェンダーを皮切りに順次展開されています。\n",
+      "new": "description: Google DeepMindは、複雑で長時間のワークフローに対応する新世代のフロンティアモデル「Gemini 4 Argon」を発表しました。本モデルは、出力トークン制限を業界最高水準の100万トークンへと大幅に拡張し、深くて多段階の推論を単一の軌跡で実行可能です。ソフトウェアエンジニアリング、法務、財務、サイバーセキュリティなどの専門分野で優れたパフォーマンスを発揮します。Google社内では量子アルゴリズムの最適化や大規模なコードベースの移行、メモリ効率化などにすでに活用されています。さらに、サイバーセキュリティ防衛では脆弱性の自動発見・修正において高い能力を示し、Wizなどのパートナー企業と連携してインフラ保護に貢献しています。一般提供に向けて悪用防止やプロンプトインジェクション対策を強化しながら、Fairwindプログラムの信頼できる防御側へ段階的に展開されています。この限定提供ではサイバーガードレールを外す方針が示されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "original_note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "proposed_note_sha256": "0c13aef1e37a3cc927b5d2a554e64981afd8040b9c83d0b5c0003a379a356397",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "old": "> [[Google DeepMind]]は、複雑で長時間のワークフローに対応する新世代のフロンティアモデル「[[Gemini 4 Argon]]」を発表しました。本モデルは、出力トークン制限を業界最高水準の100万トークンへと大幅に拡張し、深くて多段階の推論を単一の軌跡で実行可能です。ソフトウェアエンジニアリング、法務、財務、サイバーセキュリティなどの専門分野で優れたパフォーマンスを発揮します。Google社内では量子アルゴリズムの最適化や大規模なコードベースの移行、メモリ効率化などにすでに活用されています。さらに、サイバーセキュリティ防衛では脆弱性の自動発見・修正において高い能力を示し、Wizなどのパートナー企業と連携してインフラ保護に貢献しています。悪用防止やプロンプトインジェクションへの耐性強化といったフロンティアセーフガードを徹底した上で、Fairwindプログラムに参加する信頼できるサイバーディフェンダーを皮切りに順次展開されています。\n",
+      "new": "> [[Google DeepMind]]は、複雑で長時間のワークフローに対応する新世代のフロンティアモデル「[[Gemini 4 Argon]]」を発表しました。本モデルは、出力トークン制限を業界最高水準の100万トークンへと大幅に拡張し、深くて多段階の推論を単一の軌跡で実行可能です。ソフトウェアエンジニアリング、法務、財務、サイバーセキュリティなどの専門分野で優れたパフォーマンスを発揮します。Google社内では量子アルゴリズムの最適化や大規模なコードベースの移行、メモリ効率化などにすでに活用されています。さらに、サイバーセキュリティ防衛では脆弱性の自動発見・修正において高い能力を示し、Wizなどのパートナー企業と連携してインフラ保護に貢献しています。一般提供に向けて悪用防止やプロンプトインジェクション対策を強化しながら、Fairwindプログラムの信頼できる防御側へ段階的に展開されています。この限定提供ではサイバーガードレールを外す方針が示されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "original_note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "proposed_note_sha256": "0c13aef1e37a3cc927b5d2a554e64981afd8040b9c83d0b5c0003a379a356397",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "old": "- サイバーセキュリティ防衛に特化して訓練されており、脆弱性の発見やパッチ適用、コードの自動解析を自律的に行えます。",
+      "new": "- サイバーセキュリティ防衛能力も高めるよう訓練されており、脆弱性の発見やパッチ適用、コードの自動解析を自律的に行えます。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "original_note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "proposed_note_sha256": "0c13aef1e37a3cc927b5d2a554e64981afd8040b9c83d0b5c0003a379a356397",
+      "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "old": "- モデルの悪用防止や間接的プロンプトインジェクション攻撃への耐性を高めるため、厳格なセーフガードと監視システムが導入されています。",
+      "new": "- 一般提供に向けて悪用防止・間接的プロンプトインジェクション対策を強化し、推論・行動の監視も導入しています。信頼された防御側にはサイバーガードレールなしで提供する方針です。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "original_note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "proposed_note_sha256": "5b80ff8c8de9ae9fdbf71513970134cd810b07318f5e71247dde732d65337b41",
+      "source": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "old": "description: Google DeepMindは、生命科学をはじめとする科学研究の仮説検証を加速させる新しいマルチエージェントAIシステム「Co-Scientist」を発表した。Nature誌に論文が掲載された同システムは、Geminiをベースに構築されており、アイデアの生成、討論、進化という一連のプロセスを繰り返すことで複雑な科学的課題に対する新規の仮説を導き出す。システムは、初期仮説の提案やマッピングを行う生成フェーズ、仮想査読やアイデアトーナメントによる批判的評価を行う討論フェーズ、トップランクの仮説を統合・洗練させる進化フェーズの3つの段階に分かれた専門エージェント群と、それらを統括する適応型プランナーであるスーパーバイザーエージェントで構成されている。さらに、ChEMBLやUniProtなどの専門データベースやAlphaFoldなどの先進モデルをツールとして統合し、文献やデータに基づいた堅牢な検証を行っている。第一三共やバイエルクロップサイエンス、米国国立研究所などの組織とも連携し、抗菌薬耐性や植物免疫、肝線維症などの課題で検証が進められており、個人研究者向けには実験的ツール「Hypothesis\n  Generation」として提供が開始される予定である。\n",
+      "new": "description: Google DeepMindは、生命科学をはじめとする科学研究の仮説検証を加速させる新しいマルチエージェントAIシステム「Co-Scientist」を発表した。Nature誌に論文が掲載された同システムは、Geminiをベースに構築されており、アイデアの生成、討論、進化という一連のプロセスを繰り返すことで複雑な科学的課題に対する新規の仮説を導き出す。システムは、初期仮説の提案やマッピングを行う生成フェーズ、仮想査読やアイデアトーナメントによる批判的評価を行う討論フェーズ、トップランクの仮説を統合・洗練させる進化フェーズの3つの段階に分かれた専門エージェント群と、それらを統括する適応型プランナーであるスーパーバイザーエージェントで構成されている。さらに、ChEMBLやUniProtなどの専門データベースを利用し、AlphaFoldのツール利用も一部の研究協力で試験しながら、文献やデータに基づいた堅牢な検証を行っている。第一三共やバイエルクロップサイエンス、米国国立研究所などの組織とも連携し、抗菌薬耐性や植物免疫、肝線維症などの課題で検証が進められており、個人研究者向けには実験的ツール「Hypothesis\n  Generation」として提供が開始される予定である。\n",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "original_note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "proposed_note_sha256": "5b80ff8c8de9ae9fdbf71513970134cd810b07318f5e71247dde732d65337b41",
+      "source": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "old": "> [[Google DeepMind]]は、生命科学をはじめとする科学研究の仮説検証を加速させる新しいマルチエージェントAIシステム「Co-Scientist」を発表した。Nature誌に論文が掲載された同システムは、[[Gemini]]をベースに構築されており、アイデアの生成、討論、進化という一連のプロセスを繰り返すことで複雑な科学的課題に対する新規の仮説を導き出す。システムは、初期仮説の提案やマッピングを行う生成フェーズ、仮想査読やアイデアトーナメントによる批判的評価を行う討論フェーズ、トップランクの仮説を統合・洗練させる進化フェーズの3つの段階に分かれた専門エージェント群と、それらを統括する適応型プランナーであるスーパーバイザーエージェントで構成されている。さらに、[[ChEMBL]]や[[UniProt]]などの専門データベースや[[AlphaFold]]などの先進モデルをツールとして統合し、文献やデータに基づいた堅牢な検証を行っている。第一三共やバイエルクロップサイエンス、米国国立研究所などの組織とも連携し、抗菌薬耐性や植物免疫、肝線維症などの課題で検証が進められており、個人研究者向けには実験的ツール「Hypothesis Generation」として提供が開始される予定である。\n",
+      "new": "> [[Google DeepMind]]は、生命科学をはじめとする科学研究の仮説検証を加速させる新しいマルチエージェントAIシステム「Co-Scientist」を発表した。Nature誌に論文が掲載された同システムは、[[Gemini]]をベースに構築されており、アイデアの生成、討論、進化という一連のプロセスを繰り返すことで複雑な科学的課題に対する新規の仮説を導き出す。システムは、初期仮説の提案やマッピングを行う生成フェーズ、仮想査読やアイデアトーナメントによる批判的評価を行う討論フェーズ、トップランクの仮説を統合・洗練させる進化フェーズの3つの段階に分かれた専門エージェント群と、それらを統括する適応型プランナーであるスーパーバイザーエージェントで構成されている。さらに、[[ChEMBL]]や[[UniProt]]などの専門データベースを利用し、[[AlphaFold]]のツール利用も一部の研究協力で試験しながら、文献やデータに基づいた堅牢な検証を行っている。第一三共やバイエルクロップサイエンス、米国国立研究所などの組織とも連携し、抗菌薬耐性や植物免疫、肝線維症などの課題で検証が進められており、個人研究者向けには実験的ツール「Hypothesis Generation」として提供が開始される予定である。\n",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "original_note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "proposed_note_sha256": "5b80ff8c8de9ae9fdbf71513970134cd810b07318f5e71247dde732d65337b41",
+      "source": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "old": "- [[ChEMBL]]や[[UniProt]]、[[AlphaFold]]などの専門データベースやAIモデルを統合し、科学文献やデータに基づいた厳格な検証を行う。",
+      "new": "- [[ChEMBL]]や[[UniProt]]を利用して科学文献・データと照合し、[[AlphaFold]]のツール利用も一部の研究協力で試験している。",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "original_note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "proposed_note_sha256": "5b80ff8c8de9ae9fdbf71513970134cd810b07318f5e71247dde732d65337b41",
+      "source": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "old": "published: '2026-05-12'",
+      "new": "published: '2026-05-19'",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "original_note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "proposed_note_sha256": "5b80ff8c8de9ae9fdbf71513970134cd810b07318f5e71247dde732d65337b41",
+      "source": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "old": "- Published: 2026-05-12",
+      "new": "- Published: 2026-05-19",
+      "expected_occurrences": 1,
+      "source_published": "2026-05-19"
+    },
+    {
+      "note_id": "45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28",
+      "original_note_sha256": "797e6eb564acbd50cd650acfc878dbe4eb24778fc52e6b403ecd62a14981b232",
+      "proposed_note_sha256": "81f90cbd0f90d9eaf1260f25b5ffd04edc0a37c23819759d836817b7c8b600a0",
+      "source": "https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/",
+      "old": "description: Google DeepMindのAlphaFoldを活用し、科学者らが「悪玉コレステロール」の形を形成する巨大タンパク質「apoB100」の構造をマッピングしました。ミズーリ大学のザカリー・バーンセン助教とキース・キャシディ助教らの研究チームは、クライオ電子顕微鏡（cryo-EM）による画像データとAlphaFoldによる原子分解能の予測を組み合わせることで、50年間未解明だった構造の解読に成功しました。apoB100は低密度リポ蛋白（LDL）の分子骨格をなし、動脈硬化性心血管疾患（ASCVD）の主要なリスク要因です。今回明らかになったケージ状のシェルやリボン状のベルトの詳細な構造は、高コレステロール血症やASCVDに対するより精密な治療法や予防法の開発につながる重要な成果です。\n",
+      "new": "description: Google DeepMindのAlphaFoldを活用し、科学者らが「悪玉コレステロール」の形を形成する巨大タンパク質「apoB100」の構造をマッピングしました。ミズーリ大学のザカリー・バーンセン助教とキース・キャシディ助教らの研究チームは、クライオ電子顕微鏡（cryo-EM）による画像データとAlphaFoldによる原子分解能の予測を組み合わせることで、50年間未解明だった構造の解読に成功しました。apoB100は低密度リポ蛋白（LDL）の分子骨格を形成し、LDLは動脈硬化性心血管疾患（ASCVD）の主要なリスク要因です。今回明らかになったケージ状のシェルやリボン状のベルトの詳細な構造は、高コレステロール血症やASCVDに対するより精密な治療法や予防法の開発につながる重要な成果です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28",
+      "original_note_sha256": "797e6eb564acbd50cd650acfc878dbe4eb24778fc52e6b403ecd62a14981b232",
+      "proposed_note_sha256": "81f90cbd0f90d9eaf1260f25b5ffd04edc0a37c23819759d836817b7c8b600a0",
+      "source": "https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/",
+      "old": "> Google DeepMindの[[AlphaFold]]を活用し、科学者らが「悪玉コレステロール」の形を形成する巨大タンパク質「[[apoB100]]」の構造をマッピングしました。ミズーリ大学のザカリー・バーンセン助教とキース・キャシディ助教らの研究チームは、[[クライオ電子顕微鏡]]（cryo-EM）による画像データと[[AlphaFold]]による原子分解能の予測を組み合わせることで、50年間未解明だった構造の解読に成功しました。[[apoB100]]は[[低密度リポ蛋白]]（LDL）の分子骨格をなし、[[動脈硬化性心血管疾患]]（ASCVD）の主要なリスク要因です。今回明らかになったケージ状のシェルやリボン状のベルトの詳細な構造は、高コレステロール血症やASCVDに対するより精密な治療法や予防法の開発につながる重要な成果です。\n",
+      "new": "> Google DeepMindの[[AlphaFold]]を活用し、科学者らが「悪玉コレステロール」の形を形成する巨大タンパク質「[[apoB100]]」の構造をマッピングしました。ミズーリ大学のザカリー・バーンセン助教とキース・キャシディ助教らの研究チームは、[[クライオ電子顕微鏡]]（cryo-EM）による画像データと[[AlphaFold]]による原子分解能の予測を組み合わせることで、50年間未解明だった構造の解読に成功しました。[[apoB100]]は[[低密度リポ蛋白]]（LDL）の分子骨格を形成し、LDLは[[動脈硬化性心血管疾患]]（ASCVD）の主要なリスク要因です。今回明らかになったケージ状のシェルやリボン状のベルトの詳細な構造は、高コレステロール血症やASCVDに対するより精密な治療法や予防法の開発につながる重要な成果です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "original_note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "proposed_note_sha256": "ea57b1e33c20e7184584a0939e0279e30815b85633bc3d0fe1f95eaa65da4ee8",
+      "source": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "old": "title: 2500件から24件へ：スター情報を除いたリポジトリスター履歴の再構築\n",
+      "new": "title: 2500件から24件へ：利用者識別情報を返さないリポジトリスター履歴の再構築\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "original_note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "proposed_note_sha256": "ea57b1e33c20e7184584a0939e0279e30815b85633bc3d0fe1f95eaa65da4ee8",
+      "source": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "old": "\n# 2500件から24件へ：スター情報を除いたリポジトリスター履歴の再構築\n",
+      "new": "\n# 2500件から24件へ：利用者識別情報を返さないリポジトリスター履歴の再構築\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "original_note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "proposed_note_sha256": "ea57b1e33c20e7184584a0939e0279e30815b85633bc3d0fe1f95eaa65da4ee8",
+      "source": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "old": "description: GitHubは、リポジトリのスター履歴APIを刷新し、個別のユーザー識別情報を返さず、データベースの過剰な負荷を抑えた新しいエンドポイントを公開した。従来、スター履歴を取得するためには全スターゲーザーのリストを取得してタイムスタンプを抽出し、個人情報を破棄するという非効率な処理が行われていた。この仕組みは、悪意ある業者によるスパムやフィッシング目的でのスクレイピングを誘発し、人気リポジトリでは膨大なデータベース処理を引き起こしていた。GitHubはスターゲーザー一覧のアクセス制限を実施した上で、ユーザー情報を含めず、最大30週間分の毎日のスター増減数を1回の単一リクエストで取得できる集計APIを開発した。この新しいエンドポイントは、データを返すだけでなく、集計前に時間フィルタリングを行うことでデータベースの処理負荷を大幅に削減している。\n",
+      "new": "description: GitHubは、リポジトリのスター履歴APIを刷新し、個別のユーザー識別情報を返さず、データベースの過剰な負荷を抑えた新しいエンドポイントを公開した。従来、スター履歴を取得するためには全スターゲーザーのリストを取得してタイムスタンプを抽出し、個人情報を破棄するという非効率な処理が行われていた。この仕組みは、悪意ある業者によるスパムやフィッシング目的でのスクレイピングを誘発し、人気リポジトリでは膨大なデータベース処理を引き起こしていた。GitHubはスターゲーザー一覧のアクセス制限を実施した上で、ユーザー情報を含めず、現在残っているスターの付与日別件数を最大30週間分を1回の単一リクエストで取得できる集計APIを開発した。この新しいエンドポイントは、データを返すだけでなく、集計前に時間フィルタリングを行うことでデータベースの処理負荷を大幅に削減している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "original_note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "proposed_note_sha256": "ea57b1e33c20e7184584a0939e0279e30815b85633bc3d0fe1f95eaa65da4ee8",
+      "source": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "old": "> GitHubは、リポジトリの[[スター履歴]]APIを刷新し、個別のユーザー識別情報を返さず、データベースの過剰な負荷を抑えた新しいエンドポイントを公開した。従来、[[スター履歴]]を取得するためには全スターゲーザーのリストを取得してタイムスタンプを抽出し、個人情報を破棄するという非効率な処理が行われていた。この仕組みは、悪意ある業者によるスパムやフィッシング目的でのスクレイピングを誘発し、人気リポジトリでは膨大なデータベース処理を引き起こしていた。GitHubはスターゲーザー一覧のアクセス制限を実施した上で、ユーザー情報を含めず、最大30週間分の毎日のスター増減数を1回の単一リクエストで取得できる集計APIを開発した。この新しいエンドポイントは、データを返すだけでなく、集計前に時間フィルタリングを行うことでデータベースの処理負荷を大幅に削減している。\n",
+      "new": "> GitHubは、リポジトリの[[スター履歴]]APIを刷新し、個別のユーザー識別情報を返さず、データベースの過剰な負荷を抑えた新しいエンドポイントを公開した。従来、[[スター履歴]]を取得するためには全スターゲーザーのリストを取得してタイムスタンプを抽出し、個人情報を破棄するという非効率な処理が行われていた。この仕組みは、悪意ある業者によるスパムやフィッシング目的でのスクレイピングを誘発し、人気リポジトリでは膨大なデータベース処理を引き起こしていた。GitHubはスターゲーザー一覧のアクセス制限を実施した上で、ユーザー情報を含めず、現在残っているスターの付与日別件数を最大30週間分を1回の単一リクエストで取得できる集計APIを開発した。この新しいエンドポイントは、データを返すだけでなく、集計前に時間フィルタリングを行うことでデータベースの処理負荷を大幅に削減している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "original_note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "proposed_note_sha256": "ea57b1e33c20e7184584a0939e0279e30815b85633bc3d0fe1f95eaa65da4ee8",
+      "source": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "old": "- 新しく構築されたAPIはユーザー識別情報を一切返さず、最大30週間分の1日あたりのスター集計数を直接提供する。",
+      "new": "- 新しく構築されたAPIはユーザー識別情報を一切返さず、現在も付与されているスターを日別に集計し、1回で最大30週間分を返す。解除済みのスターを含む履歴ではない。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "46f26b37b127c3f5afb11241128980827608f6d23baf1a45e8f562fded83b04f",
+      "original_note_sha256": "e2111fbcaf0465d775380f03d1a1ceee9f0b4c8ae467171c7f638db0f1e13ca7",
+      "proposed_note_sha256": "28bdf7eb844cf72cb8cb3542c80afe4f096dd472eab3878a0107344ed6bc1937",
+      "source": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
+      "old": "description: Google Researchは、視覚障がい者およびロービジョン（BV）のコミュニティに向けて、ストリートビューなどの街並みツールをアクセス可能にするプロトタイプ「StreetReaderAI」を発表しました。GeminiおよびMultimodal\n  Live APIを基盤とする本システムは、「AI Describer」と「AI Chat」という2つの主要なAIサブシステムを備えており、パノラマ画像や周辺の地理的情報をリアルタイムで解析します。キーボードショートカットや音声コマンドを使用した直感的な移動、およびシーンに関する対話的な質問応答を可能にしています。11名の視覚障がい者を対象としたラボスタディーでは、空間方向の把握やオブジェクトの存在確認に関する質問が多く寄せられ、AI\n  Chatの応答精度は86.3%を記録しました。今後は、自律的なジオビジュアルエージェントの展開や経路案内機能の拡張、より豊かな音声インターフェースの導入が計画されています。\n",
+      "new": "description: Google Researchは、全盲・ロービジョンの人々のコミュニティに向けて、ストリートビューなどの街並みツールをアクセス可能にするプロトタイプ「StreetReaderAI」を発表しました。GeminiおよびMultimodal\n  Live APIを基盤とする本システムは、「AI Describer」と「AI Chat」という2つの主要なAIサブシステムを備えており、パノラマ画像や周辺の地理的情報をリアルタイムで解析します。キーボードショートカットや音声コマンドを使用した直感的な移動、およびシーンに関する対話的な質問応答を可能にしています。11名の視覚障がい者を対象としたラボスタディーでは、空間方向の把握やオブジェクトの存在確認に関する質問が多く寄せられ、AI\n  Chatの応答精度は86.3%を記録しました。今後は、自律的なジオビジュアルエージェントの展開や経路案内機能の拡張、より豊かな音声インターフェースなどが今後の研究の方向性として検討されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "46f26b37b127c3f5afb11241128980827608f6d23baf1a45e8f562fded83b04f",
+      "original_note_sha256": "e2111fbcaf0465d775380f03d1a1ceee9f0b4c8ae467171c7f638db0f1e13ca7",
+      "proposed_note_sha256": "28bdf7eb844cf72cb8cb3542c80afe4f096dd472eab3878a0107344ed6bc1937",
+      "source": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
+      "old": "> Google Researchは、視覚障がい者およびロービジョン（BV）のコミュニティに向けて、ストリートビューなどの街並みツールをアクセス可能にするプロトタイプ「StreetReaderAI」を発表しました。GeminiおよびMultimodal Live APIを基盤とする本システムは、「AI Describer」と「AI Chat」という2つの主要なAIサブシステムを備えており、パノラマ画像や周辺の地理的情報をリアルタイムで解析します。キーボードショートカットや音声コマンドを使用した直感的な移動、およびシーンに関する対話的な質問応答を可能にしています。11名の視覚障がい者を対象としたラボスタディーでは、空間方向の把握やオブジェクトの存在確認に関する質問が多く寄せられ、AI Chatの応答精度は86.3%を記録しました。今後は、自律的なジオビジュアルエージェントの展開や経路案内機能の拡張、より豊かな音声インターフェースの導入が計画されています。\n",
+      "new": "> Google Researchは、全盲・ロービジョンの人々のコミュニティに向けて、ストリートビューなどの街並みツールをアクセス可能にするプロトタイプ「StreetReaderAI」を発表しました。GeminiおよびMultimodal Live APIを基盤とする本システムは、「AI Describer」と「AI Chat」という2つの主要なAIサブシステムを備えており、パノラマ画像や周辺の地理的情報をリアルタイムで解析します。キーボードショートカットや音声コマンドを使用した直感的な移動、およびシーンに関する対話的な質問応答を可能にしています。11名の視覚障がい者を対象としたラボスタディーでは、空間方向の把握やオブジェクトの存在確認に関する質問が多く寄せられ、AI Chatの応答精度は86.3%を記録しました。今後は、自律的なジオビジュアルエージェントの展開や経路案内機能の拡張、より豊かな音声インターフェースなどが今後の研究の方向性として検討されています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8",
+      "original_note_sha256": "f0997538df9f30cf7ba9e9e0548a8b6a4a2bb8f6c08e27388e38b34d1c8135f1",
+      "proposed_note_sha256": "9e0f782768c03729b325781286dd79bbe4596b5c40a2ceef9618bd77e205d370",
+      "source": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "old": "- 約816Bパラメータを持つ混合専門家（MoE）モデルの[[Muse Spark Open]]を4台の[[Mac Studio]]クラスタで動かし、36トークン/秒以上の生成速度を達成する。",
+      "new": "- 816BのMoEモデル[[Muse Spark Open]]をNVFP4量子化し、4台の[[M5 Ultra]]搭載[[Mac Studio]]でテンソル並列実行した測定では、8,192 tokenの文脈で36.73 token/秒を記録した。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "original_note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "proposed_note_sha256": "d07710492a1da1c31ede4178df155f5f084b6090028ab3eb8684ed064a3139e2",
+      "source": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "old": "description: Citrix NetScalerの重大な脆弱性を契機に、インターネットに公開されたログインページが攻撃対象になる問題が浮き彫りになりました。緊急パッチの適用は不可欠ですが、更新作業にはダウンタイムや業務中断のリスクが伴います。WAFによる一時的な保護や、AIによる新種攻撃の迅速化を考慮すると、単一のソフトウェア不具合が致命的なセキュリティ問題につながらない多層防御が重要になります。Cloudflare\n  Accessなどのゼロトラストポリシーを認証サーバーの手前に配置することで、未認証のリクエストや既知の脆弱性を突く攻撃からゲートウェイを守ることができます。さらに、Cloudflare\n  Tunnelや認証済みオリジン プルを用いてオリジン接続を制限し、不正なバイパスを防ぐことが不可欠です。また、仮想デスクトップ環境へのアクセス制御の拡張や、不要なVDIの廃止・ブラウザベースの接続への移行も有効な対策となります。公開が必要な認証サービスを精査し、アクセス制御とオリジン保護を組み合わせることで、将来の脅威に対する耐性を高めることが可能です。\n",
+      "new": "description: Citrix NetScalerの重大な脆弱性を契機に、インターネットに公開されたログインページが攻撃対象になる問題が浮き彫りになりました。緊急パッチの適用は不可欠ですが、更新作業にはダウンタイムや業務中断のリスクが伴います。WAFによる一時的な保護や、AIによる新種攻撃の迅速化を考慮すると、単一のソフトウェア不具合が致命的なセキュリティ問題につながらない多層防御が重要になります。Cloudflare\n  AccessなどをWeb認証経路の手前に配置して到達を制限します。ただし、DTLSなどの非Web経路や既に侵害された機器は別途の露出確認・更新・調査が必要です。さらに、Cloudflare\n  Tunnel、または適切なネットワーク制限とオリジン認証を組み合わせ、直接接続による迂回を防ぎます。また、仮想デスクトップ環境へのアクセス制御の拡張や、不要なVDIの廃止・ブラウザベースの接続への移行も有効な対策となります。公開が必要な認証サービスを精査し、アクセス制御とオリジン保護を組み合わせることで、将来の脅威に対する耐性を高めることが可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "original_note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "proposed_note_sha256": "d07710492a1da1c31ede4178df155f5f084b6090028ab3eb8684ed064a3139e2",
+      "source": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "old": "> [[Citrix NetScaler]]の重大な脆弱性を契機に、インターネットに公開されたログインページが攻撃対象になる問題が浮き彫りになりました。緊急パッチの適用は不可欠ですが、更新作業にはダウンタイムや業務中断のリスクが伴います。WAFによる一時的な保護や、AIによる新種攻撃の迅速化を考慮すると、単一のソフトウェア不具合が致命的なセキュリティ問題につながらない多層防御が重要になります。[[Cloudflare Access]]などのゼロトラストポリシーを認証サーバーの手前に配置することで、未認証のリクエストや既知の脆弱性を突く攻撃からゲートウェイを守ることができます。さらに、[[Cloudflare Tunnel]]や認証済みオリジン プルを用いてオリジン接続を制限し、不正なバイパスを防ぐことが不可欠です。また、仮想デスクトップ環境へのアクセス制御の拡張や、不要なVDIの廃止・ブラウザベースの接続への移行も有効な対策となります。公開が必要な認証サービスを精査し、アクセス制御とオリジン保護を組み合わせることで、将来の脅威に対する耐性を高めることが可能です。\n",
+      "new": "> [[Citrix NetScaler]]の重大な脆弱性を契機に、インターネットに公開されたログインページが攻撃対象になる問題が浮き彫りになりました。緊急パッチの適用は不可欠ですが、更新作業にはダウンタイムや業務中断のリスクが伴います。WAFによる一時的な保護や、AIによる新種攻撃の迅速化を考慮すると、単一のソフトウェア不具合が致命的なセキュリティ問題につながらない多層防御が重要になります。[[Cloudflare Access]]などをWeb認証経路の手前に配置して到達を制限します。ただし、DTLSなどの非Web経路や既に侵害された機器は別途の露出確認・更新・調査が必要です。さらに、[[Cloudflare Tunnel]]、または適切なネットワーク制限とオリジン認証を組み合わせ、直接接続による迂回を防ぎます。また、仮想デスクトップ環境へのアクセス制御の拡張や、不要なVDIの廃止・ブラウザベースの接続への移行も有効な対策となります。公開が必要な認証サービスを精査し、アクセス制御とオリジン保護を組み合わせることで、将来の脅威に対する耐性を高めることが可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "original_note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "proposed_note_sha256": "d07710492a1da1c31ede4178df155f5f084b6090028ab3eb8684ed064a3139e2",
+      "source": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "old": "- [[Cloudflare Access]]などのゼロトラストポリシーを認証の前に配置し、未認証のリクエストがサーバーに到達するのを防ぐ。",
+      "new": "- [[Cloudflare Access]]などのポリシーをWeb認証経路の手前に配置し、未認証のリクエストがサーバーに到達するのを防ぐ。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "original_note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "proposed_note_sha256": "d07710492a1da1c31ede4178df155f5f084b6090028ab3eb8684ed064a3139e2",
+      "source": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "old": "- [[Cloudflare Tunnel]]やオリジン側でのトークン検証により、フロントの防御をバイパスする直接接続を遮断する。",
+      "new": "- [[Cloudflare Tunnel]]、またはネットワーク制限とオリジン認証を組み合わせて迂回を防ぐ。Access tokenの検証はその補助であり、DTLS等の別経路を自動で保護するものではない。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "original_note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "proposed_note_sha256": "d8488b9d34188c77217834d00fad1e827439f80bb9c5f8689ff217cb4e07546e",
+      "source": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "old": "description: SymptomAIは、日常の症状評価や鑑別診断（DDx）の実施を目的とした会話型AIエージェントの研究成果である。Google Researchなどのチームにより、13,917人の参加者を対象とした大規模な無作為化調査が実施され、Gemini\n  Flash 2.0を基盤とするAIエージェントが患者への問診と鑑別診断の生成を行った。臨床専門家による評価の結果、SymptomAIが生成した鑑別診断は従来の臨床医による診断と比較して、50%以上のケースで品質上位と評価され、トップ5の正解率でも優れていたことが示された。また、エージェントが能動的に追加の質問を行うプロンプト戦略を採用することで、情報収集が促進され診断精度が向上した。さらに、SymptomAIによる診断結果は参加者のFitbitウェアラブルデバイスから得られた生体信号の変化とも相関を示し、感染症の流行期における生理学的トレンドと一致することが確認された。本研究は研究分析のためのものであり臨床診断を置き換えるものではないが、遠隔での症状評価や大規模な健康分析におけるAIの可能性を示している。\n",
+      "new": "description: SymptomAIは、日常の症状評価や鑑別診断（DDx）の実施を目的とした会話型AIエージェントの研究成果である。Google Researchなどのチームにより、13,917人の参加者を対象とした大規模な無作為化調査が実施され、Gemini\n  Flash 2.0を基盤とするAIエージェントが患者への問診と鑑別診断の生成を行った。3名の認定臨床医が同じ静的な会話記録を基に作成した鑑別診断との盲検比較では、SymptomAIの候補が50%以上のケースで好まれた。Top-5精度も高かったが、正解ラベルは参加者が後から自己申告した医療者の診断であり、比較医は追加問診を行っていない。また、エージェントが能動的に追加の質問を行うプロンプト戦略を採用することで、情報収集が促進され診断精度が向上した。さらに、SymptomAIによる診断結果は参加者のFitbitウェアラブルデバイスから得られた生体信号の変化とも相関を示し、症状報告日に向けて現れる生理学的変化と対応することが確認された。本研究は研究分析のためのものであり臨床診断を置き換えるものではないが、遠隔での症状評価や大規模な健康分析におけるAIの可能性を示している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "original_note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "proposed_note_sha256": "d8488b9d34188c77217834d00fad1e827439f80bb9c5f8689ff217cb4e07546e",
+      "source": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "old": "> SymptomAIは、日常の症状評価や鑑別診断（DDx）の実施を目的とした会話型AIエージェントの研究成果である。Google Researchなどのチームにより、13,917人の参加者を対象とした大規模な無作為化調査が実施され、Gemini Flash 2.0を基盤とするAIエージェントが患者への問診と鑑別診断の生成を行った。臨床専門家による評価の結果、SymptomAIが生成した鑑別診断は従来の臨床医による診断と比較して、50%以上のケースで品質上位と評価され、トップ5の正解率でも優れていたことが示された。また、エージェントが能動的に追加の質問を行うプロンプト戦略を採用することで、情報収集が促進され診断精度が向上した。さらに、SymptomAIによる診断結果は参加者のFitbitウェアラブルデバイスから得られた生体信号の変化とも相関を示し、感染症の流行期における生理学的トレンドと一致することが確認された。本研究は研究分析のためのものであり臨床診断を置き換えるものではないが、遠隔での症状評価や大規模な健康分析におけるAIの可能性を示している。\n",
+      "new": "> SymptomAIは、日常の症状評価や鑑別診断（DDx）の実施を目的とした会話型AIエージェントの研究成果である。Google Researchなどのチームにより、13,917人の参加者を対象とした大規模な無作為化調査が実施され、Gemini Flash 2.0を基盤とするAIエージェントが患者への問診と鑑別診断の生成を行った。3名の認定臨床医が同じ静的な会話記録を基に作成した鑑別診断との盲検比較では、SymptomAIの候補が50%以上のケースで好まれた。Top-5精度も高かったが、正解ラベルは参加者が後から自己申告した医療者の診断であり、比較医は追加問診を行っていない。また、エージェントが能動的に追加の質問を行うプロンプト戦略を採用することで、情報収集が促進され診断精度が向上した。さらに、SymptomAIによる診断結果は参加者のFitbitウェアラブルデバイスから得られた生体信号の変化とも相関を示し、症状報告日に向けて現れる生理学的変化と対応することが確認された。本研究は研究分析のためのものであり臨床診断を置き換えるものではないが、遠隔での症状評価や大規模な健康分析におけるAIの可能性を示している。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "original_note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "proposed_note_sha256": "d8488b9d34188c77217834d00fad1e827439f80bb9c5f8689ff217cb4e07546e",
+      "source": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "old": "- 13,917人の参加者を対象にした大規模な無作為化調査において、SymptomAIの鑑別診断は臨床専門家から50%以上のケースで従来の医師よりも高く評価された。",
+      "new": "- 13,917人を登録した研究の盲検評価で、SymptomAIの候補は50%以上のケースで好まれた。比較は同じ静的記録を読んだ医師の鑑別診断であり、比較医は追加問診を行えなかった。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "original_note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "proposed_note_sha256": "d8488b9d34188c77217834d00fad1e827439f80bb9c5f8689ff217cb4e07546e",
+      "source": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "old": "- SymptomAIが特定した呼吸器感染症などの診断は、Fitbitウェアラブルデバイスから得られた生体信号の変化トレンドと一致する相関を示した。",
+      "new": "- SymptomAIの最上位候補が呼吸器感染症だった集団で、症状報告日に向けたFitbit生体信号の変化を観察した。これは確定診断の検証ではなく、集団レベルの相関である。",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0",
+      "original_note_sha256": "d527ca732f2c64bb2f07fae1f7565efd5c916dbc6e2b85865fc5647b7370798f",
+      "proposed_note_sha256": "380ed41b44d9fcfe8241c163ef08e068d8955606aaa45c284d2003f8848a40a1",
+      "source": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/",
+      "old": "description: Google Researchは、機械学習における継続的学習の課題を克服するための新しいパラダイム「ネステッド・ラーニング（Nested\n  Learning）」を発表しました。従来の深層学習では、モデルのアーキテクチャと最適化アルゴリズムは別々に扱われてきましたが、ネステッド・ラーニングではこれらを「複数のレベルで最適化される相互接続されたシステム」として統一的に捉えます。各コンポーネントは独自の更新頻度（時間スケール）とコンテキストを持ち、これにより破滅的忘却を防ぎつつ新しい知識を継続的に獲得可能にします。この概念を実証するため、研究チームは自己修正型リカレントアーキテクチャ「Hope」を開発しました。Hopeは、連続的メモリシステム（CMS）と無限の学習レベルを組み合わせることで、言語モデリングや長文脈タスク、常識推論において、従来のTransformerや他の最先端モデルを凌駕する性能と優れたメモリ管理能力を示しています。\n",
+      "new": "description: Google Researchは、機械学習における継続的学習の課題を克服するための新しいパラダイム「ネステッド・ラーニング（Nested\n  Learning）」を発表しました。従来の深層学習では、モデルのアーキテクチャと最適化アルゴリズムは別々に扱われてきましたが、ネステッド・ラーニングではこれらを「複数のレベルで最適化される相互接続されたシステム」として統一的に捉えます。各コンポーネントは独自の更新頻度（時間スケール）とコンテキストを持ち、この設計により、破滅的忘却を抑えて新しい知識を取り込む継続学習を目指します。この概念を実証するため、研究チームは自己修正型リカレントアーキテクチャ「Hope」を開発しました。Hopeは、連続的メモリシステム（CMS）と無限の学習レベルを組み合わせることで、言語モデリングや長文脈タスク、常識推論において、従来のTransformerや他の最先端モデルを凌駕する性能と優れたメモリ管理能力を示しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0",
+      "original_note_sha256": "d527ca732f2c64bb2f07fae1f7565efd5c916dbc6e2b85865fc5647b7370798f",
+      "proposed_note_sha256": "380ed41b44d9fcfe8241c163ef08e068d8955606aaa45c284d2003f8848a40a1",
+      "source": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/",
+      "old": "> Google Researchは、機械学習における継続的学習の課題を克服するための新しいパラダイム「ネステッド・ラーニング（Nested Learning）」を発表しました。従来の深層学習では、モデルのアーキテクチャと最適化アルゴリズムは別々に扱われてきましたが、ネステッド・ラーニングではこれらを「複数のレベルで最適化される相互接続されたシステム」として統一的に捉えます。各コンポーネントは独自の更新頻度（時間スケール）とコンテキストを持ち、これにより破滅的忘却を防ぎつつ新しい知識を継続的に獲得可能にします。この概念を実証するため、研究チームは自己修正型リカレントアーキテクチャ「Hope」を開発しました。Hopeは、連続的メモリシステム（CMS）と無限の学習レベルを組み合わせることで、言語モデリングや長文脈タスク、常識推論において、従来のTransformerや他の最先端モデルを凌駕する性能と優れたメモリ管理能力を示しています。\n",
+      "new": "> Google Researchは、機械学習における継続的学習の課題を克服するための新しいパラダイム「ネステッド・ラーニング（Nested Learning）」を発表しました。従来の深層学習では、モデルのアーキテクチャと最適化アルゴリズムは別々に扱われてきましたが、ネステッド・ラーニングではこれらを「複数のレベルで最適化される相互接続されたシステム」として統一的に捉えます。各コンポーネントは独自の更新頻度（時間スケール）とコンテキストを持ち、この設計により、破滅的忘却を抑えて新しい知識を取り込む継続学習を目指します。この概念を実証するため、研究チームは自己修正型リカレントアーキテクチャ「Hope」を開発しました。Hopeは、連続的メモリシステム（CMS）と無限の学習レベルを組み合わせることで、言語モデリングや長文脈タスク、常識推論において、従来のTransformerや他の最先端モデルを凌駕する性能と優れたメモリ管理能力を示しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a",
+      "original_note_sha256": "15f5e733457686023835b919323c1e3a98ddff5e0d3ee9e6e530abb64bc309e5",
+      "proposed_note_sha256": "a7ebc7ffbd6ac69b631ecb26721b3351867399ff369ba622fe612c5b29202048",
+      "source": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
+      "old": "description: 汎用AIモデルの進化を支えたインターネット上のデータが枯渇またはアクセス困難になりつつある中、専門的かつプライバシーに配慮した応用領域でのAIモデル特化には合成データが不可欠である。しかし、従来の生成手法はスケーラビリティ、説明可能性、制御性に欠け、サンプル単位での最適化にとどまるという課題があった。これに対しGoogle\n  Researchは、第一原理からデータセット全体を構築する推論ファーストのフレームワーク「Simula」を発表した。Simulaは、合成データ生成をメカニズムデザインの問題として再定義し、グローバル多様性、ローカル多様性、複雑化、品質チェックという4つの制御可能な軸に分解する。具体的には、再帰的展開による階層的タクソノミの構築、メタプロンプトによるシナリオの多重インスタンス化、難易度を調整する複雑化ステップ、二重批判ループによる品質検証を組み合わせる。さらに、タクソノミカバレッジやキャリブレーションされた複雑度スコアリングといった推論ベースの評価指標を導入し、データセットの評価を厳密に行う。サイバーセキュリティ、法務推論、数学、多言語学問知識など5つのドメインでの評価結果から、メカニズムデザインの不可欠性、モデルとコンテキストに応じた最適なデータ設計の重要性、そして質が量に勝るスケーリング則の存在が示されている。Simulaは、GemmaエコシステムやGeminiの安全性分類器、Androidの詐欺検出機能など、Googleの多様な実世界アプリケーションにおいて基盤的なデータエンジンとして活用されている。\n",
+      "new": "description: 汎用AIモデルは豊富なインターネットデータで進化してきたが、専門的・希少・プライバシーに配慮した応用では必要なデータが不足したり入手困難だったりするため、合成データの活用が重要になる。しかし、従来の生成手法はスケーラビリティ、説明可能性、制御性に欠け、サンプル単位での最適化にとどまるという課題があった。これに対しGoogle\n  Researchは、第一原理からデータセット全体を構築する推論ファーストのフレームワーク「Simula」を発表した。Simulaは、合成データ生成をメカニズムデザインの問題として再定義し、グローバル多様性、ローカル多様性、複雑化、品質チェックという4つの制御可能な軸に分解する。具体的には、再帰的展開による階層的タクソノミの構築、メタプロンプトによるシナリオの多重インスタンス化、難易度を調整する複雑化ステップ、二重批判ループによる品質検証を組み合わせる。さらに、タクソノミカバレッジやキャリブレーションされた複雑度スコアリングといった推論ベースの評価指標を導入し、データセットの評価を厳密に行う。サイバーセキュリティ、法務推論、数学、多言語学問知識など5つのドメインでの評価結果から、メカニズムデザインの不可欠性、モデルとコンテキストに応じた最適なデータ設計の重要性、そして質が量に勝るスケーリング則の存在が示されている。Simulaは、GemmaエコシステムやGeminiの安全性分類器、Androidの詐欺検出機能など、Googleの多様な実世界アプリケーションにおいて基盤的なデータエンジンとして活用されている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "note_id": "4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a",
+      "original_note_sha256": "15f5e733457686023835b919323c1e3a98ddff5e0d3ee9e6e530abb64bc309e5",
+      "proposed_note_sha256": "a7ebc7ffbd6ac69b631ecb26721b3351867399ff369ba622fe612c5b29202048",
+      "source": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
+      "old": "> 汎用AIモデルの進化を支えたインターネット上のデータが枯渇またはアクセス困難になりつつある中、専門的かつプライバシーに配慮した応用領域でのAIモデル特化には合成データが不可欠である。しかし、従来の生成手法はスケーラビリティ、説明可能性、制御性に欠け、サンプル単位での最適化にとどまるという課題があった。これに対しGoogle Researchは、第一原理からデータセット全体を構築する推論ファーストのフレームワーク「[[Simula]]」を発表した。[[Simula]]は、合成データ生成をメカニズムデザインの問題として再定義し、グローバル多様性、ローカル多様性、複雑化、品質チェックという4つの制御可能な軸に分解する。具体的には、再帰的展開による階層的タクソノミの構築、メタプロンプトによるシナリオの多重インスタンス化、難易度を調整する複雑化ステップ、二重批判ループによる品質検証を組み合わせる。さらに、タクソノミカバレッジやキャリブレーションされた複雑度スコアリングといった推論ベースの評価指標を導入し、データセットの評価を厳密に行う。サイバーセキュリティ、法務推論、数学、多言語学問知識など5つのドメインでの評価結果から、メカニズムデザインの不可欠性、モデルとコンテキストに応じた最適なデータ設計の重要性、そして質が量に勝るスケーリング則の存在が示されている。[[Simula]]は、GemmaエコシステムやGeminiの安全性分類器、Androidの詐欺検出機能など、Googleの多様な実世界アプリケーションにおいて基盤的なデータエンジンとして活用されている。\n",
+      "new": "> 汎用AIモデルは豊富なインターネットデータで進化してきたが、専門的・希少・プライバシーに配慮した応用では必要なデータが不足したり入手困難だったりするため、合成データの活用が重要になる。しかし、従来の生成手法はスケーラビリティ、説明可能性、制御性に欠け、サンプル単位での最適化にとどまるという課題があった。これに対しGoogle Researchは、第一原理からデータセット全体を構築する推論ファーストのフレームワーク「[[Simula]]」を発表した。[[Simula]]は、合成データ生成をメカニズムデザインの問題として再定義し、グローバル多様性、ローカル多様性、複雑化、品質チェックという4つの制御可能な軸に分解する。具体的には、再帰的展開による階層的タクソノミの構築、メタプロンプトによるシナリオの多重インスタンス化、難易度を調整する複雑化ステップ、二重批判ループによる品質検証を組み合わせる。さらに、タクソノミカバレッジやキャリブレーションされた複雑度スコアリングといった推論ベースの評価指標を導入し、データセットの評価を厳密に行う。サイバーセキュリティ、法務推論、数学、多言語学問知識など5つのドメインでの評価結果から、メカニズムデザインの不可欠性、モデルとコンテキストに応じた最適なデータ設計の重要性、そして質が量に勝るスケーリング則の存在が示されている。[[Simula]]は、GemmaエコシステムやGeminiの安全性分類器、Androidの詐欺検出機能など、Googleの多様な実世界アプリケーションにおいて基盤的なデータエンジンとして活用されている。\n",
+      "expected_occurrences": 1
     }
   ]
 }

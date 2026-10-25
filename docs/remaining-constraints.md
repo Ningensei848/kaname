@@ -9,7 +9,7 @@
 | R03 / cache・差分build・DB | 現公開版と現在のGCSで、全件整合性/前後catalogを保持した工程時間・転送・メモリを測り、導入条件を判定する。制約が確認されれば同じgateで改善する | 評価完了、現規模では追加基盤を見送る。全state/runsを含む監査対象GCS 1,315 object/7,881,765 bytes、603成功行、最大RSS115,368 KiB。16並列load5.690秒、全体7.695秒、index349,566 bytes/0.006秒。全Web build/全受入3回も同じartifact/coverageで成功、全体中央値211.307秒。DB・run間cache・差分HTMLの導入が必要になる制約は現在未確認。下記の測定を基点に再判断する |
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
 | R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
-| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を77件実施し、36件に訂正候補。36件のhash固定計画を321件の公開snapshotで検証した。先の20件は実GCS読取り後のメモリ上の適用/監査も成功。追加16件の実GCS監査はADC再認証待ち。本番反映と残り244件は未完了。以下の確認記録を参照 |
+| R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を101件実施し、50件に訂正候補。50件のhash固定計画を321件のローカルsnapshotで検証した。ADC再認証後、全50件の実GCS読取りに基づくメモリ上の適用/監査とindex/usage/費用集計の保持も確認。本番反映と残り220件は未完了。以下の確認記録を参照 |
 | R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
@@ -101,11 +101,26 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 - Note `3452bb14aa1949796352c3eea64bc678d4b0572583d9565ec0efd47b8cac7548`：[原典](https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/)。原典の表示日・構造化データは2025年12月19日であり、元Noteの12月16日を訂正する。
 - Note `34a7e3ef42756700cd0c50ead44c3cf3b33cc1249f7ffbecf04367c5959c9981`：[原典](https://deepmind.google/blog/uniting-biological-toolkits-for-a-new-approach-to-als/)。原典の表示日・構造化データは2026年5月19日であり、元Noteの5月16日を訂正する。
 
-[訂正文案](note-reviews/2026-10-25-corrections.json)の36件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+- Note `355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc`：[原典](https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/)。MAE4.18日は妊娠16〜36週の385人を対象とした結果であり、妊娠期間を問わない値としない。 ナイロビのlocal tuningはないが、モデルはシカゴ120人で微調整している。全く未調整の汎化を証明したとは記述しない。
+- Note `3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82`：[原典](https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/)。原典の473.3 billion eventsは4,733億であり、4,738億を訂正する。
+- Note `393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314`：[原典](https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/)。10人以上が一律に必要という結論ではなく、主観的タスクで1項目あたり10人を超える評価者が必要になる場合が多いとする。
+- Note `39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c`：[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/)。WER4.0%/2.6%はArtificial Analysisの評価値であり、別評価や全利用環境で共通の誤り率としない。 話者識別は事前録音音声、関数呼び出しは現在Gemini macOSに限定され、開発者APIはpublic previewである。
+- Note `3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6`：[原典](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/)。一般提供に向けた安全対策の強化と、信頼された防御側にサイバーガードレールなしで限定提供する方針を分ける。 広い専門業務向けの汎用フロンティアモデルであり、サイバー防衛だけに特化したモデルとしない。
+- Note `4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370`：[原典](https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/)。AlphaFoldのツール利用は一部の研究協力での試験であり、専門データベースと同じく全般に統合済みとはしない。 原典の表示日・構造化データは2026年5月19日であり、元Noteの5月12日を訂正する。
+- Note `45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28`：[原典](https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/)。ASCVDの主要リスク要因と原典が説明している対象はLDLであり、apoB100の構造説明と主語を分ける。
+- Note `468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e`：[原典](https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/)。APIは現在残っているスターの付与日別件数を返す。解除済みスターを含む増減履歴ではない。 除かれるのはスター件数や日付でなく利用者識別情報であり、タイトルのスター情報を除いたを修正する。
+- Note `46f26b37b127c3f5afb11241128980827608f6d23baf1a45e8f562fded83b04f`：[原典](https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/)。視覚障がい者・ロービジョンのコミュニティをBVとする不正確な略語を使わず、対象を日本語で明記する。 自律探索・経路案内・豊かな音声は今後の研究機会として検討されており、提供を計画済みと断定しない。
+- Note `4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8`：[原典](https://machinelearning.apple.com/research/mlx-distributed-inference)。Muse Spark Openの36 token/秒超はNVFP4量子化・M5 Ultra搭載4台のテンソル並列・8,192 token文脈での測定であり、その条件を明記する。
+- Note `4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986`：[原典](https://blog.cloudflare.com/protect-your-netscaler-gateway/)。Accessが保護するWeb認証経路とDTLS等の別経路を分け、既存侵害の除去や全Gateway経路の保護まで保証しない。 オリジンtoken検証は上流のネットワーク制限等を補助するものであり、それだけで迂回経路を遮断できるとはしない。
+- Note `4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3`：[原典](https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/)。比較医は静的な会話記録を読む3名で追加問診ができず、Top-5の正解ラベルも参加者による後日の医療者診断の自己申告である。対面診療全般に対する優位としない。 Fitbitの対応はAI候補で分類した集団の症状報告日へ向かう変化であり、感染症の流行期や確定診断の検証としない。
+- Note `4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0`：[原典](https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/)。破滅的忘却を防いで継続学習を一般に達成済みとする表現を、忘却を抑える設計を目指す研究として限定する。
+- Note `4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a`：[原典](https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/)。原典は専門的・希少・privacy-sensitiveな応用データの不足を論じており、インターネット全体のデータが枯渇しつつあるとは述べていない。
 
-原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。20件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど20 Note変更を確認した。訂正後datasetは `18935841deb0aca80a8b46c2d0d126ef26145feb4e3249e1d609ebfe14fe6fb1`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
+[訂正文案](note-reviews/2026-10-25-corrections.json)の50件を `config/note-corrections/` の実行可能計画へ変換した。元Note hash・置換後テキストhash・出典・置換数を固定し、訂正履歴のfrontmatterと可視footerを付けるため、最終Note hashは文案hashと異なる。訂正者は `automated_assistant` とし、人による専門家確認とは表示しない。
+
+原receiptの全bytesを非公開の訂正履歴へ保持し、durable intentによりreceipt/Noteの片側保存から追加生成なしで復旧する。生成日時/モデル/本文hash・安定ID・index・runs/usageは維持する。50件の適用は実GCSを読んだメモリ上のsnapshotだけで実施し、index/runs/usageと費用集計が不変、監査成功、321件中ちょうど50 Note変更を確認した。訂正後datasetは `b4be9705aff5bd6565e6350919e64c6f73487608e1bd8a901c95c6b7afa3984f`。ローカルGit/組立てたReleaseの復元bytesも一致した。実GCS・公開content/Release/Pagesへの訂正適用は未実施である。
 
 
-追加16件は、先の20件の公開snapshotを入力に純粋なNote検証を通し、計36件を訂正した321件のローカルGit/組立てたReleaseのbytes一致を確認した。datasetは `3824e536c9db46b26722f9c855cae2059b22104fecb57e07bff4a9a87881cfa1`。元の生成情報と既存20件の結果bytesは維持した。ADCと既存gcloudの認証は再認証を要し、新しいGCS読取りは失敗したため、追加16件の現在のreceipt/index/usage監査まで済んだとはしない。認証設定の変更や実GCS書込みは行っていない。
+ADC再認証後、先に公開snapshotのみで検証していた16件も含めて実GCSの読取りに成功した。全50件をメモリ上で適用/監査し、従来の公開snapshotで検証した結果bytesとの一致を確認した。実GCS・main・本番公開への変更は未実施である。
 
-Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。77件の結果を全321件へ一般化しない。
+Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。101件の結果を全321件へ一般化しない。

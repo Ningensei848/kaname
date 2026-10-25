@@ -10,7 +10,7 @@ runごとの計数・commit・費用・測定結果は[archive索引](archive/RE
 | standard収集・保存 | 本番稼働。usageの部分欠落/中断後復旧、元価格/日付、receipt→Note→indexの保存、障害時の後続課金停止を回帰検証 |
 | Batch | 画像型/候補外IDを修正。実Note1件/画像3件の保存/公開、課金1回、追加生成0の回収・再実行まで受入済み |
 | 本文・画像 | 有効7 source/9レイアウトの合成corpus。Google Research/DeepMind/追加4社の実本文検査、GlucoFM2図の限定補完と実配信、新規Batchの画像選択を受入 |
-| 原典照合と訂正 | 77/321件を原典比較。36件のhash固定計画、元receipt履歴、可視訂正記録、保存中断/変更競合/再実行/後続生成停止を回帰検証。実GCS読取り後のローカルsnapshotで先の20件はusage不変・監査成功。追加16件は公開snapshotのみで検証し実GCS監査はADC再認証待ち。本番反映と残り244件の原典比較は未完了 |
+| 原典照合と訂正 | 101/321件を原典比較。50件のhash固定計画、元receipt履歴、可視訂正記録、保存中断/変更競合/再実行/後続生成停止を回帰検証。ADC再認証後、全50件を実GCS読取り後のローカルsnapshotで適用し、index/usage/費用集計不変・監査成功。本番反映と残り220件の原典比較は未完了 |
 | 新規記事限定・並列処理 | 成功URLの本文HTTP省略、明示recheck、receipt/Batch回収、生成枠でfetch停止を受入。fetch/convertはbounded・入力順、課金/保存は単一writer |
 | Source Health | 読取りCLI・本番GCS受入済み。未処理sourceや全体successでstreakをresetしない |
 | 公開snapshot/Git | Note/receipt/index・元Markdown bytes・安定ID・manifest/dataset・世代/catalogを検査。競合・不完全出力・余分なファイルを拒否。実content/submodule互換を受入 |

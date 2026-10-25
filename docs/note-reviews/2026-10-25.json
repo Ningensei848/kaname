@@ -1378,6 +1378,472 @@
       }
     },
     {
+      "note_id": "355eaaadd37b3ea5ab0635130d0557869b8f5f03ac45b4f20d9622c2e5c4c6fc",
+      "note_sha256": "8edf4da53c0c1b3aace7b28bf79d5630bfa821093445883fb5d10336b26b387b",
+      "canonical_url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_population",
+          "finding": "MAE4.18日は妊娠16〜36週の385人を対象とした結果であり、妊娠期間を問わない値としない。"
+        },
+        {
+          "kind": "adaptation_condition",
+          "finding": "ナイロビのlocal tuningはないが、モデルはシカゴ120人で微調整している。全く未調整の汎化を証明したとは記述しない。"
+        }
+      ],
+      "comparison": "Primary supports blind sweeps/mobile execution and 4.18 versus 4.48-day noninferiority. The primary cohort is 385 participants at 16–36 gestational weeks. The model was tuned on 120 Chicago participants before both sites were tested; Nairobi alone had no local fine-tuning. Clarify those training/evaluation conditions and avoid treating two-site evidence as universal proof of generalization. Mortality reduction remains potential rather than observed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3675e7aeecfebdb82fc4fcd2a31b2c772965e66935c67ae19d5740305f7cfc82",
+      "note_sha256": "2b55b2f8c51209ba9f20c587b95cf507066609d6de2fae51fe2e47fd1ec1cae4",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "numeric_transcription",
+          "finding": "原典の473.3 billion eventsは4,733億であり、4,738億を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports the ongoing Git rebuild, busiest-repository roughly one-billion monthly requests, 218.2B starting monthly events and 7.38B September commits. The ending activity number is 473.3B, but the Note says 473.8B (4,738億). Correct that numeric transcription. The Note does not claim the new architecture is fully deployed or independently certify internal benchmarks.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "393c90cae865ae86b0e3b364ce0f6ed794eb109393193a952676b51c178b9314",
+      "note_sha256": "b55fd9f7d71545aeafd4630864e64338e415d31a2b0317ea5e042dd5d5ee12fc",
+      "canonical_url": "https://research.google/blog/building-better-ai-benchmarks-how-many-raters-are-enough/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "recommendation_scope",
+          "finding": "10人以上が一律に必要という結論ではなく、主観的タスクで1項目あたり10人を超える評価者が必要になる場合が多いとする。"
+        }
+      ],
+      "comparison": "Primary supports N/K simulation tradeoffs, subjective-rater disagreement, majority-accuracy breadth versus distributional-nuance depth and efficient finite budgets. More than ten raters is often needed, not a universal requirement of ten or more for every benchmark. Preserve the studied subjective-task/metric dependence in summary and point wording.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "39ffe21f0fd89a3bbb9311d795c6c2bd251fd4d4a553303c3ff93f707067784c",
+      "note_sha256": "a7f663be758879da6231b6a6d59303679cbf357440d77ac092cb0434d41d9e82",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "evaluation_condition",
+          "finding": "WER4.0%/2.6%はArtificial Analysisの評価値であり、別評価や全利用環境で共通の誤り率としない。"
+        },
+        {
+          "kind": "modality_availability",
+          "finding": "話者識別は事前録音音声、関数呼び出しは現在Gemini macOSに限定され、開発者APIはpublic previewである。"
+        }
+      ],
+      "comparison": "Primary supports the two Transcribe APIs, smart cleanup, vocabulary/85+ languages and WER 4.0/2.6 under Artificial Analysis, versus separate FLEURS results. Speaker attribution is pre-recorded only. Function calling is currently in Gemini macOS, not a generally available capability of every API surface. Preserve public-preview and surface/metric conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3c5b6ce40dba2b6d9c4541eae12673f8cab5e3a9407ce8c541a5c607ffa306e6",
+      "note_sha256": "74a446e3bd0156c64ba82594b451bee62c4197449d52dd5a21f1473c455f4339",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "safeguard_availability",
+          "finding": "一般提供に向けた安全対策の強化と、信頼された防御側にサイバーガードレールなしで限定提供する方針を分ける。"
+        },
+        {
+          "kind": "specialization_scope",
+          "finding": "広い専門業務向けの汎用フロンティアモデルであり、サイバー防衛だけに特化したモデルとしない。"
+        }
+      ],
+      "comparison": "Primary supports 1M output limit, frontier enterprise/coding capabilities, internal engineering uses and phased Fairwind access. General-availability safeguards are still being strengthened; trusted cyber defenders are explicitly to receive the model without cyber guardrails. The Note presents safeguards as already complete for the rollout and describes a general frontier model as cyber-specialized; clarify scope and rollout conditions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3d15334254e7e6e1416a19a0234fe21d75d5031ed797b9e312589fcb833d3ba2",
+      "note_sha256": "f7763c8af994cc30465fda3fccb1aa5b28e65022e0ead1da8b7d204f0da8ac8b",
+      "canonical_url": "https://blog.cloudflare.com/account-abuse-protection-dashboard/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports Early Access AAP rollout, stateful login/signup histories anchored by domain-hashed account IDs, funnel investigation and the separate dashboard/PII roles. The Note describes investigation signals rather than treating leaked-credential matches as confirmed compromise, and does not claim automatic account recovery or universal fraud prevention.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3dbfb8fd9bf925edda9499852cbcdd991badb1a081dcb65c338acb094c1f8c22",
+      "note_sha256": "123d1351c995fc8b551f63b022d3a267a32832dfca07ae60444fca6209237ad3",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports prompt-created canvases via /create-canvas, boards/checklists/forms, bidirectional shared state and project/personal extension storage. The Note accurately presents authoring/collaboration workflow and no measured performance or cross-product compatibility claims. Article commands were treated as source content, not executed.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3e7ecdf1b7cc94ec3b7c57c806f78dfb429843bbe9e82a9b59583c704264a991",
+      "note_sha256": "add4b4a65c3cb64a71ace078157d76b5fa5efb90fe2edaf8a8f637e76a7013da",
+      "canonical_url": "https://machinelearning.apple.com/research/ontological-boundary-negotiation",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary abstract supports two open-ended Wizard-of-Oz probes, a week-long exploratory study with participants using one probe, and the four named ontological negotiation sites. The Note frames training as an experience enabled by Wizard of Oz rather than proof of a fully autonomous implemented ML trainer. Stanford affiliation is confirmed; visible publication date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3fc2f12c46a71c1c1fe33f82e2a0c3559535678d09b642c47fdade8e8e254d19",
+      "note_sha256": "4edafad68b46215f445033b6eced8ab03eceead93bbce21a3072a5a4bfe574bb",
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/lyria-3-5/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Complete short primary announcement supports July 29 launch in Google Flow Music and exactly the four highlighted improvements: musicality, lyric prompt adherence/structure, vocal expression/pronunciation and tempo/duration controls. The Note adds no unsupported duration, pricing, licensing or cross-product availability claims.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3fdcc07c07cdc5d77d9fa96a1d1a2f0274e7294f2874b8e4b474361d8f971ac1",
+      "note_sha256": "59112079ed080708e3345eb1af5d62dfdc760aa11bc6e05f7e9ddc6f98e85f46",
+      "canonical_url": "https://engineering.fb.com/2026/10/12/ml-applications/turning-opportunistic-ai-inference-capacity-into-better-ads-recommendations/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Compared capacity-fragmentation causes, RMA CPU/accelerator versus SBM accelerator-only surplus, physical/logical isolation, PID candidate control, value-aware model routing and millisecond shedding bridging minute-scale central loops. The Note preserves optional-work/baseline protection scope and does not claim all models are already portable across every region or that the future automated allocator is already deployed. Performance claims remain the authors reported operation, not our independent benchmark.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "3feedfa650e38ebcf1889145120010235e28b5c57db72acafab4912e12a61476",
+      "note_sha256": "5f0f70ba0c6d4f16347a4413696b3cf49da427e9f58037072cfef5067dec3d00",
+      "canonical_url": "https://machinelearning.apple.com/research/normalizing-trajectory-models",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary abstract supports conditional normalizing reverse steps, exact trajectory likelihood training, shallow invertible/deep parallel architecture, scratch or flow-matching initialization, self-distilled model-induced score denoiser and four-step text-to-image results. The Note preserves exact likelihood over the generative trajectory rather than claiming arbitrary image marginal likelihood. No numeric benchmark added; visible date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "40652942dec1c0dd77831eae6aa97912b5b2da911a8ace790803150a3690beeb",
+      "note_sha256": "a14c9b439dcfe8d8c156d633b4a91f865ca1b25d434a3974cc577d0ff672ead6",
+      "canonical_url": "https://research.google/blog/titans-miras-helping-ai-have-long-term-memory/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary supports MLP deep memory, gradient surprise, momentum/adaptive decay, all four MIRAS choices and YAAD/MONETA/MEMORA non-Euclidean alternatives. The Note ties GPT-4 comparison to BABILong and preserves greater-than-two-million-context research results, rather than claiming all-task superiority or indefinite cross-session memory. No numerical result is invented. Genomic/time-series scope agrees with the primary research description.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4370ce16c57b025bab3c93345edb8239abef3f77bff5d5887a380556101a8370",
+      "note_sha256": "ae327c94858a93d91978af5942ea25876481264b15a329fdf0e76e1a06d03b54",
+      "canonical_url": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "integration_scope",
+          "finding": "AlphaFoldのツール利用は一部の研究協力での試験であり、専門データベースと同じく全般に統合済みとはしない。"
+        },
+        {
+          "kind": "source_publication_date",
+          "finding": "原典の表示日・構造化データは2026年5月19日であり、元Noteの5月12日を訂正する。"
+        }
+      ],
+      "comparison": "Primary supports Gemini multi-agent generate/debate/evolve phases, supervisor and named enterprise previews/research themes. AlphaFold use is being tested in selected research collaborations, not unrestricted integration across every deployment. Displayed date and BlogPosting datePublished both May 19, 2026, conflict with original May 12 metadata. Keep scientific expert/lab validation distinct from automated literature critique.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25",
+      "publication_date_evidence": {
+        "displayed": "2026-05-19",
+        "datePublished": "2026-05-19T10:42:00+00:00"
+      }
+    },
+    {
+      "note_id": "45bd406f8cda7e05ebbdf83407b7c12eb45ed8da6d60f78e2cc10a5df45d6d28",
+      "note_sha256": "797e6eb564acbd50cd650acfc878dbe4eb24778fc52e6b403ecd62a14981b232",
+      "canonical_url": "https://deepmind.google/blog/revealing-a-key-protein-behind-heart-disease/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "referent_scope",
+          "finding": "ASCVDの主要リスク要因と原典が説明している対象はLDLであり、apoB100の構造説明と主語を分ける。"
+        }
+      ],
+      "comparison": "Primary supports Berndsen/Cassidy, cryo-EM plus AlphaFold atomic predictions, the roughly fifty-year mapping difficulty, apoB100 shell/belt and future therapeutic potential. The Note attaches ASCVD risk directly to apoB100 where the source specifically names LDL as the risk factor; clarify the referent without adding clinical claims.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "468c3c7971d4341fffc836203908c8a753a5cf36407073e34c15af50af81247e",
+      "note_sha256": "dfdff7303421182096f3114f2d9333283c6216e95efa6f161a5cecaf65e6b936",
+      "canonical_url": "https://github.blog/engineering/architecture-optimization/from-2500-requests-to-24-rebuilding-star-history-without-the-stargazers/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "metric_definition",
+          "finding": "APIは現在残っているスターの付与日別件数を返す。解除済みスターを含む増減履歴ではない。"
+        },
+        {
+          "kind": "title_scope",
+          "finding": "除かれるのはスター件数や日付でなく利用者識別情報であり、タイトルのスター情報を除いたを修正する。"
+        }
+      ],
+      "comparison": "Primary supports 30-week daily buckets/request, time filtering before aggregation and no user identities. Counts are grouped creation dates of currently remaining stars; removed records are absent, so this is not a net gain/loss event log. The title says star information removed although only stargazer identities are removed. Dense-week queries remain a documented limit; Note does not claim all such costs vanish.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "46a5f627c92195cb5471da3e3bc97c4f90817c4a5b954288729174da152617b3",
+      "note_sha256": "273d65e6c716e752d9d8c59bf8603dcf502f1437f925133c64b85ce6d3b1dca1",
+      "canonical_url": "https://github.blog/security/how-bug-bounty-sharpens-one-researchers-security-skills/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary interview supports verified/reproducible PoCs and actual security impact, the VIP higher-payout/response/preview program and r31n GHES findings. The Note remains a researcher profile; it does not add unverified exploit claims, automatic vulnerability guarantees, fixed invitation thresholds or particular payout amounts. Methodology details omitted by the compact summary are not treated as factual contradictions.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "46f26b37b127c3f5afb11241128980827608f6d23baf1a45e8f562fded83b04f",
+      "note_sha256": "e2111fbcaf0465d775380f03d1a1ceee9f0b4c8ae467171c7f638db0f1e13ca7",
+      "canonical_url": "https://research.google/blog/streetreaderai-towards-making-street-view-accessible-via-context-aware-multimodal-ai/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "terminology",
+          "finding": "視覚障がい者・ロービジョンのコミュニティをBVとする不正確な略語を使わず、対象を日本語で明記する。"
+        },
+        {
+          "kind": "roadmap_scope",
+          "finding": "自律探索・経路案内・豊かな音声は今後の研究機会として検討されており、提供を計画済みと断定しない。"
+        }
+      ],
+      "comparison": "Primary supports prototype status, Describer/Chat/live API, eleven blind screen-reader participants and 86.3% correct responses with predominantly false-negative errors. The community abbreviation BV is malformed; use the full community name. Autonomous exploration, full routing and richer audio are research opportunities under consideration, not committed feature delivery.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "49e48cd9ec2340b1033c292f1e50c70562f78f6cdb507b55022352270bab049c",
+      "note_sha256": "136df2c93f361e82e66903ca588f330d8ead4664a79a503dc45dc9667c113587",
+      "canonical_url": "https://github.blog/ai-and-ml/github-copilot/how-to-continue-a-github-copilot-app-session-in-vs-code/",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary tutorial supports installed/same-account/repository-permission prerequisites, Open in VS Code, the same isolated worktree and conversation/diff preservation, manual edits/testing and pushing the associated branch. The Note does not claim cloud/local migration without those prerequisites or create a new chat. Article commands were treated as explanatory source text rather than actions to run.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4a56b2f3f7f1bf4c448bc23ebd1b410d76aaa5b5ebd8e1501a6f84a31bb9aff8",
+      "note_sha256": "f0997538df9f30cf7ba9e9e0548a8b6a4a2bb8f6c08e27388e38b34d1c8135f1",
+      "canonical_url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "benchmark_configuration",
+          "finding": "Muse Spark Openの36 token/秒超はNVFP4量子化・M5 Ultra搭載4台のテンソル並列・8,192 token文脈での測定であり、その条件を明記する。"
+        }
+      ],
+      "comparison": "Primary supports M5/M3 single-node comparisons, 4.6x max TTFT/1.6x decode, RDMA Thunderbolt jaccl and multi-node schemes. The 36.73 tokens/s result is specifically 4x M5 Ultra tensor parallel, NVFP4 Muse Spark Open, 8,192 context, 128 generated tokens. Add material precision/hardware/context conditions rather than imply any four Mac Studios achieve that rate.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4a9bdb65f0ffa2c17cffe91cdf575486b6cdc778b1add8fd9fca6285098b6986",
+      "note_sha256": "2f5dcbcfaf31437ea93595b973e285d10ec540488714557950b97fec6de6741a",
+      "canonical_url": "https://blog.cloudflare.com/protect-your-netscaler-gateway/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "security_boundary",
+          "finding": "Accessが保護するWeb認証経路とDTLS等の別経路を分け、既存侵害の除去や全Gateway経路の保護まで保証しない。"
+        },
+        {
+          "kind": "origin_control",
+          "finding": "オリジンtoken検証は上流のネットワーク制限等を補助するものであり、それだけで迂回経路を遮断できるとはしない。"
+        }
+      ],
+      "comparison": "Primary supports patch-first multilayer defense, Access before Web authentication, WAF and restricted origin paths. It explicitly excludes automatic protection for DTLS/desktop transports and already-compromised systems. Token validation supplements upstream restrictions; it does not replace network/origin controls. Narrow the Note to Web authentication and preserve these material limits.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4aa510d0ed13abcfe56c9f8c69a9944d2e4cbea721e4713899e2f73ec769b867",
+      "note_sha256": "c8ccc825a7f5c997e2c3bdd4679fd0130502f9f7048680142eb77b271ceb3ee6",
+      "canonical_url": "https://machinelearning.apple.com/research/plan-retrieve-tool-discovery",
+      "status": "reviewed_no_material_mismatch",
+      "findings": [],
+      "comparison": "Primary ToolBench abstract supports RtP/PtR complexity crossover, tested k=1–20 and 1k–47k registries/two model families, stub-hallucination tradeoff and roughly doubled discovery inference cost. The Note describes adaptive routing as a proposed practical direction, not a reproduced optimal router, and adds no unsupported benchmark value. Visible date is month-level only.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4ae88f2d4a536c0c14be0a7934914c902db69f9756b05c951b1c0b4e835449a3",
+      "note_sha256": "73ffbcb713b1d46a8550a2efc8ed55e3c6a574109c2569f43c301411dd1359f9",
+      "canonical_url": "https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "clinical_comparator",
+          "finding": "比較医は静的な会話記録を読む3名で追加問診ができず、Top-5の正解ラベルも参加者による後日の医療者診断の自己申告である。対面診療全般に対する優位としない。"
+        },
+        {
+          "kind": "observational_scope",
+          "finding": "Fitbitの対応はAI候補で分類した集団の症状報告日へ向かう変化であり、感染症の流行期や確定診断の検証としない。"
+        }
+      ],
+      "comparison": "Primary supports 13,917 randomized participants, five Flash 2.0 agents and favorable DDx results. The comparator is DDx generated by three clinicians from static transcripts without their own follow-up questions; top-5 truth is participants later self-reported provider diagnosis. Wearable analysis groups AI top-1 candidate respiratory-infection labels and observes trends approaching symptom reporting, not outbreak-season validation or confirmed clinical disease.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4b75435c41695272c7e147a81b732e38a63e8b8c2ac21961232247cf1203f7a0",
+      "note_sha256": "d527ca732f2c64bb2f07fae1f7565efd5c916dbc6e2b85865fc5647b7370798f",
+      "canonical_url": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "research_maturity",
+          "finding": "破滅的忘却を防いで継続学習を一般に達成済みとする表現を、忘却を抑える設計を目指す研究として限定する。"
+        }
+      ],
+      "comparison": "Primary supports nested architecture/optimizer levels, own context/update rates, associative-memory interpretation, deep optimizers, CMS and proof-of-concept Hope results. The purpose is mitigating or potentially avoiding catastrophic forgetting; the Note says it prevents forgetting while continuously acquiring knowledge as an accomplished general capability. Recast that clause as the design/research goal, preserving the reported task-specific results.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
+      "note_id": "4b7aa60096a687535502f7ba6d016cb70ea7a26e5de735aeafec6714be3cd07a",
+      "note_sha256": "15f5e733457686023835b919323c1e3a98ddff5e0d3ee9e6e530abb64bc309e5",
+      "canonical_url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
+      "status": "findings",
+      "findings": [
+        {
+          "kind": "unsupported_background",
+          "finding": "原典は専門的・希少・privacy-sensitiveな応用データの不足を論じており、インターネット全体のデータが枯渇しつつあるとは述べていない。"
+        }
+      ],
+      "comparison": "Primary supports Simula four axes, recursive taxonomy/meta-prompts/dual critics, reasoning metrics, five-domain teacher/student comparisons and listed real Google uses. It begins with abundant internet data but scarcity/inaccessibility of specialized uncommon/privacy-sensitive data; the Note invents a global internet-data exhaustion trend. Correct only that unsupported problem framing.",
+      "checked_sections": [
+        "title",
+        "summary",
+        "key_points",
+        "context"
+      ],
+      "checked_at": "2026-10-25"
+    },
+    {
       "note_id": "81773d6be66ee1db0972d4fc28b5bc7c34c0ae72cd8a13934f87eb95473ec27e",
       "note_sha256": "c249808d688227221c52dba40a039ff12d6be32f4ab73770226b58e7bded9917",
       "canonical_url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
