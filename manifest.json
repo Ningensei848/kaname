@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733",
+  "dataset_digest": "8ba663ec19f8f717f33d9e1514874ba6943e43546ecc40b76a859023a5adb248",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -276,6 +276,18 @@
       "sha256": "0da54717fee42bf7542116953c51b3bdd0d40583455717197f9609af4077d2a8",
       "source_id": "apple-ml-research",
       "title": "RLTL;DR: 自己生成フィードバックの内部化による自己改善"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/26/open-source/ocp-summit-2026-meta-networking-talks/",
+      "category": "hardware",
+      "id": "11a35fc8bfbfb1ed3ec4e9502a3d6d3c2a3349fdb7bdedd0e2cdb2332795b389",
+      "llm_input_truncated": false,
+      "path": "notes/11a35fc8bfbfb1ed3ec4e9502a3d6d3c2a3349fdb7bdedd0e2cdb2332795b389.md",
+      "processed_at": "2026-10-27T01:30:01.154181+00:00",
+      "published": "2026-10-26",
+      "sha256": "f1c79b16ad773ff14caaedd4b5cbb30d03fd655c1ba0720f7df36d00a1b6d7d1",
+      "source_id": "meta-engineering",
+      "title": "2026年OCPグローバルサミットにおけるMetaのネットワーキング：AIネットワークのスケールアップ、スケールアウト、スケールアクロスに向けたオープンイノベーション"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/",
@@ -1826,6 +1838,18 @@
       "title": "SapienzがISSTA 2026インパクト論文賞を受賞"
     },
     {
+      "canonical_url": "https://machinelearning.apple.com/research/gharp-head-animation",
+      "category": "ai-llm",
+      "id": "7c9481fdb9c024f8d5b7587a105ee257f180c8e6f3b6f2a18866fd3dcd01fcbb",
+      "llm_input_truncated": false,
+      "path": "notes/7c9481fdb9c024f8d5b7587a105ee257f180c8e6f3b6f2a18866fd3dcd01fcbb.md",
+      "processed_at": "2026-10-27T01:30:07.527716+00:00",
+      "published": "2026-10-26",
+      "sha256": "f4c18f25fe16255a2cda2e26e7a57da153f21e2a9640531a7b68349c6d71b6e2",
+      "source_id": "apple-ml-research",
+      "title": "GHARP: 大規模再構築事前学習に基づくリアルタイムガウシアン頭部アニメーション"
+    },
+    {
       "canonical_url": "https://research.google/blog/toward-provably-private-insights-into-ai-use/",
       "category": "cybersecurity",
       "id": "7d6ff350c6fe84317f88374360bd71637d004069a1ae1c765adc3f8415887035",
@@ -2592,6 +2616,18 @@
       "sha256": "c93e7b0d11b06326f7185c18a6edd20453f1e5a9f0fd46b54fb2dfa10d638fcc",
       "source_id": "google-deepmind",
       "title": "Gemini音声モデルのアップデート：ライブ音声エージェントとリアルタイム翻訳の強化"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/kv-cache-exposure-remediation/",
+      "category": "cybersecurity",
+      "id": "a9dd8c8edbb1bda7c14086eca4ad1a8c6f4d22d07c792fca7aa63c88cbbf6100",
+      "llm_input_truncated": true,
+      "path": "notes/a9dd8c8edbb1bda7c14086eca4ad1a8c6f4d22d07c792fca7aa63c88cbbf6100.md",
+      "processed_at": "2026-10-27T01:29:46.117317+00:00",
+      "published": "2026-10-26",
+      "sha256": "c376690b9449f7a41c853ccc8358720ebd3c3b45b0de18d0dbf5c3e5785bd4cc",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare Workers AIにおけるGLM-5.3のKVキャッシュ露出問題とSGLangを用いた修正"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/",
