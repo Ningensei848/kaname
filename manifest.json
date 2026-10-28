@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "8ba663ec19f8f717f33d9e1514874ba6943e43546ecc40b76a859023a5adb248",
+  "dataset_digest": "02ad338855a1f6948e033ee4b38cc0befb136290287c8be962d0a5f93896ea1e",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -912,6 +912,18 @@
       "sha256": "6259348d2d0d8abcd5fb14d9fd9b052f0f3e013a2a9ec7c9d135a73870988f7c",
       "source_id": "google-deepmind",
       "title": "筋萎縮性側索硬化症(ALS)研究におけるCo-Scientistを活用した異分野融合の試み"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/27/developer-tools/python-typing-survey-2026-ai-tools-checker-landscape/",
+      "category": "software-development",
+      "id": "34ddba60e70c35aec4efe890f7b4dfd5afdf13f7be80e98c4fd50495fdd1c288",
+      "llm_input_truncated": false,
+      "path": "notes/34ddba60e70c35aec4efe890f7b4dfd5afdf13f7be80e98c4fd50495fdd1c288.md",
+      "processed_at": "2026-10-28T01:22:55.499229+00:00",
+      "published": "2026-10-27",
+      "sha256": "b780c9c4a4fe2fbd14b134ad1173704f2b3f25ea9df5ccb99017c225678b7490",
+      "source_id": "meta-engineering",
+      "title": "Pythonタイピング調査2026：AIツールの台頭と変化するチェッカーの状況"
     },
     {
       "canonical_url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
@@ -1910,6 +1922,18 @@
       "title": "AI時代のマウスポインターの再構想"
     },
     {
+      "canonical_url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/",
+      "category": "ai-llm",
+      "id": "7ed56d9dc63f1dfe0fec7c50544a433a267c8b31b06736c8c5e2832f16356108",
+      "llm_input_truncated": false,
+      "path": "notes/7ed56d9dc63f1dfe0fec7c50544a433a267c8b31b06736c8c5e2832f16356108.md",
+      "processed_at": "2026-10-28T01:22:48.673598+00:00",
+      "published": "2026-10-27",
+      "sha256": "8f16b379ae5c6c4e6911d008f2012b7984d4d8fee553090de72f862b204f62e9",
+      "source_id": "google-deepmind",
+      "title": "Genie 4: 新世代のワールドシミュレーション"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/protecting-people-from-harmful-manipulation/",
       "category": "ai-llm",
       "id": "7f1f789f187f05822078f627156741c0b0033b358fcd1b85bfd80ddff3c2b581",
@@ -2052,6 +2076,18 @@
       "sha256": "93f66102d2095438bf51fe155a5db12d21fba6b151160ddece9c0c36a0340d9d",
       "source_id": "google-deepmind",
       "title": "肝疾患メカニズムの発見を加速する"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/php-ctf/",
+      "category": "cybersecurity",
+      "id": "83cb1f823da8079d025febdbce0ec22b26249daca692336a3a88613d13ccd264",
+      "llm_input_truncated": false,
+      "path": "notes/83cb1f823da8079d025febdbce0ec22b26249daca692336a3a88613d13ccd264.md",
+      "processed_at": "2026-10-28T01:22:34.389363+00:00",
+      "published": "2026-10-27",
+      "sha256": "0d71d4af056a2989d7e06d4c99d27c2ed6fcde49c57063c0e0e288d9536d37ff",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、PHPの脆弱性を対象としたCTF（Capture the Flag）チャレンジを開催"
     },
     {
       "canonical_url": "https://research.google/blog/mapping-the-modern-world-how-s2vec-learns-the-language-of-our-cities/",
@@ -2270,6 +2306,18 @@
       "title": "Gemini for Science：科学の新しい発見の時代に向けたAI実験とツール"
     },
     {
+      "canonical_url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
+      "category": "ai-llm",
+      "id": "91a06a987a60bbfc8298dfba5305f125a46b17d994a05ce03db806cee8090da3",
+      "llm_input_truncated": false,
+      "path": "notes/91a06a987a60bbfc8298dfba5305f125a46b17d994a05ce03db806cee8090da3.md",
+      "processed_at": "2026-10-28T01:23:10.176806+00:00",
+      "published": "2026-10-27",
+      "sha256": "8ac8b93b4e2129d3441129a4fae2bfb764cf82c709e1042e88194b4e968e8ec8",
+      "source_id": "google-research",
+      "title": "大規模言語モデルの継続学習に向けた新しい知識保持フレームワーク「Sleep」"
+    },
+    {
       "canonical_url": "https://research.google/blog/unlocking-health-insights-estimating-advanced-walking-metrics-with-smartwatches/",
       "category": "ai-llm",
       "id": "93660db7fdcb735e9b654de876949da1a1708ebe52d5886bfb2b60272b078f7c",
@@ -2364,6 +2412,18 @@
       "sha256": "db886a8c3ea36055d9c2837f10c4b27e4f18655afd6472622a2d022185e8bcb7",
       "source_id": "google-research",
       "title": "JAX-Privacy：JAXを活用した大規模な差分プライバシー機械学習ツールキット"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/27/security/privacylib/",
+      "category": "cybersecurity",
+      "id": "993c8a0c46a3c9a4227491662b9bf019ca7137a7eb3b1eb4ba3a03fd12fcc621",
+      "llm_input_truncated": true,
+      "path": "notes/993c8a0c46a3c9a4227491662b9bf019ca7137a7eb3b1eb4ba3a03fd12fcc621.md",
+      "processed_at": "2026-10-28T01:23:02.597605+00:00",
+      "published": "2026-10-27",
+      "sha256": "987d62466a84f251760918e2b079a2048d7a7c31615eb7933f2750a830d25965",
+      "source_id": "meta-engineering",
+      "title": "PrivacyLib: メタデータのデータアクセス境界におけるプライバシー制御"
     },
     {
       "canonical_url": "https://blog.google/topics/google-europe/powering-the-future-of-robotics-in-europe/",
