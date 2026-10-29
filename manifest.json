@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "02ad338855a1f6948e033ee4b38cc0befb136290287c8be962d0a5f93896ea1e",
+  "dataset_digest": "ae4e2b15fd7dd949f12fbc3238d752a289510ef359506f026f3d2d1d7d53f683",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -708,6 +708,18 @@
       "sha256": "857ec39679f124b66be4631ebc768003282f2edb1117a18f416c38c8ef7176f3",
       "source_id": "github-blog",
       "title": "あるバグハンターが調査する機能を選ぶ基準"
+    },
+    {
+      "canonical_url": "https://github.blog/news-insights/company-news/github-universe-2026-evolving-every-layer-of-the-stack/",
+      "category": "ai-llm",
+      "id": "284402eb6fda81fee5572f53e73374ecb7f08f482f346644f4b712636a510ac8",
+      "llm_input_truncated": true,
+      "path": "notes/284402eb6fda81fee5572f53e73374ecb7f08f482f346644f4b712636a510ac8.md",
+      "processed_at": "2026-10-29T01:48:45.891637+00:00",
+      "published": "2026-10-28",
+      "sha256": "259d3cd770e161ae807d1581ae2282bebb32ddb8a222d8212c1544497bced51b",
+      "source_id": "github-blog",
+      "title": "GitHub Universe 2026: スタックの全レイヤーを進化させる"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
@@ -1778,6 +1790,18 @@
       "title": "機械学習を用いた乳がんスクリーニングワークフローの改善"
     },
     {
+      "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "category": "ai-llm",
+      "id": "76be5ed16a3842a8e2bbf081d36213e01f67f16efd9bfc6d250472377006f456",
+      "llm_input_truncated": false,
+      "path": "notes/76be5ed16a3842a8e2bbf081d36213e01f67f16efd9bfc6d250472377006f456.md",
+      "processed_at": "2026-10-29T01:48:33.554962+00:00",
+      "published": "2026-10-28",
+      "sha256": "a0b666377361758d5b2510e3c55ac3c6a161435c88df074ef4a96368883dc693",
+      "source_id": "google-deepmind",
+      "title": "Gemini 4 Carbon：Google DeepMindの次世代フロンティアモデル"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi/",
       "category": "ai-llm",
       "id": "77a6a45e75a724d73df90fb6216b0f2b34b1c8a1276d83db8926213624415201",
@@ -2222,6 +2246,18 @@
       "title": "Cloudflareにおける証拠ベースのエージェント型セキュリティ運用の仕組み"
     },
     {
+      "canonical_url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/",
+      "category": "ai-llm",
+      "id": "8bb0e676365afe0887ad87c5666a5eda1a26e95184248b4d1ae303db0fcb4801",
+      "llm_input_truncated": true,
+      "path": "notes/8bb0e676365afe0887ad87c5666a5eda1a26e95184248b4d1ae303db0fcb4801.md",
+      "processed_at": "2026-10-29T01:48:52.255502+00:00",
+      "published": "2026-10-28",
+      "sha256": "95907a432af0b491002d346e64d3eee3c3311c7fc30ff25f828e3dd0c990d739",
+      "source_id": "github-blog",
+      "title": "Octoverse 2026年レポート：エージェントの活用によりコミット数とプッシュ数が過去最高を記録"
+    },
+    {
       "canonical_url": "https://research.google/blog/google-research-2025-bolder-breakthroughs-bigger-impact/",
       "category": "ai-llm",
       "id": "8d74604c51c39b12f1782ac2d5db963a1548775dfa2f94cd85035836fa4032fd",
@@ -2364,6 +2400,18 @@
       "sha256": "191022146c07a78ac1bfb410f0470202728a62143a6f8aff9fe3a47981cb2e76",
       "source_id": "google-research",
       "title": "GISTの紹介：スマートサンプリングの次の段階"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/28/ml-applications/meta-andromeda-next-gen-ads-retrieval-gpu-co-design/",
+      "category": "ai-llm",
+      "id": "970bf11861fa2de6e7615df5f40cfff7fe8ed9acb01b8eb53c73abea17b54cb2",
+      "llm_input_truncated": false,
+      "path": "notes/970bf11861fa2de6e7615df5f40cfff7fe8ed9acb01b8eb53c73abea17b54cb2.md",
+      "processed_at": "2026-10-29T01:48:40.196073+00:00",
+      "published": "2026-10-28",
+      "sha256": "1d228a3111a4f2386450a6f89ce2b68072b22d3c2b8d457982a8418eb2e48ccd",
+      "source_id": "meta-engineering",
+      "title": "Meta Andromeda：モデル・システム共同設計による次世代広告検索の高速化"
     },
     {
       "canonical_url": "https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/",
