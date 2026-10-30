@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "ae4e2b15fd7dd949f12fbc3238d752a289510ef359506f026f3d2d1d7d53f683",
+  "dataset_digest": "aa4b94990f8e70cac762eb69a32fbc319402f838a443b676771f5cdab98b678b",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -636,6 +636,18 @@
       "sha256": "c190710d233f90eef19ef7f3a48c57ce30d38304c3f207775a15a2c135bd3a44",
       "source_id": "google-deepmind",
       "title": "気候変動に対応する、より強靭な農作物のエンジニアリング"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/ddos-threat-report-2026-q3/",
+      "category": "cybersecurity",
+      "id": "23b3fb33e561b05578e0bdf178e40b12bd58e806f6e90c116a0d2acab88b4930",
+      "llm_input_truncated": false,
+      "path": "notes/23b3fb33e561b05578e0bdf178e40b12bd58e806f6e90c116a0d2acab88b4930.md",
+      "processed_at": "2026-10-30T01:58:44.632665+00:00",
+      "published": "2026-10-29",
+      "sha256": "2e48d24f9cd5301e50835edb38391406fe69f558e2e011ebe7c60d06b7107e49",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare DDoS脅威レポート 2026年第3四半期：短時間・多数の攻撃が増加し超巨大攻撃は減少"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
@@ -2940,6 +2952,18 @@
       "sha256": "8e7cff18f297b032975582a1653f0e646c49991de87af85ed30b02a132922862",
       "source_id": "google-research",
       "title": "研究のブレイクスルーと現実世界の応用を結ぶマジック・サイクルの加速"
+    },
+    {
+      "canonical_url": "https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale/",
+      "category": "software-development",
+      "id": "b71deab5a8a0039a191e861a175cc760c086f231b8a6fdb882e477a07147c2a9",
+      "llm_input_truncated": false,
+      "path": "notes/b71deab5a8a0039a191e861a175cc760c086f231b8a6fdb882e477a07147c2a9.md",
+      "processed_at": "2026-10-30T01:58:58.664360+00:00",
+      "published": "2026-10-29",
+      "sha256": "2145c9a8b224a3749b80b646ae63f2fb14dd6c23db8fd660001ccb4e609724d4",
+      "source_id": "meta-engineering",
+      "title": "Metaが実践するJiTTestingとヒューマン・オン・ザ・ループによる大規模バグ検出手法"
     },
     {
       "canonical_url": "https://research.google/blog/protecting-cities-with-ai-driven-flash-flood-forecasting/",
