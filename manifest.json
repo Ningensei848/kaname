@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "aa4b94990f8e70cac762eb69a32fbc319402f838a443b676771f5cdab98b678b",
+  "dataset_digest": "f750d1f4a523e33331d816cdc16e0a8a193ef4d4a3ff36533316d01c77791b6b",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1874,6 +1874,18 @@
       "title": "グローバルパートナーシップとオープンリソースによる科学的インパクトの促進"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/emudhra-patching/",
+      "category": "cybersecurity",
+      "id": "7b2691aee70523c69bba349a16096bdaa4b4f508be93aa39e16db01e90a6a8d3",
+      "llm_input_truncated": false,
+      "path": "notes/7b2691aee70523c69bba349a16096bdaa4b4f508be93aa39e16db01e90a6a8d3.md",
+      "processed_at": "2026-10-31T01:36:27.687596+00:00",
+      "published": "2026-10-30",
+      "sha256": "51ff6312657959988dbe9188da9b3799e824d111ea4abe436d0ff3bdfa470bb1",
+      "source_id": "cloudflare-security",
+      "title": "eMudhra社の脆弱な鍵に関する悪用追跡とパッチ適用の進捗"
+    },
+    {
       "canonical_url": "https://engineering.fb.com/2026/10/15/developer-tools/sapienz-issta-2026-impact-paper-award-meta/",
       "category": "software-development",
       "id": "7c8155ddda99e7510d998f31e30dfb64646d3641fbe45a18bf8b82f27c913796",
@@ -2256,6 +2268,18 @@
       "sha256": "a3acdb87686e54b1c83b82ac0cadf58b2596dd665e30daf533a32e91f8c883ec",
       "source_id": "cloudflare-security",
       "title": "Cloudflareにおける証拠ベースのエージェント型セキュリティ運用の仕組み"
+    },
+    {
+      "canonical_url": "https://www.microsoft.com/en-us/research/blog/from-synthetic-enterprise-data-evaluations-to-real-microsoft-copilot-ai-confidence/",
+      "category": "ai-llm",
+      "id": "8ba9c506a10c67f308c64a9efc1d4db90a19509114e32f3ba6916a9122f569db",
+      "llm_input_truncated": false,
+      "path": "notes/8ba9c506a10c67f308c64a9efc1d4db90a19509114e32f3ba6916a9122f569db.md",
+      "processed_at": "2026-10-31T01:36:41.895017+00:00",
+      "published": "2026-10-30",
+      "sha256": "526aab460a0c2fbe54445d769ee6fd706ac1748ad01dc63b27629cf445448325",
+      "source_id": "microsoft-research",
+      "title": "合成エンタープライズデータ評価から信頼性向上へ：Microsoft CopilotのAI評価基盤"
     },
     {
       "canonical_url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/",
