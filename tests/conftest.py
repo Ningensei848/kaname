@@ -1,12 +1,12 @@
 import json
 from types import SimpleNamespace
 import pytest
-from techkb.config import AppConfig, Source
-from techkb.converter import Converter
-from techkb.fetcher import FetchResult
-from techkb.gemini import Gemini
-from techkb.models import ArticleEnrichment
-from techkb.pipeline import Pipeline
+from kaname.config import AppConfig, Source
+from kaname.converter import Converter
+from kaname.fetcher import FetchResult
+from kaname.gemini import Gemini
+from kaname.models import ArticleEnrichment
+from kaname.pipeline import Pipeline
 
 class MemoryStore:
     def __init__(self):

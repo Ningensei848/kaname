@@ -5,13 +5,13 @@ import httpx
 import pytest
 from google import genai
 from google.genai import types
-from techkb.batch import BatchManager
-from techkb.gemini import Gemini
-from techkb.reporting import RunReport
-from techkb.pending import Candidate
-from techkb.audit import audit_state
-from techkb.operations import cost_report
-from techkb.models import ArticleEnrichment
+from kaname.batch import BatchManager
+from kaname.gemini import Gemini
+from kaname.reporting import RunReport
+from kaname.pending import Candidate
+from kaname.audit import audit_state
+from kaname.operations import cost_report
+from kaname.models import ArticleEnrichment
 
 
 def normalized_schema(schema):
@@ -196,7 +196,7 @@ def test_standard_and_batch_wire_payload_preserve_same_content_and_schema_constr
         gemini = Gemini(h.app.llm, h.app.categories, Path('prompts/enrich.txt').read_text(), 'test', client=client)
         manager = BatchManager(h.store, gemini)
         markdown = 'Exact input including Japanese 日本語 and <untrusted> data.'
-        from techkb._standard import StandardRequest
+        from kaname._standard import StandardRequest
         candidate = Candidate('now', h.source.id, 'https://example.com/a', title='日本語の候補')
         images = [dict(image_id='img-1', url='https://example.com/figure.png', alt='Fixture',
                        caption='Caption', context='Exact input')] if with_images else []

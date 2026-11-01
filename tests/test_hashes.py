@@ -1,5 +1,5 @@
 import hashlib
-from techkb.hashes import raw_hash, content_hash
+from kaname.hashes import raw_hash, content_hash
 
 def test_hash_bytes_and_unicode():
     assert raw_hash(b"abc") == hashlib.sha256(b"abc").hexdigest()

@@ -8,9 +8,9 @@ from types import SimpleNamespace
 import google_crc32c
 import pytest
 
-from techkb.read_snapshot import GCSReadSnapshot, GenerationCache, SnapshotChangedError, read_snapshot
-from techkb.publication import ExportError, export_notes
-from techkb.read_snapshot import read_workers
+from kaname.read_snapshot import GCSReadSnapshot, GenerationCache, SnapshotChangedError, read_snapshot
+from kaname.publication import ExportError, export_notes
+from kaname.read_snapshot import read_workers
 
 
 def checksum(data):
@@ -89,15 +89,15 @@ def test_all_worker_slots_used_without_changing_byte_or_catalog_checks(workers):
 
 @pytest.mark.parametrize('value', ['0', '17', '32', '08', '+8', ' 8', '', 'true'])
 def test_invalid_worker_environment_is_rejected(monkeypatch, value):
-    monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', value)
+    monkeypatch.setenv('KANAME_GCS_READ_WORKERS', value)
     with pytest.raises(ValueError, match='invalid read workers'): read_workers()
 
 
 def test_default_and_operator_rollback(monkeypatch):
-    monkeypatch.delenv('TECHKB_GCS_READ_WORKERS', raising=False)
+    monkeypatch.delenv('KANAME_GCS_READ_WORKERS', raising=False)
     assert read_workers() == 16
     for workers in (1, 8, 16):
-        monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', str(workers))
+        monkeypatch.setenv('KANAME_GCS_READ_WORKERS', str(workers))
         assert read_workers() == workers
 
 
@@ -111,7 +111,7 @@ def test_invalid_worker_argument_fails_before_remote_reads(workers):
 
 def test_storage_pool_preserves_auth_retries_and_other_endpoints(monkeypatch):
     import requests
-    from techkb.storage import GCSStore
+    from kaname.storage import GCSStore
     from urllib3.util.retry import Retry
     session = requests.Session()
     session.headers['Authorization'] = 'Bearer fixture'
@@ -141,7 +141,7 @@ def test_storage_pool_preserves_auth_retries_and_other_endpoints(monkeypatch):
 def test_storage_pool_does_not_replace_custom_tls_adapter():
     import requests
     from requests.adapters import HTTPAdapter
-    from techkb.storage import GCSStore
+    from kaname.storage import GCSStore
     class CertificateAdapter(HTTPAdapter): pass
     session = requests.Session()
     adapter = CertificateAdapter()
@@ -223,7 +223,7 @@ def test_export_rechecks_live_catalog_before_installing_output(harness, tmp_path
 
 
 def test_cli_does_not_print_success_or_publish_notifications_before_verification(harness, monkeypatch, capsys):
-    from techkb import cli
+    from kaname import cli
     h = harness
     assert h.pipeline.run().status == 'success'
     class ChangedStore:

@@ -14,7 +14,7 @@ from urllib.error import URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from techkb.read_snapshot import read_workers
+from kaname.read_snapshot import read_workers
 
 
 def github_json(path, token):
@@ -73,7 +73,7 @@ def main(argv=None):
     parser.add_argument('--full-tests', action='store_true', help='Run unit tests here regardless of CI')
     args = parser.parse_args(argv)
     # Production configuration is checked on every run, before API/GCS auth.
-    subprocess.run([sys.executable, '-m', 'techkb', 'validate-config'], check=True)
+    subprocess.run([sys.executable, '-m', 'kaname', 'validate-config'], check=True)
     read_workers()  # Reject invalid operational bounds before auth or generation.
     evidence = ({'unit_tests': 'local', 'reason': 'explicit_full_tests'} if args.full_tests else
                 checks_evidence(os.environ))

@@ -1,14 +1,16 @@
 """HTML postprocessing and complete, immutable Web artifact validation."""
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
 
-from techkb.publication import ExportError, ExportDirectorySnapshot, json_bytes, sha256, note_frontmatter, reject_symlinks
-from techkb.publication.common import digest_matches, digest_value
-from techkb.publication.snapshot import load_snapshot, unique_json
+from kaname.publication import ExportError, ExportDirectorySnapshot, json_bytes, sha256, note_frontmatter, reject_symlinks
+from kaname.publication.common import digest_matches, digest_value
+from kaname.publication.snapshot import load_snapshot, unique_json
+from kaname.tags import alias_map
 from .validation import artifact_path, hash_manifest, valid_site_marker, snapshot_matches
 
 
@@ -21,6 +23,22 @@ def finish_html(compiled, manifest, fixture=False, files=None):
         # Quartz community v5 search reads this attribute; core v5.0.0 does
         # not emit it. Keep search results inside the project Pages prefix.
         soup.body["data-basepath"] = "/kaname"
+        for script in soup.find_all('script'):
+            text = script.string or ''
+            if 'const fetchData = fetch(' not in text:
+                continue
+            match = re.fullmatch(r'const fetchData = fetch\(("[^"\n]+")\)\.then\(data => data\.json\(\)\)', text.strip())
+            if not match:
+                raise ExportError('upstream_content_index_loader_changed')
+            url = match[1]
+            script.string = ('let kanameContentIndex; const fetchData = {then(resolve, reject) { return '
+                '(kanameContentIndex ??= fetch(' + url + ').then(response => { '
+                'if (!response.ok) throw new Error("content_index_unavailable"); return response.json(); '
+                '}).catch(error => { kanameContentIndex = undefined; throw error; })).then(resolve, reject); }};')
+        soup.head.append(soup.new_tag("script", src="/kaname/static/search-aliases.js", defer=""))
+        if soup.select_one('.pagination a[rel="next"]'):
+            script = soup.new_tag("script", src="/kaname/static/pagination.js", defer="")
+            soup.head.append(script)
         for tag in soup.select('link[rel="preconnect"], link[rel="dns-prefetch"]'):
             tag.decompose()
         entry = entries.get(path.stem) if path.parent.name == "notes" else None
@@ -72,6 +90,14 @@ def seal_artifact(compiled, manifest, files, fixture=False, content_commit=None)
         if path.is_file() and not artifact_path(path.relative_to(compiled).as_posix()):
             raise ExportError("unexpected_artifact_file")
     finish_html(compiled, manifest, fixture, files)
+    alias_script = compiled / 'static/search-aliases.js'
+    alias_script.parent.mkdir(parents=True, exist_ok=True)
+    alias_script.write_bytes(b'const kanameTagAliases = ' + json.dumps(alias_map(), ensure_ascii=True, sort_keys=True).encode() +
+                            b';\n' + (Path(__file__).resolve().parents[1] / 'search-aliases.js').read_bytes())
+    if any(b'/kaname/static/pagination.js' in path.read_bytes() for path in compiled.rglob('*.html')):
+        destination = compiled / 'static/pagination.js'
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((Path(__file__).resolve().parents[1] / 'pagination.js').read_bytes())
     for name, data in files.items():
         destination = compiled / "markdown" / name
         destination.parent.mkdir(parents=True, exist_ok=True)

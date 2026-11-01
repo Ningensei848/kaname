@@ -2,7 +2,7 @@
 import pytest
 
 from link_acceptance import parse_html, audit_note_anchors, audit_search_links
-from techkb.publication import ExportError
+from kaname.publication import ExportError
 from image_acceptance import check_image_pages
 
 

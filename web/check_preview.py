@@ -9,10 +9,12 @@ from playwright.sync_api import expect
 
 from serve import WEB
 from kaname_web.artifact import load_artifact
-from techkb.publication import sha256
+from kaname.publication import sha256
 from image_acceptance import approved_images, check_images
 from kaname_web.browser_acceptance import served_artifact, browser_session, verify_local_links
 from link_acceptance import parse_html, audit_search_links, audit_note_anchors, check_search_click
+from listing_acceptance import audit_listings, check_listing_navigation
+from tag_acceptance import audit_tags, check_tag_aliases, check_search_shortcuts
 
 
 def check(artifact, screenshots=None):
@@ -22,6 +24,8 @@ def check(artifact, screenshots=None):
     manifest = json.loads(files["markdown/manifest.json"])
     note_files = {name.removeprefix('markdown/'): data for name, data in files.items() if name.startswith('markdown/')}
     parsed = parse_html(files)
+    listing_pages = audit_listings(manifest, parsed)
+    audit_tags(manifest, note_files, files)
     search_links = audit_search_links(manifest, note_files, files, parsed)
     audit_note_anchors(files, parsed)
     image_entries = approved_images(manifest, note_files)
@@ -31,7 +35,7 @@ def check(artifact, screenshots=None):
         home = origin + '/kaname/'
         with browser_session(origin, approved) as (context, page, observed):
             page.goto(home)
-            expect(page.locator(".note-card")).to_have_count(3)
+            check_listing_navigation(context, page, home, len(manifest['notes']))
             expect(page.locator(".fixture-banner")).to_be_visible()
             assert page.locator('meta[name="robots"]').get_attribute("content") == "noindex, nofollow"
             page.evaluate("document.fonts.ready")
@@ -85,8 +89,12 @@ def check(artifact, screenshots=None):
             # Requests for files absent from the completion manifest are refused.
             for path in (".env", "state/index.json", "HANDOFF.md", "markdown/../.env"):
                 assert context.request.get(home + path).status == 404
-    return dict(status="passed", notes=len(manifest["notes"]), browser="chromium", external_requests=0,
+            alias_results = check_tag_aliases(page, home)
+            search_shortcuts = check_search_shortcuts(page, home)
+    return dict(status="passed", notes=len(manifest["notes"]), listing_pages=listing_pages, browser="chromium", external_requests=0,
                 search_links=search_links, offline_search_clicks=search_clicks,
+                tag_alias_results=alias_results,
+                search_shortcuts=search_shortcuts,
                 approved_image_requests=len(observed.image_requests),
                 dataset_digest=marker["dataset_digest"])
 

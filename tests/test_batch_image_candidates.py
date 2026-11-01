@@ -5,11 +5,11 @@ import pytest
 from google import genai
 from google.genai import types
 
-from techkb.batch import BatchManager, inspect_batch
-from techkb.gemini import Gemini
-from techkb.pending import Candidate
-from techkb.reporting import RunReport
-from techkb.audit import audit_state
+from kaname.batch import BatchManager, inspect_batch
+from kaname.gemini import Gemini
+from kaname.pending import Candidate
+from kaname.reporting import RunReport
+from kaname.audit import audit_state
 from test_batch import setup
 from test_batch_sdk import assert_api_schema_contract, normalized_schema
 

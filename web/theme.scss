@@ -21,6 +21,12 @@ article { line-height: 1.95; }
 .browse-nav { display: flex; gap: .65rem; flex-wrap: wrap; border-bottom: 1px solid var(--lightgray); padding-bottom: 2rem; }
 .browse-nav a { padding: .35rem .95rem; border: 1px solid var(--lightgray); border-radius: 2rem; font-size: .8rem; background: transparent; }
 .note-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; margin: 1.5rem 0 3rem; }
+.page-count { color: var(--gray); font-size: .8rem; }
+.search-load-status { display: block; font-size: .75rem; color: var(--darkgray); max-width: 16rem; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .45rem; margin: 1.5rem 0 2.5rem; }
+.pagination a, .pagination [aria-current] { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--lightgray); border-radius: .35rem; font-size: .85rem; }
+.pagination [aria-current] { background: var(--secondary); color: var(--light); }
+.pagination a:focus-visible { outline: 2px solid var(--secondary); outline-offset: 3px; }
 a.note-card { display: flex; flex-direction: column; gap: .85rem; padding: 1.45rem; background: var(--light); border: 1px solid var(--lightgray); border-radius: .7rem; color: var(--dark); text-decoration: none; transition: transform .15s, border-color .15s; }
 a.note-card:hover { border-color: var(--secondary); transform: translateY(-3px); }
 .note-card-meta { font-size: .65rem; color: var(--secondary); line-height: 1.7; }

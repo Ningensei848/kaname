@@ -1,8 +1,8 @@
 import pytest
 from pydantic import ValidationError
-from techkb.config import Source, RelevantFilter
-from techkb.extraction import extract_main, parse_listing, relevance
-from techkb.pending import Candidate
+from kaname.config import Source, RelevantFilter
+from kaname.extraction import extract_main, parse_listing, relevance
+from kaname.pending import Candidate
 
 
 def test_main_extract_skips_changing_navigation(harness):

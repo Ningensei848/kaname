@@ -108,7 +108,7 @@ def test_config_always_checked_and_fallback_executes_tests(monkeypatch, reuse, f
     monkeypatch.setattr(module.subprocess, 'run', lambda cmd, **kw: commands.append((cmd, kw)))
     monkeypatch.setattr(module, 'checks_evidence', lambda _: {'unit_tests': 'checks' if reuse else 'local'})
     module.main(['--full-tests'] if force else [])
-    assert commands[0] == ([module.sys.executable, '-m', 'techkb', 'validate-config'], {'check': True})
+    assert commands[0] == ([module.sys.executable, '-m', 'kaname', 'validate-config'], {'check': True})
     assert len(commands) == (1 if reuse and not force else 2)
     if len(commands) == 2:
         assert commands[1] == ([module.sys.executable, '-m', 'pytest', '-q'], {'check': True})
@@ -123,12 +123,12 @@ def test_failed_configuration_stops_before_ci_lookup(monkeypatch):
 
 def test_invalid_gcs_parallelism_stops_before_ci_lookup_or_generation(monkeypatch):
     commands = []
-    monkeypatch.setenv('TECHKB_GCS_READ_WORKERS', '17')
+    monkeypatch.setenv('KANAME_GCS_READ_WORKERS', '17')
     monkeypatch.setattr(module.subprocess, 'run', lambda command, **_: commands.append(command))
     monkeypatch.setattr(module, 'checks_evidence', lambda _: pytest.fail('invalid bounds must stop first'))
     with pytest.raises(ValueError, match='invalid read workers'):
         module.main([])
-    assert commands == [[module.sys.executable, '-m', 'techkb', 'validate-config']]
+    assert commands == [[module.sys.executable, '-m', 'kaname', 'validate-config']]
 
 
 def test_workflow_validation_precedes_auth_and_collection():

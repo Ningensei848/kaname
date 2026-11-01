@@ -8,7 +8,7 @@ import sys
 import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-import techkb.sync as sync
+import kaname.sync as sync
 
 
 class FixtureStore:
@@ -33,12 +33,12 @@ def verify():
             result['filesystem'] = filesystem.value
         vault = root / 'vault'
         assert sync.sync_vault(store, vault)['written'] == 1
-        note = vault / 'TechKB/notes/2026/10/fixture.md'
+        note = vault / 'kaname/notes/2026/10/fixture.md'
         note.write_bytes(b'human edit')
         store.data[next(iter(store.data))] = b'remote update'
         updated = sync.sync_vault(store, vault)
         assert note.read_bytes() == b'human edit' and updated['incoming_written'] == 1
-        incoming = vault / 'TechKB' / updated['updates'][0]['incoming']
+        incoming = vault / 'kaname' / updated['updates'][0]['incoming']
         incoming.write_bytes(b'human candidate')
         assert sync.sync_vault(store, vault)['updates'][0]['status'] == 'conflict'
         assert incoming.read_bytes() == b'human candidate'
@@ -58,13 +58,13 @@ def verify():
                 pass
             else:
                 raise AssertionError('unsupported_hard_link_accepted')
-            assert not (root / 'unsupported.md').exists() and not list(root.glob('.techkb-*'))
+            assert not (root / 'unsupported.md').exists() and not list(root.glob('.kaname-*'))
         finally:
             sync.os.link = original_link
         result['simulated_unsupported_link_left_no_partial_file'] = True
         base, outside = root / 'aliased-vault', root / 'owned-target'
         base.mkdir(); outside.mkdir()
-        alias = base / 'TechKB'
+        alias = base / 'kaname'
         if os.name == 'nt':
             subprocess.run(['cmd.exe', '/d', '/c', 'mklink', '/J', str(alias), str(outside)],
                            check=True, capture_output=True)
@@ -77,7 +77,7 @@ def verify():
         else:
             raise AssertionError('filesystem_alias_accepted')
         assert not list(outside.iterdir())
-        assert not (vault / 'TechKB/.techkb-sync.lock').exists()
+        assert not (vault / 'kaname/.kaname-sync.lock').exists()
         result['alias_blocked_before_writes'] = True
     return result
 

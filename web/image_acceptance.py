@@ -1,5 +1,5 @@
 """Exercise approved image requests offline, rejecting every other remote resource."""
-from techkb.publication import note_frontmatter
+from kaname.publication import note_frontmatter
 
 PLACEHOLDER = b'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600"><rect width="1200" height="600" fill="#dae8ed"/><text x="80" y="300" font-size="48" fill="#244853">Fixture article image</text></svg>'
 

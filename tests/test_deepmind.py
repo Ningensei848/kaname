@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from techkb.config import load_config
-from techkb.fetcher import FetchResult
-from techkb.state import State
+from kaname.config import load_config
+from kaname.fetcher import FetchResult
+from kaname.state import State
 
 
 ROOT = Path(__file__).resolve().parents[1]

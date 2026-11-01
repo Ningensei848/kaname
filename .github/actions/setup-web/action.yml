@@ -17,6 +17,6 @@ runs:
       run: |
         set -euo pipefail
         npm ci --ignore-scripts
-        node --test audit.test.mjs
+        npm run test:frontend
         npm run audit
         npm run setup

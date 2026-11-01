@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from techkb.audit import audit_state
-from techkb.cli import main
-from techkb.state import INDEX_COLUMNS, decode_tsv, encode_tsv
+from kaname.audit import audit_state
+from kaname.cli import main
+from kaname.state import INDEX_COLUMNS, decode_tsv, encode_tsv
 
 
 def test_audit_pipeline_output_is_read_only(harness):
@@ -111,9 +111,9 @@ def test_audit_does_not_construct_article_or_llm_clients(harness, monkeypatch):
     harness.pipeline.run()
     def forbidden(*args, **kwargs):
         pytest.fail("audit must not construct network processing clients")
-    monkeypatch.setattr("techkb.cli.Fetcher", forbidden)
-    monkeypatch.setattr("techkb.cli.Gemini", forbidden)
-    monkeypatch.setattr("techkb.cli.GCSStore", lambda _: harness.store)
+    monkeypatch.setattr("kaname.cli.Fetcher", forbidden)
+    monkeypatch.setattr("kaname.cli.Gemini", forbidden)
+    monkeypatch.setattr("kaname.cli.GCSStore", lambda _: harness.store)
     assert main(["audit-state"]) == 0
 
 

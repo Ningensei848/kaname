@@ -3,14 +3,15 @@ import argparse
 import json
 from pathlib import Path
 import sys
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from techkb.composer import compose
-from techkb.config import Source
-from techkb.models import ArticleEnrichment
-from techkb.pending import Candidate
-from techkb.publication import export_notes, sha256
-from techkb.state import INDEX_COLUMNS, encode_tsv
+from kaname.composer import compose
+from kaname.config import Source
+from kaname.models import ArticleEnrichment
+from kaname.pending import Candidate
+from kaname.publication import export_notes, sha256
+from kaname.state import INDEX_COLUMNS, encode_tsv
 
 
 class FixtureStore:
@@ -22,7 +23,7 @@ class FixtureStore:
         return sorted(name for name in self.data if name.startswith(prefix))
 
 
-def make_fixture(output):
+def make_fixture(output, count=27):
     store, rows = FixtureStore(), []
     fixtures = [
         ("LLMの評価を小さく始める", "fixture-research", "Research Studio（架空）", "ai-llm",
@@ -35,19 +36,23 @@ def make_fixture(output):
          "検索結果を読み直せる短いNoteへ。出典と文脈を残すことで、発見した情報を次の学習につなげます。",
          ["要約から原典へ戻れるようにする", "同じ知識を日付・出典・カテゴリから探す", "生成された知識と人の判断を分けて扱う"], False),
     ]
-    for n, (title, source_id, publisher, category, summary, points, truncated) in enumerate(fixtures):
-        at = f"2026-10-0{n + 1}T09:00:00Z"
+    for n in range(count):
+        title, source_id, publisher, category, summary, points, truncated = fixtures[n % len(fixtures)]
+        points = list(points)
+        if n >= len(fixtures):
+            title = f"ページ分割の架空Note {n + 1}"
+        at = (datetime(2026, 10, 1, 9, tzinfo=timezone.utc) + timedelta(days=n)).isoformat().replace('+00:00', 'Z')
         url = f"https://example.com/fixture/{n + 1}"
         source = Source(id=source_id, name=publisher, feed_url="https://example.com/feed", base_url="https://example.com")
         summary += "GlucoFMとC++ & 検証を扱います。"
         points[0] += "。GlucoFMで確認する"
         enrichment = ArticleEnrichment(title_ja=title, summary_ja=summary, key_points=points,
             positioning_ja="このNoteは画面検証のための架空データです。実在の記事の要約ではありません。",
-            category=category, tags=[category, "preview"],
+            category=category, tags=[category, "preview", ("ai-egent", "AIエージェント", "ai-agent")[n % 3]],
             related_concepts=[fixtures[(n+1) % len(fixtures)][0], "知識の育て方", "GlucoFM", "C++ & 検証"], source_language="ja")
         images = []
         if n == 0:
-            from techkb.models import ImageSelection
+            from kaname.models import ImageSelection
             enrichment.images = [ImageSelection(image_id='img-1', after='key_point_1')]
             images = [dict(image_id='img-1', url='https://images.example.com/evaluation.png', alt='評価の流れ')]
         digest, raw = sha256(title.encode()), sha256(("synthetic:" + title).encode())
@@ -68,6 +73,10 @@ def make_fixture(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parent / ".cache/fixture-snapshot")
-    output = parser.parse_args().output
+    parser.add_argument("--notes", type=int, default=27)
+    args = parser.parse_args()
+    if args.notes < 3:
+        parser.error('--notes requires at least 3')
+    output = args.output
     output.parent.mkdir(parents=True, exist_ok=True)
-    print(json.dumps(make_fixture(output), ensure_ascii=False))
+    print(json.dumps(make_fixture(output, args.notes), ensure_ascii=False))

@@ -1,4 +1,4 @@
-from techkb.dedupe import Dedupe
+from kaname.dedupe import Dedupe
 
 def test_only_success_hashes():
     d = Dedupe([dict(status="failed", raw_html_sha256="r", content_sha256="c"),

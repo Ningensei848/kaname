@@ -7,7 +7,7 @@
 ## 公開版を読む
 
 [Note一覧](https://github.com/Ningensei848/kaname/tree/content/notes)からMarkdownを参照できます。
-dataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。
+以下の初回受入に使った固定版のdataset digestは`d0734d9c3ffa8e23b070692d790ea9c5be09b8b46d5d166a59fdd59853f91e8c`です。現在の版はbranchのmanifestで確認します。
 現在のbranchと固定した過去版は別です。固定版は[commitのtree](https://github.com/Ningensei848/kaname/tree/62ed7f08ec786e1067cc6eecd9bece5e078b8c5c/notes)で参照できます。
 
 ```bash
@@ -27,7 +27,7 @@ GCS/Gemini認証、記事取得、remote push、利用側のcheckoutやVaultの�
 
 ```bash
 git init --bare --initial-branch=content /path/to/distribution.git
-python -m techkb publish-notes \
+python -m kaname publish-notes \
   --public-snapshot /path/to/public-snapshot \
   --distribution-repo /path/to/distribution.git
 ```
@@ -72,8 +72,8 @@ Gitの拒否だけを「すべての編集を保護する」保証とは扱い�
 force/reset/cleanやdirty状態での自動更新を採用せず、人手の注釈は生成領域の外へ置きます。
 
 検証では一時親repoで参照固定、明示更新、重なるtracked/untracked編集のcheckout拒否を確認しています。
-利用者のコミュニティプラグイン、実Vault、Windows/NTFSは未検証です。
-互換`techkb sync --vault`はsubmoduleの更新に流用しません。
+このsubmodule操作での利用者プラグイン・実Vault・実Windows/NTFSは未検証です。互換syncの一時NTFS受入とは区別します。
+互換`kaname sync --vault`はsubmoduleの更新に流用しません。
 
 ## Webとの同一性
 

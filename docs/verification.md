@@ -1,7 +1,7 @@
 # 現在の検証範囲と受入基準
 
 仕様は[仕様書](specification.md)、操作は[運用手順](operations.md)、公開境界は[公開・配布](publication.md)を正本とする。
-runごとの計数・commit・費用・測定結果は[archive索引](archive/README.md)へ分離し、残件は[監査一覧](repository-audit.md)で追跡する。
+runごとの計数・commit・費用・測定結果は[archive索引](archive/README.md)へ分離し、残件は[次の作業](next-work.md)で追跡する。旧20項目の判定は[完了済み監査](archive/2026-10/completed-audit-2026-10-21.md)へ保全した。
 
 ## 受入済みの範囲
 
@@ -16,6 +16,7 @@ runごとの計数・commit・費用・測定結果は[archive索引](archive/RE
 | Release配布 | 完全版/最大7差分/削除、固定tagとdigest、draft検査/再開、改変拒否、同版再実行を実Actionsで受入。全体復元/全HTML buildを維持 |
 | Web/Pages | fixtureと固定実Git/Release入力、全元Markdown、検索/全ローカルリンク/アンカー/画像/4幅/想定外通信を検証。初回/通常schedule/切戻し/復帰を実deploy・配信照合で受入 |
 | 検索・graph | NS1本文WikiLink/内部Note優先/Google検索fallbackを本番受入。Graph評価CLIは読取り専用、正規化は評価案のみ |
+| 一覧・タグ・名称の更新 | ローカルで24件の静的ページ分割・接続条件付き次ページ先読み・検索の遅延初期化を検証。タグ辞書はWeb/新規生成に適用し、旧Noteは保持。CLI/importはkanameへ統一し、旧state/環境変数/通知/Batch識別子は互換読取り。実装・検証状態は[現在の作業](next-work.md)を参照。本番受入と区別する |
 | GCS読取り | 16並列/接続pool再利用、世代条件/CRC、同一runner内private byte cache、live catalog再検証を受入。1/8へ切戻し可能 |
 | 日次CI再利用 | 同じmain SHAの最新成功Checks/attempt・scope/aggregate jobsをAPI照合。不一致/不完全/照合不能時は全単体テストへfallback。設定/本番状態/公開検査は毎回実行 |
 | CI対象選択 | Docs/設定/コード/Webを分類し、Release/配布入力契約とその回帰もWeb対象。未知path/比較失敗は全検査。Docs/actionlintは常時必須gate |
@@ -49,4 +50,4 @@ F1〜F7、T0/R1〜R5/O1/O2、旧Batch/画像/NS1の未受入指示は完了証�
 
 最初の整理ではremote追跡ファイルの静的確認、削除対象の保全先commit/blob照合、現行Markdownの相対path/見出しとarchive参照、コード/設定/workflow/test/lockの不変を確認した。
 継続作業でローカルruntimeが復旧し、基点Python786件、CI/文書関連69件、画像補完関連36件、Node監査5件、実npm auditとactionlintを実行した。
-全20項目の進捗と実行範囲は[監査一覧](repository-audit.md#改善の依存関係と進捗)で追跡し、既存main Checksの成功とは区別する。
+全20項目の進捗と実行範囲は[監査一覧](archive/2026-10/completed-audit-2026-10-21.md#改善の依存関係と進捗)で追跡し、既存main Checksの成功とは区別する。

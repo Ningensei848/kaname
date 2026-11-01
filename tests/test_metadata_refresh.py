@@ -2,9 +2,9 @@ import json
 
 import yaml
 
-from techkb.cli import main
-from techkb.metadata_refresh import MetadataRefresh, refresh_note_metadata
-from techkb.state import INDEX_COLUMNS, decode_tsv, encode_tsv
+from kaname.cli import main
+from kaname.metadata_refresh import MetadataRefresh, refresh_note_metadata
+from kaname.state import INDEX_COLUMNS, decode_tsv, encode_tsv
 
 
 def _set_published(harness, value="2026-09-10T21:31:19+00:00"):
@@ -118,11 +118,11 @@ def test_refresh_cli_does_not_construct_gemini(harness, monkeypatch, capsys):
     harness.pipeline.run()
     _add_author_page(harness)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    monkeypatch.setattr("techkb.cli.load_config", lambda *args: (harness.app, [harness.source]))
-    monkeypatch.setattr("techkb.cli.GCSStore", lambda _: harness.store)
+    monkeypatch.setattr("kaname.cli.load_config", lambda *args: (harness.app, [harness.source]))
+    monkeypatch.setattr("kaname.cli.GCSStore", lambda _: harness.store)
     harness.fetcher.close = lambda: None
-    monkeypatch.setattr("techkb.cli.Fetcher", lambda _: harness.fetcher)
-    monkeypatch.setattr("techkb.cli.Gemini", lambda *args, **kwargs: (_ for _ in ()).throw(
+    monkeypatch.setattr("kaname.cli.Fetcher", lambda _: harness.fetcher)
+    monkeypatch.setattr("kaname.cli.Gemini", lambda *args, **kwargs: (_ for _ in ()).throw(
         AssertionError("refresh-metadata must not construct Gemini")))
     assert main(["refresh-metadata"]) == 0
     result = json.loads(capsys.readouterr().out)

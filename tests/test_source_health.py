@@ -1,10 +1,10 @@
 import json
 import pytest
 
-from techkb.cli import main
-from techkb.config import Source
-from techkb.reporting import RunReport, SOURCE_COUNTERS
-from techkb.source_health import source_health
+from kaname.cli import main
+from kaname.config import Source
+from kaname.reporting import RunReport, SOURCE_COUNTERS
+from kaname.source_health import source_health
 from test_batch import setup
 
 
@@ -119,9 +119,9 @@ def test_snapshot_cli_requires_no_secrets_or_fetcher_and_writes_nothing(harness,
     before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob('*') if p.is_file()}
     def forbidden(*args, **kwargs):
         pytest.fail('source health must not create a network or LLM client')
-    monkeypatch.setattr('techkb.cli.load_config', lambda *args: (h.app, [h.source]))
+    monkeypatch.setattr('kaname.cli.load_config', lambda *args: (h.app, [h.source]))
     for name in ('Fetcher', 'SourceFetcher', 'Gemini', 'GCSStore'):
-        monkeypatch.setattr('techkb.cli.' + name, forbidden)
+        monkeypatch.setattr('kaname.cli.' + name, forbidden)
     monkeypatch.delenv('GEMINI_API_KEY', raising=False)
     assert main(['source-health', '--state-dir', str(tmp_path)]) == 0
     result = json.loads(capsys.readouterr().out)

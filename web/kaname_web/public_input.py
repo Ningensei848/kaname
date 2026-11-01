@@ -1,6 +1,6 @@
 """Choose fixed Git or verified restored Release input without cloud clients."""
-from techkb.publication.git_snapshot import content_snapshot
-from techkb.release_bundle import release_input
+from kaname.publication.git_snapshot import content_snapshot
+from kaname.release_bundle import release_input
 
 
 def public_input(content, commit, release_receipt=None):

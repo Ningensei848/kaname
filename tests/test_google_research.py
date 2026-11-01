@@ -9,13 +9,13 @@ from pathlib import Path
 import pytest
 import yaml
 
-from techkb.config import load_config
-from techkb.converter import Converter
-from techkb.extraction import extract_main
-from techkb.html_cleaner import clean_html
-from techkb.images import article_images
-from techkb.normalize import normalize_markdown
-from techkb.state import State
+from kaname.config import load_config
+from kaname.converter import Converter
+from kaname.extraction import extract_main
+from kaname.html_cleaner import clean_html
+from kaname.images import article_images
+from kaname.normalize import normalize_markdown
+from kaname.state import State
 from test_batch import setup
 
 

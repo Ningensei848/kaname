@@ -7,9 +7,9 @@ import time
 import httpx
 import pytest
 from pydantic import ValidationError
-from techkb.config import ProcessingConfig, HTTPConfig
-from techkb.fetcher import Fetcher
-from techkb.state import State
+from kaname.config import ProcessingConfig, HTTPConfig
+from kaname.fetcher import Fetcher
+from kaname.state import State
 
 
 def test_fetches_overlap_but_paid_work_and_writes_keep_candidate_order(harness):
@@ -81,7 +81,7 @@ def test_parallel_dry_run_has_no_mutations(harness, workers):
 
 
 def test_host_spacing_and_single_robots_fetch_under_concurrency(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: url)
     times = []; lock = Lock(); robots = []
     def handler(req):
         with lock:
@@ -101,7 +101,7 @@ def test_host_spacing_and_single_robots_fetch_under_concurrency(monkeypatch):
 
 
 def test_different_hosts_can_overlap(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: url)
     barrier = Barrier(2)
     def handler(req):
         if req.url.path != '/robots.txt':

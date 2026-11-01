@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from techkb.remote_publication import publish_remote
-from techkb.publication import ExportError
+from kaname.remote_publication import publish_remote
+from kaname.publication import ExportError
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

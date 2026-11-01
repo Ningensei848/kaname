@@ -2,6 +2,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { lazySearchScript } from './lazy-search.mjs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 const readJSON = async p => JSON.parse(await fs.readFile(p, 'utf8'))
@@ -45,7 +46,20 @@ try {
   await fs.copyFile(path.join(root, 'quartz.config.yaml'), path.join(engine, 'quartz.config.yaml'))
   await fs.mkdir(path.join(engine, 'plugins'))
   for (const [name, item] of Object.entries(pin.plugins)) {
-    await fs.symlink(path.join(root, 'node_modules', item.package), path.join(engine, 'plugins', name))
+    const installed = path.join(root, 'node_modules', item.package)
+    const target = path.join(engine, 'plugins', name)
+    if (name === 'search') {
+      const { Search } = await import(path.join(installed, 'dist/index.js'))
+      const script = lazySearchScript(Search().afterDOMLoaded)
+      await fs.mkdir(target)
+      const metadata = await readJSON(path.join(installed, 'package.json'))
+      await fs.writeFile(path.join(target, 'package.json'), JSON.stringify({
+        ...metadata, main: './index.js', exports: { '.': './index.js', './components': './index.js' },
+      }))
+      await fs.writeFile(path.join(target, 'index.js'),
+        `import { Search as UpstreamSearch } from ${JSON.stringify(path.join(installed, 'dist/index.js'))}\n` +
+        `export const Search = (options) => { const component = UpstreamSearch(options); component.afterDOMLoaded = ${JSON.stringify(script)}; return component; }\n`)
+    } else await fs.symlink(installed, target)
   }
   await fs.mkdir(path.join(engine, '.quartz/plugins'), { recursive: true })
   await fs.writeFile(path.join(engine, '.quartz/plugins/index.ts'),

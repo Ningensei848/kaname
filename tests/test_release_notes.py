@@ -7,11 +7,11 @@ import stat
 import zipfile
 import httpx
 import pytest
-from techkb.publication import ExportError, export_notes, json_bytes, sha256
-from techkb.publication.snapshot import load_snapshot
-from techkb.release_bundle import (ARCHIVE, DESCRIPTOR, MAX_DEPTH, apply_bundle, public_files,
+from kaname.publication import ExportError, export_notes, json_bytes, sha256
+from kaname.publication.snapshot import load_snapshot
+from kaname.release_bundle import (ARCHIVE, DESCRIPTOR, MAX_DEPTH, apply_bundle, public_files,
     build_bundle, descriptor, release_input, release_tag)
-from techkb.release_publication import ReleaseClient, publish_release, restore_release
+from kaname.release_publication import ReleaseClient, publish_release, restore_release
 from test_publication import add_note, change_note
 
 
@@ -22,7 +22,7 @@ def snapshots(harness, tmp_path):
     before = tmp_path / 'before'
     export_notes(harness.store, before)
     removed = next(e['id'] for e in load_snapshot(before)[0]['notes'] if e['canonical_url'].endswith('/removed'))
-    from techkb.metadata_refresh import refresh_note_metadata
+    from kaname.metadata_refresh import refresh_note_metadata
     change_note(harness, first, receipt, lambda note: refresh_note_metadata(note, ['Alice Example'], ''))
     add_note(harness, url='https://example.com/added')
     after = tmp_path / 'after'
@@ -343,9 +343,9 @@ def test_incomplete_or_corrupt_remote_chain_cannot_install(snapshots, tmp_path):
 
 
 def test_release_pages_preserves_git_artifact_and_refuses_modified_bytes(pages, tmp_path):
-    from techkb.publication import PUBLIC_README
-    from techkb.publication.git_snapshot import content_snapshot
-    from techkb.publication.install import install_snapshot
+    from kaname.publication import PUBLIC_README
+    from kaname.publication.git_snapshot import content_snapshot
+    from kaname.publication.install import install_snapshot
     from kaname_web.pages import prepare_pages
     checkout, commit, artifact, _ = pages
     _, files, _ = content_snapshot(checkout, commit)

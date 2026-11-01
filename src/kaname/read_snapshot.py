@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import tempfile
 import time
+from .compat import env_value
 
 log = logging.getLogger(__name__)
 DEFAULT_READ_WORKERS = 16
@@ -22,7 +23,7 @@ DEFAULT_READ_WORKERS = 16
 def read_workers(value=None):
     """Bound operational parallelism; allow 8/1 as immediate rollback options."""
     if value is None:
-        value = os.environ.get('TECHKB_GCS_READ_WORKERS', str(DEFAULT_READ_WORKERS))
+        value = env_value('KANAME_GCS_READ_WORKERS', str(DEFAULT_READ_WORKERS))
     if not isinstance(value, str) or not re.fullmatch(r'(?:[1-9]|1[0-6])', value):
         raise ValueError('invalid read workers')
     return int(value)

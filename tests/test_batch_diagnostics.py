@@ -5,8 +5,8 @@ from types import SimpleNamespace
 import pytest
 from pydantic import ValidationError
 
-from techkb.batch import failure_diagnostics
-from techkb.operations import cost_report
+from kaname.batch import failure_diagnostics
+from kaname.operations import cost_report
 from test_batch import setup
 
 
@@ -81,7 +81,7 @@ def test_compose_failure_keeps_type_without_exception_text(harness, monkeypatch)
     h.app.llm.max_calls_per_run = 0
     def fail(*args, **kwargs):
         raise RuntimeError("NEVER_LOG_COMPOSE_INPUT")
-    monkeypatch.setattr("techkb.batch.compose", fail)
+    monkeypatch.setattr("kaname.batch.compose", fail)
     report = h.pipeline.run()
     assert report.failures[0]["error_type"] == "RuntimeError"
     assert report.failures[0]["diagnostics"]["phase"] == "compose"
@@ -109,7 +109,7 @@ def test_legacy_outcome_without_details_recovers_original_error_type(harness):
 
 
 def test_validation_details_drop_unknown_field_names_and_parser_input():
-    from techkb.models import ArticleEnrichment
+    from kaname.models import ArticleEnrichment
     with pytest.raises(ValidationError) as caught:
         ArticleEnrichment.model_validate_json('{"PRIVATE_FIELD_NAME": "PRIVATE_VALUE"}')
     response = SimpleNamespace(text="PRIVATE_RESPONSE", candidates=[SimpleNamespace(
@@ -123,7 +123,7 @@ def test_validation_details_drop_unknown_field_names_and_parser_input():
 
 def test_submission_rejection_keeps_safe_api_fields_without_values(harness):
     from google.genai import errors
-    from techkb.batch import inspect_batch
+    from kaname.batch import inspect_batch
     h = harness
     sdk = setup(h)
     def reject(**kwargs):

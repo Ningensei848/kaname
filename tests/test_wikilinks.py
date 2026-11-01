@@ -3,12 +3,12 @@ from urllib.parse import parse_qs, urlsplit
 from bs4 import BeautifulSoup
 import pytest
 
-from techkb.markup import inline
-from techkb.wikilinks import linked_inline, project_wikilinks
-from techkb.publication import export_notes, ExportError
-from techkb.publication.snapshot import load_snapshot
-from techkb.publication.note import plain_body
-from techkb.site import project_content
+from kaname.markup import inline
+from kaname.wikilinks import linked_inline, project_wikilinks
+from kaname.publication import export_notes, ExportError
+from kaname.publication.snapshot import load_snapshot
+from kaname.publication.note import plain_body
+from kaname.site import project_content
 from link_acceptance import audit_note_anchors, audit_search_links
 
 

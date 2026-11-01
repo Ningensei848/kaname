@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from techkb.batch import preflight, ReadOnlyStore
+from kaname.batch import preflight, ReadOnlyStore
 from test_batch import setup
 
 

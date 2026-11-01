@@ -4,10 +4,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from techkb.gemini import response_usage
-from techkb.operations import cost_report, notification_plan
-from techkb.reporting import RunReport
-from techkb.state import State
+from kaname.gemini import response_usage
+from kaname.operations import cost_report, notification_plan
+from kaname.reporting import RunReport
+from kaname.state import State
 
 
 @pytest.mark.parametrize('counts,available,known', [
@@ -124,7 +124,7 @@ def test_feed_only_success_with_budget_exhaustion_is_not_source_recovery(harness
 def test_multiple_articles_original_month_and_rate_survive_report_loss(harness, monkeypatch):
     h = harness
     original = RunReport
-    monkeypatch.setattr('techkb.pipeline.RunReport', lambda **kw: original(**kw,
+    monkeypatch.setattr('kaname.pipeline.RunReport', lambda **kw: original(**kw,
         run_id='20260930T235959Z-12345678', started_at='2026-09-30T23:59:59+00:00'))
     h.fetcher.pages['https://example.com/b'] = b'<article>Another article</article>'
     h.store.fail_prefix = 'runs/'
@@ -134,7 +134,7 @@ def test_multiple_articles_original_month_and_rate_survive_report_loss(harness, 
     assert ledger['total_input_tokens'] == 200
     h.app.costs.prices[h.app.llm.model]['standard'].input_usd_per_million = 999
     h.store.fail_prefix = None
-    monkeypatch.setattr('techkb.pipeline.RunReport', original)
+    monkeypatch.setattr('kaname.pipeline.RunReport', original)
     assert h.pipeline.run().llm_calls == 0
     cost = cost_report(h.store, h.app, '2026-10-06')
     expected = (Decimal(200) * Decimal(str(ledger['token_price']['input_usd_per_million'])) +
@@ -165,8 +165,8 @@ def test_partial_usage_reaches_cost_report_in_both_modes(harness, monkeypatch, m
 
 
 def test_sources_unprocessed_after_durability_failure_do_not_reset(harness):
-    from techkb.config import Source
-    from techkb.pending import Candidate
+    from kaname.config import Source
+    from kaname.pending import Candidate
     h = harness
     source_b = Source(id='other', name='Other', feed_url='https://other.example/feed.xml', base_url='https://other.example/')
     h.pipeline.sources.append(source_b)

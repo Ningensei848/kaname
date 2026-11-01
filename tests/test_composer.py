@@ -1,7 +1,7 @@
 import yaml
-from techkb.composer import compose, filename
-from techkb.models import ArticleEnrichment
-from techkb.pending import Candidate
+from kaname.composer import compose, filename
+from kaname.models import ArticleEnrichment
+from kaname.pending import Candidate
 
 def test_filename_safe_and_bounded():
     name = filename('a/b:c*?"<>|\\' + '日本語'*100, '2026-09-25', 'a'*64)

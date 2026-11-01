@@ -6,11 +6,11 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from techkb.browser_fetcher import SourceFetcher
-from techkb.config import load_config
-from techkb.fetcher import Fetcher
-from techkb.image_refresh import load_plan, repair_images
-from techkb.storage import GCSStore
+from kaname.browser_fetcher import SourceFetcher
+from kaname.config import load_config
+from kaname.fetcher import Fetcher
+from kaname.image_refresh import load_plan, repair_images
+from kaname.storage import GCSStore
 
 
 def main(argv=None):

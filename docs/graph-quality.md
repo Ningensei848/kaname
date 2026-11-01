@@ -5,8 +5,8 @@
 ## 実行と判定
 
 ```bash
-python -m techkb graph-quality --public-snapshot /path/to/public-content
-python -m techkb graph-quality --public-snapshot /path/to/public-content --details
+python -m kaname graph-quality --public-snapshot /path/to/public-content
+python -m kaname graph-quality --public-snapshot /path/to/public-content --details
 ```
 
 manifest、元Markdown hash、Note IDと公開Note構造を既存の`load_snapshot`で検証してから評価します。GCS・Gemini・記事取得のclientを作らず、snapshotや保存Noteを変更しません。`--apply`、`--state-dir`、LLM override、配布repo指定は拒否します。API費用は発生しません。
@@ -24,7 +24,7 @@ manifest、元Markdown hash、Note IDと公開Note構造を既存の`load_snapsh
 | ambiguous_title_groups | 正規化後の同名に複数の公開Noteが存在する組数 |
 | applied | 常にfalse。正規化案を保存・公開リンクへ適用しない |
 
-対象はcompact Noteの「検索キーワード」節のWikiLinkとfrontmatter tagsです。著者・出典URL・画像・コード記述を概念辺へ数えません。本文へのWikiLink付与と未解決時のGoogle検索は[NS1](next-work.md#ns1-google-search-fallback)の実装対象です。
+対象はcompact Noteの「検索キーワード」節のWikiLinkとfrontmatter tagsです。著者・出典URL・画像・コード記述を概念辺へ数えません。本文へのWikiLink付与と未解決時のGoogle検索は[NS1](ns1-search-fallback.md)で対応済みです。タグのWeb検索正規化は[Web仕様](web-preview.md)へ分け、概念辺の正規化評価を自動適用しません。
 
 ## 正規化案と評価例
 

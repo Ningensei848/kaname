@@ -1,6 +1,6 @@
 import pytest
-from techkb.browser_fetcher import SourceFetcher
-from techkb.fetcher import FetchResult, FetchError
+from kaname.browser_fetcher import SourceFetcher
+from kaname.fetcher import FetchResult, FetchError
 
 pytest.importorskip('playwright.sync_api')
 
@@ -39,8 +39,8 @@ def test_browser_resource_failure_is_not_silent(harness):
 @pytest.mark.parametrize('redirect_kind', ['resource', 'resource_robots', 'initial_robots'])
 def test_real_browser_gateway_blocks_redirect_before_external_request(harness, monkeypatch, redirect_kind):
     import httpx
-    from techkb.fetcher import Fetcher
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    from kaname.fetcher import Fetcher
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: url)
     calls = []
     def handler(request):
         calls.append(str(request.url))

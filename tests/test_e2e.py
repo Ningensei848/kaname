@@ -1,9 +1,9 @@
 """Offline E2E: real CLI, Fetcher, feed parser, MarkItDown, Gemini validation, state."""
 from pathlib import Path
 import httpx
-from techkb import cli
-from techkb.fetcher import Fetcher
-from techkb.state import State
+from kaname import cli
+from kaname.fetcher import Fetcher
+from kaname.state import State
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,7 +16,7 @@ def prepare(monkeypatch, harness):
         if request.url.path.endswith('feed.xml'):
             return httpx.Response(200, text='<feed xmlns="http://www.w3.org/2005/Atom"><title>Fixture</title><entry><id>1</id><title>Release</title><link href="https://example.com/article"/></entry></feed>', headers={'content-type':'application/atom+xml'})
         return httpx.Response(200, content=article, headers={'content-type':'text/html'})
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: url)
     monkeypatch.setattr(cli, 'load_config', lambda *args: (h.app, [h.source]))
     h.source.request_interval_seconds = 0
     monkeypatch.setattr(cli, 'GCSStore', lambda *args: h.store)

@@ -95,10 +95,10 @@ jobs:
           python - <<'PY'
           import os, tempfile
           from pathlib import Path
-          from techkb.publication import PUBLIC_README, json_bytes
-          from techkb.publication.git_snapshot import content_snapshot
-          from techkb.publication.install import install_snapshot
-          from techkb.release_bundle import build_bundle, apply_bundle
+          from kaname.publication import PUBLIC_README, json_bytes
+          from kaname.publication.git_snapshot import content_snapshot
+          from kaname.publication.install import install_snapshot
+          from kaname.release_bundle import build_bundle, apply_bundle
           from kaname_web.pages import prepare_pages
           commit = os.environ['CONTENT_COMMIT']
           _, files, _ = content_snapshot('public-content', commit)

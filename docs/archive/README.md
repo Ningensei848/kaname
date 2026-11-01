@@ -1,12 +1,16 @@
 # 履歴の保全先
 
+## 完了済み20項目の分離（2026-10-21）
+
+ユーザー指定により、旧 `docs/next-work.md` を[完了済み作業記録](2026-10/completed-work-2026-10-21.md)、旧 `docs/repository-audit.md` を[完了済み監査](2026-10/completed-audit-2026-10-21.md)へ改名・移動した。本文の受入判定を保全し、移動先に合わせて相対リンクだけを更新している。[新しい作業一覧](../next-work.md)が現在の正本である。
+
 2026-10-16の整理で、完了済み計画・受入記録・引継ぎ61件を現行ツリーから外した。
 元ファイルは保全tag [archive/pre-housekeeping-2026-10-16](https://github.com/Ningensei848/kaname/tree/archive/pre-housekeeping-2026-10-16) に保全している。
 保全commitは [abaef1fcbd4421ea6d55776921961e7b6a1932d5](https://github.com/Ningensei848/kaname/commit/abaef1fcbd4421ea6d55776921961e7b6a1932d5)。
 tagに加えて固定commitの元pathからも参照できる。以下のblob SHAは整理前のGit object IDである。
 
 履歴内の未完了表記・認証状態・予算残額・次の指示は当時の情報で、現在の状態/保証や操作承認ではない。
-未完了事項は[監査一覧](../repository-audit.md)、仕様・操作は[文書の入口](../README.md)を参照する。
+未完了事項は[次の作業](../next-work.md)、仕様・操作は[文書の入口](../README.md)を参照する。
 
 ## ブランチを3本へ集約（2026-10-21）
 

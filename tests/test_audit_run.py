@@ -1,6 +1,6 @@
 import json
 import pytest
-from techkb.audit import audit_run
+from kaname.audit import audit_run
 
 
 def saved(h):

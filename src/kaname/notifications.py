@@ -8,6 +8,7 @@ import httpx
 
 from .costs import cost_report
 from .run_history import history
+from .compat import LEGACY_ALERT_PREFIX
 
 
 def failure_events(reports,notifications,source_ids):
@@ -56,13 +57,14 @@ def publish_issues(events,repository,token,client=None):
             raise ValueError('Issue pagination limit; refusing duplicate notifications')
         created=0
         for event in events:
-            marker='<!-- techkb-alert:'+hashlib.sha256(event['key'].encode()).hexdigest()+' -->'
-            if any(marker in (item.get('body') or '') for item in existing):
+            marker='<!-- kaname-alert:'+hashlib.sha256(event['key'].encode()).hexdigest()+' -->'
+            legacy=LEGACY_ALERT_PREFIX+hashlib.sha256(event['key'].encode()).hexdigest()+' -->'
+            if any(any(value in (item.get('body') or '') for value in (marker, legacy)) for item in existing):
                 continue
             if event['kind'] == 'publication':
-                title = 'TechKB: 収集・公開workflowの失敗'
+                title = 'kaname: 収集・公開workflowの失敗'
             else:
-                title=('TechKB: '+event['source_id']+' の連続失敗' if event['kind']=='failure' else 'TechKB: '+event['period']+' 予算到達')
+                title=('kaname: '+event['source_id']+' の連続失敗' if event['kind']=='failure' else 'kaname: '+event['period']+' 予算到達')
             body=marker+'\n\n'+json.dumps(event,ensure_ascii=False,indent=2)+'\n\nREADMEの復旧・費用確認手順を参照してください。'
             response=client.post(base,headers=headers,json={'title':title,'body':body})
             response.raise_for_status(); existing.append(response.json()); created+=1

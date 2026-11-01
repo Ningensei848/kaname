@@ -1,4 +1,4 @@
-name: Daily TechKB
+name: Daily kaname
 on:
   schedule:
     - cron: "17 22 * * *"
@@ -60,7 +60,7 @@ jobs:
       contents: read
       id-token: write
     concurrency:
-      group: techkb-gcs-single-writer
+      group: kaname-gcs-single-writer
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
@@ -104,7 +104,7 @@ jobs:
       - name: Audit saved state after image repair
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
-        run: python -m techkb audit-state
+        run: python -m kaname audit-state
       - uses: actions/upload-artifact@v7
         with:
           name: image-repair-preview
@@ -119,7 +119,7 @@ jobs:
       contents: read
       id-token: write
     concurrency:
-      group: techkb-gcs-single-writer
+      group: kaname-gcs-single-writer
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
@@ -162,7 +162,7 @@ jobs:
       id-token: write
       issues: write
     concurrency:
-      group: techkb-gcs-single-writer
+      group: kaname-gcs-single-writer
       cancel-in-progress: false
     outputs:
       ready: ${{ steps.export.outputs.ready }}
@@ -171,7 +171,7 @@ jobs:
       export_outcome: ${{ steps.export.outcome }}
     runs-on: ubuntu-latest
     env:
-      TECHKB_GCS_READ_WORKERS: ${{ vars.GCS_READ_WORKERS || '16' }}
+      KANAME_GCS_READ_WORKERS: ${{ vars.GCS_READ_WORKERS || '16' }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
@@ -186,7 +186,7 @@ jobs:
         run: |
           # Private GCS bytes stay on this runner, never Actions cache/artifacts.
           # Each command lists live generations; only unchanged bytes are reused.
-          echo "TECHKB_READ_CACHE=$RUNNER_TEMP/techkb-read-cache" >> "$GITHUB_ENV"
+          echo "KANAME_READ_CACHE=$RUNNER_TEMP/kaname-read-cache" >> "$GITHUB_ENV"
       - name: Validate execution mode
         env:
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
@@ -223,7 +223,7 @@ jobs:
       - name: Install browser when configured
         if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only }}
         run: |
-          if python -c 'from techkb.config import load_config; _, sources = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if any(s.enabled and s.fetcher == "playwright" for s in sources) else 1)'; then
+          if python -c 'from kaname.config import load_config; _, sources = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if any(s.enabled and s.fetcher == "playwright" for s in sources) else 1)'; then
             python -m pip install -r requirements-browser.lock
             python -m playwright install --with-deps chromium
           fi
@@ -248,42 +248,42 @@ jobs:
           if [[ -n "$MAX_CALLS" ]]; then args+=(--max-calls "$MAX_CALLS"); fi
           if [[ -n "$MAX_COST_USD" ]]; then args+=(--max-cost-usd "$MAX_COST_USD"); fi
           if [[ -n "$MAX_OUTPUT_TOKENS" ]]; then args+=(--max-output-tokens "$MAX_OUTPUT_TOKENS"); fi
-          python -m techkb "${args[@]}"
+          python -m kaname "${args[@]}"
       - name: Audit saved state
         id: audit
         if: ${{ inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
-        run: python -m techkb audit-state
+        run: python -m kaname audit-state
       - name: Verify saved run and state
         if: ${{ inputs.verification_run_id != '' && inputs.diagnostic_batch_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           VERIFY_RUN_ID: ${{ inputs.verification_run_id }}
           EXPECTED_SUCCESS_BEFORE: ${{ inputs.expected_success_before }}
-        run: python -m techkb audit-run --run-id "$VERIFY_RUN_ID" --expected-success-before "$EXPECTED_SUCCESS_BEFORE"
+        run: python -m kaname audit-run --run-id "$VERIFY_RUN_ID" --expected-success-before "$EXPECTED_SUCCESS_BEFORE"
       - name: Inspect existing Batch without writes
         if: ${{ inputs.diagnostic_batch_id != '' && inputs.verification_run_id == '' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DIAGNOSTIC_BATCH_ID: ${{ inputs.diagnostic_batch_id }}
-        run: python -m techkb batch-inspect --batch-id "$DIAGNOSTIC_BATCH_ID" --remote
+        run: python -m kaname batch-inspect --batch-id "$DIAGNOSTIC_BATCH_ID" --remote
       - name: Cost and notification plan
         if: ${{ always() && !inputs.batch_preflight && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: |
-          python -m techkb cost-report
-          python -m techkb notify
+          python -m kaname cost-report
+          python -m kaname notify
       - name: Publish necessary notifications
         if: ${{ always() && !inputs.batch_preflight && inputs.verification_run_id == '' && inputs.diagnostic_batch_id == '' && !inputs.publish_only && steps.gcp_auth.outcome == 'success' }}
         env:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          if python -c 'from techkb.config import load_config; app, _ = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if app.notifications.github_repository else 1)'; then
-            python -m techkb notify --apply
+          if python -c 'from kaname.config import load_config; app, _ = load_config("config/app.yaml", "config/sources.yaml"); raise SystemExit(0 if app.notifications.github_repository else 1)'; then
+            python -m kaname notify --apply
           fi
       - name: Export only validated public Notes
         id: export
@@ -292,7 +292,7 @@ jobs:
           GCS_BUCKET: ${{ vars.GCS_BUCKET }}
         run: |
           set -euo pipefail
-          python -m techkb export-notes --output "$RUNNER_TEMP/public-snapshot"
+          python -m kaname export-notes --output "$RUNNER_TEMP/public-snapshot"
           echo 'ready=true' >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v7
         if: steps.export.outputs.ready == 'true'

@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from techkb import cli
-from techkb.cli import main
+from kaname import cli
+from kaname.cli import main
 from test_batch import setup as setup_batch
 
 

@@ -10,14 +10,14 @@ APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test
 # These modules are consumed directly by the renderer or its fixed Git/Release
 # input. Include their regression tests: a test-only change can alter acceptance.
 WEB_CONTRACTS = (
-    'src/techkb/publication/', 'src/techkb/pages', 'src/techkb/site',
-    'src/techkb/composer', 'src/techkb/markup', 'src/techkb/wikilinks',
-    'src/techkb/models', 'src/techkb/config', 'src/techkb/normalize',
-    'src/techkb/hashes', 'src/techkb/images', 'src/techkb/release_bundle',
-    'src/techkb/release_publication', 'src/techkb/distribution',
-    'src/techkb/remote_publication', 'tests/test_publication', 'tests/test_site',
+    'src/kaname/publication/', 'src/kaname/pages', 'src/kaname/site',
+    'src/kaname/composer', 'src/kaname/markup', 'src/kaname/wikilinks',
+    'src/kaname/models', 'src/kaname/config', 'src/kaname/normalize',
+    'src/kaname/hashes', 'src/kaname/images', 'src/kaname/tags', 'src/kaname/release_bundle',
+    'src/kaname/release_publication', 'src/kaname/distribution',
+    'src/kaname/remote_publication', 'tests/test_publication', 'tests/test_site',
     'tests/test_pages', 'tests/test_wikilinks', 'tests/test_release_notes',
-    'tests/test_distribution', 'tests/test_remote_publication',
+    'tests/test_distribution', 'tests/test_remote_publication', 'tests/test_pagination', 'tests/test_tags',
 )
 
 
@@ -63,12 +63,12 @@ def main():
     parser.add_argument('--run', help='run a selected Python scope')
     args = parser.parse_args()
     if args.run is not None:
-        subprocess.run(['python', '-m', 'techkb', 'validate-config'], check=True)
+        subprocess.run(['python', '-m', 'kaname', 'validate-config'], check=True)
         # Regression tests do not validate the changed production plan itself.
         if args.run == 'full' or 'images' in args.run.split(','):
             import sys
             sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-            from techkb.image_refresh import load_plan
+            from kaname.image_refresh import load_plan
             for plan in sorted(Path('config/image-repairs').glob('*.json')):
                 load_plan(plan)
         subprocess.run(['python', '-m', 'pytest', '-q', *selected_tests(args.run)], check=True)

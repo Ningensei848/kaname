@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from .compat import env_value
 import re
 from pathlib import Path
 from contextlib import nullcontext
@@ -49,7 +50,7 @@ class _Dependencies:
     def read_store(self, prefixes, *, public=False):
         store = self.store(public=public)
         if hasattr(store, 'read_snapshot'):
-            return store.read_snapshot(prefixes, cache_dir=os.environ.get('TECHKB_READ_CACHE'))
+            return store.read_snapshot(prefixes, cache_dir=env_value('KANAME_READ_CACHE'))
         return nullcontext(store)
 
     def http(self):

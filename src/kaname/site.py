@@ -10,6 +10,43 @@ from .composer import inline
 from .publication import ExportError, sha256, note_frontmatter, instant
 from .publication.snapshot import load_snapshot
 from .wikilinks import project_wikilinks
+from .tags import canonical_tags
+
+PAGE_SIZE = 24
+
+
+def ordered_entries(entries):
+    return sorted(entries, key=lambda e: (instant(e["processed_at"]), e["id"]), reverse=True)
+
+
+def page_path(first, number):
+    if number == 1:
+        return first
+    base = "" if first == "index.md" else first[:-3] + "/"
+    return f"{base}page/{number}.md"
+
+
+def pagination(first, number, total):
+    if total <= 1:
+        return ""
+    current = page_path(first, number)
+    parts = ['<nav class="pagination" aria-label="Note一覧のページ">']
+    def link(n, label, extra=""):
+        href = html.escape(relative_link(page_path(first, n)[:-3] + '.html', current), quote=True)
+        return f'<a href="{href}" {extra}>{label}</a>'
+    if number > 1:
+        parts.append(link(number - 1, "前へ", 'rel="prev"'))
+    visible = sorted({1, total, *range(max(1, number - 1), min(total, number + 1) + 1)})
+    previous = 0
+    for n in visible:
+        if previous and n - previous > 1:
+            parts.append('<span aria-hidden="true">…</span>')
+        parts.append(f'<span aria-current="page" aria-label="{n}ページ目">{n}</span>' if n == number
+                     else link(n, str(n), f'aria-label="{n}ページ目"'))
+        previous = n
+    if number < total:
+        parts.append(link(number + 1, "次へ", 'rel="next"'))
+    return "\n".join(parts + ["</nav>"])
 
 
 def relative_link(target, current):
@@ -22,7 +59,7 @@ def collection_path(kind, value):
 
 def cards(entries, metadata, current):
     lines = ['<div class="note-grid">']
-    for entry in sorted(entries, key=lambda e: (instant(e["processed_at"]), e["id"]), reverse=True):
+    for entry in ordered_entries(entries):
         meta = metadata[entry["id"]]
         href = html.escape(relative_link(entry["path"][:-3], current), quote=True)
         lines.append(f'<a class="note-card" href="{href}">')
@@ -50,6 +87,17 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
                      tags=list(tags))
         projected[name] = ("---\n" + yaml.safe_dump(front, allow_unicode=True, sort_keys=False) + "---\n\n" + body + "\n").encode()
 
+    def listing(first, title, subset, intro="", outro=None):
+        ordered = ordered_entries(subset)
+        total = max(1, (len(ordered) + PAGE_SIZE - 1) // PAGE_SIZE)
+        for number in range(1, total + 1):
+            name = page_path(first, number)
+            start = (number - 1) * PAGE_SIZE
+            status = f'<p class="page-count">{len(ordered)} Notes · {number} / {total} ページ</p>'
+            body = ((intro if number == 1 else "") + status + cards(ordered[start:start + PAGE_SIZE], metadata, name) +
+                    pagination(first, number, total) + (outro(name) if outro else ""))
+            page(name, title if number == 1 else f"{title} — {number}ページ目", body)
+
     nav = '<nav class="browse-nav">' + "".join(
         f'<a href="browse/{kind}">{label}</a>' for kind, label in
         (("sources", "出典別"), ("categories", "カテゴリ別"), ("dates", "日付順"))) + '</nav>'
@@ -59,8 +107,10 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
     stats = (f'<div class="library-stats"><div><strong>{len(entries):02d}</strong><span>Notes</span></div>'
              f'<div><strong>{len(sources):02d}</strong><span>Sources</span></div>'
              f'<div><strong>{len(categories):02d}</strong><span>Categories</span></div></div>')
-    edition = f'<p class="edition-link"><a href="about/snapshot">この公開版について</a> · AI生成の要約です。正確性は原典で確認してください。</p>'
-    page("index.md", "技術の知識を、日々。", hero + stats + nav + "\n\n## 最新のNote\n\n" + cards(entries, metadata, "index.md") + edition)
+    def edition(current):
+        href = relative_link('about/snapshot', current)
+        return f'<p class="edition-link"><a href="{href}">この公開版について</a> · AI生成の要約です。正確性は原典で確認してください。</p>'
+    listing("index.md", "技術の知識を、日々。", entries, hero + stats + nav + "\n\n## 最新のNote\n\n", edition)
 
     titles = {}
     for entry in entries:
@@ -82,7 +132,7 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
                 'rel="noopener noreferrer">原典を読む ↗</a></div>\n\n')
         if meta.get("article_images"):
             lead += '> 画像は出典サイトから直接表示します。閲覧時に外部通信が発生し、画像の変更・削除により表示できなくなる場合があります。\n\n'
-        front = dict(title=meta["title"], description=meta["description"], tags=meta["tags"],
+        front = dict(title=meta["title"], description=meta["description"], tags=canonical_tags(meta["tags"]),
                      created=entry["processed_at"], modified=entry["processed_at"],
                      published=entry["published"] or entry["processed_at"])
         projected[entry["path"]] = ("---\n" + yaml.safe_dump(front, allow_unicode=True, sort_keys=False) + "---\n\n" + lead + body).encode()
@@ -94,9 +144,9 @@ def project_content(manifest, files, metadata, fixture=False, content_commit=Non
             subset = [e for e in entries if e[field] == value]
             shown = metadata[subset[0]["id"]]["publisher"] if kind == "sources" else value
             links.append(f"- [{inline(shown)}]({relative_link(name[:-3], f'browse/{kind}.md')}) — {len(subset)} Notes")
-            page(name, shown, cards(subset, metadata, name))
+            listing(name, shown, subset)
         page(f"browse/{kind}.md", label, "\n".join(links) or "公開Noteはありません。")
-    page("browse/dates.md", "日付順", "収集日時（UTC）の新しい順に表示しています。\n\n" + cards(entries, metadata, "browse/dates.md"))
+    listing("browse/dates.md", "日付順", entries, "収集日時（UTC）の新しい順に表示しています。\n\n")
     version = "架空データのpreview" if fixture else "保存済みNoteのsnapshot"
     commit = f"`{content_commit}`" if content_commit else "未配布（Git commitの指定なし）"
     about = (f"{version}です。AI要約は出典の代わりにはなりません。\n\n"

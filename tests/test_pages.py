@@ -3,11 +3,11 @@ from pathlib import Path
 
 import pytest
 
-from techkb.distribution import publish_snapshot
-from techkb.publication.git_snapshot import content_snapshot
+from kaname.distribution import publish_snapshot
+from kaname.publication.git_snapshot import content_snapshot
 from kaname_web.pages import prepare_pages
-from techkb.publication import ExportError, export_notes
-from techkb.publication.snapshot import load_snapshot
+from kaname.publication import ExportError, export_notes
+from kaname.publication.snapshot import load_snapshot
 from kaname_web.artifact import seal_artifact
 from test_distribution import git, clone
 

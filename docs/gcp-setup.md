@@ -9,27 +9,27 @@
 ## 1. 変数とサービス
 
 ```bash
-export TECHKB_PROJECT_ID='q4rs-project'
-export TECHKB_BUCKET='kaname-q4rs-project-ningensei848'
-export TECHKB_REPO='Ningensei848/kaname'
+export KANAME_PROJECT_ID='q4rs-project'
+export KANAME_BUCKET='kaname-q4rs-project-ningensei848'
+export KANAME_REPO='Ningensei848/kaname'
 # GitHub API/設定から取得する不変の数値ID。repository移譲時も確認すること。
-export TECHKB_REPO_ID='1258231039'
-export TECHKB_OWNER_ID='20794309'
-export TECHKB_BRANCH='main'
-export TECHKB_REGION='asia-northeast1'
-export TECHKB_SA="kaname-runner@${TECHKB_PROJECT_ID}.iam.gserviceaccount.com"
+export KANAME_REPO_ID='1258231039'
+export KANAME_OWNER_ID='20794309'
+export KANAME_BRANCH='main'
+export KANAME_REGION='asia-northeast1'
+export KANAME_SA="kaname-runner@${KANAME_PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud services enable storage.googleapis.com iam.googleapis.com \
-  iamcredentials.googleapis.com sts.googleapis.com --project="$TECHKB_PROJECT_ID"
+  iamcredentials.googleapis.com sts.googleapis.com --project="$KANAME_PROJECT_ID"
 
 gcloud iam service-accounts create kaname-runner \
-  --project="$TECHKB_PROJECT_ID" --display-name='Kaname runner'
+  --project="$KANAME_PROJECT_ID" --display-name='Kaname runner'
 
-gcloud storage buckets create "gs://${TECHKB_BUCKET}" \
-  --project="$TECHKB_PROJECT_ID" --location="$TECHKB_REGION" \
+gcloud storage buckets create "gs://${KANAME_BUCKET}" \
+  --project="$KANAME_PROJECT_ID" --location="$KANAME_REGION" \
   --uniform-bucket-level-access
 
-gcloud storage buckets update "gs://${TECHKB_BUCKET}" --public-access-prevention
+gcloud storage buckets update "gs://${KANAME_BUCKET}" --public-access-prevention
 ```
 
 既存bucketの場合は新規作成を省略し、UBLAとPublic Access Prevention=enforcedを有効化します。
@@ -41,14 +41,14 @@ gcloud storage buckets update "gs://${TECHKB_BUCKET}" --public-access-prevention
 GCSで既存objectを置換するためにはdelete権限も必要です。
 
 ```bash
-gcloud iam roles create kanameObjectWriter --project="$TECHKB_PROJECT_ID" \
+gcloud iam roles create kanameObjectWriter --project="$KANAME_PROJECT_ID" \
   --title='Kaname bucket object writer' \
   --permissions='storage.buckets.get,storage.objects.list,storage.objects.get,storage.objects.create,storage.objects.delete' \
   --stage=GA
 
-gcloud storage buckets add-iam-policy-binding "gs://${TECHKB_BUCKET}" \
-  --member="serviceAccount:${TECHKB_SA}" \
-  --role="projects/${TECHKB_PROJECT_ID}/roles/kanameObjectWriter"
+gcloud storage buckets add-iam-policy-binding "gs://${KANAME_BUCKET}" \
+  --member="serviceAccount:${KANAME_SA}" \
+  --role="projects/${KANAME_PROJECT_ID}/roles/kanameObjectWriter"
 ```
 
 プロジェクト全体へのStorage Object Adminは不要です。
@@ -57,21 +57,21 @@ gcloud storage buckets add-iam-policy-binding "gs://${TECHKB_BUCKET}" \
 ## 3. Workload Identity Federation
 
 ```bash
-TECHKB_PROJECT_NUMBER="$(gcloud projects describe "$TECHKB_PROJECT_ID" --format='value(projectNumber)')"
+KANAME_PROJECT_NUMBER="$(gcloud projects describe "$KANAME_PROJECT_ID" --format='value(projectNumber)')"
 
 gcloud iam workload-identity-pools create github-actions \
-  --project="$TECHKB_PROJECT_ID" --location=global --display-name='Kaname GitHub Actions'
+  --project="$KANAME_PROJECT_ID" --location=global --display-name='Kaname GitHub Actions'
 
 gcloud iam workload-identity-pools providers create-oidc github-repo \
-  --project="$TECHKB_PROJECT_ID" --location=global \
+  --project="$KANAME_PROJECT_ID" --location=global \
   --workload-identity-pool=github-actions \
   --issuer-uri='https://token.actions.githubusercontent.com' \
   --attribute-mapping='google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.repository_owner_id=assertion.repository_owner_id' \
-  --attribute-condition="assertion.repository_id == '${TECHKB_REPO_ID}' && assertion.repository_owner_id == '${TECHKB_OWNER_ID}' && assertion.ref == 'refs/heads/${TECHKB_BRANCH}' && assertion.workflow_ref == '${TECHKB_REPO}/.github/workflows/daily.yml@refs/heads/${TECHKB_BRANCH}'"
+  --attribute-condition="assertion.repository_id == '${KANAME_REPO_ID}' && assertion.repository_owner_id == '${KANAME_OWNER_ID}' && assertion.ref == 'refs/heads/${KANAME_BRANCH}' && assertion.workflow_ref == '${KANAME_REPO}/.github/workflows/daily.yml@refs/heads/${KANAME_BRANCH}'"
 
-gcloud iam service-accounts add-iam-policy-binding "$TECHKB_SA" \
-  --project="$TECHKB_PROJECT_ID" --role=roles/iam.workloadIdentityUser \
-  --member="principalSet://iam.googleapis.com/projects/${TECHKB_PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-actions/attribute.repository_id/${TECHKB_REPO_ID}"
+gcloud iam service-accounts add-iam-policy-binding "$KANAME_SA" \
+  --project="$KANAME_PROJECT_ID" --role=roles/iam.workloadIdentityUser \
+  --member="principalSet://iam.googleapis.com/projects/${KANAME_PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-actions/attribute.repository_id/${KANAME_REPO_ID}"
 ```
 
 repository数値ID、owner数値ID、branch、workflowを制限します。
@@ -101,7 +101,7 @@ workflowは依存のインストール・テストを認証前に行い、WIF認
 
 1. sourceのrobots・利用条件を確認。
 2. app.yamlの `max_calls_per_run` を最初だけ1へ減らしてcommit。
-3. GitHub Actions → Daily TechKB → Run workflow。
+3. GitHub Actions → Daily kaname → Run workflow。
 4. logsと `runs/YYYY/MM/*.json` のstatus、失敗stage、usageを確認。
 5. `notes/` の日本語・YAML・要約・重要ポイント・検索キーワード・資料の位置づけ・出典情報を確認。月次indexとpendingを確認。
 6. 同一記事だけを対象に再実行し、LLM呼出ゼロでraw/content duplicateとなることを確認。

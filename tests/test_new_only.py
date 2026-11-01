@@ -1,11 +1,11 @@
 """Discovery skips only durable success; generation limits also bound HTTP work."""
 import pytest
 
-from techkb._cli_arguments import parse_args, validate_args
-from techkb.config import AppConfig
-from techkb.discovery import KnownArticles
-from techkb.pending import Candidate
-from techkb.state import State
+from kaname._cli_arguments import parse_args, validate_args
+from kaname.config import AppConfig
+from kaname.discovery import KnownArticles
+from kaname.pending import Candidate
+from kaname.state import State
 
 
 def enable(h, workers=1):

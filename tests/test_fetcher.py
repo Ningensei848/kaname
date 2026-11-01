@@ -1,10 +1,10 @@
 import httpx
 import pytest
-from techkb.config import HTTPConfig
-from techkb.fetcher import Fetcher, FetchError
+from kaname.config import HTTPConfig
+from kaname.fetcher import Fetcher, FetchError
 
 def test_robots_blocks_article(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda u: u)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda u: u)
     calls = []
     def handler(request):
         calls.append(request.url.path)
@@ -15,7 +15,7 @@ def test_robots_blocks_article(monkeypatch):
     assert calls == ['/robots.txt']
 
 def test_stream_size_bound(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda u: u)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda u: u)
     def handler(request):
         if request.url.path == '/robots.txt':
             return httpx.Response(404, request=request)
@@ -25,7 +25,7 @@ def test_stream_size_bound(monkeypatch):
         f.get('https://example.com/a', 0, html=True)
 
 def test_retries_429_then_success(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda u: u)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda u: u)
     calls = []
     def handler(request):
         if request.url.path == '/robots.txt':
@@ -40,7 +40,7 @@ def test_retries_429_then_success(monkeypatch):
 @pytest.mark.parametrize('redirect_from', ['/article', '/robots.txt'])
 def test_host_policy_blocks_redirect_before_dns_or_transport(monkeypatch, redirect_from):
     checked, calls = [], []
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: checked.append(url))
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: checked.append(url))
     def handler(request):
         calls.append(str(request.url))
         if request.url.path == redirect_from:
@@ -54,7 +54,7 @@ def test_host_policy_blocks_redirect_before_dns_or_transport(monkeypatch, redire
 
 
 def test_explicit_allowed_redirect_checks_destination_robots(monkeypatch):
-    monkeypatch.setattr('techkb.fetcher.safe_url', lambda url: url)
+    monkeypatch.setattr('kaname.fetcher.safe_url', lambda url: url)
     calls = []
     def handler(request):
         calls.append(str(request.url))
