@@ -6,6 +6,49 @@ from bs4 import BeautifulSoup
 
 from kaname.publication import ExportError, note_frontmatter
 from kaname.wikilinks import project_wikilinks, spans
+from kaname.graph_quality import shared_keyword_links
+
+
+def audit_shared_keyword_links(manifest, original, files, parsed):
+    import json
+    expected = shared_keyword_links(manifest, original)
+    index = json.loads(files['static/contentIndex.json'])
+    count = 0
+    for entry in manifest['notes']:
+        soup = parsed['notes/' + entry['id'] + '.html']
+        actual = soup.select('.shared-keywords a.shared-keyword-note')
+        targets = [urlsplit(urljoin('http://localhost/kaname/notes/' + entry['id'], a['href'])).path
+                   for a in actual]
+        wanted = ['/kaname/notes/' + link['note_id'] for link in expected[entry['id']]]
+        if targets != wanted:
+            raise ExportError('shared_keyword_link_mismatch')
+        explanations = [tag.get_text() for tag in soup.select('.shared-keyword-terms')]
+        if explanations != ['共通: ' + ' · '.join(link['terms']) for link in expected[entry['id']]]:
+            raise ExportError('shared_keyword_explanation_mismatch')
+        edges = index[entry['path'][:-3]].get('links', [])
+        if any('notes/' + link['note_id'] not in edges for link in expected[entry['id']]):
+            raise ExportError('shared_keyword_edge_missing_from_index')
+        count += len(actual)
+    return count
+
+
+def check_shared_keyword_navigation(page, home, manifest, original):
+    from playwright.sync_api import expect
+    links = shared_keyword_links(manifest, original)
+    source = next((note_id for note_id in sorted(links) if links[note_id]), None)
+    if source is None:
+        return 0
+    target = links[source][0]['note_id']
+    title = next(entry['title'] for entry in manifest['notes'] if entry['id'] == target)
+    for width in (375, 768, 1024, 1440):
+        page.set_viewport_size({'width': width, 'height': 900})
+        page.goto(home + 'notes/' + source)
+        assert page.evaluate('document.documentElement.scrollWidth') <= width, 'related_note_horizontal_overflow'
+        page.locator('a.shared-keyword-note').first.click()
+        expect(page.locator('h1.article-title')).to_have_text(title)
+        page.go_back()
+        expect(page.locator('a.shared-keyword-note').first).to_be_visible()
+    return 1
 
 
 def parse_html(files):

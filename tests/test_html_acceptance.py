@@ -52,4 +52,4 @@ def test_unbounded_or_noninteger_browser_count_is_rejected(workers):
 def test_empty_image_input_needs_no_browser_import(monkeypatch):
     import sys
     monkeypatch.setitem(sys.modules, 'playwright', None)
-    assert check_image_pages('http://unused.invalid', {'a': []}) == dict(notes=0, requests=0, workers=0)
+    assert check_image_pages('http://unused.invalid', {'a': []}) == dict(notes=0, requests=0, workers=0, images=0)

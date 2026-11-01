@@ -1,0 +1,147 @@
+{
+  "status": "public_catalog_not_invoice",
+  "service": "Gemini API",
+  "service_id": "AEFD-7695-64FA",
+  "fetched_at": "2026-10-25",
+  "source": "https://docs.cloud.google.com/billing/docs/reference/rest/v1/services.skus/list",
+  "months": [
+    {
+      "month": "2026-09",
+      "request_timezone": "America/Los_Angeles",
+      "start_time": "2026-09-01T00:00:00-07:00",
+      "end_time": "2026-09-30T23:59:59-07:00",
+      "currency_code": "JPY",
+      "skus": [
+        {
+          "kind": "standard_input",
+          "sku_id": "7207-AF1D-C15D",
+          "description": "Generate content input token count gemini 3.5 flash lite text",
+          "effective_time": "2026-09-01T07:00:00Z",
+          "currency_conversion_rate": "159.37499999800781",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 47812
+          }
+        },
+        {
+          "kind": "standard_output",
+          "sku_id": "5904-BFA2-5FD5",
+          "description": "Generate content output token count gemini 3.5 flash lite text",
+          "effective_time": "2026-09-01T07:00:00Z",
+          "currency_conversion_rate": "159.37499999800781",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 398437
+          }
+        },
+        {
+          "kind": "batch_input",
+          "sku_id": "B769-0A39-7D62",
+          "description": "Generate content input token count gemini 3.5 flash lite text batch",
+          "effective_time": "2026-09-01T07:00:00Z",
+          "currency_conversion_rate": "159.37499999800781",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 23906
+          }
+        },
+        {
+          "kind": "batch_output",
+          "sku_id": "A194-3121-91C1",
+          "description": "Generate content output token count gemini 3.5 flash lite text batch",
+          "effective_time": "2026-09-01T07:00:00Z",
+          "currency_conversion_rate": "159.37499999800781",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 199218
+          }
+        }
+      ]
+    },
+    {
+      "month": "2026-10",
+      "request_timezone": "America/Los_Angeles",
+      "start_time": "2026-10-01T00:00:00-07:00",
+      "end_time": "2026-10-24T00:00:00-07:00",
+      "currency_code": "JPY",
+      "skus": [
+        {
+          "kind": "standard_input",
+          "sku_id": "7207-AF1D-C15D",
+          "description": "Generate content input token count gemini 3.5 flash lite text",
+          "effective_time": "2026-10-01T07:00:00Z",
+          "currency_conversion_rate": "157.19499999538951",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 47158
+          }
+        },
+        {
+          "kind": "standard_output",
+          "sku_id": "5904-BFA2-5FD5",
+          "description": "Generate content output token count gemini 3.5 flash lite text",
+          "effective_time": "2026-10-01T07:00:00Z",
+          "currency_conversion_rate": "157.19499999538951",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 392987
+          }
+        },
+        {
+          "kind": "batch_input",
+          "sku_id": "B769-0A39-7D62",
+          "description": "Generate content input token count gemini 3.5 flash lite text batch",
+          "effective_time": "2026-10-01T07:00:00Z",
+          "currency_conversion_rate": "157.19499999538951",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 23579
+          }
+        },
+        {
+          "kind": "batch_output",
+          "sku_id": "A194-3121-91C1",
+          "description": "Generate content output token count gemini 3.5 flash lite text batch",
+          "effective_time": "2026-10-01T07:00:00Z",
+          "currency_conversion_rate": "157.19499999538951",
+          "usage_unit": "count",
+          "base_unit": "count",
+          "base_unit_conversion_factor": 1,
+          "unit_price": {
+            "currencyCode": "JPY",
+            "units": "0",
+            "nanos": 196493
+          }
+        }
+      ]
+    }
+  ]
+}

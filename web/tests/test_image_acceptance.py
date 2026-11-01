@@ -33,7 +33,7 @@ def test_two_browsers_visit_each_note_once_with_offline_images():
     entries['without-images'] = []
     with pages(barrier=Barrier(2)) as (origin, visited):
         result = check_image_pages(origin, entries, workers=2)
-    assert result == dict(notes=4, requests=4, workers=2)
+    assert result == dict(notes=4, requests=4, workers=2, images=4)
     assert Counter(visited) == Counter(a=1, b=1, c=1, d=1)
 
 
@@ -46,9 +46,9 @@ def test_failure_in_any_worker_prevents_acceptance(script):
 
 
 def test_serial_rollback_and_empty_input():
-    assert check_image_pages('http://unused.invalid', {'a': []}) == dict(notes=0, requests=0, workers=0)
+    assert check_image_pages('http://unused.invalid', {'a': []}) == dict(notes=0, requests=0, workers=0, images=0)
     with pages() as (origin, visited):
-        assert check_image_pages(origin, {'a': [{'url': 'https://example.com/approved.svg'}]}, workers=1) == dict(notes=1, requests=1, workers=1)
+        assert check_image_pages(origin, {'a': [{'url': 'https://example.com/approved.svg'}]}, workers=1) == dict(notes=1, requests=1, workers=1, images=1)
     assert visited == ['a']
 
 

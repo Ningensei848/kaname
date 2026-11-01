@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "note_id": "207636f937b6c5e819a3e65705c6054fccf8873b7ee58db2666692b3f28bdafe",
+  "expected_note_sha256": "c525e38e591ca6eef05eeb4151d73133e319db67ddbb2cfe22d03da42e5a3a58",
+  "expected_text_sha256": "65bce6789902443c20f73f24efa9464c48df8beef8f138233e0a1022bd601cf7",
+  "source": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-omni-1-1-flash/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、開発者向けに生成動画の制御を強化したプロダクションレディなモデル「Gemini Omni 1.1 Flash」を発表しました。本モデルでは、最大10秒の文脈解析によるシーンの延長機能（最大40秒まで）、最初のフレームと最後のフレームを指定してスムーズなトランジションを作成する機能、最高4K解像度までのアップスケール対応が提供されます。また、360p解像度での軽量なプレビュー生成により、標準の720pと比較して最大60%高速かつ低コストでプロトタイピングやストーリーボードの作成が可能です。マルチモーダル入力では最大3秒の動画参照をサポートし、ビジュアルコンテキストやキャラクターの一貫性を維持できます。Google\n  AI StudioのGemini APIやGemini Enterprise Agent Platform経由で利用可能であり、Adobe Firefly、Figma\n  Weave、GMI Cloud、Runwayなどの企業におけるプロダクション環境での活用が進んでいます。\n",
+      "new": "description: Google DeepMindは、開発者向けに生成動画の制御を強化したプロダクションレディなモデル「Gemini Omni 1.1 Flash」を発表しました。本モデルでは、最大10秒の文脈解析によるシーンの延長機能（10秒単位で延長し累積長は最大40秒）、最初のフレームと最後のフレームを指定してスムーズなトランジションを作成する機能、最高4K解像度までのアップスケール対応が提供されます。また、360p解像度での軽量なプレビュー生成により、標準の720pと比較して最大60%高速かつ低コストでプロトタイピングやストーリーボードの作成が可能です。マルチモーダル入力では最大3秒の動画参照をサポートし、ビジュアルコンテキストやキャラクターの一貫性を維持できます。Google\n  AI StudioのGemini APIやGemini Enterprise Agent Platform経由で利用可能であり、Adobe Firefly、Figma\n  Weave、GMI Cloud、Runwayなどの企業におけるプロダクション環境での活用が進んでいます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "最大10秒の文脈解析によるシーンの延長機能（最大40秒まで）",
+      "new": "最大10秒の文脈解析によるシーンの延長機能（10秒単位で延長し累積長は最大40秒）",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "最大40秒のシーン延長に対応し、視覚的整合性を保ちながらストーリーテリングを拡張できる。",
+      "new": "10秒単位で動画を延長でき、累積長は最大40秒に対応する。視覚的整合性を保ちながらストーリーテリングを拡張できる。",
+      "expected_occurrences": 1
+    }
+  ]
+}

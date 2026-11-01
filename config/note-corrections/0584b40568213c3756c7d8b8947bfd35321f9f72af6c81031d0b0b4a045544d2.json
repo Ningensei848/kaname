@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "0584b40568213c3756c7d8b8947bfd35321f9f72af6c81031d0b0b4a045544d2",
+  "expected_note_sha256": "510c65cd509bf61e86d5d15d3a673cab8030be5791b3a1c6e5296e2afa174e94",
+  "expected_text_sha256": "9e6944a7812caca02beb835d2868720ce987795fb76fdd52c2ea6a67e67aa766",
+  "source": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "170万件以上のラベル付きデータ",
+      "new": "約170万件のラベル付きデータ",
+      "expected_occurrences": 1
+    }
+  ]
+}

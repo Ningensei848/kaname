@@ -57,3 +57,13 @@ NFKC、大文字小文字のcasefold、連続空白の統一だけを表記比�
 
 技術語と記事タイトルが一致しないため、辞書/表記正規化だけの自動適用を採用しない。タグ重複1件も既存Noteの自動書換えや再生成の理由としない。NS1の検索fallbackは本番受入済みで、内部の概念辺とは区別する。
 過去の125件/612語の評価は[整理前の全文](https://github.com/Ningensei848/kaname/blob/archive/pre-housekeeping-2026-10-16/docs/graph-quality.md)へ保全している。
+
+## 共通検索語によるNote間の導線
+
+タイトル完全一致で「その概念の定義先」を推測する規則は追加しません。代わりに、検索キーワードを2つ以上共有する公開NoteへのリンクをWebに表示します。表示にも共有語を添え、記事間の因果関係や内容の正しさを保証する辺とは区別します。タグや本文から語を推定せず、NFKC/casefoldと上記2群の明示同義語だけを使います。
+
+一般語・3文字未満・公開版の10%超（下限3 Note）で出る語は関連づけに使いません。共有語数の多い順、出現頻度合計の小さい順、安定Note ID順で最大3件を選びます。自分自身・公開除外Note・1語だけの一致を除き、同じ公開版なら順序を固定します。元Markdown/Note ID/datasetは変更せず、Google検索fallbackも維持します。
+
+`graph-quality`の `shared_keyword_edges` と `shared_keyword_notes` がこの別の関係の件数です。`current_edges` / `proposed_edges` と `applied:false` は従来のタイトル解決/正規化案だけを表します。`--details`に共有語と到達先IDを含めます。Web受入では全リンク・共有語・contentIndex上の辺を照合し、実際の移動と戻る・4幅も検証します。
+
+2026-10-25のcontent `406a716ef2462de01cc50faf09542c3e741c9b79`、dataset `595c002b1b9d60e1b9b5752cc62bf9edd98d158ede94176fe437d81f8a788733` の321 Noteでは検索語1,534件、タイトルによる現行/提案の辺は引き続き0です。共有語による導線は69 Note・136有向辺です。語句だけで記事を定義先に選ぶ方式を採用したという意味ではありません。

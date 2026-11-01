@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "1542677d60df19fd297288d04f50e3c2b351ed5a746cb79b0e49fec9906e5e0b",
+  "expected_note_sha256": "6da1cd93972d540e2fe4f19ad14c9490246a9238f5d32b20f9886fba3dd47d82",
+  "expected_text_sha256": "be6ad3b2a7a8bea4f3471d3d2339739482de862a5969199bf24347ebb0c2eb61",
+  "source": "https://deepmind.google/blog/teaching-ai-to-see-the-world-more-like-we-do/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "数百万枚の画像からなる大規模データセット",
+      "new": "100万枚の画像を用いた大規模データセット",
+      "expected_occurrences": 2
+    }
+  ]
+}

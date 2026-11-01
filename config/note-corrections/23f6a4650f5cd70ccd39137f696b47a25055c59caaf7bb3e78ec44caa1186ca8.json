@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "note_id": "23f6a4650f5cd70ccd39137f696b47a25055c59caaf7bb3e78ec44caa1186ca8",
+  "expected_note_sha256": "c371f5ad348fed67a9eca1a32ef248c7a0ba4166f3dcb6dc13bf823b7dbc9991",
+  "expected_text_sha256": "3007c6bc82b77ae1167cdbfbdb3e7544231da8778315e457bdb3cea03c88bce4",
+  "source": "https://github.blog/ai-and-ml/github-copilot/marketing-ops-as-code-automating-events-from-planning-to-follow-up-on-github/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: GitHubの日本および韓国におけるマーケティング担当者であるTomoko Tanaka氏が、GitHub Copilotを活用してイベント運用の全工程を自動化した事例について紹介しています。従来、イベントの承認後に発生するランディングページの複製、UTMタグ付きリンクの生成、メール案の作成、プロジェクトボードへの追加、参加者リストの集計とステータス更新、終了後のCRM用データ整形やレポート作成といった一連の定型作業は、ヒューマンエラーのリスクを伴う負担の大きいものでした。元エンジニアである著者は、自身の手順書をGitHub\n  Copilotに渡し、対話を重ねることでコードを生成させました。その結果、1つのGitHub Issueからイベントの自動セットアップ、毎朝の登録者スクリーニング、終了後の後片付けまでが自動で行われる「Marketing\n  ops as code」の仕組みが実現されました。イベント管理の基本単位としてGitHub Issueを用い、issue formを構造化された申請フォームとして活用しています。\n",
+      "new": "description: GitHubの日本および韓国におけるマーケティング担当者であるTomoko Tanaka氏が、GitHub Copilotを活用してイベント運用の定型作業を、人の承認やコマンド起動を挟んで自動化した事例について紹介しています。従来、イベントの承認後に発生するランディングページの複製、UTMタグ付きリンクの生成、メール案の作成、プロジェクトボードへの追加、参加者リストの集計とステータス更新、終了後のCRM用データ整形やレポート作成といった一連の定型作業は、ヒューマンエラーのリスクを伴う負担の大きいものでした。元エンジニアである著者は、自身の手順書をGitHub\n  Copilotに渡し、対話を重ねることでコードを生成させました。その結果、承認後のGitHub Issueを起点にイベント設定や毎朝の登録者確認を自動化し、終了後の処理は担当者がコマンドで開始する「Marketing\n  ops as code」の仕組みが実現されました。イベント管理の基本単位としてGitHub Issueを用い、issue formを構造化された申請フォームとして活用しています。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "イベント運用の全工程を自動化した事例",
+      "new": "イベント運用の定型作業を、人の承認やコマンド起動を挟んで自動化した事例",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "その結果、1つのGitHub Issueからイベントの自動セットアップ、毎朝の登録者スクリーニング、終了後の後片付けまでが自動で行われる「Marketing ops as code」の仕組みが実現されました。",
+      "new": "その結果、承認後のGitHub Issueを起点にイベント設定や毎朝の登録者確認を自動化し、終了後の処理は担当者がコマンドで開始する「Marketing ops as code」の仕組みが実現されました。",
+      "expected_occurrences": 1
+    }
+  ]
+}

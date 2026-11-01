@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "0763ba87a2c5f42f9562df1e47ddebb23b6aedb45bcfff75c0edb604dd35ba9d",
+  "expected_note_sha256": "b20afc90083e5f9d2818c41d8bae198351bbcaebdbf5dd7c52a82aca983dc567",
+  "expected_text_sha256": "b5fd1cf3893bf6267cccb95d89e18c577f8fd2ad6c9a14010f6a3efd6b972e3c",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "テキスト、画像、動画の入力",
+      "new": "テキスト・画像の入力（動画参照はAPIスキーマで受理されても、発表時点ではモデルが正しく処理しない制約あり）",
+      "expected_occurrences": 3
+    }
+  ]
+}

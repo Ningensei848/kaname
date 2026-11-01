@@ -13,7 +13,7 @@
     "build": "python3 build.py",
     "preview": "python3 serve.py",
     "audit": "node audit.mjs",
-    "test:frontend": "node --test audit.test.mjs lazy-search.test.mjs",
+    "test:frontend": "node --test audit.test.mjs lazy-search.test.mjs serve-handler-compat.test.mjs",
     "build:pages": "python3 build_pages.py",
     "check:preview": "python3 check_preview.py",
     "check:pages": "python3 check_pages.py",
@@ -42,7 +42,10 @@
   "overrides": {
     "@xmldom/xmldom": "0.9.12",
     "sharp": "0.35.5",
-    "toml": "5.0.0",
-    "katex": "0.18.2"
+    "toml": "5.0.1",
+    "katex": "0.18.2",
+    "minimatch": "11.0.1",
+    "satori": "0.33.5",
+    "fflate": "0.7.5"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "28d1e98bb25b487f0b8b2be2538cc863fce18b879816bfea748565b905659b2a",
+  "expected_note_sha256": "c5573f8bc1b5889958c659577d1e51aae0a86202b4c75c476bd8fe41097e556c",
+  "expected_text_sha256": "b210522077f309c314df4eb615f595a565b5df361d99cbedd845e109556095bb",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-lite/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "応答時間が2.5倍高速化",
+      "new": "最初の応答トークンまでの時間が2.5倍高速化",
+      "expected_occurrences": 1
+    }
+  ]
+}

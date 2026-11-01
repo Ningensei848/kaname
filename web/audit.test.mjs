@@ -1,45 +1,39 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import { checkReport } from './audit.mjs'
-const url = 'https://github.com/advisories/GHSA-hp3w-g68c-fv3c'
-const lock = JSON.parse(readFileSync(new URL('./package-lock.json', import.meta.url)))
-const report = (name, advisory, nodes = ['node_modules/sprintf-js']) => ({ vulnerabilities: {
-  [name]: { name, nodes, via: [{ url: advisory }] },
+
+const clean = () => ({ auditReportVersion: 2, vulnerabilities: {}, metadata: {
+  vulnerabilities: { info: 0, low: 0, moderate: 0, high: 0, critical: 0, total: 0 },
 } })
-test('accepts the reviewed, pinned CLI-only sprintf advisory', () => {
-  assert.deepEqual(checkReport(report('sprintf-js', url), lock), { braces: 0, sprintf: 1 })
+
+test('accepts a complete clean npm report', () => {
+  assert.deepEqual(checkReport(clean()), { advisories: 0 })
 })
-test('rejects a new advisory, other package, changed version or new dependency path', () => {
-  for (const r of [report('sprintf-js', 'https://github.com/advisories/new'), report('other', url),
-    report('sprintf-js', url, ['node_modules/other/node_modules/sprintf-js'])]) {
-    assert.throws(() => checkReport(r, lock), /unreviewed_dependency_advisory/)
+
+test('rejects new advisories and the two withdrawn former exceptions', () => {
+  for (const [name, url] of [
+    ['toml', 'https://github.com/advisories/GHSA-4qx8-w7c3-pj3p'],
+    ['braces', 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm'],
+    ['sprintf-js', 'https://github.com/advisories/GHSA-hp3w-g68c-fv3c'],
+  ]) {
+    const report = clean()
+    report.vulnerabilities[name] = { name, via: [{ url }] }
+    assert.throws(() => checkReport(report), /unreviewed_dependency_advisory/)
   }
-  assert.throws(() => checkReport(report('sprintf-js', url), { packages: {} }), /unreviewed_dependency_advisory/)
+  const inconsistent = clean()
+  inconsistent.metadata.vulnerabilities.high = 1
+  assert.throws(() => checkReport(inconsistent), /unreviewed_dependency_advisory/)
 })
-test('retains braces review and accepts clean reports', () => {
-  assert.deepEqual(checkReport(report('braces', 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', ['node_modules/braces']), lock), { braces: 1, sprintf: 0 })
-  assert.deepEqual(checkReport({ vulnerabilities: {} }, lock), { braces: 0, sprintf: 0 })
-})
-test('rejects braces version, location, parent and propagation changes', () => {
-  const braces = report('braces', 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', ['node_modules/braces'])
-  const changed = structuredClone(lock)
-  changed.packages['node_modules/braces'].version = '3.0.4'
-  assert.throws(() => checkReport(braces, changed), /unreviewed_dependency/)
-  const parent = structuredClone(lock)
-  parent.packages['node_modules/micromatch'].version = '5.0.0'
-  assert.throws(() => checkReport(braces, parent), /unreviewed_dependency/)
-  assert.throws(() => checkReport(report('braces', braces.vulnerabilities.braces.via[0].url,
-    ['node_modules/other/node_modules/braces']), lock), /unreviewed_dependency/)
-  const graph = structuredClone(braces)
-  graph.vulnerabilities.micromatch = { name: 'micromatch', nodes: ['node_modules/micromatch'], via: ['new-package'] }
-  assert.throws(() => checkReport(graph, lock), /unreviewed_dependency_path/)
-  const unknown = structuredClone(braces)
-  unknown.vulnerabilities.unreviewed = { name: 'unreviewed', nodes: ['node_modules/unreviewed'], via: ['braces'] }
-  assert.throws(() => checkReport(unknown, lock), /unreviewed_dependency/)
-})
-test('fails closed when audit is unavailable', () => {
-  for (const r of [null, {}, { error: 'unavailable', vulnerabilities: {} }]) {
-    assert.throws(() => checkReport(r, lock), /dependency_audit_unavailable/)
+
+test('fails closed on unavailable or incomplete audit responses', () => {
+  for (const value of [null, {}, { vulnerabilities: {} },
+    { ...clean(), error: 'unavailable' }, { ...clean(), auditReportVersion: 1 },
+    { ...clean(), vulnerabilities: [] }, { ...clean(), metadata: {} }]) {
+    assert.throws(() => checkReport(value), /dependency_audit_unavailable/)
+  }
+  for (const value of [-1, '0', null, 0.5]) {
+    const report = clean()
+    report.metadata.vulnerabilities.total = value
+    assert.throws(() => checkReport(report), /dependency_audit_unavailable/)
   }
 })

@@ -5,19 +5,21 @@ from pathlib import Path
 import subprocess
 
 SOURCES_TESTS = ['test_extraction', 'test_google_research', 'test_deepmind', 'test_new_rss_sources', 'test_html_cleaner', 'test_images', 'test_fetcher', 'test_regression_corpus']
-APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery', 'test_standard_budget', 'test_generation_budget', 'test_operations']
+APP_TESTS = ['test_e2e', 'test_composer', 'test_gemini', 'test_batch_sdk', 'test_publication', 'test_site', 'test_pages', 'test_image_refresh', 'test_pipeline', 'test_parallel', 'test_new_only', 'test_batch', 'test_usage_recovery', 'test_standard_budget', 'test_standard_requests', 'test_note_corrections', 'test_generation_budget', 'test_operations']
 
 # These modules are consumed directly by the renderer or its fixed Git/Release
 # input. Include their regression tests: a test-only change can alter acceptance.
 WEB_CONTRACTS = (
     'src/kaname/publication/', 'src/kaname/pages', 'src/kaname/site',
     'src/kaname/composer', 'src/kaname/markup', 'src/kaname/wikilinks',
-    'src/kaname/models', 'src/kaname/config', 'src/kaname/normalize',
+    'src/kaname/models', 'src/kaname/config', 'src/kaname/normalize', 'src/kaname/graph_quality',
     'src/kaname/hashes', 'src/kaname/images', 'src/kaname/tags', 'src/kaname/release_bundle',
     'src/kaname/release_publication', 'src/kaname/distribution',
     'src/kaname/remote_publication', 'tests/test_publication', 'tests/test_site',
     'tests/test_pages', 'tests/test_wikilinks', 'tests/test_release_notes',
     'tests/test_distribution', 'tests/test_remote_publication', 'tests/test_pagination', 'tests/test_tags',
+    'tests/test_graph_quality', 'tests/test_shared_keywords',
+    'src/kaname/note_corrections', 'tests/test_note_corrections',
 )
 
 
@@ -31,6 +33,8 @@ def classify(paths):
             scopes.add('app'); web = True
         elif path.startswith('config/image-repairs/') and path.endswith(('.yaml', '.yml', '.json')):
             scopes.add('images')
+        elif path.startswith('config/note-corrections/') and path.endswith('.json'):
+            scopes.add('corrections'); web = True
         elif path.startswith('web/'):
             web = True
         elif path.startswith('docs/') or path in {'README.md', '.gitignore'}:
@@ -53,7 +57,8 @@ def selected_tests(scope):
         return []
     tests = set()
     for part in scope.split(','):
-        tests.update({'sources': SOURCES_TESTS, 'app': APP_TESTS, 'images': ['test_image_refresh']}[part])
+        tests.update({'sources': SOURCES_TESTS, 'app': APP_TESTS, 'images': ['test_image_refresh'],
+                      'corrections': ['test_note_corrections', 'test_publication', 'test_release_notes', 'test_site', 'test_sync']}[part])
     return [f'tests/{name}.py' for name in sorted(tests)]
 
 
@@ -71,6 +76,11 @@ def main():
             from kaname.image_refresh import load_plan
             for plan in sorted(Path('config/image-repairs').glob('*.json')):
                 load_plan(plan)
+        if args.run == 'full' or 'corrections' in args.run.split(','):
+            from kaname.note_corrections import load_plan
+            for plan in sorted(Path('config/note-corrections').glob('*.json')):
+                if load_plan(plan).note_id != plan.stem:
+                    raise ValueError('correction filename mismatch')
         subprocess.run(['python', '-m', 'pytest', '-q', *selected_tests(args.run)], check=True)
         return
     try:

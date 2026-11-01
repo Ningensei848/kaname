@@ -2,12 +2,12 @@ import httpx
 from pydantic import ValidationError
 import pytest
 
-def test_timeout_bounded_and_counted(harness):
+def test_timeout_is_never_replayed(harness):
     h = harness
     h.sdk.error = httpx.ReadTimeout("test")
     with pytest.raises(httpx.ReadTimeout):
         h.gemini.enrich({}, "body")
-    assert len(h.sdk.calls) == 4
+    assert len(h.sdk.calls) == 1
 
 def test_invalid_category_no_retry(harness):
     h = harness

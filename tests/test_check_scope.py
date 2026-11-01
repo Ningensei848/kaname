@@ -12,6 +12,9 @@ spec.loader.exec_module(module)
     (['config/sources.yaml'], ('sources', 'false')),
     (['config/app.yaml'], ('app', 'true')),
     (['config/image-repairs/glucofm-2026-10-11.json'], ('images', 'false')),
+    (['config/note-corrections/' + 'a' * 64 + '.json'], ('corrections', 'true')),
+    (['src/kaname/note_corrections.py'], ('full', 'true')),
+    (['tests/test_note_corrections.py'], ('full', 'true')),
     (['src/kaname/fetcher.py'], ('full', 'false')),
     (['web/package-lock.json'], ('none', 'true')),
     (['config/sources.yaml', 'web/quartz.config.ts'], ('sources', 'true')),
@@ -37,6 +40,7 @@ def test_contract_selection(paths, expected):
 def test_mixed_configuration_tests_are_unioned():
     tests = module.selected_tests('app,sources')
     assert 'tests/test_extraction.py' in tests and 'tests/test_publication.py' in tests
+    assert 'tests/test_note_corrections.py' in tests and 'tests/test_standard_requests.py' in tests
     assert len(tests) == len(set(tests))
 
 

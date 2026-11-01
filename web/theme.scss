@@ -27,6 +27,8 @@ article { line-height: 1.95; }
 .pagination a, .pagination [aria-current] { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--lightgray); border-radius: .35rem; font-size: .85rem; }
 .pagination [aria-current] { background: var(--secondary); color: var(--light); }
 .pagination a:focus-visible { outline: 2px solid var(--secondary); outline-offset: 3px; }
+.shared-keywords { margin-top: 2rem; border-top: 1px solid var(--lightgray); padding-top: 1rem; }
+.shared-keyword-terms { display: block; font-size: .8rem; color: var(--darkgray); }
 a.note-card { display: flex; flex-direction: column; gap: .85rem; padding: 1.45rem; background: var(--light); border: 1px solid var(--lightgray); border-radius: .7rem; color: var(--dark); text-decoration: none; transition: transform .15s, border-color .15s; }
 a.note-card:hover { border-color: var(--secondary); transform: translateY(-3px); }
 .note-card-meta { font-size: .65rem; color: var(--secondary); line-height: 1.7; }

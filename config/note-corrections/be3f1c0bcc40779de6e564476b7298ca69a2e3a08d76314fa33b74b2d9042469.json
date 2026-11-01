@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note_id": "be3f1c0bcc40779de6e564476b7298ca69a2e3a08d76314fa33b74b2d9042469",
+  "expected_note_sha256": "221e34f7ef44d4fcdb740dbb3b9300d255b54a0a89a1c8b219fb67b37c965c5d",
+  "expected_text_sha256": "a4b50d59968ea557267c2d8d9b0bf9ab029d3f31290e37787300e2e1153b5b28",
+  "source": "https://blog.cloudflare.com/full-transaction-waf/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "フルビジネストラランザクション検出",
+      "new": "HTTPリクエストと応答全体の検出",
+      "expected_occurrences": 5
+    }
+  ]
+}

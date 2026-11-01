@@ -37,14 +37,19 @@ def benchmark(content, commit, repeats=3):
             if content_snapshot(content, commit)[1] != original:
                 raise ValueError('benchmark_input_changed')
             coverage = {key: checked[key] for key in ('notes', 'search_links', 'image_notes',
-                'image_workers', 'external_requests', 'offline_search_clicks', 'approved_image_requests')}
+                'image_workers', 'external_requests', 'offline_search_clicks', 'approved_image_checks',
+                'listing_pages', 'search_shortcuts', 'shared_keyword_edges', 'shared_keyword_navigation')}
+            print(json.dumps(dict(repetition=number + 1, artifact_digest=built['artifact_digest'],
+                                  coverage=coverage)), file=sys.stderr, flush=True)
             if expected_artifact is None:
                 expected_artifact, expected_checks = built['artifact_digest'], coverage
             if built['artifact_digest'] != expected_artifact or coverage != expected_checks:
                 raise ValueError('benchmark_validation_scope_changed')
             sample = dict(build_seconds=round(after_build - started, 3),
                           check_seconds=round(finished - after_build, 3),
-                          total_seconds=round(finished - started, 3))
+                          total_seconds=round(finished - started, 3),
+                          approved_image_requests=checked['approved_image_requests'],
+                          navigation_image_requests=checked['navigation_image_requests'])
             samples.append(sample)
             print(json.dumps(dict(repetition=number + 1, **sample)), file=sys.stderr, flush=True)
     # Temporary outputs are gone; the previous successful pointer must not name
@@ -65,6 +70,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     try:
         print(json.dumps(benchmark(args.content, args.content_commit, args.repeats)))
-    except Exception:
-        print('{"status":"failed","code":"web_benchmark_failed"}', file=sys.stderr)
+    except Exception as exc:
+        # Keep diagnostics useful without printing Playwright snapshots or
+        # rendered Note text. ExportError messages are fixed project codes.
+        from kaname.publication import ExportError
+        owned_code = str(exc).startswith('benchmark_')
+        code = str(exc) if isinstance(exc, ExportError) or owned_code else type(exc).__name__
+        print(json.dumps(dict(status='failed', code='web_benchmark_failed', error_type=code)), file=sys.stderr)
         raise SystemExit(1)

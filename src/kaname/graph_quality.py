@@ -8,6 +8,7 @@ import re
 import unicodedata
 
 from .publication.note import note_frontmatter
+from .wikilinks import GENERIC
 
 
 NORMALIZER_VERSION = 1
@@ -45,6 +46,36 @@ def resolution(candidates, note_id):
     if not candidates:
         return "unresolved"
     return "self" if note_id in candidates else "resolved"
+
+
+def shared_keyword_links(manifest, files):
+    """Bounded Note links justified by at least two declared search keywords.
+
+    This is a separate relation from a concept resolving to a defining article.
+    Terms appearing in more than 10% of the edition (minimum three Notes) do
+    not establish a relation. No titles, body substrings or tag guesses enter it.
+    """
+    terms = {entry['id']: {term_key(term) for term in keyword_terms(files[entry['path']])
+             if len(term_key(term)) >= 3 and term_key(term) not in GENERIC}
+             for entry in manifest['notes']}
+    frequency = Counter(term for values in terms.values() for term in values)
+    maximum = max(3, len(terms) // 10)
+    members = defaultdict(set)
+    for note_id, values in terms.items():
+        for term in values:
+            if 2 <= frequency[term] <= maximum:
+                members[term].add(note_id)
+    result = {}
+    for note_id in sorted(terms):
+        candidates = defaultdict(set)
+        for term in terms[note_id]:
+            for other in members.get(term, set()) - {note_id}:
+                candidates[other].add(term)
+        ranked = sorted((other for other, shared in candidates.items() if len(shared) >= 2),
+                        key=lambda other: (-len(candidates[other]),
+                            sum(frequency[term] for term in candidates[other]), other))
+        result[note_id] = [dict(note_id=other, terms=sorted(candidates[other])) for other in ranked[:3]]
+    return result
 
 
 def graph_quality(manifest, files, metadata, *, details=False):
@@ -91,7 +122,11 @@ def graph_quality(manifest, files, metadata, *, details=False):
                   current_edges=len(edges), proposed_edges=len(proposed_edges),
                   ambiguous_title_groups=sum(len(ids) > 1 for ids in proposed_titles.values()),
                   applied=False)
+    shared = shared_keyword_links(manifest, files)
+    result['shared_keyword_edges'] = sum(map(len, shared.values()))
+    result['shared_keyword_notes'] = sum(bool(links) for links in shared.values())
     if details:
         result["variants"] = groups
         result["links"] = findings
+        result['shared_keyword_links'] = shared
     return result

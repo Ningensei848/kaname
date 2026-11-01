@@ -74,7 +74,8 @@ def test_unknown_or_retried_usage_stops_further_paid_work(harness, retry):
         nonlocal calls
         calls += 1
         if retry and calls == 1:
-            raise httpx.ReadTimeout('private payload')
+            from google.genai.errors import ClientError
+            raise ClientError(429, {'error': {'message': 'rate limited'}})
         response = original(**kwargs)
         if not retry:
             response.usage_metadata = None

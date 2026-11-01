@@ -11,8 +11,10 @@ def request_metadata(candidate, source, truncated, authors, image_candidates=())
 
 
 class StandardRequest:
-    def __init__(self, store, gemini, report):
+    def __init__(self, store, gemini, report, requests, content, context):
         self.store, self.gemini, self.report = store, gemini, report
+        self.requests, self.content, self.context = requests, content, context
+        self.record = None
         self.stage = "usage_reserve"
 
     def enrich(self, candidate, source, markdown, truncated, authors, image_candidates=()):
@@ -22,7 +24,13 @@ class StandardRequest:
         except Exception:
             report.llm_calls -= 1  # No API request was made.
             raise
-        self.stage = "llm"
+        self.stage = 'standard_request_reserve'
+        try:
+            self.record = self.requests.reserve(self.content, self.context, report)
+        except Exception:
+            report.llm_calls -= 1
+            raise
+        self.stage = 'llm'
         attempts_before = gemini.attempts
         try:
             enrichment = gemini.enrich(request_metadata(
@@ -35,6 +43,8 @@ class StandardRequest:
             report.llm_http_attempts += gemini.attempts - attempts_before
             if not gemini.last_usage_available or gemini.attempts - attempts_before > 1:
                 report.llm_usage_unavailable += 1
+            self.stage = 'standard_response_save'
+            self.requests.capture(self.record, gemini, report)
             self.stage = "usage_save"
             # Propagate storage failures so the pipeline stops further paid work.
             checkpoint(self.store, report, pending=False)

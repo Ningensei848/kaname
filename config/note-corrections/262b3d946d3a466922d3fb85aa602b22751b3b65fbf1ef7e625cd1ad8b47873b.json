@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "note_id": "262b3d946d3a466922d3fb85aa602b22751b3b65fbf1ef7e625cd1ad8b47873b",
+  "expected_note_sha256": "d0e2736d614a7aafa41c9338a19ce568e6418c481757fa1ee3abe273a923177c",
+  "expected_text_sha256": "5587ecd12004f8349276b4d75e2f1e257f314616cc824bc07a361fe41e545b54",
+  "source": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、推論能力と生成能力を統合した新しいマルチモーダルモデル「Gemini Omni」を発表しました。第1弾モデルである「Gemini\n  Omni Flash」は、画像、音声、動画、テキストなどのあらゆる入力を組み合わせ、物理法則や世界知識に基づいた高品質な動画の生成や、自然言語による複数ターンの編集を可能にします。キャラクターの一貫性を保ちながら環境やスタイル、カメラアングルなどを対話形式で変更できるほか、物理シミュレーションや複雑な概念の視覚化も実現しています。安全性の面ではアバター機能による自身の声での動画作成をサポートし、すべての生成動画に「SynthID」による電子透かしが埋め込まれています。本モデルはGoogle\n  AIプランの加入者向けにGeminiアプリやGoogle Flowで提供されるほか、YouTube ShortsやYouTube Createアプリでも順次展開されます。\n",
+      "new": "description: Google DeepMindは、推論能力と生成能力を統合した新しいマルチモーダルモデル「Gemini Omni」を発表しました。第1弾モデルである「Gemini\n  Omni Flash」は、画像、動画、テキストと、発表時点では声に限られる音声参照を組み合わせ、物理法則や世界知識に基づいた高品質な動画の生成や、自然言語による複数ターンの編集を可能にします。キャラクターの一貫性を保ちながら環境やスタイル、カメラアングルなどを対話形式で変更できるほか、物理法則への直観を利用した動画表現や複雑な概念の視覚化も実現しています。安全性の面ではアバター機能による自身の声での動画作成をサポートし、すべての生成動画に「SynthID」による電子透かしが埋め込まれています。本モデルはGoogle\n  AIプランの加入者向けにGeminiアプリやGoogle Flowで提供されるほか、YouTube ShortsやYouTube Createアプリでも順次展開されます。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "画像、音声、動画、テキストなどのあらゆる入力",
+      "new": "画像、動画、テキストと、発表時点では声に限られる音声参照",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "画像、音声、動画、テキストのあらゆる入力",
+      "new": "画像、動画、テキストと、発表時点では声に限られる音声参照",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "物理シミュレーションや複雑な概念の視覚化",
+      "new": "物理法則への直観を利用した動画表現や複雑な概念の視覚化",
+      "expected_occurrences": 1
+    }
+  ]
+}

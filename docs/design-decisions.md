@@ -29,9 +29,10 @@ HTTPはhost単位の排他でrobotsと間隔/retryを維持し、MarkItDown engi
 
 ## 課金と中断の限界
 
-APIの応答後からreceipt等の永続化前に停止すると、結果消失と再課金の可能性があります。
 API生成とGCS保存を一つのtransactionにできず、timeoutもAPI側の完了を断定できません。
-通信retryを許しながら厳密なexactly-once課金を保証しません。
+standardはcontent hashごとの予約を生成前に保存し、取得済み応答と元の組立て情報をprivateな `state/standard-requests/` へ保存します。記事本文と認証情報は保存しません。timeout・通信切断・5xxは自動再送せず、明示的な429応答だけを設定回数内で再試行します。
+予約後に応答を失った場合は後続runも停止し、自動で追加課金へ進みません。応答保存済みなら元run/時刻/単価/出典/画像候補でreceiptを復旧し、追加API呼出しは0です。保存済みreceiptは後のcomposerで作り直しません。過去の未決着usage予約も黙って再処理しません。
+明示的な再試行はcontent hash・1呼出し上限・正の費用上限を指定し、旧予約を履歴へ保全します。元の不明課金が消えたり、API側の厳密なexactly-once保証が成立したりするわけではありません。[操作](operations.md#standard生成の予約と明示的な再試行)を参照してください。
 
 standardはAPI呼出し前・usage取得後にprivate usage journalを保存し、receiptに元run IDを記録します（F5）。
 run reportが失われても元の日付・単価で集計し、reportとの二重計上を防ぎます。
@@ -45,7 +46,7 @@ run reportが失われても元の日付・単価で集計し、reportとの二�
 `tags`は最大8件です。title/summary/positioning等の必須文字列、category候補、空の要点・検索語も検証します。
 最小件数を強制しないという旧説明や、現行schemaにないtechnical insightsの説明は採用しません。
 promptは根拠のない捏造を求めず、本文を指示扱いしません。schema不正の自動補正/再生成はありません。
-通信retryはSDK内部を1 attemptにし、アプリ側で対象の通信障害だけをretryします。
+生成のSDK内部は1 attempt、アプリ側も明示的な429応答だけをretryします。HTTP記事取得のretryは別です。
 生成診断は例外型・既知field/code・段階・finish reason等に限定し、値・原文・例外本文を出しません。
 
 入力上限は正規化Markdownの先頭20,000文字です。後半の論点を含む完全な記事要約とは扱いません。
@@ -92,7 +93,7 @@ A10の設計評価として、metadataや検査結果のrun跨ぎreuse、部分H
 
 ### 固定Web入力の反復計測
 
-`python scripts/benchmark_web.py --content <clean-content-checkout> --content-commit <full-SHA>` は全build/全受入を3回実行し、各回の入力Git状態・dataset/artifact digest・検査件数を照合する。工程のsample/中央値/最小/最大をJSONで出す。検査を間引かず、出力は同じfilesystemの一時領域で作成・削除する。
+`python scripts/benchmark_web.py --content <clean-content-checkout> --content-commit <full-SHA>` は全build/全受入を3回実行し、各回の入力Git状態・dataset/artifact digest・検査件数を照合する。実際に表示確認した全画像の件数と、通常ナビゲーション中の付随する画像通信数は分ける。前者は同一coverageの必須条件とし、後者は各回の観測値として記録する。工程のsample/中央値/最小/最大をJSONで出す。検査を間引かず、出力は同じfilesystemの一時領域で作成・削除する。
 
 2026-10-16のcontent `510dc54a82ebeed360a6f91e07261d45b01f6a75`、246記事を共通基点としてWeb共通化前後で各3回計測した。全回dataset `e6562e1b47b4a3baea3e7de573c2d7810d896cda4099050cb17dcf9596863cff`、artifact `0d0b345554b91dfcb89d1351a33e9dac94921657ae883e220e029bd3806840df` が一致した。
 
@@ -110,3 +111,5 @@ A10の設計評価として、metadataや検査結果のrun跨ぎreuse、部分H
 全件auditは整合、読取り16並列5.875秒、全体8.851秒、当該SDK/監査専用プロセスの最大RSSは85,628KiB。CLI全体やGitHub runnerの恒久上限ではなく、一度のローカル観測である。
 現在はDB/stream化を先行させず、snapshot logにbytes/largest_object_bytes、State logにindex_files/index_rows/index_bytes/load_secondsを追加して規模を継続観測する。
 メモリ/時間の実制約が現れた時点で、全件整合性・世代/catalog再照合と公開前gateを維持できる分割/stream化を再評価する。
+
+2026-10-25の固定321 Noteでも全build/全受入を3回行い、artifactと全coverageが一致した。全体中央値211.307秒、全state/runs約7.9MBのGCS監査7.695秒/最大RSS約113MiBで、現規模でDB・run間cache・差分HTMLを導入する根拠は確認していない。[測定と残件](remaining-constraints.md#全webとgcsの規模評価)を基点に、制約が出た時に再判断する。

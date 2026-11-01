@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "note_id": "2313553cd7a41529be7108ba86c1a8c8dc4652d1f350a2df030ac80bbe8da481",
+  "expected_note_sha256": "c7550e0c5e997f39f30ae4e795d0421626f83dea0f2b0faa6c147021ba2afd39",
+  "expected_text_sha256": "99c99573a4548d3d8f033120797e088509b560f941e8918265dcd77977ae150a",
+  "source": "https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google I/O 2026では、エージェント型AIを活用した科学的発見、医療支援、エッジ向けハードウェア、気候予測などの分野における最新のブレイクスルーが発表されました。科学分野では、Nature誌に掲載された「Empirical\n  Research Assistance (ERA)」や「Co-Scientist」を統合した「Gemini for Science」が公開され、計算実験の自動化やアイデアの創出を加速させています。医療分野では、Google\n  Healthアプリの展開やSymptom AIの研究、マルチモーダルな診断対話を行うAMIEの進展、さらに開発者向けのMedGemmaやMedASRが紹介されました。また、エッジデバイス向けにエネルギー効率の高いCoral\n  NPUを搭載したSynaptics製の「Coralboard」が発表され、気候・災害予測ではWeatherNextによる高精度な台風予測や、Geminiを活用した都市部洪水の予測技術などが公開されました。\n",
+      "new": "description: Google I/O 2026では、エージェント型AIを活用した科学的発見、医療支援、エッジ向けハードウェア、気象予測などの分野における最新のブレイクスルーが発表されました。科学分野では、Nature誌に掲載された「Empirical\n  Research Assistance (ERA)」や「Co-Scientist」を統合した「Gemini for Science」が発表され、計算実験の自動化やアイデアの創出を加速させています。医療分野では、Google\n  Healthアプリの展開やSymptom AIの研究、マルチモーダルな診断対話を行うAMIEの進展、さらに開発者向けのMedGemmaやMedASRが紹介されました。また、エッジデバイス向けにエネルギー効率の高いCoral\n  NPUを搭載したSynaptics製の「Coralboard」が発表され、気象・災害予測ではWeatherNextによる高精度な台風予測や、Geminiを活用した都市部洪水の予測技術などが公開されました。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "気候予測",
+      "new": "気象予測",
+      "expected_occurrences": 4
+    },
+    {
+      "old": "気候・災害予測",
+      "new": "気象・災害予測",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "気候変動予測",
+      "new": "気象・災害予測",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "Science」が公開され",
+      "new": "Science」が発表され",
+      "expected_occurrences": 1
+    }
+  ]
+}

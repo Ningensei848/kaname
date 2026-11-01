@@ -82,13 +82,14 @@ def test_receipt_recovery_precedes_url_skip_and_never_regenerates(harness):
     assert calls == ['https://example.com/feed.xml']
 
 
-def test_failed_generation_stays_unknown_and_is_retried(harness):
+def test_failed_generation_stays_unknown_and_is_held_without_another_bill(harness):
     h = harness; calls = enable(h); h.sdk.error = OSError('failed generation')
     assert h.pipeline.run().status == 'failed' and len(State(h.store).pending()) == 1
     h.sdk.error = None; calls.clear()
     r = h.pipeline.run()
-    assert r.status == 'success' and r.saved == 1 and r.known_articles_skipped == 0
-    assert 'https://example.com/a' in calls
+    assert r.status == 'failed' and r.saved == 0 and r.known_articles_skipped == 0
+    assert r.llm_calls == 0 and len(h.sdk.calls) == 1
+    assert calls == []
 
 
 def test_recheck_explicitly_detects_same_url_edits(harness):

@@ -36,7 +36,9 @@ class Gemini:
                 break
             except (errors.APIError, httpx.TimeoutException, httpx.NetworkError) as exc:
                 code = getattr(exc, "code", None)
-                retryable = isinstance(exc, (httpx.TimeoutException, httpx.NetworkError)) or code == 429 or (isinstance(code, int) and 500 <= code < 600)
+                # A timeout, dropped connection or server error cannot establish
+                # that generation did not finish. Never replay those requests.
+                retryable = code == 429
                 if not retryable or attempt == self.config.retries:
                     raise
                 self.sleep(min(2**attempt, 30))

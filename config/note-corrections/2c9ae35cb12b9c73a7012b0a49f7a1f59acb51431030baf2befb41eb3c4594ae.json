@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "note_id": "2c9ae35cb12b9c73a7012b0a49f7a1f59acb51431030baf2befb41eb3c4594ae",
+  "expected_note_sha256": "97e3d5418c024386c9677b70ecda6a170ffa5ab2ccd7ea643ff9e96db8b6b566",
+  "expected_text_sha256": "95c046aa558cf4e2ef13da8bb6b42a84db5a6c374d2b1af996c5a467d4091ecd",
+  "source": "https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「Veo 3.1 Ingredients to Video」を発表しました。参照画像（インディレッド）から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube\n  Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、1080pおよび4Kへのアップスケーリング機能も導入されています。これらの新機能は、Geminiアプリ、YouTube\n  Shorts、Flow、Google Vids、Gemini API、Vertex AIを通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「SynthID」が埋め込まれ、Geminiアプリ上でAI生成かどうかの検証が可能です。\n",
+      "new": "description: Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「Veo 3.1 Ingredients to Video」を発表しました。素材となる参照画像から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube\n  Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、Flow・Gemini API・Vertex AIでは1080pおよび4Kへのアップスケーリングも利用できます。これらの新機能は、Geminiアプリ、YouTube\n  Shorts、Flow、Google Vids、Gemini API、Vertex AIを通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「SynthID」が埋め込まれ、Geminiアプリ上でGoogle\n  AIで生成されたかどうかの検証が可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "> Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「[[Veo 3.1]] Ingredients to Video」を発表しました。参照画像（インディレッド）から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、1080pおよび4Kへのアップスケーリング機能も導入されています。これらの新機能は、[[Geminiアプリ]]、YouTube Shorts、Flow、[[Google Vids]]、Gemini API、[[Vertex AI]]を通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「[[SynthID]]」が埋め込まれ、[[Geminiアプリ]]上でAI生成かどうかの検証が可能です。\n",
+      "new": "> Google DeepMindは、動画生成AIモデル「Veo」の最新アップデート「[[Veo 3.1]] Ingredients to Video」を発表しました。素材となる参照画像から動画を生成する機能が強化され、キャラクターや背景、オブジェクトの一貫性が向上したほか、シンプルなプロンプトでもより表現力豊かでダイナミックなクリップを作成できるようになりました。さらに、YouTube Shortsなどのプラットフォームに向けたネイティブな縦画面（9:16）動画の生成に対応し、Flow・Gemini API・[[Vertex AI]]では1080pおよび4Kへのアップスケーリングも利用できます。これらの新機能は、[[Geminiアプリ]]、YouTube Shorts、Flow、[[Google Vids]]、Gemini API、[[Vertex AI]]を通じて順次利用可能となります。また、生成された動画にはデジタル透かし技術「[[SynthID]]」が埋め込まれ、[[Geminiアプリ]]上でGoogle AIで生成されたかどうかの検証が可能です。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- 1080pおよび4K解像度へのアップスケーリング機能に対応し、より高画質な動画制作ワークフローを実現。",
+      "new": "- Flow・Gemini API・Vertex AIで1080pおよび4K解像度へのアップスケーリングに対応し、より高画質な動画制作ワークフローを実現。",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "- Googleのデジタル透かし技術「[[SynthID]]」が組み込まれており、[[Geminiアプリ]]でAI生成動画の検証が可能。",
+      "new": "- Googleのデジタル透かし技術「[[SynthID]]」が組み込まれており、[[Geminiアプリ]]でGoogle AI生成動画の検証が可能。",
+      "expected_occurrences": 1
+    }
+  ]
+}

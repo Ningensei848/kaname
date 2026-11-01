@@ -47,13 +47,14 @@ def check_image_pages(origin, entries, workers=2):
         raise ValueError('invalid_image_workers')
     selected = [(note_id, images) for note_id, images in entries.items() if images]
     if not selected:
-        return dict(notes=0, requests=0, workers=0)
+        return dict(notes=0, requests=0, workers=0, images=0)
     count = min(workers, len(selected))
     approved = {image['url'] for _, images in selected for image in images}
 
     def inspect(group):
         from playwright.sync_api import sync_playwright
         errors, external, requests = [], [], []
+        checked = 0
         with sync_playwright() as runtime:
             browser = runtime.chromium.launch()
             try:
@@ -65,13 +66,15 @@ def check_image_pages(origin, entries, workers=2):
                 for note_id, images in group:
                     page.goto(origin + '/kaname/notes/' + note_id)
                     check_images(page, images)
+                    checked += len(images)
                 assert not errors, 'pages_browser_error'
                 assert not external, 'pages_external_resource_request'
-                return len(requests)
+                return len(requests), checked
             finally:
                 browser.close()
 
     # Each Note is checked once, and all exceptions stop acceptance.
     with ThreadPoolExecutor(max_workers=count, thread_name_prefix='image-check') as pool:
         requests = list(pool.map(inspect, [selected[index::count] for index in range(count)]))
-    return dict(notes=len(selected), requests=sum(requests), workers=count)
+    return dict(notes=len(selected), requests=sum(row[0] for row in requests), workers=count,
+                images=sum(row[1] for row in requests))

@@ -69,6 +69,41 @@ mainのレビュー済み計画だけを許可し、日次writerと同じconcurr
 競合・hash不一致・異なる計画は停止し、既存公開版を維持します。
 適用とauditが成功した後、別のDaily実行で`publish_only=true`を指定してGit/Pagesを更新します。
 
+## 原典照合による既存Noteの訂正
+
+原典と比較した訂正は `config/note-corrections/<Note ID>.json` に固定します。
+計画には元Note/置換後テキストのSHA256、canonicalな出典URL、確認日、文字列と出現数を指定します。
+`docs/note-reviews/` の根拠も合わせてレビューします。計画のschema検証だけでは事実の正しさを保証しません。
+画像/生成情報/本文hash/検索キーワード/安定IDは変更できず、タイトル・説明と本文中の指定文字列だけを訂正します。
+原典公開日の誤りは計画に `source_published`（ISO日付）を明示し、frontmatterと出典表示の両方を置換します。
+指定がなければ公開日も変更不可です。元indexの日付は維持し、履歴に `published_before` / `published_after` の対を追加します。
+公開manifestは訂正後の日付を使います。生成日時やusageの日付は変更しません。
+訂正後はfrontmatterに計画hash・元Note hash・確認日・`automated_assistant`を記録し、本文末にも訂正履歴を表示します。
+履歴を付けた最終Note hashは計画中の置換後テキストhashと異なります。
+
+```bash
+# GCS読取りのみ。記事取得・Gemini・通知・公開は実行しない
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --output /tmp/correction-preview
+# 保存済みローカルsnapshotでのpreview（--applyとは併用不可）
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --state-dir local-snapshot --output /tmp/correction-offline
+# レビューした計画をNote/receiptへ適用。出力先は毎回新しいディレクトリ
+python scripts/correct_note_text.py --plan config/note-corrections/<Note ID>.json --output /tmp/correction-apply --apply
+```
+
+ActionsはDaily kanameの `note_correction_plan` に上記パスを指定します。
+`note_correction_apply=false` がpreview、`true` が適用です。mainに保存された計画のみ実行します。
+既存のDaily WIF条件とwriter concurrencyを使い、画像補完/収集/再試行/診断/公開との混在は認証前に拒否します。
+専用jobはGCS認証だけを使い、Geminiキーを渡しません。検証済みpreviewと判定JSONを7日保存し、最後に監査します。
+
+適用順序は原receipt全bytesの履歴保存、pending intent、新receipt、新Note、完了intentです。
+履歴は `state/note-correction-history/<Note ID>/<元Note hash>.json`、intentは `state/note-corrections/<Note ID>.json` に保持します。
+index・runs/usage・元usage_run_idは書き換えません。同じ計画の完了後再実行は変更なしです。
+保存中断後は同じ計画の再実行、または通常runの生成前の復旧で再開します。復旧できないpendingは新たな生成を止めます。
+別計画/変更済みNote/receipt/historyや世代競合は拒否し、人の編集を上書きしません。
+API/GCS全体を一体のtransactionにはしません。単一writer・世代条件・再読取りで競合を検出します。
+適用と監査の成功を確認してから、別のDailyで `publish_only=true` により配布します。
+2026-10-25の12計画はローカルsnapshotでの受入段階で、本番適用済みとはしません。
+
 ## 取得・本文・フィルタ
 
 現行の有効sourceはRSS/HTTPです。Google Researchは`content_selector: .blog-detail-wrapper`で、
@@ -266,6 +301,28 @@ Issue投稿をskipします。両診断入力の同時指定はWIF認証前に�
 日次scheduleと入力未指定時の通常動作は維持します。Secretの抽出、権限拡張、匿名公開は不要です。
 診断モードの成功は検査操作の成功です。新規有料提出や結果の保存とは別の操作として扱います。
 
+## standard生成の予約と明示的な再試行
+
+生成前にcontent hashごとの予約を保存し、応答を失った場合は同じ記事の後続runも停止します。`run --max-calls 0`も、この不明な応答を再生成しません。応答と元の組立て情報を保存できた場合は、次runで元の時刻/モデル/出典/画像候補からreceiptを復旧し、追加の生成呼出しはありません。保存済みreceiptはそのbytesを保持します。
+
+```bash
+# 応答不明/未復旧のcontent hash・元run ID・状態だけを表示。生成文は表示しない。
+python -m kaname standard-status
+python -m kaname standard-status --state-dir local-snapshot
+```
+
+`legacy_pending_runs`は記事hashを特定できない旧保留usageの元run IDです。`reserved`はAPI側の成否不明、`response`は応答保存済みでreceipt未確定です。原則は保存障害を解消して無課金の復旧を試します。schema/画像選択不正の応答は自動補正/自動再生成しません。旧usage予約だけが残り記事hashを特定できない場合も、履歴を確認するまで停止します。
+
+追加課金を明示的に許容して再試行する場合だけ、対象hashと1件・費用上限を指定します。対象以外の記事を生成せず、LLM通信retryは0にします。旧予約/応答は `state/standard-request-history/` へ保全し、元runのusageや不明課金を消しません。この操作には記事HTTP・有料生成・GCS更新があります。
+
+```bash
+python -m kaname run --retry-standard-content <standard-statusの64桁hash> --max-calls 1 --max-cost-usd 0.20
+```
+
+Actionsでも `retry_standard_content=<hash>`、`collection_mode=standard`、`max_calls=1`、正の `max_cost_usd` を指定できます。他の診断/画像修復/preflight/公開専用とは認証前に排他検証します。通常scheduleでは未指定です。
+
+APIとGCSを一体でcommitしたり、API側の厳密なexactly-once課金を保証したりする機構ではありません。生成直後に応答を保存できなかった場合は復元不能で、再試行には二重課金の可能性が残ります。実Vaultや生成設定の既定値を変更しません。
+
 ## 実測usageと予算
 
 ```bash
@@ -282,7 +339,7 @@ receipt後の中断・再回収でも費用を重複計上しません。`incomp
 部分欠落metadata、応答未保存の予約、複数HTTP試行の不明課金はpartialとなり、既知countを保持します。
 thinking欠落を0とするのは合計countから0を証明できる場合だけです。
 旧receiptで課金記録への参照がなければ、復旧runにusage不明を記録し、過去の単価・日付は推測しません。
-API応答と永続化の間の停止には再課金の可能性が残ります。invoiceとの照合は別途必要です。
+API応答を失った予約は後続runも停止します。明示的な再試行には再課金の可能性が残り、invoiceとの照合は別途必要です。
 旧Phase 1 reportはmodel記録がないため現在設定model/standard価格を仮定し、仮定件数を表示します。
 新reportはmodel/modeと単価をsnapshotし、後の単価更新で履歴を再評価しません。
 

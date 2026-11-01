@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "note_id": "2bab48de568bc41c8e148b80d48d50d63ae6bd0b1ac8cbc4eef092cfea30501c",
+  "expected_note_sha256": "b5a693049b5709009d1421d8ff2181ec4c065f4f9fb0832094bc6a85ec69afbe",
+  "expected_text_sha256": "22dc03988550a7c37cf1daf029724e7d85de7852ffa732edcd6281ad43bd5d71",
+  "source": "https://blog.google/innovation-and-ai/products/nano-banana-pro/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "description: Google DeepMindは、Gemini 3 Proを基盤とする最先端の画像生成および編集モデル「Nano Banana Pro」を発表した。Gemini\n  3の優れた推論能力とリアルタイムのワールドナレッジを活用し、植物や料理のレシピなどの文脈に富んだ正確なインフォグラフィックや図解を作成できる。また、多言語における正確で視認性の高いテキストの描画やローカライゼーションに対応しており、ポスターやモックアップの制作に最適である。さらに、最大14枚の画像を組み合わせて一貫性を保つ高度な編集機能や、スタジオ品質のクリエイティブコントロールを備えている。コンシューマー向けのGeminiアプリをはじめ、Google\n  Ads、Workspace、Google AI Studio、Vertex AI、映画制作用のFlowなどで順次提供が開始される。生成された画像にはSynthIDによる電子透かしが埋め込まれ、透明性の確保と検証が可能となっている。\n",
+      "new": "description: Google DeepMindは、Gemini 3 Proを基盤とする最先端の画像生成および編集モデル「Nano Banana Pro」を発表した。Gemini\n  3の優れた推論能力と世界知識とGoogle Search接続時の最新情報を活用し、植物や料理のレシピなどの文脈に富んだ正確なインフォグラフィックや図解を作成できる。また、多言語における正確で視認性の高いテキストの描画やローカライゼーションに対応しており、ポスターやモックアップの制作に最適である。さらに、最大14枚の画像を組み合わせて一貫性を保つ高度な編集機能や、スタジオ品質のクリエイティブコントロールを備えている。コンシューマー向けのGeminiアプリをはじめ、Google\n  Ads、Workspace、Google AI Studio、Vertex AI、映画制作用のFlowなどで順次提供が開始される。生成された画像にはSynthIDによる電子透かしが埋め込まれ、透明性の確保と検証が可能となっている。\n",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "リアルタイムのワールドナレッジ",
+      "new": "世界知識とGoogle Search接続時の最新情報",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "リアルタイム知識",
+      "new": "Google Search接続時の最新情報",
+      "expected_occurrences": 1
+    },
+    {
+      "old": "GeminiアプリなどでAI生成画像の検証",
+      "new": "GeminiアプリなどでGoogle AI生成画像の検証",
+      "expected_occurrences": 1
+    }
+  ]
+}

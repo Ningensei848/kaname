@@ -212,7 +212,7 @@ def load_snapshot(root, tracking=()):
                    canonical_url=entry["canonical_url"], published_at=entry["published"] or "",
                    raw_html_sha256=meta["raw_html_sha256"], content_sha256=meta["content_sha256"],
                    llm_model=meta.get("ai_model", ""), llm_input_truncated=str(entry["llm_input_truncated"]).lower())
-        validate_note(data, row, tracking, None)
+        validate_note(data, row, tracking, None, published_is_effective=True)
         if any(entry[k] != meta[k] for k in ("title", "category", "published", "llm_input_truncated")):
             raise ExportError("manifest_note_mismatch")
         ids.append(entry["id"])

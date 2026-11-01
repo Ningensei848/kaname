@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "note_id": "0da5ce80a6ea6e673e9c1726a129abeb1f5c317e8adfe2110e63400d74b4c30c",
+  "expected_note_sha256": "c18e9db15e3b9415b292e117364bca38d87d0088d4af7b10b26e5b44af1186a4",
+  "expected_text_sha256": "e2dabc3699970c608fbee21376df2c345865ac3b9f5f597deb58559086f53128",
+  "source": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+  "checked_at": "2026-10-25",
+  "edits": [
+    {
+      "old": "への統合である",
+      "new": "への今後の統合計画である",
+      "expected_occurrences": 2
+    },
+    {
+      "old": "[[MedGemma]]や[[AMIE]]といった医療AIのオープン化と臨床研究が進み、実際の医療現場や患者ケアでの有用性が示されている。",
+      "new": "[[MedGemma]]の公開・活用と[[AMIE]]の臨床研究が進み、患者ケアを支援する可能性が研究されている。",
+      "expected_occurrences": 1
+    }
+  ]
+}
