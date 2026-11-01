@@ -26,7 +26,7 @@ N01〜N06の実装・ローカル受入は完了。変更はレビュー用ブ�
 
 ## 残余制約と条件付きの作業
 
-2026-10-25の継続作業は[残余制約の解消作業](remaining-constraints.md)で、全項目の完了条件・現在の証拠・未確認範囲を追跡する。全体は未完了である。
+2026-11-01までの継続作業は[残余制約の解消作業](remaining-constraints.md)で、全項目の完了条件・現在の証拠・未確認範囲を追跡する。全体は未完了である。
 
 - [#116](https://github.com/Ningensei848/kaname/issues/116)：CSVの残高検算に加え、期間/project/JPY/SKU内訳、旧9 runの元モデル・方式、公式Catalogの9月・10月の換算レート/円単価を確認し保存usageと比較した。請求数量・調整/税・未観測期間の帰属が残り、完全照合は未完了。別期間のCSV/SKU内訳と公開価格/契約価格/実請求を区別する。
 - Graph：現321 Noteでもタイトル解決は0辺。定義先を推定せず、具体的な検索語を2つ以上共有するNoteへの別の導線を実装し、69 Note・136辺のHTML/index/実移動をローカル受入済み。
@@ -34,7 +34,9 @@ N01〜N06の実装・ローカル受入は完了。変更はレビュー用ブ�
 - 同期：現行の旧名移行をLinux/実Windowsの一時NTFSでも受入済み。実Vault/利用者プラグインは対象外。
 - APIと保存：standard予約・応答保存・無課金復旧・不明応答の後続run停止を実装・ローカル受入済み。明示的な再試行は1件/正の費用上限と旧履歴保全が必須。API側の厳密なexactly-once課金は未立証。
 - 全要約の事実確認：原典照合は101/321件、うち50件に用語/数量/精度/評価条件/公開日・提供範囲の訂正候補。hash固定計画と履歴付き適用/中断復旧を実装した。ADC再認証後、全50件の実GCS読取りに基づくメモリ上の監査とindex/usage/費用集計の保持を確認した。残り220件の原典比較と本番訂正は未完了。実GCS/公開Markdownは変更していない。
-- npm既知警告：旧2 advisoryは公式撤回、新規TOML警告は5.0.1へ更新して実監査0件。例外規則を削除し、fixtureと固定321件のGit/実Releaseの全Web受入も成功。
+- npm監査：旧2 advisoryは公式撤回、TOMLは5.0.1へ更新済み。11/1に新たに検出したminimatch/Satoriと、更新後のfflate警告も修正版へ固定し実監査0件。例外規則は設けない。最新の検証範囲は[依存の記録](web-preview.md#固定依存と残る制約)を参照する。
+
+11/1にOpen Issueを再確認し、[#212](https://github.com/Ningensei848/kaname/issues/212)・[#213](https://github.com/Ningensei848/kaname/issues/213)・[#214](https://github.com/Ningensei848/kaname/issues/214)・[#215](https://github.com/Ningensei848/kaname/issues/215)・[#216](https://github.com/Ningensei848/kaname/issues/216)・[#217](https://github.com/Ningensei848/kaname/issues/217)・[#218](https://github.com/Ningensei848/kaname/issues/218)は、いずれもPagesのsetup-web内の依存監査で停止していることを各run logで確認した。修正はドラフトPR #211に集約する。次は#207/#211のmain反映後に日次公開を受け入れ、失敗の解消を確認する。本番deployとIssueのCloseは未実施である。
 
 <a id="ns1-google-search-fallback"></a>
 

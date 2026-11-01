@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { lazySearchScript } from './lazy-search.mjs'
+import { prepareServeHandler } from './serve-handler-compat.mjs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 const readJSON = async p => JSON.parse(await fs.readFile(p, 'utf8'))
@@ -41,6 +42,7 @@ try {
   const nested = path.join(core, 'node_modules')
   await fs.symlink((await fs.stat(nested).catch(() => null)) ? nested : path.join(root, 'node_modules'), path.join(engine, 'node_modules'))
   await fs.cp(path.join(core, 'quartz'), path.join(engine, 'quartz'), { recursive: true })
+  await prepareServeHandler(root, engine)
   await fs.rm(path.join(engine, 'quartz/static/giscus'), { recursive: true, force: true })
   for (const name of ['package.json', 'quartz.ts']) await fs.copyFile(path.join(core, name), path.join(engine, name))
   await fs.copyFile(path.join(root, 'quartz.config.yaml'), path.join(engine, 'quartz.config.yaml'))

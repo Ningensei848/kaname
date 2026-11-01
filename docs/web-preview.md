@@ -108,11 +108,17 @@ Quartz公式のGit plugin lock形式ではありません。公式の自動plugi
 日本語フォントは`@fontsource/noto-sans-jp` 5.3.0（OFL）をローカル配信し、ライセンスも同梱します。
 Quartz/pluginと主要frontend runtimeのライセンスは`static/licenses/`へ同梱します。
 
-xmldom/sharp/toml/KaTeXは、`overrides`で修正版を固定して実buildを検証します。TOMLは5.0.1、KaTeXは0.18.2です。
-2026-10-25の実npm監査は警告0件です。`npm run audit`には例外を設けず、すべての警告・不完全な応答・監査取得失敗をCIで拒否します。`npm run test:frontend`でこの境界と遅延検索hookを検証します。
+xmldom/sharp/toml/KaTeX/minimatch/Satori/fflateは、`overrides`で修正版を固定して実buildを検証します。TOMLは5.0.1、KaTeXは0.18.2、minimatchは11.0.1、Satoriは0.33.5、fflateは0.7.5です。
+2026-11-01の実npm監査は警告0件です。`npm run audit`には例外を設けず、すべての警告・不完全な応答・監査取得失敗をCIで拒否します。`npm run test:frontend`でこの境界、遅延検索hook、開発用サーバーのHTTP routingを検証します。
 
 以前例外にしていた[braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)と[sprintf-js](https://github.com/advisories/GHSA-hp3w-g68c-fv3c)のadvisoryは、それぞれ2026-10-23/22に公式に撤回されました。修正版の公開で解消したという判断ではありません。両方の旧許可規則は削除しています。
 10/23・24の日次Pages失敗は、新規TOML警告を監査が拒否したことによるものです。[配列表ヘッダ](https://github.com/advisories/GHSA-4qx8-w7c3-pj3p)・[長いキー](https://github.com/advisories/GHSA-9j65-hcg3-gc64)・[長い整数](https://github.com/advisories/GHSA-9qmh-m7c6-f92p)の3 advisoryを修正した5.0.1へlock/integrityを更新しました。監査の例外追加は行いません。
+
+11/1の再監査では[minimatchのglob増幅](https://github.com/advisories/GHSA-g3hv-75wg-m249)と[SatoriのSVG escaping](https://github.com/advisories/GHSA-wx4j-mvgx-mqwp)を検出し、修正版へ更新しました。更新後に現れたSatori配下の[fflateのZIP64処理](https://github.com/advisories/GHSA-px8p-9vwx-vf98)も、同じ0.7系列の修正版へ固定しました。全依存とintegrityはlockで固定します。
+
+serve-handler 6は旧minimatchの関数exportを使うため、setup時に所有cacheへ複製したソースだけをnamed exportへ変更し、複製したQuartz CLIから参照させます。期待するimportが一箇所でない場合は停止します。インストール済み依存や公開Noteは書き換えません。開発用サーバーの配信・rewrite・redirect・globヘッダー・欠落fileをHTTPで検証します。kanameの通常previewは引き続き完了manifestを検証するPython serverです。
+
+更新後、全50件の訂正を含む固定321 NoteのGit/ローカル組立てRelease両入力で同一artifactへの全受入が成功しました。64一覧・3,246検索リンク・136共有語辺・192画像付きNote/465画像・4幅・検索ショートカット4通り・外部要求0を確認し、全50件の訂正履歴と元Markdown配布bytesも保持しています。
 
 SSGのglobは固定文字列、ignorePatternsは空、入力filenameは生成したID/slugだけです。Noteの本文・frontmatterからglobやYAML CLIのformatを渡す経路は設けません。buildには180秒のtimeoutを維持します。
 

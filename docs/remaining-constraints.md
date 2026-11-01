@@ -1,6 +1,6 @@
 # 残余制約の解消作業
 
-2026-10-25。[作業一覧](next-work.md#残余制約と条件付きの作業)の残余項目を引き継ぐ。全体は未完了で、ローカル受入・main反映・本番受入を区別する。既定の生成設定や予算は変更せず、検証に新規の有料生成を使わない。
+2026-11-01更新。[作業一覧](next-work.md#残余制約と条件付きの作業)の残余項目を引き継ぐ。全体は未完了で、ローカル受入・main反映・本番受入を区別する。既定の生成設定や予算は変更せず、検証に新規の有料生成を使わない。
 
 | ID | 完了を立証する条件 | 現在の状態 |
 |---|---|---|
@@ -10,7 +10,7 @@
 | R04 / Windows同期 | 新旧root/state/lock、編集・候補保持、両root拒否、全writer停止を伴う明示移行を現行コード・実Windows/一時NTFSで確認する | ローカル受入済み。Windows Python 3.13.1/NTFSとLinuxで成功。検査は `scripts/verify_sync_filesystem.py`。実Vault・利用者プラグインは従来どおり別の対象指定が必要 |
 | R05 / 生成と保存 | 生成前の予約・取得済み応答の復旧・不明応答の後続run停止・明示的再試行の費用/対象制限・元課金履歴の保持を中断箇所ごとに検証する。API側の厳密なexactly-once保証とは区別する | 実装・境界テスト成功。standard予約/応答/元組立て情報を保存し、取得済み結果は追加API0で復旧。不明なtimeout/切断/5xxは自動再送しない。元runのusageと失敗した再試行も保持。現GCSの読取りでは未解決のstandard予約・旧保留usageは0件。[操作](operations.md#standard生成の予約と明示的な再試行) |
 | R06 / 要約の事実確認 | 固定321 Noteのタイトル/要約/重要ポイント/資料の位置づけを原典の根拠と対応づけ、訂正・時点差・未確認をNote hash単位で記録する。対象外/未確認を全件確認済みとしない | 未完了。原典照合を101件実施し、50件に訂正候補。50件のhash固定計画を321件のローカルsnapshotで検証した。ADC再認証後、全50件の実GCS読取りに基づくメモリ上の適用/監査とindex/usage/費用集計の保持も確認。本番反映と残り220件は未完了。以下の確認記録を参照 |
-| R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 依存更新・実監査・fixture/固定321件のGit/実Release全Webのローカル受入済み。旧2 advisoryは公式撤回、TOMLは新規3 advisoryの修正版5.0.1へ更新。警告0、許可例外0。[依存](web-preview.md#固定依存と残る制約) |
+| R07 / npm監査 | 既知警告の状況と修正版を再確認し、新規警告を例外化せず固定lock/integrityを更新、実監査と全Webを検証する | 11/1の新規警告に対応しminimatch/Satori/fflateも更新。実監査0、許可例外0。旧2 advisoryは公式撤回、TOMLは5.0.1へ更新済み。開発用サーバーの互換性をHTTPで検証。全50件を訂正した固定321件のGit/ローカルRelease両入力でも全Web受入成功。[依存](web-preview.md#固定依存と残る制約) |
 
 ## 今回固定する版と境界
 
@@ -24,6 +24,8 @@ R01では、支払・前払い・税・消費額を混同せず、現在の市�
 当初のSERVICE_DISABLEDを解消するため既存projectの `cloudbilling.googleapis.com` を有効化し、既存認証で公式Catalogの履歴価格を読み取った。IAM・請求先の変更、export作成、有料queryは行っていない。[Catalog契約](https://docs.cloud.google.com/billing/docs/reference/rest/v1/services.skus/list)の月区分はAmerica/Los_Angeles。9月の公表JPY/USD換算レートは約159.375、10月は約157.195で、[取得記録](billing-catalog-2026-09-10.json)に正確な返却値・SKU ID・有効日時・JPY units/nanosを残した。計算には丸めたレートでなく返却された円単価を使い、期間の絞込みと価格の有効時刻を分離する。run開始時刻と価格有効日時を照合した参考計算であり、個々の請求timestampは未取得である。
 
 旧価格欠損9 runはActionsの元checkout/config/SDKと保存96 Noteを照合し、当時のモデル・standard mode・入出力token総数を確認した。元reportへ価格を追記せず、元価格と後から取得した公開価格を区別する。請求accountの最新4 SKU価格も取得し、公表単価と契約単価の一致・割引0を確認した。ただし最新値の取得は9月の契約価格や請求数量の証明ではない。百万token単位の最新価格は履歴Catalogのtoken単位nanosより精度が高いため、非公開比較に両者の精度差による感度も残した。保存usageは9/27からで、9/1〜9/26のproject全体利用は未観測。公開価格と契約単価、整数表示のSKU費用と未丸め費用、調整/税も同じと仮定しない。非公開の比較記録では期間・JST/Pacificシナリオ別に差を算出したが、完全照合や過剰請求の立証とはしない。既存CSVの残高検算完了を完全照合の完了へ置き換えない。
+
+既に有効な[App Optimize API](https://docs.cloud.google.com/app-optimize/create-read-report)でも同じprojectの費用を調べた。11/1には期限切れの旧レポートを再利用せず、新たにSKU/時間別293行とproject/時間別62行を全件取得した。時間ごとの費用合計は両者で一致したが、Cloud StorageとCloud Loggingだけで対象Gemini SKUを含まなかった。この欠落をGemini利用ゼロやproject誤指定の証拠にはしない。[同APIの費用データ](https://docs.cloud.google.com/app-optimize/optimization-data)はcredits前のgross contract costであり、請求数量・税・credits込みの確定明細とは区別する。比較対象の時差を包含する広い期間で取得したため、これらの合計を利用者の指定期間の額と直接照合しない。追加のAPI有効化・IAM変更・export新設・有料queryは行っていない。
 
 ## 全WebとGCSの規模評価
 
@@ -122,5 +124,7 @@ GCSは全state/runs込みで約7.9MB、全読取り監査7.695秒、最大RSS約
 
 
 ADC再認証後、先に公開snapshotのみで検証していた16件も含めて実GCSの読取りに成功した。全50件をメモリ上で適用/監査し、従来の公開snapshotで検証した結果bytesとの一致を確認した。実GCS・main・本番公開への変更は未実施である。
+
+11/1の再認証後にも読取りを再実行した。現在のGCSは1,359 object・337 Noteで、全50件の計画をメモリ上で適用/監査し、index/runs/usageと費用集計の保持を確認した。上記の原典照合と全Webの対象は引き続き固定321件であり、後から追加された16件を確認済みへ含めない。
 
 Dailyの既存WIF許可対象内に専用jobを追加し、既定はpreview、他modeとの混在を認証前に拒否する。適用と公開は別操作。[操作と復旧](operations.md#原典照合による既存noteの訂正)を参照する。101件の結果を全321件へ一般化しない。
