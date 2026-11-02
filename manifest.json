@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "f750d1f4a523e33331d816cdc16e0a8a193ef4d4a3ff36533316d01c77791b6b",
+  "dataset_digest": "e37a259705071991262958128c9c5eebf3b7b0a8faf09e71cc698a845319bcf7",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1464,6 +1464,18 @@
       "sha256": "dff953c24e5e5d0c8f7d2f4244f318573adc08b2cc090830bc070042c0ea005f",
       "source_id": "cloudflare-security",
       "title": "ポスト量子暗号移行に向けたAI活用の内製ツール「CryptoLabe」の取り組み"
+    },
+    {
+      "canonical_url": "https://github.blog/open-source/gaming/game-off-2026-the-theme-is-shift/",
+      "category": "software-development",
+      "id": "59f3f443f22a7c9ac1def327cda6c1c6a9ae317e45740b75be1262c017beac2d",
+      "llm_input_truncated": true,
+      "path": "notes/59f3f443f22a7c9ac1def327cda6c1c6a9ae317e45740b75be1262c017beac2d.md",
+      "processed_at": "2026-11-02T01:31:22.232365+00:00",
+      "published": "2026-11-01",
+      "sha256": "d805620046c71182099e6b5c5a7c707b4cc37b20b29c5bf6e92393eabf296133",
+      "source_id": "github-blog",
+      "title": "Game Off 2026: 今年のテーマは「SHIFT」"
     },
     {
       "canonical_url": "https://www.microsoft.com/en-us/research/blog/gigapath-flash-and-gigatime-flash-toward-population-scale-discovery-with-efficient-pathology-foundation-models/",
