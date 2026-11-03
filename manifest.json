@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "e37a259705071991262958128c9c5eebf3b7b0a8faf09e71cc698a845319bcf7",
+  "dataset_digest": "67fa2a045466bb7263a4da94a6d2a8ffb8769f030748cda4bb9d5817e51fce8b",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1800,6 +1800,18 @@
       "sha256": "646b9c6d30c718c5f8ea27bedc26c91dcf798a53e46be40a5b9ed0f24a6a9207",
       "source_id": "google-research",
       "title": "Sequential Attention：精度を犠牲にせずにAIモデルをよりスリムかつ高速にする手法"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/speeding-up-planning-decisions-with-ai/",
+      "category": "ai-llm",
+      "id": "742e59ef6f4cb1969cf3d495621df576f8e6ddfac64f6506c7e16b2fb46dea44",
+      "llm_input_truncated": false,
+      "path": "notes/742e59ef6f4cb1969cf3d495621df576f8e6ddfac64f6506c7e16b2fb46dea44.md",
+      "processed_at": "2026-11-03T03:29:23.832228+00:00",
+      "published": "2026-10-30",
+      "sha256": "a536f282abd3d1ea8324adc5e537cf9f900fdce603bd0331f93e50f9792cfa74",
+      "source_id": "google-deepmind",
+      "title": "Google DeepMindのAIツール「PlanAssist」が住宅の計画審査時間を最大58%削減"
     },
     {
       "canonical_url": "https://research.google/blog/improving-breast-cancer-screening-workflows-with-machine-learning/",
