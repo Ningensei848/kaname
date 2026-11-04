@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "67fa2a045466bb7263a4da94a6d2a8ffb8769f030748cda4bb9d5817e51fce8b",
+  "dataset_digest": "413c6110ba9d3331cf7c42100fbe7dfbe55222f879f226a552c056f5316a2ad4",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -1020,6 +1020,18 @@
       "sha256": "f7763c8af994cc30465fda3fccb1aa5b28e65022e0ead1da8b7d204f0da8ac8b",
       "source_id": "cloudflare-security",
       "title": "Cloudflare、アカウント不正利用調査のための新しい詐欺対策ダッシュボードを発表"
+    },
+    {
+      "canonical_url": "https://github.blog/open-source/maintainers/arnis-turns-any-place-on-earth-into-a-minecraft-world/",
+      "category": "software-development",
+      "id": "3d47f2f38bc994d8a7a3bd8c0bc5399f10f893ed63af739cf9a3778ca4e0c0cc",
+      "llm_input_truncated": true,
+      "path": "notes/3d47f2f38bc994d8a7a3bd8c0bc5399f10f893ed63af739cf9a3778ca4e0c0cc.md",
+      "processed_at": "2026-11-04T02:21:44.865489+00:00",
+      "published": "2026-11-03",
+      "sha256": "2c35268ada9f7f305814743c54813333556cd9a15c5220f3c5f2c78670f4627e",
+      "source_id": "github-blog",
+      "title": "地球上のあらゆる場所をマインクラフトの世界に変換するオープンソースプロジェクト「Arnis」"
     },
     {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-how-to-build-custom-workflows-with-canvases/",
@@ -2726,6 +2738,18 @@
       "title": "Cloudflareがアプリケーションプロファイルによるポジティブセキュリティの強制機能を発表"
     },
     {
+      "canonical_url": "https://engineering.fb.com/2026/11/03/ml-applications/f3-lightning-how-meta-accelerates-ads-ml-features-to-production/",
+      "category": "ai-llm",
+      "id": "a6324b1d3b0071c59b9d501e4e40b3464fe648d1f27504f1480c5d95d3b859c0",
+      "llm_input_truncated": false,
+      "path": "notes/a6324b1d3b0071c59b9d501e4e40b3464fe648d1f27504f1480c5d95d3b859c0.md",
+      "processed_at": "2026-11-04T02:21:36.794445+00:00",
+      "published": "2026-11-03",
+      "sha256": "d1d54af8aae4c5578dc4818e7a213f33c8ff29e547b39ec09ad7e73974bb0ffd",
+      "source_id": "meta-engineering",
+      "title": "Metaの広告ML特徴量基盤を高速化する「F3 Lightning」の仕組み"
+    },
+    {
       "canonical_url": "https://github.blog/ai-and-ml/github-copilot/reviewbench-an-open-benchmark-for-ai-code-review/",
       "category": "ai-llm",
       "id": "a6acd7eed5eea81bdac7ca0ba1e69dab0a6c2ac238a77da25807f9eb7496d920",
@@ -3012,6 +3036,18 @@
       "sha256": "2145c9a8b224a3749b80b646ae63f2fb14dd6c23db8fd660001ccb4e609724d4",
       "source_id": "meta-engineering",
       "title": "Metaが実践するJiTTestingとヒューマン・オン・ザ・ループによる大規模バグ検出手法"
+    },
+    {
+      "canonical_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
+      "category": "ai-llm",
+      "id": "b728cefe09ee2589e2628409a6297a0ce1cd1d01eefe2e619474622095bccf89",
+      "llm_input_truncated": false,
+      "path": "notes/b728cefe09ee2589e2628409a6297a0ce1cd1d01eefe2e619474622095bccf89.md",
+      "processed_at": "2026-11-04T02:21:27.394805+00:00",
+      "published": "2026-11-03",
+      "sha256": "23fc189463d6103d4c2f2558fa159da95854eb3c47cf628f6404a420857af95a",
+      "source_id": "google-deepmind",
+      "title": "Google Antigravityのエージェント型ケモインフォマティクスによる新薬探索の加速"
     },
     {
       "canonical_url": "https://research.google/blog/protecting-cities-with-ai-driven-flash-flood-forecasting/",
@@ -3852,6 +3888,18 @@
       "sha256": "e0b96500f3baad36ce18414d8ce01ac78af61f356636adebdfc621e749d23221",
       "source_id": "cloudflare-security",
       "title": "Cloudflare、オープンソース脅威情報の自動化とエージェントスキルを活用する「Threat Signals」を全アカウントへ無償提供開始"
+    },
+    {
+      "canonical_url": "https://blog.cloudflare.com/zero-wire/",
+      "category": "cybersecurity",
+      "id": "f438e90158be2bfd4c56d9fa60ba62708b57520c54c0fc38d503cf0ecf1a06bb",
+      "llm_input_truncated": false,
+      "path": "notes/f438e90158be2bfd4c56d9fa60ba62708b57520c54c0fc38d503cf0ecf1a06bb.md",
+      "processed_at": "2026-11-04T02:21:21.022246+00:00",
+      "published": "2026-11-03",
+      "sha256": "c2add03f6e504e8f9c888d6deacb81b0c3273fa4a8e315f96d479aa15052c616",
+      "source_id": "cloudflare-security",
+      "title": "重大なインターネット脆弱性の調査ハブ「Zero Wire」の発表"
     },
     {
       "canonical_url": "https://engineering.fb.com/2026/09/21/open-source/rebalancer-generic-high-performance-library-assignment-problems/",
