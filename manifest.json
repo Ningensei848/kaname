@@ -1,5 +1,5 @@
 {
-  "dataset_digest": "413c6110ba9d3331cf7c42100fbe7dfbe55222f879f226a552c056f5316a2ad4",
+  "dataset_digest": "fc12617b908622ed43c845c6f19ecf01f0824cdfbb153c9f1ad36c5adb3bd27e",
   "notes": [
     {
       "canonical_url": "https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/",
@@ -2558,6 +2558,18 @@
       "title": "ヨーロッパにおけるロボット工学の未来を推進：Google DeepMindがアクセラレータープログラムの採択企業15社を発表"
     },
     {
+      "canonical_url": "https://blog.cloudflare.com/personal-agents-visibility-control/",
+      "category": "cloud",
+      "id": "99d063794d6555ea8ef35ef75095834243d9a30ddf4cb7f8d3017427d48936d6",
+      "llm_input_truncated": false,
+      "path": "notes/99d063794d6555ea8ef35ef75095834243d9a30ddf4cb7f8d3017427d48936d6.md",
+      "processed_at": "2026-11-05T02:29:07.661118+00:00",
+      "published": "2026-11-04",
+      "sha256": "a293699ce73151692b80ceca553c4a4239fec0c2b2a93c88e16016c53268e23c",
+      "source_id": "cloudflare-security",
+      "title": "Cloudflare、個人用AIエージェントの可視化とアクセス制御機能を発表"
+    },
+    {
       "canonical_url": "https://deepmind.google/blog/how-weathernext-helped-the-national-hurricane-center-better-predict-hurricane-melissas-historic-landfall-in-jamaica/",
       "category": "ai-llm",
       "id": "9a1242e45c9bf9e2b2545f4d329e072c21eb241e715783940949c139f5ebec07",
@@ -3624,6 +3636,18 @@
       "sha256": "3b1be994bbecda97434cb13ea66bbeb5f49108c43e9783e26553e36fd70816c8",
       "source_id": "google-research",
       "title": "SensorFM: ウェアラブル健康データに向けた汎用インテリジェンスとインターフェース"
+    },
+    {
+      "canonical_url": "https://research.google/blog/agile-deliberation-how-ai-helps-humans-define-the-gray-areas/",
+      "category": "ai-llm",
+      "id": "e0ca3353b1c00d0dd08e6210fa39eaa69da182837ba3b29d41870775f9cf38a6",
+      "llm_input_truncated": false,
+      "path": "notes/e0ca3353b1c00d0dd08e6210fa39eaa69da182837ba3b29d41870775f9cf38a6.md",
+      "processed_at": "2026-11-05T02:29:21.840567+00:00",
+      "published": "2026-11-04",
+      "sha256": "60742dd4e0bdb4bfdc7306634f7d1d5a5dd30ce58c52192068db36b824be20ab",
+      "source_id": "google-research",
+      "title": "Agile Deliberation：AIが人間の主観的な「グレーゾーン」の定義を支援する仕組み"
     },
     {
       "canonical_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/",
